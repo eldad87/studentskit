@@ -43,6 +43,7 @@ class AppController extends Controller {
 	}
 	
 	protected function error( $code, $data=array() ) {
+        
 		return $this->apiMessage('error', $code, $data);
 	} 
 	protected function success( $code, $data=array() ) {
