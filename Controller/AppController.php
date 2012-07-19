@@ -35,7 +35,6 @@ class AppController extends Controller {
 	public $components = array('RequestHandler');
 	
 	public function beforeFilter() {
-
         
 		parent::beforeFilter();
 		if ($this->request->is('ajax')) {
