@@ -35,7 +35,6 @@ class AppController extends Controller {
 	public $components = array('RequestHandler');
 	
 	public function beforeFilter() {
-        
 		parent::beforeFilter();
 		if ($this->request->is('ajax')) {
 			$this->autoLayout = false;
@@ -44,7 +43,6 @@ class AppController extends Controller {
 	}
 	
 	protected function error( $code, $data=array() ) {
-        
 		return $this->apiMessage('error', $code, $data);
 	} 
 	protected function success( $code, $data=array() ) {

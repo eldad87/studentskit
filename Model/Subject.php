@@ -197,26 +197,101 @@ class Subject extends AppModel {
 
 		return round(($onOnOnePrice+(($totalGroupPrice-$onOnOnePrice)/($maxStudents-1))*($currentStudents-1))/$currentStudents);
 	}
-	
-	public function search( $subjectType=SUBJECT_TYPE_OFFER, $ownerSearch=true, $lang=null, $userId=null, $name=null, $lessonType=null, $categoryId=null, $limit=12, $page=1 ) {
+
+    public function searchSuggestions($query, $subjectType) {
+        App::import('Vendor', 'Solr');
+        $solrObj = new Solr($subjectType);
+        $query['search_fields'] = false;
+        $query = $this->_solrDefaultQueryParams($query);
+
+        return $solrObj->suggest( $query, (($query['page']-1)*$query['limit']), $query['limit'] );
+    }
+
+    public function search( $query, $subjectType ) {
+        App::import('Vendor', 'Solr');
+        $solrObj = new Solr($subjectType);
+
+        $query = $this->_solrDefaultQueryParams($query);
+
+        $results = $solrObj->query( $query, array('subject_id'), (($query['page']-1)*$query['limit']), $query['limit'] );
+        if(!$results || !isSet($results->response->numFound) || !$results->response->numFound) {
+            return array();
+        }
+
+        //Build conditions
+        $conditions = array();
+
+        foreach($results->response->docs AS $doc) {
+            if(!isSet($conditions['subject_id'])) {
+                $conditions['subject_id'] = array();
+            }
+            $conditions['subject_id'][] = $doc->subject_id;
+        }
+
+        if($subjectType==SUBJECT_TYPE_REQUEST) {
+            $this->bindStudentOnLessonRequest();
+        }
+
+        return $this->find('all', array('conditions'=>$conditions));
+    }
+
+    private function _solrDefaultQueryParams($query) {
+        if(isSet($query['fq']['category_id'])) {
+            App::import('Model', 'SubjectCategory');
+            $scObj = new SubjectCategory();
+            $hierarchy = $scObj->getHierarchy($query['fq']['category_id']);
+            $query['facet'] = array('field'=>'categories', 'prefix'=>$hierarchy, 'mincount'=>1);
+            unset($query['fq']['category_id']);
+        }
+
+        if(isSet($query['search']) && !isSet($query['search_fields'])) {
+            $query['search_fields'] = array('name'=>5, 'description'=>0.4);
+        }
+
+        if(!isSet($query['page'])) {
+            $query['page'] = 1;
+        }
+        if(!isSet($query['limit'])) {
+            $query['limit'] = 12;
+        }
+
+        return $query;
+    }
+
+
+    public function getSubjectRequestsForStudent($userId, $limit=12, $page=1) {
+        $this->bindStudentOnLessonRequest();
+        return $this->find('all', array('conditions'=>array(
+                                                    'Subject.user_id'=>$userId,
+                                                    'type'=>SUBJECT_TYPE_REQUEST,
+                                                    'is_enable'=>SUBJECT_IS_PUBLIC_TRUE
+                                                   ),
+                                                    'limit'=>$limit,
+                                                    'page'=>$page
+        ));
+    }
+
+	/*public function search( $subjectType=SUBJECT_TYPE_OFFER, $ownerSearch=true, $lang=null, $userId=null, $name=null, $lessonType=null, $categoryId=null, $limit=12, $page=1 ) {
         App::import('Vendor', 'Solr');
         $solrObj = new Solr($subjectType);
 
         $query = array();
-        if($name) {
+        if(!$name) {
+            $query['search'] = '*';
+        } else {
             $query['search'] = $name;
             $query['search_fields'] = array('name'=>5, 'description'=>0.4);
         }
         if($userId) {
 
-            //array('lang'=>'(EN OR FR)'/*, 'subject_id'=>'(1 OR 4)'*/, 'is_public'=>true)
+            //array('lang'=>'(EN OR FR)', 'is_public'=>true)
             $conditions['fq']['user_id'] = intval($userId);
         }
         if($lessonType) {
             $conditions['fq']['lesson_type'] = intval($lessonType);
         }
         if(!$ownerSearch) {
-            $conditions['fq']['is_public'] = SUBJECT_IS_ENABLE_TRUE;
+            $conditions['fq']['is_public'] = SUBJECT_IS_PUBLIC_TRUE;
             //$conditions['is_enable'] = SUBJECT_IS_PUBLIC_TRUE;
         }
         if($lang) {
@@ -229,8 +304,6 @@ class Subject extends AppModel {
             $hierarchy = $scObj->getHierarchy($categoryId);
             $conditions['facet'] = array('field'=>'categories', 'prefix'=>$hierarchy, 'mincount'=>1);
         }
-
-
 
         $results = $solrObj->query( $query, array('subject_id'), (($page-1)*$limit), $limit );
 
@@ -248,41 +321,12 @@ class Subject extends AppModel {
             $conditions['subject_id'][] = $doc->subject_id;
         }
 
-        //Go over results, generate conditions for finding the matching subjects in our DB.
-
-        /*$conditions = array( 'type'=>$subjectType );
-          if($name) {
-              $conditions['name LIKE'] = '%'.$name.'%';
-          }
-          if($userId) {
-              $conditions['Subject.user_id'] = $userId;
-          }
-          if($lessonType) {
-              $conditions['lesson_type'] = $lessonType;
-          }
-          if(!$ownerSearch) {
-              $conditions['is_enable'] = SUBJECT_IS_ENABLE_TRUE;
-              $conditions['is_public'] = SUBJECT_IS_PUBLIC_TRUE;
-          }
-          if($categoryId) {
-              App::import('Model', 'SubjectCategory');
-              $scObj = new SubjectCategory();
-              $category = $scObj->findBySubjectCategoryId($categoryId);
-
-              if($category) {
-                  $conditions['category BETWEEN ? AND ?'] = array(
-                      $category['SubjectCategory']['left'],
-                      $category['SubjectCategory']['right']
-                  );
-              }
-          }*/
-
           if($subjectType==SUBJECT_TYPE_REQUEST) {
               $this->bindStudentOnLessonRequest();
           }
 		
 		return $this->find('all', array('conditions'=>$conditions));
-	}
+	}*/
 	
 	/**
 	 * 
@@ -302,7 +346,7 @@ class Subject extends AppModel {
 														'page'=>$page));
 	}
 	
-	public function getbyCatalog($catalogId, $excludeSubjectId=null, $limit=12, $page=1) {
+	/*public function getbyCatalog($catalogId, $excludeSubjectId=null, $limit=12, $page=1) {
 		$conditions = array('catalog_id'=>$catalogId, 'type'=>SUBJECT_TYPE_OFFER, 'is_enable'=>SUBJECT_IS_ENABLE_TRUE, 'is_public'=>SUBJECT_IS_PUBLIC_TRUE);
 		if(!is_null($excludeSubjectId)) {
 			$conditions['subject_id !='] = $excludeSubjectId;
@@ -312,7 +356,7 @@ class Subject extends AppModel {
 		return $this->find('all', array('conditions'=>$conditions,
 										'limit'=>$limit,
 										'page'=>$page));
-	}
+	}*/
 	public function getbyTeacher($teacherUserId, $isOwner=true, $type=SUBJECT_TYPE_OFFER, $page=1, $limit=12, $categoryId=null, $excludeSubject=null ) {
 		$conditions = array('user_id'=>$teacherUserId, 'type'=>SUBJECT_TYPE_OFFER);
 		if(!is_null($excludeSubject)) {

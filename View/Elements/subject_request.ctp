@@ -6,6 +6,8 @@ echo 'Name: '.$Subject['name'];
 echo '<br />';
 echo 'Description: '.$Subject['description'];
 echo '<br />';
+echo 'Language: '.$Subject['language'];
+echo '<br />';
 echo 'Lesson Type: '.$Subject['lesson_type']; 
 echo '<br />';
 echo 'Rating: '.$Subject['avarage_rating']; 

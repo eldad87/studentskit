@@ -5,6 +5,8 @@ echo '<br />';
 echo 'Name: '.$name;
 echo '<br />';
 echo 'Description: '.$description;
+    echo '<br />';
+echo 'language: '.$language;
 echo '<br />';
 echo 'Rating: '.$avarage_rating; 
 echo '<br />';

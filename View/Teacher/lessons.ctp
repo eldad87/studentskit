@@ -10,6 +10,7 @@ foreach($upcommingLessons AS $upcommingLesson) {
 	echo 'teacher_lesson_id: ',$upcommingLesson['TeacherLesson']['teacher_lesson_id'],'<br />';
 	echo 'datetime: ',$upcommingLesson['TeacherLesson']['datetime'],'<br />';
 	echo 'description: ',$upcommingLesson['TeacherLesson']['description'],'<br />';
+	echo 'language: ',$upcommingLesson['TeacherLesson']['language'],'<br />';
 	echo 'Num of students: ',$upcommingLesson['TeacherLesson']['num_of_students'],'<br />';
 	echo '<br />';
 	
@@ -38,6 +39,7 @@ foreach($bookingRequests AS $bookingRequest) {
 	echo 'datetime: ',$bookingRequest['UserLesson']['datetime'],'<br />';
 	echo 'Name: ',$bookingRequest['UserLesson']['name'],'<br />';
 	echo 'description: ',$bookingRequest['UserLesson']['description'],'<br />';
+	echo 'language: ',$bookingRequest['UserLesson']['language'],'<br />';
 	echo '<br />';
 	
 	echo 'Rating: ',$bookingRequest['Subject']['avarage_rating'],'<br />';
@@ -65,6 +67,7 @@ foreach($archiveLessons AS $archiveLesson) {
 	echo 'datetime: ',$archiveLesson['TeacherLesson']['datetime'],'<br />';
 	echo 'Name: ',$archiveLesson['TeacherLesson']['name'],'<br />';
 	echo 'description: ',$archiveLesson['TeacherLesson']['description'],'<br />';
+	echo 'language: ',$archiveLesson['TeacherLesson']['language'],'<br />';
 	echo '<br />';
 	
 	echo 'Rating: ',$archiveLesson['Subject']['avarage_rating'],'<br />';
@@ -87,6 +90,7 @@ foreach($lessonInvitations AS $lessonInvitation) {
 	echo 'datetime: ',$lessonInvitation['UserLesson']['datetime'],'<br />';
 	echo 'Name: ',$lessonInvitation['UserLesson']['name'],'<br />';
 	echo 'description: ',$lessonInvitation['UserLesson']['description'],'<br />';
+	echo 'language: ',$lessonInvitation['UserLesson']['language'],'<br />';
 	echo '<br />';
 	
 	echo 'Rating: ',$lessonInvitation['Subject']['avarage_rating'],'<br />';
@@ -112,6 +116,7 @@ foreach($pendingProposedLessons AS $pendingProposedLesson) {
 	echo 'SubjectId: ',$pendingProposedLesson['TeacherLesson']['subject_id'],'<br />';
 	echo 'Name: ',$pendingProposedLesson['TeacherLesson']['name'],'<br />';
 	echo 'description: ',$pendingProposedLesson['TeacherLesson']['description'],'<br />';
+	echo 'language: ',$pendingProposedLesson['TeacherLesson']['language'],'<br />';
 	echo '<br />';
 	
 	echo 'Rating: ',$pendingProposedLesson['TeacherLesson']['avarage_rating'],'<br />';

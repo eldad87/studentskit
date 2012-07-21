@@ -13,6 +13,8 @@ foreach($upcommingLessons AS $upcommingLesson) {
 	
 	echo 'description: ',$upcommingLesson['UserLesson']['description'],'<br />';
 	echo '<br />';
+    echo 'description: ',$upcommingLesson['UserLesson']['language'],'<br />';
+	echo '<br />';
 	
 	echo 'Rating: ',$upcommingLesson['Subject']['avarage_rating'],'<br />';
 	echo 'Max students: ',$upcommingLesson['UserLesson']['max_students'],'<br />';
@@ -45,6 +47,8 @@ foreach($bookingRequests AS $upcommingLesson) {
 	
 	echo 'description: ',$upcommingLesson['UserLesson']['description'],'<br />';
 	echo '<br />';
+    echo 'language: ',$upcommingLesson['UserLesson']['language'],'<br />';
+    echo '<br />';
 	
 	echo 'Rating: ',$upcommingLesson['Subject']['avarage_rating'],'<br />';
 	echo 'Max students: ',$upcommingLesson['UserLesson']['max_students'],'<br />';
@@ -76,6 +80,8 @@ foreach($archiveLessons AS $archiveLesson) {
 	
 	echo 'description: ',$archiveLesson['UserLesson']['description'],'<br />';
 	echo '<br />';
+    echo 'language: ',$archiveLesson['UserLesson']['language'],'<br />';
+    echo '<br />';
 	
 	echo 'Rating: ',$archiveLesson['Subject']['avarage_rating'],'<br />';
 	
@@ -103,6 +109,8 @@ foreach($lessonInvitations AS $lessonInvitation) {
 	
 	echo 'description: ',$lessonInvitation['UserLesson']['description'],'<br />';
 	echo '<br />';
+	echo 'language: ',$lessonInvitation['UserLesson']['language'],'<br />';
+	echo '<br />';
 	
 	echo 'Rating: ',$lessonInvitation['Subject']['avarage_rating'],'<br />';
 	
@@ -123,11 +131,13 @@ foreach($lessonInvitations AS $lessonInvitation) {
 ?>
 
 <h3>Subject Requests</h3>
-<?php 
+<?php
+echo $this->Html->link('Make request', array('controller'=>'Requests','action'=>'makeRequest')),'<br />';
 foreach($subjectRequests AS $subjectRequest) {
 	echo 'SubjectId: ',$subjectRequest['Subject']['subject_id'],'<br />';
 	echo 'Name: ',$subjectRequest['Subject']['name'],'<br />';
 	echo 'description: ',$subjectRequest['Subject']['description'],'<br />';
+    echo 'language: ',$subjectRequest['Subject']['language'],'<br />';
 	echo 'Enable: ',$subjectRequest['Subject']['is_enable'],'<br />';
 	echo '<br />';
 	

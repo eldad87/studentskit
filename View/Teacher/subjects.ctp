@@ -16,6 +16,7 @@ foreach($subjects AS $subject) {
 	
 	echo 'Name: ',$subject['name'],'<br />';
 	echo 'Description: ',$subject['description'],'<br />';
+	echo 'Language: ',$subject['language'],'<br />';
 	echo 'Enable: ',$subject['is_enable'],'<br />';
 	echo 'Public: ',$subject['is_public'],'<br />';
 	echo 'Image: ',$subject['image'],'<br />';

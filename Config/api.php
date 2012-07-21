@@ -43,6 +43,9 @@ $config['Home.getOtherTeachersForSubject.error.1.description'] = 'Cannot find su
 /*-------------------- Home.searchSubject	--------------------*/
 $config['Home.searchSubject.success.1.title'] = 'Success';
 $config['Home.searchSubject.success.1.description'] = 'Subjects';
+/*-------------------- Home.subjectSuggestions	--------------------*/
+$config['Home.subjectSuggestions.success.1.title'] = 'Success';
+$config['Home.subjectSuggestions.success.1.description'] = 'Subjects suggestions';
 /*-------------------- Home.getTeacherLessons	--------------------*/
 $config['Home.getUserLessons.success.1.title'] = 'Success';
 $config['Home.getUserLessons.success.1.description'] = 'All lessons';
@@ -127,5 +130,8 @@ $config['Teacher.makeRequest.success.1.title'] = 'Success';
 $config['Teacher.makeRequest.success.1.description'] = 'Lesson offer sent';
 $config['Teacher.makeRequest.error.1.title'] = 'Success';
 $config['Teacher.makeRequest.error.1.description'] = 'Cannot send lesson offer';
+/*-------------------- Teacher.subjectSuggestions	--------------------*/
+$config['Teacher.subjectSuggestions.success.1.title'] = 'Success';
+$config['Teacher.subjectSuggestions.success.1.description'] = 'Lesson offer sent';
 /********************* Reqtests - End		******************************************/
 ?>

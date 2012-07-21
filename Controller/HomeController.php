@@ -1,4 +1,7 @@
 <?php
+/**
+ *@property Subject $Subject
+ */
 class HomeController extends AppController {
 	public $name = 'Home';
 	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
@@ -8,7 +11,7 @@ class HomeController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow(	'index', 'searchSubject', 'teacherSubject', 'teacher', 'subject', 'orderCalendar', 
+		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacher', 'subject', 'orderCalendar',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons');
 		$this->Auth->deny('submitOrder');
 	}
@@ -22,30 +25,10 @@ class HomeController extends AppController {
 	}
 	
 	public function searchSubject() {
-		if (!empty($this->request->params['requested'])) {
-			$this->request->query = $this->params->named;
-		}
-		$this->Subject; //For loading the const
-		$lessonType = array();
-		if(isSet($this->request->query['lesson_type_video'])) {
-			$lessonType[]  = LESSON_TYPE_VIDEO;
-		}
-		if(isSet($this->request->query['lesson_type_live'])) {
-			$lessonType[]  = LESSON_TYPE_LIVE;
-		}
-		
-		$subjectsData = $this->Subject->search(
-            (isSet($this->request->query['type']) 			? $this->request->query['type'] 		: SUBJECT_TYPE_OFFER),
-			false,
-            (isSet($this->request->query['language']) 			    ? $this->request->query['}'] 		    : null),
-			null, //userId
-			(!empty($this->request->query['search_terms'])	? $this->request->query['search_terms']	: null), 
-			$lessonType,
-			(isSet($this->request->query['category']) 		? $this->request->query['category']		: null),
-			(isSet($this->request->query['limit']) 			? $this->request->query['limit']		: 12)
-		);
-		
-		
+        $query = $this->_searchDefaultQueryParams();
+        $subjectType = (isSet($this->request->query['type']) ? $this->request->query['type'] : SUBJECT_TYPE_OFFER);
+        $subjectsData = $this->Subject->search($query, $subjectType);
+
 		if(isSet($this->params['ext'])) {
 			$data = array();
 			foreach($subjectsData AS &$subj) {
@@ -53,15 +36,72 @@ class HomeController extends AppController {
 			}
 			return $this->success(1, $data);
 		} else {
-			$this->request->data = $this->request->query;
-			
 			if (empty($this->request->params['requested'])) {
+                $this->request->data = $this->request->query; //For search form
 				$this->set('subjectsData', $subjectsData);
 			} else {
 				return $subjectsData;
 			}
 		}
 	}
+
+    //http://studentskit/Home/subjectSuggestions.json?search_terms=for%20the%20d
+    public function subjectSuggestions() {
+
+
+        $query = $this->_searchDefaultQueryParams();
+
+        $subjectType = (isSet($this->request->query['type']) ? $this->request->query['type'] : SUBJECT_TYPE_OFFER);
+        $results = $this->Subject->searchSuggestions($query, $subjectType);
+
+
+        if (empty($this->request->params['requested'])) {
+            return $this->success(1, array('results'=>$results));
+        } else {
+            return $results;
+        }
+    }
+
+    private function _searchDefaultQueryParams() {
+        if (!empty($this->request->params['requested'])) {
+            $this->request->query = $this->params->named;
+        }
+
+
+        $this->Subject; //For loading the const
+        $searchTerms = !empty($this->request->query['search_terms'])    ? $this->request->query['search_terms'] : '*';
+
+        $categoryId  = (isSet($this->request->query['category_id'])     ? $this->request->query['category_id']	: null);
+        $limit       = (isSet($this->request->query['limit']) 			? $this->request->query['limit']		: 6);
+        $page        = (isSet($this->request->query['page']) 			? $this->request->query['page']		    : 1);
+        $language    = (isSet($this->request->query['language']) 	    ? $this->request->query['language'] 	: null);
+        $lessonType = array();
+        if(isSet($this->request->query['lesson_type_video'])) {
+            $lessonType[]  = LESSON_TYPE_VIDEO;
+        }
+        if(isSet($this->request->query['lesson_type_live'])) {
+            $lessonType[]  = LESSON_TYPE_LIVE;
+        }
+
+        $query = array(
+            'search'=>$searchTerms,
+            'fq'=>array('is_public'=>SUBJECT_IS_PUBLIC_TRUE),
+            'page'=>$page,
+            'limit'=>$limit
+        );
+        if($categoryId) {
+            $query['fq']['category_id'] = $categoryId;
+        }
+        if($language) {
+            $query['fq']['language'] = $language;
+        }
+        if($lessonType) {
+            $query['fq']['lesson_type'] = '('.implode(' OR ',$lessonType).')';
+        }
+        return $query;
+    }
+
+
 	
 	public function teacherSubject($subjectId) {
 		//Get subject data, students_amount, raters_amount, avarage_rating
@@ -96,10 +136,20 @@ class HomeController extends AppController {
 		
 		
 		//Get other teacher's subjects same as this one, TODO: check user lang
-		if($subjectData['catalog_id']) {
+		if($subjectData['category_id']) {
+            $query = array(
+                'search'=>$subjectData['name'],
+                'fq'=>array('is_public'=>SUBJECT_IS_PUBLIC_TRUE, 'category_id'=>$subjectData['category_id'], 'language'=>$subjectData['language']),
+                'page'=>1,
+                'limit'=>6
+            );
+           $otherTeacherForThisSubject = $this->Subject->search($query, $subjectData['type']);
+           $this->set('otherTeacherForThisSubject', $otherTeacherForThisSubject);
+        }
+        /*if($subjectData['catalog_id']) {
 			$otherTeacherForThisSubject = $this->Subject->getbyCatalog( $subjectData['catalog_id'], $subjectId, 6 );
 			$this->set('otherTeacherForThisSubject', $otherTeacherForThisSubject);
-		}
+		}*/
 		
 		$this->set('subjectData', 				$subjectData);
 		$this->set('subjectRatingByStudents', 	$subjectRatingByStudents);
@@ -114,8 +164,17 @@ class HomeController extends AppController {
 		if(!$subjectData['Subject']['catalog_id']) {
 			return $this->success(1);
 		}
-		
-		$otherTeacherForThisSubject = $this->Subject->getbyCatalog( $subjectData['Subject']['catalog_id'], $subjectId, $limit, $page );
+
+
+        $query = array(
+            'search'=>$subjectData['Subject']['name'],
+            'fq'=>array('is_public'=>SUBJECT_IS_PUBLIC_TRUE, 'category_id'=>$subjectData['Subject']['category_id'], 'language'=>$subjectData['language']),
+            'page'=>1,
+            'limit'=>6
+        );
+        $otherTeacherForThisSubject = $this->Subject->search($query, $subjectData['Subject']['type']);
+		//$otherTeacherForThisSubject = $this->Subject->getbyCatalog( $subjectData['Subject']['catalog_id'], $subjectId, $limit, $page );
+
 		return $this->success(1, array('subjects'=>$otherTeacherForThisSubject));
 	}
 	public function getTeacherRatingByStudentsForSubject($subjectId, $limit=2, $page=1) {

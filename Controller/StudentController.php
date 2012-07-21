@@ -1,4 +1,7 @@
 <?php
+/**
+ *@property Subject $Subject
+ */
 class StudentController extends AppController {
 	public $name = 'Student';
 	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
@@ -34,7 +37,8 @@ class StudentController extends AppController {
 		$this->Set('lessonInvitations', $lessonInvitations);
 		
 		//Get lesson requests
-		$subjectRequests = $this->Subject->search(SUBJECT_TYPE_REQUEST, true, $lang, $this->Auth->user('user_id'), null, null, null, $limit, $page );
+        $subjectRequests = $this->Subject->getSubjectRequestsForStudent($this->Auth->user('user_id'), $limit, $page);
+		//$subjectRequests = $this->Subject->search(SUBJECT_TYPE_REQUEST, true, $lang, $this->Auth->user('user_id'), null, null, null, $limit, $page );
 		$this->Set('subjectRequests', $subjectRequests);
 	}
 
@@ -54,8 +58,9 @@ class StudentController extends AppController {
 		$lessonInvitations = $this->UserLesson->getInvitations($this->Auth->user('user_id'), $limit, $page);
 		return $this->success(1, array('lessonInvitations'=>$lessonInvitations));
 	}
-	public function subjectRequests($limit=5, $page=1, $lang=null) {
-		$subjectRequests = $this->Subject->search(SUBJECT_TYPE_REQUEST, true, $lang, $this->Auth->user('user_id'), null, null, null, $limit, $page );
+	public function subjectRequests($limit=5, $page=1) {
+		$subjectRequests = $this->Subject->getSubjectRequestsForStudent($this->Auth->user('user_id'), $limit, $page);
+		//$subjectRequests = $this->Subject->search(SUBJECT_TYPE_REQUEST, true, $lang, $this->Auth->user('user_id'), null, null, null, $limit, $page );
 		return $this->success(1, array('subjectRequests'=>$subjectRequests));
 	}
 	

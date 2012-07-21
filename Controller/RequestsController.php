@@ -42,11 +42,21 @@ class RequestsController extends AppController {
         Configure::load('language');
         $this->set('language',Configure::read('language'));
 	}
-	
+
+
+    public function subjectSuggestions() {
+        $this->Subject;
+        $this->request->query['type'] = SUBJECT_TYPE_REQUEST;
+        $results = $this->requestAction(array('controller'=>'Home', 'action'=>'subjectSuggestions'), $this->request->query);
+        $this->request->data = $this->request->query; //For search form
+        return $this->success(1, array('results'=>$results));
+    }
+
 	public function searchSubject() {
 		$this->Subject;
 		$this->request->query['type'] = SUBJECT_TYPE_REQUEST;
 		$subjectsData = $this->requestAction(array('controller'=>'Home', 'action'=>'searchSubject'), $this->request->query);
+        $this->request->data = $this->request->query; //For search form
 		$this->set('subjectsData', $subjectsData);
 	}
 	
