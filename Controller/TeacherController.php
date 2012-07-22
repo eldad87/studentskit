@@ -57,8 +57,6 @@ class TeacherController extends AppController {
 			$this->set('tests', $tests);
 		}
 
-        //TODO: select subejct categories
-
 		if (!empty($this->request->data)) {
 			App::import('Model', 'Subject');
 			$this->request->data['Subject']['user_id'] = $this->Auth->user('user_id');
@@ -70,8 +68,11 @@ class TeacherController extends AppController {
             }
 		}
 
-        //$this->Subject->invalidate('name', 'name');
-        //pr($this->Subject->validationErrors);
+        //Get subejct categories
+        App::Import('Model', 'SubjectCategory');
+        $scObj = new SubjectCategory();
+        $subjectCategories = $scObj->getAllCategoriesOptions();
+        $this->set('subjectCategories', $subjectCategories);
 
 		//Group pricing
 		if(	isSet($this->data['Subject']['1_on_1_price']) && 

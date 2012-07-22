@@ -119,6 +119,8 @@ class Solr {
                 if(is_array($q)) {
                     //lang:(EN OR FR)^5
                     $queryObj->addFilterQuery( $f.':'.$q['value'].'^'.$q['boost'] );
+                } else if(is_numeric($f)){
+                    $queryObj->addFilterQuery( $q );
                 } else {
                     //lang:(EN OR FR)
                     $queryObj->addFilterQuery( $f.':'.$q );

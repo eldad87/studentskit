@@ -1,21 +1,75 @@
 <?php
-class SubjectCategory extends Model {
+class SubjectCategory extends AppModel {
 	public $name = 'SubjectCategory';
 	public $useTable = 'subject_categories';
 	public $primaryKey = 'subject_category_id';
 
-    public function getHierarchy($sc_id) {
+    public function getAllCategoriesOptions() {
+        $categories = $this->find('threaded', array('parent'=>'parent_subject_category_id'));
+        $return = array();
+        $this->_getAllThreaded($return, $categories);
+        return $return;
+    }
+    private function _getAllThreaded(&$return, $categories, $deep=0) {
+
+        $deepStr = '';
+        for($i=0; $i<$deep; $i++) {
+            $deepStr .= '-';
+        }
+        $deepStr .= '> ';
+        foreach($categories AS $category) {
+            $return[$category['SubjectCategory']['subject_category_id']] = $deepStr.$category['SubjectCategory']['name'];
+
+            if($category['children']) {
+                $this->_getAllThreaded($return, $category['children'], ($deep+1));
+            }
+        }
+    }
+
+    public function getHierarchy($sc_id, $fullPath=true) {
+        if($sc_id==0) {
+            if($fullPath) {
+                return array();
+            }
+
+            return null;
+        }
+
+
         $this->recursive = -1;
         $data = $this->findBySubjectCategoryId($sc_id);
+        if(!$data) {
+            return array();
+        }
         $data = $data['SubjectCategory'];
 
-        $hierarchy = $data['deep'];
-        if($data['path']) {
-            $hierarchy .= ','.$data['path'];
-        }
-        $hierarchy .= ','.$sc_id;
+        if($fullPath) {
+            $return = array();
+            for($deep=1; $deep<=$data['deep']; $deep++) {
+                $hierarchy = $deep;
+                if($data['path']) {
+                    $path = explode(',', $data['path']);
+                    $path = array_slice($path, 0, $deep);
+                    $hierarchy .= ','.implode(',', $path);
+                }
+                if($deep==$data['deep']) {
+                    $hierarchy .= ','.$sc_id;
+                }
 
-        return $hierarchy;
+                $return[] = $hierarchy;
+            }
+
+            return $return;
+
+        } else {
+            $hierarchy = $data['deep']; //In order to get all children
+            if($data['path']) {
+                $hierarchy .= ','.$data['path'];
+            }
+            $hierarchy .= ','.$sc_id;
+
+            return $hierarchy;
+        }
     }
 
     public function beforeSave() {

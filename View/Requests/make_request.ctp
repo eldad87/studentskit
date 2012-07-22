@@ -4,7 +4,7 @@ echo $this->Form->create('Subject', array('type' => 'file'));
 echo $this->Form->hidden('subject_id');
 echo $this->Form->input('name');
 echo $this->Form->input('description', array('type'=>'textarea'));
-echo $this->Form->input('subject_category_id', array('options'=>array(3=>'->sub main 2', 4=>'->->sub main 2 sub', 4=>'->->sub main 3 sub')));
+echo $this->Form->input('subject_category_id', array('options'=>$subjectCategories));
 
 echo $this->Form->input('language', array('options'=>$language));
 echo $this->Form->input('lesson_type', array('options'=>array(LESSON_TYPE_LIVE=>'live', LESSON_TYPE_VIDEO=>'video')));

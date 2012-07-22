@@ -11,7 +11,7 @@ echo $this->Form->input('description');
 echo $this->Form->input('language', array('options'=>$language));
 echo '<br />';
 
-echo $this->Form->input('subject_category_id', array('options'=>array(3=>'->sub main 2', 4=>'->->sub main 2 sub', 4=>'->->sub main 3 sub')));
+echo $this->Form->input('subject_category_id', array('options'=>$subjectCategories));
 echo '<br />';
 
 echo $this->Form->input('lesson_type', array('options'=>array(LESSON_TYPE_LIVE=>'live', LESSON_TYPE_VIDEO=>'video')));

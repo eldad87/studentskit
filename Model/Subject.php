@@ -180,7 +180,7 @@ class Subject extends AppModel {
         if($subjectData['subject_category_id']) {
             App::import('Model', 'SubjectCategory');
             $scObj = new SubjectCategory();
-            $update['categories']   = $scObj->getHierarchy($subjectData['subject_category_id']);
+            $update['categories']   = $scObj->getHierarchy($subjectData['subject_category_id'], true);
             $update['category_id']  = $subjectData['subject_category_id'];
         } else {
             $update['categories']   = null;
@@ -212,7 +212,6 @@ class Subject extends AppModel {
         $solrObj = new Solr($subjectType);
 
         $query = $this->_solrDefaultQueryParams($query);
-
         $results = $solrObj->query( $query, array('subject_id'), (($query['page']-1)*$query['limit']), $query['limit'] );
         if(!$results || !isSet($results->response->numFound) || !$results->response->numFound) {
             return array();
@@ -232,16 +231,70 @@ class Subject extends AppModel {
             $this->bindStudentOnLessonRequest();
         }
 
-        return $this->find('all', array('conditions'=>$conditions));
+        $return = array();
+        $return['subjects'] = $this->find('all', array('conditions'=>$conditions));
+
+
+        if(isSet($results['facet_counts']['facet_fields'])) {
+            $facetName = key($results['facet_counts']['facet_fields']);
+            $return['facet']['name'] = $facetName;
+            $return['facet']['results'] = (array) $results['facet_counts']['facet_fields'][$facetName];
+
+
+            /*if($facetName=='categories') {
+
+
+                $categoryIds = array(); //Hold all ids
+                $categories = array(); //Hold final results
+
+                //Generate array(subject_category_id, count) for each category
+                foreach($results['facet_counts']['facet_fields'][$facetName] AS $path=>$count) {
+                    $category = explode(',', $path);
+                    $categoryId = end($category);
+                    $categoryIds[] = $categoryId;
+                    $categories[$categoryId] = array('subject_category_id'=>$categoryId, 'count'=>$count);
+                }
+
+
+                //Add category name
+                App::Import('Model', 'SubjectCategory');
+                $scObj = new SubjectCategory();
+                $foundCategories = $scObj->find('list', array('conditions'=>array('subject_category_id'=>$categoryIds), 'fields'=>array('subject_category_id', 'name')));
+                foreach($foundCategories AS $subjectCategoryId=>$name) {
+                    $categories[$subjectCategoryId]['name'] = $name;
+                }
+                $return['facet']['results'] = $categories;
+            } else {
+                $return['facet']['results'] = (array) $results['facet_counts']['facet_fields'][$facetName];
+            }*/
+        }
+
+        return $return;
     }
 
     private function _solrDefaultQueryParams($query) {
         if(isSet($query['fq']['category_id'])) {
             App::import('Model', 'SubjectCategory');
             $scObj = new SubjectCategory();
-            $hierarchy = $scObj->getHierarchy($query['fq']['category_id']);
-            $query['facet'] = array('field'=>'categories', 'prefix'=>$hierarchy, 'mincount'=>1);
+            $hierarchy = $scObj->getHierarchy($query['fq']['category_id'], false);
+
+            $query['facet'] = array('field'=>'categories', 'mincount'=>1);
+            if($hierarchy) {
+                //$query['fq']['categories'] = $hierarchy; //Remove all subjects that not related to this category
+                $query['fq'][] = '{!raw f=categories}'.$hierarchy;
+
+
+                $hierarchy = explode(',', $hierarchy);
+                $hierarchy[0]++;
+                $query['facet']['prefix'] = implode(',', $hierarchy);
+            } else {
+                $query['facet']['prefix'] = '1,';
+            }
+
             unset($query['fq']['category_id']);
+
+
+            //$query['fq'][] = '{!raw f=categories}1,2';
         }
 
         if(isSet($query['search']) && !isSet($query['search_fields'])) {

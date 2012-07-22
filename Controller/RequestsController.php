@@ -39,6 +39,12 @@ class RequestsController extends AppController {
 			}
 		}
 
+        //Get subejct categories
+        App::Import('Model', 'SubjectCategory');
+        $scObj = new SubjectCategory();
+        $subjectCategories = $scObj->getAllCategoriesOptions();
+        $this->set('subjectCategories', $subjectCategories);
+
         Configure::load('language');
         $this->set('language',Configure::read('language'));
 	}

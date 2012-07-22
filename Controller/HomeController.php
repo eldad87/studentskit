@@ -20,21 +20,65 @@ class HomeController extends AppController {
 		//Get about to start messages
 		$newSubjects = $this->Subject->getNewest(false);
 		$this->set('newSubjects', $newSubjects);
-		
-		//TODO: get board last messages
+
+        //TODO: get board last messages
 	}
-	
+
 	public function searchSubject() {
         $query = $this->_searchDefaultQueryParams();
+
+        //Search
         $subjectType = (isSet($this->request->query['type']) ? $this->request->query['type'] : SUBJECT_TYPE_OFFER);
         $subjectsData = $this->Subject->search($query, $subjectType);
 
+
+        App::Import('Model', 'SubjectCategory');
+        $scObj = new SubjectCategory();
+
+        //Generate sub categories from facet
+        if(isSet($subjectsData['facet']['name']) && $subjectsData['facet']['name']=='categories') {
+            $categoryIds = array(); //Hold all ids
+            $categories = array(); //Hold final results
+
+            //Generate array(subject_category_id, count) for each category
+            foreach($subjectsData['facet']['results'] AS $path=>$count) {
+                $category = explode(',', $path);
+                $categoryId = end($category);
+                $categoryIds[] = $categoryId;
+                $categories[$categoryId] = array('subject_category_id'=>$categoryId, 'count'=>$count);
+            }
+
+
+            //Add category name
+            $foundCategories = $scObj->find('list', array('conditions'=>array('subject_category_id'=>$categoryIds), 'fields'=>array('subject_category_id', 'name')));
+            foreach($foundCategories AS $subjectCategoryId=>$name) {
+                $categories[$subjectCategoryId]['name'] = $name;
+            }
+            $subjectsData['categories'] = $categories;
+        }
+
+        //Add breadcrumbs
+        $subjectsData['breadcrumbs'] = array();
+        if(isSet($this->request->query['category_id'])) {
+            $scData = $scObj->findBySubjectCategoryId($this->request->query['category_id']);
+            $scData = $scData['SubjectCategory'];
+
+            if(!empty($scData['path'])); {
+                $subjectsData['breadcrumbs'] = $scObj->find('list', array('fields'=>array('subject_category_id', 'name'), 'conditions'=>array('subject_category_id'=>explode(',', $scData['path']))));
+            }
+            $subjectsData['breadcrumbs'][$this->request->query['category_id']] = $scData['name'];
+        }
+
+
 		if(isSet($this->params['ext'])) {
 			$data = array();
-			foreach($subjectsData AS &$subj) {
+			foreach($subjectsData['subjects'] AS &$subj) {
 				$data['subjects']['subject'][] = $subj['Subject'];
 			}
-			return $this->success(1, $data);
+            if(isSet($subjectsData['facet'])) {
+                $data['facet'] = $subjectsData['facet'];
+            }
+			return $this->success(1, array('results'=>$data));
 		} else {
 			if (empty($this->request->params['requested'])) {
                 $this->request->data = $this->request->query; //For search form
@@ -71,7 +115,7 @@ class HomeController extends AppController {
         $this->Subject; //For loading the const
         $searchTerms = !empty($this->request->query['search_terms'])    ? $this->request->query['search_terms'] : '*';
 
-        $categoryId  = (isSet($this->request->query['category_id'])     ? $this->request->query['category_id']	: null);
+        $categoryId  = (isSet($this->request->query['category_id'])     ? $this->request->query['category_id']	: 0);
         $limit       = (isSet($this->request->query['limit']) 			? $this->request->query['limit']		: 6);
         $page        = (isSet($this->request->query['page']) 			? $this->request->query['page']		    : 1);
         $language    = (isSet($this->request->query['language']) 	    ? $this->request->query['language'] 	: null);
@@ -89,7 +133,7 @@ class HomeController extends AppController {
             'page'=>$page,
             'limit'=>$limit
         );
-        if($categoryId) {
+        if(!is_null($categoryId)) {
             $query['fq']['category_id'] = $categoryId;
         }
         if($language) {
