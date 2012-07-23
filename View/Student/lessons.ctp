@@ -60,6 +60,9 @@ foreach($bookingRequests AS $upcommingLesson) {
 	echo 'Message: ',$upcommingLesson['UserLesson']['teacher_user_id'],'-',$upcommingLesson['UserLesson']['student_user_id'],'-',$upcommingLesson['UserLesson']['user_lesson_id'],'<br />';
 	
 	echo '<br />';
+    if(empty($upcommingLesson['UserLesson']['teacher_lesson_id'])) {
+        echo $this->Html->link('Re-Propose', array('controller'=>'Student','action'=>'reProposeRequest', $upcommingLesson['UserLesson']['user_lesson_id'])),'<br />';
+    }
 	echo $this->Html->link('Cancel', array('controller'=>'Student','action'=>'cacnelUserLesson', $upcommingLesson['UserLesson']['user_lesson_id']));
 	
 	
@@ -124,6 +127,9 @@ foreach($lessonInvitations AS $lessonInvitation) {
 	echo 'Message: ',$lessonInvitation['UserLesson']['teacher_user_id'],'-',$lessonInvitation['UserLesson']['student_user_id'],'-',$lessonInvitation['UserLesson']['user_lesson_id'],'<br />';
 	
 	echo '<br />';
+    if(empty($lessonInvitation['UserLesson']['teacher_lesson_id'])) {
+        echo $this->Html->link('Re-Propose', array('controller'=>'Student','action'=>'reProposeRequest', $lessonInvitation['UserLesson']['user_lesson_id'])),'<br />';
+    }
 	echo $this->Html->link('Accept', array('controller'=>'Student','action'=>'acceptUserLesson', $lessonInvitation['UserLesson']['user_lesson_id'])), '<br /><br />';
 	echo $this->Html->link('Cancel', array('controller'=>'Student','action'=>'cacnelUserLesson', $lessonInvitation['UserLesson']['user_lesson_id']));
 	echo '<br /><br /><br />';

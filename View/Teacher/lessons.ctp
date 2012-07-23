@@ -52,8 +52,12 @@ foreach($bookingRequests AS $bookingRequest) {
 	echo 'Message: ',$bookingRequest['UserLesson']['teacher_user_id'],'-',$bookingRequest['UserLesson']['student_user_id'],'-',$bookingRequest['UserLesson']['user_lesson_id'],'<br />';
 	
 	echo '<br />';
+    if(empty($bookingRequest['UserLesson']['teacher_lesson_id'])) {
+        echo $this->Html->link('Re-Propose', array('controller'=>'Student','action'=>'reProposeRequest', $bookingRequest['UserLesson']['user_lesson_id'])),'<br />';
+    }
 	echo $this->Html->link('Accept', array('controller'=>'Student','action'=>'acceptUserLesson', $bookingRequest['UserLesson']['user_lesson_id'])),'<br />';
-	echo $this->Html->link('Cancel', array('controller'=>'Student','action'=>'cacnelUserLesson', $bookingRequest['UserLesson']['user_lesson_id']));
+    echo $this->Html->link('Cancel', array('controller'=>'Student','action'=>'cacnelUserLesson', $bookingRequest['UserLesson']['user_lesson_id']));
+
 	
 	
 	echo '<br /><br /><br />';
@@ -105,6 +109,9 @@ foreach($lessonInvitations AS $lessonInvitation) {
 	echo 'Message: ',$lessonInvitation['UserLesson']['teacher_user_id'],'-',$lessonInvitation['UserLesson']['student_user_id'],'-',$lessonInvitation['UserLesson']['user_lesson_id'],'<br />';
 	
 	echo '<br />';
+    if(empty($lessonInvitation['UserLesson']['teacher_lesson_id'])) {
+        echo $this->Html->link('Re-Propose', array('controller'=>'Student','action'=>'reProposeRequest', $lessonInvitation['UserLesson']['user_lesson_id'])),'<br />';
+    }
 	echo $this->Html->link('Cancel', array('controller'=>'Student','action'=>'cacnelUserLesson', $lessonInvitation['UserLesson']['user_lesson_id']));
 	echo '<br /><br /><br />';
 }
@@ -113,24 +120,26 @@ foreach($lessonInvitations AS $lessonInvitation) {
 <h3>Proposed Lessons (pending student approval)</h3>
 <?php 
 foreach($pendingProposedLessons AS $pendingProposedLesson) {
-	echo 'SubjectId: ',$pendingProposedLesson['TeacherLesson']['subject_id'],'<br />';
-	echo 'Name: ',$pendingProposedLesson['TeacherLesson']['name'],'<br />';
-	echo 'description: ',$pendingProposedLesson['TeacherLesson']['description'],'<br />';
-	echo 'language: ',$pendingProposedLesson['TeacherLesson']['language'],'<br />';
+	echo 'SubjectId: ',$pendingProposedLesson['UserLesson']['subject_id'],'<br />';
+	echo 'Name: ',$pendingProposedLesson['UserLesson']['name'],'<br />';
+	echo 'description: ',$pendingProposedLesson['UserLesson']['description'],'<br />';
+	echo 'language: ',$pendingProposedLesson['UserLesson']['language'],'<br />';
 	echo '<br />';
 	
-	echo 'Rating: ',$pendingProposedLesson['TeacherLesson']['avarage_rating'],'<br />';
-	echo 'Max students: ',$pendingProposedLesson['TeacherLesson']['max_students'],'<br />';
-	echo 'Price for 1 on 1: ',$pendingProposedLesson['TeacherLesson']['1_on_1_price'],'<br />';
-	echo 'Price for student: ',$pendingProposedLesson['TeacherLesson']['full_group_student_price'],'<br />';
-	echo 'Price for full group: ',$pendingProposedLesson['TeacherLesson']['full_group_total_price'],'<br />';
+	//echo 'Rating: ',$pendingProposedLesson['UserLesson']['avarage_rating'],'<br />';
+	echo 'Max students: ',$pendingProposedLesson['UserLesson']['max_students'],'<br />';
+	echo 'Price for 1 on 1: ',$pendingProposedLesson['UserLesson']['1_on_1_price'],'<br />';
+	echo 'Price for student: ',$pendingProposedLesson['UserLesson']['full_group_student_price'],'<br />';
+	echo 'Price for full group: ',$pendingProposedLesson['UserLesson']['full_group_total_price'],'<br />';
 	echo '<br />';
-	
-	echo 'Message: ',$pendingProposedLesson['TeacherLesson']['user_id'],'-',$pendingProposedLesson['TeacherLesson']['subject_id'],'<br />';
+
+    echo 'Message: ',$pendingProposedLesson['UserLesson']['teacher_user_id'],'-',$pendingProposedLesson['UserLesson']['student_user_id'],'-',$pendingProposedLesson['UserLesson']['user_lesson_id'],'<br />';
 
 	echo '<br />';
-	echo $this->Html->link('Cancel', array('controller'=>'Teacher','action'=>'cacnelTeacherLesson', $pendingProposedLesson['TeacherLesson']['teacher_lesson_id'])),'<br />';
-	echo $this->Html->link('Manage', array('controller'=>'Teacher','action'=>'manageTeacherLesson', $pendingProposedLesson['TeacherLesson']['teacher_lesson_id']));
+    if(empty($pendingProposedLesson['UserLesson']['teacher_lesson_id'])) {
+        echo $this->Html->link('Re-Propose', array('controller'=>'Student','action'=>'reProposeRequest', $pendingProposedLesson['UserLesson']['user_lesson_id'])),'<br />';
+    }
+	echo $this->Html->link('Cancel', array('controller'=>'Teacher','action'=>'cacnelUserLesson', $pendingProposedLesson['UserLesson']['user_lesson_id'])),'<br />';
 	
 	echo '<br /><br /><br />';
 }

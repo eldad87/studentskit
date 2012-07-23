@@ -76,13 +76,34 @@ class RequestsController extends AppController {
 		}
 		
 		$subjectData = $subjectData['Subject'];
+        if($subjectData['type']!=SUBJECT_TYPE_REQUEST) {
+            $this->Session->setFlash('This lesson cannot be ordered');
+            $this->redirect($this->referer());
+        }
+
+
 		if (empty($this->request->data)) {
 			$this->request->data['TeacherLesson'] = $subjectData;
 		} else {
+            //Format datetime
 			$datetime = $this->request->data['TeacherLesson']['date'];
 			$datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
 			unset($this->request->data['TeacherLesson']['date']);
-			if($this->TeacherLesson->add($subjectId, $datetime, 0, $this->Auth->user('user_id'), $this->request->data['TeacherLesson'])) {			
+
+
+            if($this->UserLesson->lessonRequest($subjectId, $this->Auth->user('user_id'), $datetime)) {
+                if($this->RequestHandler->isAjax()) {
+                    return $this->success(1, array('user_lesson_id'=>$this->UserLesson->id));
+                }
+
+                $this->Session->setFlash('Offer saved, you can browse and manage it through the control panel');
+                $this->redirect(array('action'=>'index'));
+            } else if($this->RequestHandler->isAjax()) {
+                return $this->error(1, array('validation_errros'=>$this->TeacherLesson->validationErrors));
+            }
+
+            /*$this->request->data['TeacherLesson']['teacher_user_id'] = $this->Auth->user('user_id');
+			if($this->TeacherLesson->add(array('type'=>'subject','id'=>$subjectId), $datetime, 0, $this->request->data['TeacherLesson'])) {
 				if($this->RequestHandler->isAjax()) {
 					return $this->success(1, array('teacher_lesson_id'=>$this->TeacherLesson->id));
 				}
@@ -91,7 +112,7 @@ class RequestsController extends AppController {
 				$this->redirect(array('action'=>'index'));
 			} else if($this->RequestHandler->isAjax()) {
 				return $this->error(1, array('validation_errros'=>$this->TeacherLesson->validationErrors));
-			}
+			}*/
 		}
 		
 		
@@ -114,10 +135,7 @@ class RequestsController extends AppController {
 		
 		
 		
-		if($subjectData['type']!=SUBJECT_TYPE_REQUEST) {
-			$this->Session->setFlash('This lesson cannot be ordered');
-			$this->redirect($this->referer());
-		}
+
 		
 		//Get student data
 		$studentData = $this->User->findByUserId( $subjectData['user_id'] );

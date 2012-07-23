@@ -79,7 +79,7 @@ class TeacherController extends AppController {
 			isSet($this->data['Subject']['full_group_total_price']) && !empty($this->data['Subject']['full_group_total_price']) &&
 			isSet($this->data['Subject']['max_students']) && $this->data['Subject']['max_students']>1) {
 			$groupPrice = $this->Subject->calcGroupPrice(	$this->data['Subject']['1_on_1_price'], $this->data['Subject']['full_group_total_price'], 
-																							$this->data['Subject']['max_students'], $this->data['Subject']['max_students']); 
+															$this->data['Subject']['max_students'], $this->data['Subject']['max_students']);
 			$this->set('groupPrice', $groupPrice);
 		}
 
@@ -103,20 +103,21 @@ class TeacherController extends AppController {
 	public function lessons($limit=5, $page=1) {
 		$upcommingLessons = $this->TeacherLesson->getUpcomming($this->Auth->user('user_id'), null, $limit, $page);
 		$this->Set('upcommingLessons', $upcommingLessons);
-		
-		//Get lessons that pending for teacher approval
+
+        $archiveLessons = $this->TeacherLesson->getArchive($this->Auth->user('user_id'), null, $limit, $page);
+        $this->Set('archiveLessons', $archiveLessons);
+
+
+		//Get lessons that pending for teacher approval - booking requests
 		$bookingRequests = $this->UserLesson->getWaitingForTeacherApproval($this->Auth->user('user_id'), null, $limit, $page);
 		$this->Set('bookingRequests', $bookingRequests);
-		
-		$archiveLessons = $this->TeacherLesson->getArchive($this->Auth->user('user_id'), null, $limit, $page);
-		$this->Set('archiveLessons', $archiveLessons);
-		
-		//Get lessons invitations
+
+		//Get lessons invitations - invitations sent
 		$lessonInvitations = $this->UserLesson->getTeacherInvitations($this->Auth->user('user_id'), null, $limit, $page);
 		$this->Set('lessonInvitations', $lessonInvitations);
 		
-		//Get lesson requests
-		$pendingProposedLessons = $this->TeacherLesson->getPendingProposedLessons($this->Auth->user('user_id'), null, $limit, $page);
+		//Get lesson requests - proposed lessons
+		$pendingProposedLessons = $this->UserLesson->getPendingProposedTeacherLessons($this->Auth->user('user_id'), null, $limit, $page);
 		$this->Set('pendingProposedLessons', $pendingProposedLessons);
 	}
 
@@ -137,7 +138,7 @@ class TeacherController extends AppController {
 		return $this->success(1, array('lesson_invitaions'=>$lessonInvitations));
 	}
 	public function lessonsProposed($limit=6, $page=1) {
-		$pendingProposedLessons = $this->TeacherLesson->getPendingProposedLessons($this->Auth->user('user_id'), null, $limit, $page);
+		$pendingProposedLessons = $this->UserLesson->getPendingProposedLessons($this->Auth->user('user_id'), null, $limit, $page);
 		return $this->success(1, array('proposed_lessons'=>$pendingProposedLessons));
 	}
 
@@ -153,7 +154,7 @@ class TeacherController extends AppController {
 	
 	public function createTeacherLesson($subjectId) {
 		if (!empty($this->request->data)) {
-			if($this->TeacherLesson->add($subjectId, $this->request->data['TeacherLesson']['datetime'], $this->request->data['TeacherLesson']['is_public'], $this->Auth->user('user_id') )) {
+			if($this->TeacherLesson->add(array('type'=>'subject','id'=>$subjectId), $this->request->data['TeacherLesson']['datetime'], $this->request->data['TeacherLesson']['is_public'], $this->Auth->user('user_id') )) {
 				return $this->success(1, array('subject_id'=>$subjectId));
 			}
 			return $this->error(1, array('subject_id'=>$subjectId, 'validation_errors'=>$this->TeacherLesson->validationErrors));

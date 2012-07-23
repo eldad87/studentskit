@@ -111,7 +111,11 @@ class TeacherLesson extends AppModel {
 				$maxAllowed = $this->data['TeacherLesson']['max_students']*$this->data['TeacherLesson']['1_on_1_price'];
 				if($this->data['TeacherLesson']['full_group_total_price']>$maxAllowed) {
 					$this->invalidate('max_students', 'Group price error, max is '.$maxAllowed.'. (max students * 1 on 1 price)');
-				}
+
+                    //Check if total group price is LESS then 1 on 1 price (1 on 1 price is NOT 0)
+                } else if($this->data['TeacherLesson']['full_group_total_price']<=$this->data['TeacherLesson']['1_on_1_price']) {
+                    $this->invalidate('full_group_total_price', 'Full group price must be more the 1 on 1 price ('.$this->data['TeacherLesson']['1_on_1_price'].')');
+                }
 			}
 		}
 		return true;
@@ -126,76 +130,90 @@ class TeacherLesson extends AppModel {
 	
 	public function beforeSave($options=array()) {
 		parent::beforeSave($options);
-		
-		
-		//Calculate full_group_student_price
-		if(	isSet($this->data['TeacherLesson']['max_students']) && $this->data['TeacherLesson']['max_students']>1  && 
-			$this->data['TeacherLesson']['full_group_total_price'] && !empty($this->data['TeacherLesson']['full_group_total_price'])) {
-				
-			$this->data['TeacherLesson']['full_group_student_price'] = $this->Subject->calcGroupPrice(	$this->data['TeacherLesson']['1_on_1_price'], $this->data['TeacherLesson']['full_group_total_price'], 
-																							$this->data['TeacherLesson']['max_students'], $this->data['TeacherLesson']['max_students']); 
-		} else {
-			unset(	$this->data['TeacherLesson']['max_students'], 
-					$this->data['TeacherLesson']['full_group_total_price'], 
-					$this->data['TeacherLesson']['full_group_student_price']);
-		}
+		$this->Subject->calcFullGroupStudentPriceIfNeeded($this->data['TeacherLesson']);
 	}
+
+
+
+
 	/* Taken from Subject model - end */
-				
-	public function add( $subjectId, $datetime, $isPublic=null, $teacherUserId=null, $extra=array() ) {
-		App::import('Model', 'Subject');
-		$subjectObj = new Subject();
+	public function add( $source, $datetime=null, $isPublic=null, $extra=array() ) {
+        //TODO: check if there is no lesson at that time
+        $teacherLessonData = array();
+        if($source['type']=='subject') {
+
+
+            App::import('Model', 'Subject');
+            $subjectObj = new Subject();
+
+            //Find the subject
+            $subjectObj->recursive = -1;
+            $subjectData = $subjectObj->findBySubjectId($source['id']);
+            if(!$subjectData || $subjectData['Subject']['is_enable']==SUBJECT_IS_ENABLE_FALSE) {
+                return false;
+            }
+            $subjectData = $subjectData['Subject'];
+
+            //Preparer the teacher lesson generic data
+            $teacherLessonData  = array(
+                'subject_id'				=> $source['id'],
+                'teacher_user_id'			=> $subjectData['user_id'],
+                'subject_type'				=> $subjectData['type'],
+                'lesson_type'				=> $subjectData['lesson_type'],
+                'language'				    => $subjectData['language'],
+                'datetime'					=> $this->Subject->datetimeToStr($datetime), //Convert timestamp to datetime
+                'name'						=> $subjectData['name'],
+                'description'				=> $subjectData['description'],
+                'is_public'					=> is_null($isPublic) ? $subjectData['is_public'] : $isPublic,
+                'subject_type'				=> $subjectData['type'],
+                'duration_minutes'			=> $subjectData['duration_minutes'],
+                'max_students'				=> $subjectData['max_students'],
+                '1_on_1_price'				=> $subjectData['1_on_1_price'],
+                'full_group_student_price'	=> $subjectData['full_group_student_price'],
+                'full_group_total_price'	=> $subjectData['full_group_total_price'],
+            );
+
+            if($teacherLessonData['subject_type'] == SUBJECT_TYPE_OFFER) {
+                //Only the teacher that opened the subject can teach it
+                unset($extra['teacher_user_id']);
+            }
+            $teacherLessonData = am($teacherLessonData, $extra);
+
+            if($teacherLessonData['subject_type'] == SUBJECT_TYPE_REQUEST && $subjectData['user_id']==$teacherLessonData['teacher_user_id']) {
+                //The subject owner cannot teach it
+                return false;
+            }
+
+            if(!isSet($teacherLessonData['student_user_id'])) {
+                if($teacherLessonData['subject_type'] == SUBJECT_TYPE_REQUEST) {
+                    //Deafult student user id
+                    $teacherLessonData['student_user_id'] = $subjectData['user_id'];
+                } else {
+                    return false;
+                }
+            }
+
+        } else if($source['type']=='user_lesson') {
+            App::import('Model', 'UserLesson');
+            $ulObj = new UserLesson();
+            $ulObj->recursive = -1;
+            $ulData = $ulObj->findByUserLessonId($source['id']);
+            if(!$ulData) {
+                return false;
+            }
+            $teacherLessonData = $ulData['UserLesson'];
+
+            if($teacherLessonData['subject_type'] == SUBJECT_TYPE_OFFER) {
+                //Only the teacher that opened the subject can teach it
+                unset($extra['teacher_user_id']);
+            }
+            $teacherLessonData = am($teacherLessonData, $extra);
+
+        } else {
+            return false;
+        }
 		
-		//Find the subject
-		$subjectObj->recursive = -1;
-		$subjectData = $subjectObj->findBySubjectId($subjectId);
-		if(!$subjectData || $subjectData['Subject']['is_enable']==SUBJECT_IS_ENABLE_FALSE) {
-			return false;
-		}
-		$subjectData = $subjectData['Subject'];
-		if(!$teacherUserId) {
-			//Set default teacher
-			$teacherUserId = $subjectData['user_id'];
-		}
-		
-		
-		//Check if its a subject that a teacher offers
-		if($subjectData['type'] == SUBJECT_TYPE_OFFER) {
-			//Check it it belongs to the teacher
-			if($subjectData['user_id'] != $teacherUserId) {
-				//Only the teacher that opened that subject can teach it
-				return false;
-			}
-		}
-		
-		//Convert timestamp to datetime
-		$datetime = $this->Subject->datetimeToStr($datetime);
-		
-		//Preper the teacher lesson generic data
-		$teacherLessonData  = array(
-			'subject_id'				=> $subjectId,
-			'teacher_user_id'			=> $teacherUserId,
-			'subject_type'				=> $subjectData['type'],
-			'lesson_type'				=> $subjectData['lesson_type'],
-			'language'				    => $subjectData['language'],
-			'datetime'					=> $datetime,
-			'name'						=> $subjectData['name'],
-			'description'				=> $subjectData['description'],
-			'is_public'					=> is_null($isPublic) ? $subjectData['is_public'] : $isPublic,
-			'subject_type'				=> $subjectData['type'],
-			'duration_minutes'			=> $subjectData['duration_minutes'],
-			'max_students'				=> $subjectData['max_students'],
-			'1_on_1_price'				=> $subjectData['1_on_1_price'],
-			'full_group_student_price'	=> $subjectData['full_group_student_price'],
-			'full_group_total_price'	=> $subjectData['full_group_total_price'],
-		);
-		$teacherLessonData = am($teacherLessonData, $extra);
-		
-		if($subjectData['type'] == SUBJECT_TYPE_OFFER && !isSet($teacherLessonData['student_user_id'])) {
-			$teacherLessonData['student_user_id'] = $subjectData['user_id'];
-		}
-		
-		$event = new CakeEvent('Model.TeacherLesson.beforeAdd', $this, array('subject'=>$subjectData, 'teacher_lesson'=>$teacherLessonData,'date'=>$datetime) );
+		$event = new CakeEvent('Model.TeacherLesson.beforeAdd', $this, array('teacher_lesson'=>$teacherLessonData, 'source'=>$source) );
 		$this->getEventManager()->dispatch($event);
 		if ($event->isStopped()) {
 			return false;
@@ -205,15 +223,8 @@ class TeacherLesson extends AppModel {
 		if(!$this->save()) {
 			return false;
 		}
-		
-		//Send invitation to the subject owner
-		if($subjectData['type'] == SUBJECT_TYPE_REQUEST) {
-			App::import('Model', 'UserLesson');
-			$ulObj = new UserLesson();
-			$ulObj->joinRequest($this->id, null, $teacherUserId );
-		}
-		
-		$event = new CakeEvent('Model.TeacherLesson.afterAdd', $this, array('subject'=>$subjectData, 'teacher_lesson'=>$teacherLessonData,'date'=>$datetime) );
+
+		$event = new CakeEvent('Model.TeacherLesson.afterAdd', $this, array('teacher_lesson'=>$teacherLessonData, 'source'=>$source) );
 		$this->getEventManager()->dispatch($event);
 		
 		
@@ -304,7 +315,7 @@ class TeacherLesson extends AppModel {
 			'is_deleted'=>1
 		);
 		
-		pr($conditions);
+//		pr($conditions);
 		return $this->find('all', array(
 			'conditions'=>$conditions,
 			'page'=>$page,
@@ -331,7 +342,7 @@ class TeacherLesson extends AppModel {
 		));
 	}
 	
-	public function getPendingProposedLessons($teacherUserId, $subectId=null, $limit=null, $page=1) {
+	/*public function getPendingProposedLessons($teacherUserId, $subectId=null, $limit=null, $page=1) {
 		$conditions = array( 'teacher_user_id'=>$teacherUserId, 'datetime > NOW()', 'is_deleted'=>0, 'subject_type'=>SUBJECT_TYPE_REQUEST, 'num_of_students'=>0 );
 		if($subectId) {
 			$conditions['TeacherLesson.subject_id'] = $subectId;
@@ -342,7 +353,7 @@ class TeacherLesson extends AppModel {
 			'page'=>$page,
 			'limit'=>$limit
 		));
-	} 
+	} */
 	
 }
 ?>

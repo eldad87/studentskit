@@ -9,9 +9,9 @@ echo $this->Form->end('order');
 
 echo '<h3>Group Lessons</h3>';
 foreach($groupLessons AS $groupLesson) {
-	echo $groupLesson['num_of_students'],' of ',$groupLesson['max_students'],'<br />';
-	echo 'Starts on:',$groupLesson['datetime'],'<br />';
-	echo $this->Html->link('Join', array('action'=>'submitOrder', 'join', $groupLesson['teacher_lesson_id'])),'<br />';
+    echo $groupLesson['num_of_students'],' of ',$groupLesson['max_students'],'<br />';
+    echo 'Starts on:',$groupLesson['datetime'],'<br />';
+    echo $this->Html->link('Join', array('action'=>'submitOrder', 'join', $groupLesson['teacher_lesson_id'])),'<br />';
 }
 echo '<br />';
 

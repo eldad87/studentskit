@@ -3,13 +3,17 @@ define('USER_LESSON_PENDING_TEACHER_APPROVAL', 1);
 define('USER_LESSON_PENDING_STUDENT_APPROVAL', 2);
 define('USER_LESSON_DENIED_BY_TEACHER', 3);
 define('USER_LESSON_DENIED_BY_STUDENT', 4);
-define('USER_LESSON_ACCEPTED', 5);
-define('USER_LESSON_CANCELED_BY_TEACHER', 6);
-define('USER_LESSON_CANCELED_BY_STUDENT', 7);
-define('USER_LESSON_PENDING_RATING', 8);
-define('USER_LESSON_PENDING_TEACHER_RATING', 9);
-define('USER_LESSON_PENDING_STUDENT_RATING', 10);
-define('USER_LESSON_DONE', 11);
+
+define('USER_LESSON_RESCHEDULED_BY_TEACHER', 5);
+define('USER_LESSON_RESCHEDULED_BY_STUDENT', 6);
+
+define('USER_LESSON_ACCEPTED', 7);
+define('USER_LESSON_CANCELED_BY_TEACHER', 8);
+define('USER_LESSON_CANCELED_BY_STUDENT', 9);
+define('USER_LESSON_PENDING_RATING', 10);
+define('USER_LESSON_PENDING_TEACHER_RATING', 11);
+define('USER_LESSON_PENDING_STUDENT_RATING', 12);
+define('USER_LESSON_DONE', 13);
 
 App::import('Model', 'AppModel');
 class UserLesson extends AppModel {
@@ -40,6 +44,60 @@ class UserLesson extends AppModel {
 				);
 				
 		public $validate = array(
+            'duration_minutes'=> array(
+                'range' 		=> array(
+                    'required'	=> 'create',
+                    'allowEmpty'=> false,
+                    'rule'    	=> array('range', 4, 241),
+                    'message' 	=> 'Lesson must be more then 5 minutes and less then 240 minutes (4 hours)'
+                )
+            ),
+            '1_on_1_price'=> array(
+                'price' => array(
+                    'required'	=> 'create',
+                    'allowEmpty'=> false,
+                    'rule'    	=> 'numeric',
+                    'message' 	=> 'Enter a valid price'
+                ),
+                'price_range' => array(
+                    'required'	=> 'create',
+                    'allowEmpty'=> false,
+                    'rule'    	=> array('range', 1, 500),
+                    'message' 	=> 'Price must be more then 1 and less then 500'
+                )
+            ),
+            'max_students'=> array(
+                'range' 		=> array(
+                    'required'	=> 'create',
+                    'allowEmpty'=> false,
+                    'rule'    	=> array('range', 0, 1025),
+                    'message' 	=> 'Lesson must have more then 1 or less then 1024 students'
+                ),
+                'max_students' 	=> array(
+                    'required'	=> 'create',
+                    'allowEmpty'=> false,
+                    'rule'    	=> 'maxStudentsCheck',
+                    'message' 	=> 'You must set group price'
+                )
+            ),
+            'full_group_total_price'=> array(
+                'price' => array(
+                    'allowEmpty'=> true,
+                    'rule'    	=> 'numeric',
+                    'message' 	=> 'Enter a valid group price'
+                ),
+                'price_range' => array(
+                    'allowEmpty'=> true,
+                    'rule'    	=> array('range', 1, 2500),
+                    'message' 	=> 'Price must be more then 1 and less then 2500'
+                ),
+                'full_group_total_price' 	=> array(
+                    //'required'	=> 'create',
+                    'allowEmpty'=> true,
+                    'rule'    	=> 'fullGroupTotalPriceCheck',
+                    'message' 	=> 'You must set group price'
+                )
+            ),
 			'comment_by_student' => array(
 				'between' => array(
 					'rule'			=> array('between', 15, 255),
@@ -63,7 +121,48 @@ class UserLesson extends AppModel {
 				),
 			),
 		);
-	
+
+
+
+    public function fullGroupTotalPriceCheck( $price) {
+        if(!isSet($this->data['UserLesson']['max_students'])) {
+            $this->invalidate('max_students', 'Please enter a valid max students');
+            return false;
+        } else  {
+            if(	isSet($this->data['UserLesson']['full_group_total_price']) && !empty($this->data['UserLesson']['full_group_total_price']) &&
+                $this->data['UserLesson']['max_students'] && $this->data['UserLesson']['1_on_1_price']) {
+
+                //Check if full_group_total_price is MORE then  max_students*1_on_1_price
+                $maxAllowed = $this->data['UserLesson']['max_students']*$this->data['UserLesson']['1_on_1_price'];
+                if($this->data['UserLesson']['full_group_total_price']>$maxAllowed) {
+                    $this->invalidate('max_students', 'Group price error, max is '.$maxAllowed.'. (max students * 1 on 1 price)');
+
+                    //Check if total group price is LESS then 1 on 1 price (1 on 1 price is NOT 0)
+                } else if($this->data['UserLesson']['full_group_total_price']<=$this->data['UserLesson']['1_on_1_price']) {
+                    $this->invalidate('full_group_total_price', 'Full group price must be more the 1 on 1 price ('.$this->data['UserLesson']['1_on_1_price'].')');
+                }
+            }
+        }
+        return true;
+    }
+    public function maxStudentsCheck( $maxStudents ) {
+        if($maxStudents['max_students']>1 && (!isSet($this->data['UserLesson']['full_group_total_price']) || !$this->data['UserLesson']['full_group_total_price'])) {
+            $this->invalidate('full_group_total_price', 'Please enter a valid group price or set Max students to 1');
+            return false;
+        }
+        return true;
+    }
+
+    public function beforeSave($options=array()) {
+        parent::beforeSave($options);
+        App::import('Model', 'Subject');
+
+        //If no teacher_lesson_id
+        //if(!isSet($this->data['UserLesson']['teacher_lesson_id']) ) {
+            Subject::calcFullGroupStudentPriceIfNeeded($this->data['UserLesson']);
+        //}
+    }
+
 	/**
 	 * 
 	 * Users makeing new lesson requests from teacher
@@ -81,31 +180,17 @@ class UserLesson extends AppModel {
 		if( !$subjectData ) {
 			return false;
 		}
-		$subjectData = $subjectData['Subject'];
-		
-		
-		if($subjectData['type']!=SUBJECT_TYPE_OFFER) {
-			return false;
-		}
-		//Determint student and teacher user_ids
-		
-		//if($subjectData['type']==SUBJECT_TYPE_OFFER) {
-			$teacheruserId = $subjectData['user_id'];
-			$studentUserId = $userId;
-		/*} else {
-			$teacheruserId = $userId;
-			$studentUserId = $subjectData['user_id'];
-		}*/
-		
+        $subjectData = $subjectData['Subject'];
+
 		//Convert timestamp to datetime
 		$datetime = $this->Subject->datetimeToStr($datetime);
-		
+
 		//Preper the user lesson generic data
 		$userLesson = array(
 			//'teacher_lesson_id'		=> null,
 			'subject_id'				=> $subjectId,
-			'teacher_user_id'			=> $teacheruserId,
-			'student_user_id'			=> $studentUserId,
+			'teacher_user_id'			=> ($subjectData['type']==SUBJECT_TYPE_OFFER ? $subjectData['user_id']              : $userId),
+			'student_user_id'			=> ($subjectData['type']==SUBJECT_TYPE_OFFER ? $userId                              : $subjectData['user_id']),
 			'stage'						=> ($subjectData['type']==SUBJECT_TYPE_OFFER ? USER_LESSON_PENDING_TEACHER_APPROVAL : USER_LESSON_PENDING_STUDENT_APPROVAL),
 			'datetime'					=> $datetime,
 			'subject_type'				=> $subjectData['type'],
@@ -134,15 +219,16 @@ class UserLesson extends AppModel {
 		}
 		
 		$event = new CakeEvent('Model.TeacherLesson.afterLessonRequest', $this, array('subject'=>$subjectData, 'user_lesson'=>$userLesson) );
-		
-		//if($subjectData['type']==SUBJECT_TYPE_OFFER) {
+        $this->getEventManager()->dispatch($event);
+
+		if($subjectData['type']==SUBJECT_TYPE_OFFER) {
 			//Check if its auto approve, TODO: move to event Model.TeacherLesson.afterLessonRequest
 			App::import('Model', 'AutoApproveLessonRequest');
 			$aalsObj = new AutoApproveLessonRequest();
-			if($aalsObj->isAutoApprove($teacheruserId, $subjectData['lesson_type'], $datetime)) {
-				$this->acceptRequest($this->id, $teacheruserId);
+			if($aalsObj->isAutoApprove($subjectData['user_id'], $subjectData['lesson_type'], $datetime)) {
+				$this->acceptRequest($this->id, $subjectData['user_id']);
 			}
-		//}
+		}
 
 		
 		return $this->id;
@@ -279,11 +365,16 @@ class UserLesson extends AppModel {
 			return false;
 		}
 		//Check if the stage of the lesson is cancel-able
-		if( $userLessonData['stage']!=USER_LESSON_PENDING_STUDENT_APPROVAL && 
+        if(!in_array(intval($userLessonData['stage']), array(   USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_PENDING_TEACHER_APPROVAL,
+                                                                USER_LESSON_RESCHEDULED_BY_TEACHER, USER_LESSON_RESCHEDULED_BY_STUDENT,
+                                                                USER_LESSON_ACCEPTED))) {
+            return false;
+        }
+		/*if( $userLessonData['stage']!=USER_LESSON_PENDING_STUDENT_APPROVAL &&
 			$userLessonData['stage']!=USER_LESSON_PENDING_TEACHER_APPROVAL && 
 			$userLessonData['stage']!=USER_LESSON_ACCEPTED ) {
 			return false;
-		}
+		}*/
 		
 		
 		$event = new CakeEvent('Model.UserLesson.beforeCancelRequest', $this, array('user_lesson'=>$userLessonData));
@@ -306,6 +397,7 @@ class UserLesson extends AppModel {
 			break;
 			
 			case USER_LESSON_PENDING_TEACHER_APPROVAL:
+			case USER_LESSON_RESCHEDULED_BY_STUDENT:
 				$counterDBField = 'num_of_pending_join_requests';
 				
 				if($userLessonData['teacher_user_id']==$byUserId) { 
@@ -316,6 +408,7 @@ class UserLesson extends AppModel {
 			break;
 			
 			case USER_LESSON_PENDING_STUDENT_APPROVAL:
+			case USER_LESSON_RESCHEDULED_BY_TEACHER:
 				$counterDBField = 'num_of_pending_invitations';
 				
 				if($userLessonData['student_user_id']==$byUserId) { 
@@ -327,6 +420,9 @@ class UserLesson extends AppModel {
 		}
 			
 		if($userLessonData['teacher_lesson_id']) {
+            App::import('Model', 'TeacherLesson');
+            $teacherLessonObj = new TeacherLesson();
+
 			//if subject type=request, and the cancel user is the subject owner, cancel all other invitations+teacher lesson
 			if($userLessonData['subject_type']==SUBJECT_TYPE_REQUEST) {
 				//Find the teacher lesson
@@ -340,8 +436,6 @@ class UserLesson extends AppModel {
 			}
 			
 			//Update the num_of_pending_invitations/num_of_pending_join_requests counter
-			App::import('Model', 'TeacherLesson');
-			$teacherLessonObj = new TeacherLesson();
 			$teacherLessonObj->id = $userLessonData['teacher_lesson_id'];
 			$teacherLessonObj->set(array($counterDBField=>$this->getDataSource()->expression($counterDBField.'-1')));
 			$teacherLessonObj->save();
@@ -370,8 +464,8 @@ class UserLesson extends AppModel {
 		
 		
 		//Check if $byUserId can accept this request
-		if(!($userLessonData['student_user_id']==$byUserId && $userLessonData['stage']==USER_LESSON_PENDING_STUDENT_APPROVAL ||
-			$userLessonData['teacher_user_id']==$byUserId && $userLessonData['stage']==USER_LESSON_PENDING_TEACHER_APPROVAL)) {
+		if(!(($userLessonData['student_user_id']==$byUserId && ($userLessonData['stage']==USER_LESSON_PENDING_STUDENT_APPROVAL || $userLessonData['stage']==USER_LESSON_RESCHEDULED_BY_TEACHER)) ||
+			($userLessonData['teacher_user_id']==$byUserId && ($userLessonData['stage']==USER_LESSON_PENDING_TEACHER_APPROVAL || $userLessonData['stage']==USER_LESSON_RESCHEDULED_BY_STUDENT)))) {
 			return false;
 		}
 		
@@ -380,22 +474,27 @@ class UserLesson extends AppModel {
 		if ($event->isStopped()) {
 			return false;
 		}
-		
+
 		
 		$updateUserLesson = array('stage'=>USER_LESSON_ACCEPTED);
 		
 		
-		$counter = ($userLessonData['stage']==USER_LESSON_PENDING_STUDENT_APPROVAL ? 'num_of_pending_invitations' : 'num_of_pending_join_requests');
+		$counter = (($userLessonData['stage']==USER_LESSON_PENDING_STUDENT_APPROVAL ||
+                    $userLessonData['stage']==USER_LESSON_RESCHEDULED_BY_TEACHER) ? 'num_of_pending_invitations' : 'num_of_pending_join_requests');
 		
 		//TODO: get teacher_lesson_id from event
-		if(!$userLessonData['teacher_lesson_id'] && $userLessonData['teacher_user_id']==$byUserId) {
+		if(!$userLessonData['teacher_lesson_id'] /*&& $userLessonData['teacher_user_id']==$byUserId*/) {
+
 			//Create a lesson + set student_user_id
-			$this->TeacherLesson->add($userLessonData['subject_id'], $userLessonData['datetime'], null, null, array('student_user_id'=>$userLessonData['student_user_id'],
-																													$counter=>1));
+			if(!$this->TeacherLesson->add(array('type'=>'user_lesson','id'=>$userLessonData['user_lesson_id']), null, null, array(  'teacher_user_id'=>$userLessonData['teacher_user_id'],
+                                                                                                                                    'student_user_id'=>$userLessonData['student_user_id'],
+                                                                                                                                    $counter=>1))) {
+                return false;
+            }
+
 			$userLessonData['teacher_lesson_id'] = $updateUserLesson['teacher_lesson_id'] = $this->TeacherLesson->id;
-			
 		}
-		if($userLessonData['teacher_lesson_id']) {
+        if($userLessonData['teacher_lesson_id']) {
 			//Update the num_of_pending_invitations counter
 			App::import('Model', 'TeacherLesson');
 			$teacherLessonObj = new TeacherLesson();
@@ -409,9 +508,8 @@ class UserLesson extends AppModel {
 		
 		
 		
-		
 		//Update user lesson stage
-		$this->updateAll($updateUserLesson, array('user_lesson_id'=>$userLessonId));
+		$this->updateAll($updateUserLesson, array('UserLesson.user_lesson_id'=>$userLessonId));
 		
 		
 		
@@ -422,7 +520,68 @@ class UserLesson extends AppModel {
 		
 		return true;
 	}
-	
+
+
+    public function reProposeRequest($userLessonId, $byUserId, array $data=array()) {
+        if(!$data) {
+            //Nothing to change
+            return true;
+        }
+
+        //Find the lesson
+        $this->recursive = -1;
+        $userLessonData = $this->findByUserLessonId($userLessonId);
+        if(!$userLessonData) {
+            return false;
+        }
+        $userLessonData = $userLessonData['UserLesson'];
+
+        if(!empty($userLessonData['teacher_lesson_id'])) {
+            //Only MEW lessons that not been approved yet can be re-propose
+            return false;
+        }
+
+        //Only those stages can be changed
+        if(!in_array(intval($userLessonData['stage']), array(   USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_PENDING_TEACHER_APPROVAL,
+                                                                USER_LESSON_RESCHEDULED_BY_TEACHER, USER_LESSON_RESCHEDULED_BY_STUDENT))) {
+            return false;
+        }
+
+        //Remove unauthorized fields
+        $allowedFields = array('datetime', 'duration_minutes', '1_on_1_price', 'max_students', 'full_group_total_price');
+        foreach($data AS $field=>$value) {
+            if(!in_array($field, $allowedFields)) {
+                unset($data['field']);
+            }
+        }
+
+        //set new stage, NO-NEED to change counters, because we check that there is no 'teacher_lesson_id'
+        if($userLessonData['student_user_id']==$byUserId) {
+            $data['stage'] = USER_LESSON_RESCHEDULED_BY_STUDENT;
+        } else if($userLessonData['teacher_user_id']==$byUserId) {
+            $data['stage'] = USER_LESSON_RESCHEDULED_BY_TEACHER;
+        } else {
+            //User not allowed to do it
+            return false;
+        }
+
+
+        $event = new CakeEvent('Model.UserLesson.beforeReProposeRequest', $this, array('user_lesson'=>$userLessonData, 'data'=>$data));
+        $this->getEventManager()->dispatch($event);
+        if ($event->isStopped()) {
+            return false;
+        }
+
+        $this->id = $userLessonId;
+        $this->set($data);
+        $this->save();
+
+        $event = new CakeEvent('Model.UserLesson.afterReProposeRequest', $this, array('user_lesson'=>$userLessonData, 'data'=>$data));
+        $this->getEventManager()->dispatch($event);
+
+        return true;
+    }
+
 	//TODO: cretae a daemon
 	//if stage=USER_LESSON_ACCEPTED and datetime+duration<now then set stage=USER_LESSON_PENDING_RATING
 	//Update teacher teacher_total_teaching_minutes, teacher_students_amount, teacher_total_lessons
@@ -595,21 +754,20 @@ class UserLesson extends AppModel {
 	
 	public function getUpcomming($studentUserId, $limit=null, $page=1) {
 		$this->Subject;
-		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), '>', $limit, $page, array(USER_LESSON_ACCEPTED), array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
+		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId, 'UserLesson.teacher_lesson_id IS NOT NULL'), '>', $limit, $page,
+                                    array(USER_LESSON_ACCEPTED), array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
 	}
-	public function getBooking($studentUserId, $limit=null, $page=1) {
-		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), '>', $limit, $page, array(USER_LESSON_PENDING_TEACHER_APPROVAL));
-	}
+
 	public function getArchive($studentUserId, $limit=null, $page=1) {
 
-	$conditions = array('UserLesson.student_user_id'=>$studentUserId, 
+	    $conditions = array('UserLesson.student_user_id'=>$studentUserId,
 						'OR'=>array('UserLesson.datetime<NOW()',
 									'stage'=>array(	USER_LESSON_DENIED_BY_TEACHER, USER_LESSON_DENIED_BY_STUDENT,
 													USER_LESSON_CANCELED_BY_TEACHER, USER_LESSON_CANCELED_BY_STUDENT,
 													USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING, USER_LESSON_PENDING_STUDENT_RATING,
 													USER_LESSON_DONE)));
 		
-	return $this->find('all', array('conditions'=>$conditions, 
+	    return $this->find('all', array('conditions'=>$conditions,
 										'order'=>'datetime',
 										'limit'=>( $limit ? $limit : null),
 										'page'=>$page
@@ -617,9 +775,15 @@ class UserLesson extends AppModel {
 	
 		
 	}
+
+    public function getBooking($studentUserId, $limit=null, $page=1) {
+        return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), '>', $limit, $page, array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT),
+                                                                                                            array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
+    }
 	public function getInvitations($studentUserId, $limit=null, $page=1) {
 		$this->Subject;
-		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), '>', $limit, $page, USER_LESSON_PENDING_STUDENT_APPROVAL, array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
+		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER),
+                                                                                                            array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
 	}
 	
 	/*public function withTeacherReview($studentUserId, $limit=null, $page=1) {
@@ -628,25 +792,40 @@ class UserLesson extends AppModel {
 	public function waitingStudentReview($studentUserId, $limit=null, $page=1) {
 		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), null, $limit, $page, array(USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_STUDENT_RATING));
 	}
-	
-	
+
+
+	//Lessons that waiting for the student to approval and SUBJECT_TYPE_OFFER
 	public function getTeacherInvitations($teacherUserId, $subjectId=null, $limit=null, $page=1) {
 		$this->Subject;
-		$conditions = array('UserLesson.teacher_user_id'=>$teacherUserId);
+		$conditions = array('UserLesson.teacher_user_id'=>$teacherUserId, 'UserLesson.teacher_lesson_id IS NULL');
 		if($subjectId) {
 			$conditions['UserLesson.subject_id'] = $teacherUserId;
 		}
-		return $this->getLessons($conditions, '>', $limit, $page, USER_LESSON_PENDING_STUDENT_APPROVAL);
+		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER), SUBJECT_TYPE_OFFER);
 	}
-	public function getWaitingForTeacherApproval($teacherUserId, $subjectId=null, $limit=null, $page=1) {
+
+    //Get lessons that waiting for student to approval and SUBJECT_TYPE_REQUEST
+	public function getPendingProposedTeacherLessons($teacherUserId, $subjectId=null, $limit=null, $page=1) {
+        $this->unbindModel(array('belongsTo'=>array('Teacher', 'TeacherLesson')));
+
+        $conditions = array('UserLesson.teacher_user_id'=>$teacherUserId, 'UserLesson.teacher_lesson_id IS NULL');
+        if($subjectId) {
+            $conditions['UserLesson.subject_id'] = $teacherUserId;
+        }
+        return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER), SUBJECT_TYPE_REQUEST);
+    }
+
+    //Get lesson requests that waiting for the teacher approval
+	public function  getWaitingForTeacherApproval($teacherUserId, $subjectId=null, $limit=null, $page=1) {
 		$this->unbindModel(array('belongsTo'=>array('Teacher', 'TeacherLesson')));
 		
-		$conditions = array('UserLesson.teacher_user_id'=>$teacherUserId);
+		$conditions = array('UserLesson.teacher_user_id'=>$teacherUserId, 'UserLesson.teacher_lesson_id IS NULL');
 		if($subjectId) {
 			$conditions['UserLesson.subject_id'] = $teacherUserId;
 		}
-		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_TEACHER_APPROVAL));
+		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT), array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
 	}
+
 	public function waitingTeacherReview($teacehrUserId, $limit=null, $page=1) {
 		return $this->getLessons(array('UserLesson.teacher_user_id'=>$teacehrUserId), null, $limit, $page, array(USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING));
 	}

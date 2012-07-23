@@ -20,25 +20,24 @@ class StudentController extends AppController {
 	}
 	
 	public function lessons($limit=5, $page=1, $lang=null) {
-		//Get lessons that about to start
+		//Get lessons that about to start - upcomming
 		$upcommingLessons = $this->UserLesson->getUpcomming($this->Auth->user('user_id'), $limit, $page);
 		$this->Set('upcommingLessons', $upcommingLessons);
-		
-		//Get lessons that pending for teacher approval
+
+        //Get lessons that are over - archive
+        $archiveLessons = $this->UserLesson->getArchive($this->Auth->user('user_id'), $limit, $page);
+        $this->Set('archiveLessons', $archiveLessons);
+
+		//Get lessons that pending for teacher approval - booking requests
 		$bookingRequests = $this->UserLesson->getBooking($this->Auth->user('user_id'), $limit, $page);
 		$this->Set('bookingRequests', $bookingRequests);
 		
-		//Get lessons that are over
-		$archiveLessons = $this->UserLesson->getArchive($this->Auth->user('user_id'), $limit, $page);
-		$this->Set('archiveLessons', $archiveLessons);
-		
-		//Get lessons invitations
+		//Get lessons invitations - invitations
 		$lessonInvitations = $this->UserLesson->getInvitations($this->Auth->user('user_id'), $limit, $page);
 		$this->Set('lessonInvitations', $lessonInvitations);
 		
-		//Get lesson requests
+		//Get lesson requests - lesson offers
         $subjectRequests = $this->Subject->getSubjectRequestsForStudent($this->Auth->user('user_id'), $limit, $page);
-		//$subjectRequests = $this->Subject->search(SUBJECT_TYPE_REQUEST, true, $lang, $this->Auth->user('user_id'), null, null, null, $limit, $page );
 		$this->Set('subjectRequests', $subjectRequests);
 	}
 
@@ -60,7 +59,6 @@ class StudentController extends AppController {
 	}
 	public function subjectRequests($limit=5, $page=1) {
 		$subjectRequests = $this->Subject->getSubjectRequestsForStudent($this->Auth->user('user_id'), $limit, $page);
-		//$subjectRequests = $this->Subject->search(SUBJECT_TYPE_REQUEST, true, $lang, $this->Auth->user('user_id'), null, null, null, $limit, $page );
 		return $this->success(1, array('subjectRequests'=>$subjectRequests));
 	}
 	
@@ -79,6 +77,32 @@ class StudentController extends AppController {
 		
 		return $this->success(1, array('user_lesson_id'=>$userLessonId));
 	}
+
+    public function reProposeRequest($userLessonId) {
+        if (empty($this->request->data)) {
+            $this->request->data = $this->UserLesson->findByUserLessonId($userLessonId);;
+        } else {
+            if($this->UserLesson->reProposeRequest($userLessonId, $this->Auth->user('user_id'), $this->request->data['UserLesson'])) {
+                if(isSet($this->params['ext'])) {
+                    return $this->success(1, array('user_lesson_id'=>$userLessonId));
+                }
+
+                //$this->Session->setFlash('Re-Propose sent');
+                //$this->redirect($this->referer());
+            } else if(isSet($this->params['ext'])) {
+                return $this->error(1, array('validation_errors'=>$this->UserLesson->validationErrors));
+            }
+        }
+
+        //Group pricing
+        if(	isSet($this->data['UserLesson']['1_on_1_price']) &&
+            isSet($this->data['UserLesson']['full_group_total_price']) && !empty($this->data['UserLesson']['full_group_total_price']) &&
+            isSet($this->data['UserLesson']['max_students']) && $this->data['UserLesson']['max_students']>1) {
+            $groupPrice = $this->Subject->calcGroupPrice(	$this->data['UserLesson']['1_on_1_price'], $this->data['UserLesson']['full_group_total_price'],
+                $this->data['UserLesson']['max_students'], $this->data['UserLesson']['max_students']);
+            $this->set('groupPrice', $groupPrice);
+        }
+    }
 	
 	public function profile() {
 		if (empty($this->request->data)) {

@@ -18,8 +18,6 @@ class Subject extends AppModel {
 	public $useTable = 'subjects';
 	public $primaryKey = 'subject_id';
 	public $validate = array(
-
-
 		'name'=> array(
 			'between' => array(
             	'required'	=> 'create',
@@ -112,7 +110,7 @@ class Subject extends AppModel {
 	);
 
 
-	public function fullGroupTotalPriceCheck( $price ) {
+	public function fullGroupTotalPriceCheck( $price) {
 		if(!isSet($this->data['Subject']['max_students'])) {
 			$this->invalidate('max_students', 'Please enter a valid max students');
 			return false;
@@ -124,7 +122,11 @@ class Subject extends AppModel {
 				$maxAllowed = $this->data['Subject']['max_students']*$this->data['Subject']['1_on_1_price'];
 				if($this->data['Subject']['full_group_total_price']>$maxAllowed) {
 					$this->invalidate('max_students', 'Group price error, max is '.$maxAllowed.'. (max students * 1 on 1 price)');
-				}
+
+                    //Check if total group price is LESS then 1 on 1 price (1 on 1 price is NOT 0)
+                } else if($this->data['Subject']['full_group_total_price']<=$this->data['Subject']['1_on_1_price']) {
+                    $this->invalidate('full_group_total_price', 'Full group price must be more the 1 on 1 price ('.$this->data['Subject']['1_on_1_price'].')');
+                }
 			}
 		}
 		return true;
@@ -139,21 +141,25 @@ class Subject extends AppModel {
 	
 	public function beforeSave($options=array()) {
 		parent::beforeSave($options);
-		
 		//Calculate full_group_student_price
-		if(	isSet($this->data['Subject']['max_students']) && $this->data['Subject']['max_students']>1  && 
-			$this->data['Subject']['full_group_total_price'] && !empty($this->data['Subject']['full_group_total_price'])) {
-				
-			$this->data['Subject']['full_group_student_price'] = $this->calcGroupPrice(	$this->data['Subject']['1_on_1_price'], $this->data['Subject']['full_group_total_price'], 
-																							$this->data['Subject']['max_students'], $this->data['Subject']['max_students']); 
-		} else {
-			unset(	$this->data['Subject']['max_students'], 
-					$this->data['Subject']['full_group_total_price'], 
-					$this->data['Subject']['full_group_student_price']);
-		}
-
+        $this->calcFullGroupStudentPriceIfNeeded($this->data['Subject']);
         //TODO: save description as array('lang'=>description); and lang
 	}
+
+    public static function calcFullGroupStudentPriceIfNeeded(&$data) {
+        //Calculate full_group_student_price
+        if(	isSet($data['max_students']) && $data['max_students']>1  &&
+            $data['full_group_total_price'] && !empty($data['full_group_total_price'])) {
+
+            App::import('Model', 'Subject');
+            $data['full_group_student_price'] = Subject::calcGroupPrice( $data['1_on_1_price'], $data['full_group_total_price'], $data['max_students'], $data['max_students'] );
+        } else {
+            unset(	$data['max_students'],
+            $data['full_group_total_price'],
+            $data['full_group_student_price']);
+        }
+    }
+
 
     public function afterSave($created) {
         if(!$created) {
@@ -193,7 +199,7 @@ class Subject extends AppModel {
         return $SolrObj->addDocument($update);
     }
 	
-	public function calcGroupPrice( $onOnOnePrice, $totalGroupPrice, $maxStudents, $currentStudents ) {
+	public static function calcGroupPrice( $onOnOnePrice, $totalGroupPrice, $maxStudents, $currentStudents ) {
 
 		return round(($onOnOnePrice+(($totalGroupPrice-$onOnOnePrice)/($maxStudents-1))*($currentStudents-1))/$currentStudents);
 	}
