@@ -144,6 +144,20 @@ class Subject extends AppModel {
 		//Calculate full_group_student_price
         $this->calcFullGroupStudentPriceIfNeeded($this->data['Subject']);
         //TODO: save description as array('lang'=>description); and lang
+
+        //New record
+        if( !$this->id && !isSet($this->data['Subject']['subject_id'])) {
+            if(!isSet($this->data['Subject']['image'])) {
+                //Without image - Set profile image value
+                App::import('Model', 'Profile');
+                $profileObj = new Profile();
+                $profileData = $profileObj->findByUserId($this->data['Subject']['user_id']);
+                $this->data['Subject']['image'] = $profileData['Profile']['image'];
+            } else {
+                //Just making sure the right flag is set for subject-image
+                $this->data['Subject']['image'] = IMAGE_SUBJECT;
+            }
+        }
 	}
 
     public static function calcFullGroupStudentPriceIfNeeded(&$data) {
@@ -162,41 +176,53 @@ class Subject extends AppModel {
 
 
     public function afterSave($created) {
+        parent::afterSave($created);
         if(!$created) {
             return false;
         }
 
-        //Find the subject
-        $this->recursive = -1;
-        $subjectData = $this->findBySubjectId($this->id);
-        $subjectData = $subjectData['Subject'];
+        if( isSet($this->data['Subject']['name']) ||
+            isSet($this->data['Subject']['description']) ||
+            isSet($this->data['Subject']['language']) ||
+            isSet($this->data['Subject']['lesson_type']) ||
+            isSet($this->data['Subject']['avarage_rating']) ||
+            isSet($this->data['Subject']['is_public']) ||
+            isSet($this->data['Subject']['subject_category_id'])) {
 
-        //TODO: add user location
+
+            //Find the subject
+            $this->recursive = -1;
+            $subjectData = $this->findBySubjectId($this->id);
+            $subjectData = $subjectData['Subject'];
+
+            //TODO: add user location, max_students and total_group_price
 
 
-        $update['subject_id']               = $subjectData['subject_id'];
-        $update['language']                 = $subjectData['language'];
-        $update['name']                     = $subjectData['name'];
-        $update[$update['language'].'_t']   = $subjectData['description'];
-        $update['1_on_1_price']             = $subjectData['1_on_1_price'];
-        $update['lesson_type']              = intval($subjectData['lesson_type']);
-        $update['avarage_rating']           = $subjectData['avarage_rating'];
-        $update['is_public']                = (boolean) $subjectData['is_public'];
+            $update['subject_id']               = $subjectData['subject_id'];
+            $update['language']                 = $subjectData['language'];
+            $update['name']                     = $subjectData['name'];
+            $update[$update['language'].'_t']   = $subjectData['description'];
+            $update['1_on_1_price']             = $subjectData['1_on_1_price'];
+            $update['lesson_type']              = intval($subjectData['lesson_type']);
+            $update['avarage_rating']           = $subjectData['avarage_rating'];
+            $update['is_public']                = (boolean) $subjectData['is_public'];
 
-        if($subjectData['subject_category_id']) {
-            App::import('Model', 'SubjectCategory');
-            $scObj = new SubjectCategory();
-            $update['categories']   = $scObj->getHierarchy($subjectData['subject_category_id'], true);
-            $update['category_id']  = $subjectData['subject_category_id'];
-        } else {
-            $update['categories']   = null;
-            $update['category_id']  = null;
+            if($subjectData['subject_category_id']) {
+                App::import('Model', 'SubjectCategory');
+                $scObj = new SubjectCategory();
+                $update['categories']   = $scObj->getHierarchy($subjectData['subject_category_id'], true);
+                $update['category_id']  = $subjectData['subject_category_id'];
+            } else {
+                $update['categories']   = null;
+                $update['category_id']  = null;
+            }
+
+
+            App::import('Vendor', 'Solr');
+            $SolrObj = new Solr($subjectData['type']);
+            return $SolrObj->addDocument($update);
+
         }
-
-
-        App::import('Vendor', 'Solr');
-        $SolrObj = new Solr($subjectData['type']);
-        return $SolrObj->addDocument($update);
     }
 	
 	public static function calcGroupPrice( $onOnOnePrice, $totalGroupPrice, $maxStudents, $currentStudents ) {
