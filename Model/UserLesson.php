@@ -122,8 +122,18 @@ class UserLesson extends AppModel {
 			),
 		);
 
+    public function __construct($id = false, $table = null, $ds = null) {
+        parent::__construct($id, $table, $ds);
+        static $eventListenterAttached = false;
 
-
+        if(!$eventListenterAttached) {
+            //Connect the event manager of this model
+            App::import( 'Event', 'UserLessonEventListener');
+            $ulel = new UserLessonEventListener();
+            CakeEventManager::instance()->attach($ulel);
+            $eventListenterAttached = true;
+        }
+    }
     public function fullGroupTotalPriceCheck( $price) {
         if(!isSet($this->data['UserLesson']['max_students'])) {
             $this->invalidate('max_students', 'Please enter a valid max students');
@@ -206,7 +216,7 @@ class UserLesson extends AppModel {
 			'full_group_total_price'	=> $subjectData['full_group_total_price']
 		);
 		
-		$event = new CakeEvent('Model.TeacherLesson.beforeLessonRequest', $this, array('subject'=>$subjectData, 'user_lesson'=>$userLesson) );
+		$event = new CakeEvent('Model.UserLesson.beforeLessonRequest', $this, array('user_lesson'=>$userLesson, 'by_user_id'=>$userId) );
 		$this->getEventManager()->dispatch($event);
 		if ($event->isStopped()) {
 			return false;
@@ -217,20 +227,10 @@ class UserLesson extends AppModel {
 		if(!$this->save()) {
 			return false;
 		}
+        $userLesson['user_lesson_id'] = $this->id;
 		
-		$event = new CakeEvent('Model.TeacherLesson.afterLessonRequest', $this, array('subject'=>$subjectData, 'user_lesson'=>$userLesson) );
+		$event = new CakeEvent('Model.UserLesson.afterLessonRequest', $this, array('user_lesson'=>$userLesson, 'by_user_id'=>$userId) );
         $this->getEventManager()->dispatch($event);
-
-		if($subjectData['type']==SUBJECT_TYPE_OFFER) {
-			//Check if its auto approve, TODO: move to event Model.TeacherLesson.afterLessonRequest
-			App::import('Model', 'AutoApproveLessonRequest');
-			$aalsObj = new AutoApproveLessonRequest();
-			if($aalsObj->isAutoApprove($subjectData['user_id'], $subjectData['lesson_type'], $datetime)) {
-				$this->acceptRequest($this->id, $subjectData['user_id']);
-			}
-		}
-
-		
 		return $this->id;
 	}
 	
@@ -239,7 +239,7 @@ class UserLesson extends AppModel {
 	 * Send a join request to the user/teacher
 	 * 
 	 * @param unknown_type $teacherLessonId - the lesson
-	 * @param unknown_type $studentUserId - the student id
+	 * @param unknown_type $studentUserId - the student id, leave null only if subject_type==SUBJECT_TYPE_REQUEST
 	 * @param unknown_type $teacherUserId - the teacher id, supply it only if you are the teacher (Invitation)
 	 */
 	public function joinRequest( $teacherLessonId, $studentUserId=null, $teacherUserId=null ) {
@@ -322,7 +322,7 @@ class UserLesson extends AppModel {
 		);
 		
 		
-		$event = new CakeEvent('Model.UserLesson.beforeJoinRequest', $this, array('teacher_lesson'=>$teacherLessonData, 'user_lesson'=>$userLesson));
+		$event = new CakeEvent('Model.UserLesson.beforeJoinRequest', $this, array('teacher_lesson'=>$teacherLessonData, 'user_lesson'=>$userLesson, 'by_user_id'=>( $teacherUserId ? $teacherUserId : $studentUserId)));
 		$this->getEventManager()->dispatch($event);
 		if ($event->isStopped()) {
 			return false;
@@ -333,7 +333,7 @@ class UserLesson extends AppModel {
 		if(!$this->save()) {
 			return false;
 		}
-		
+		$userLesson['user_lesson_id'] = $this->id;
 		
 		
 		//Update the num_of_pending_invitations/num_of_pending_join_requests counter
@@ -345,7 +345,7 @@ class UserLesson extends AppModel {
 		
 		
 		$teacherLessonData[$counterDBField]++;
-		$event = new CakeEvent('Model.UserLesson.afterJoinRequest', $this, array('teacher_lesson'=>$teacherLessonData, 'user_lesson'=>$userLesson));
+		$event = new CakeEvent('Model.UserLesson.afterJoinRequest', $this, array('teacher_lesson'=>$teacherLessonData, 'user_lesson'=>$userLesson, 'by_user_id'=>( $teacherUserId ? $teacherUserId : $studentUserId)));
 		$this->getEventManager()->dispatch($event);
 		
 		return true;
@@ -377,22 +377,22 @@ class UserLesson extends AppModel {
 		}*/
 		
 		
-		$event = new CakeEvent('Model.UserLesson.beforeCancelRequest', $this, array('user_lesson'=>$userLessonData));
+		$event = new CakeEvent('Model.UserLesson.beforeCancelRequest', $this, array('user_lesson'=>$userLessonData, 'by_user_id'=>$byUserId));
 		$this->getEventManager()->dispatch($event);
 		if ($event->isStopped()) {
 			return false;
 		}
 		
-		
+		$data = array();
 		//Determnt the new userLesson stage and counter
 		switch($userLessonData['stage']) {
 			case USER_LESSON_ACCEPTED:
 				$counterDBField = 'num_of_students';
 				
 				if($userLessonData['teacher_user_id']==$byUserId) {
-					$newStage = USER_LESSON_CANCELED_BY_TEACHER;
+                    $data['stage'] = USER_LESSON_CANCELED_BY_TEACHER;
 				} else {
-					$newStage = USER_LESSON_CANCELED_BY_STUDENT;
+                    $data['stage'] = USER_LESSON_CANCELED_BY_STUDENT;
 				}
 			break;
 			
@@ -400,10 +400,10 @@ class UserLesson extends AppModel {
 			case USER_LESSON_RESCHEDULED_BY_STUDENT:
 				$counterDBField = 'num_of_pending_join_requests';
 				
-				if($userLessonData['teacher_user_id']==$byUserId) { 
-					$newStage = USER_LESSON_DENIED_BY_TEACHER;
+				if($userLessonData['teacher_user_id']==$byUserId) {
+                    $data['stage'] = USER_LESSON_DENIED_BY_TEACHER;
 				} else {
-					$newStage = USER_LESSON_CANCELED_BY_STUDENT;
+                    $data['stage'] = USER_LESSON_CANCELED_BY_STUDENT;
 				}
 			break;
 			
@@ -411,14 +411,14 @@ class UserLesson extends AppModel {
 			case USER_LESSON_RESCHEDULED_BY_TEACHER:
 				$counterDBField = 'num_of_pending_invitations';
 				
-				if($userLessonData['student_user_id']==$byUserId) { 
-					$newStage = USER_LESSON_DENIED_BY_STUDENT;
+				if($userLessonData['student_user_id']==$byUserId) {
+                    $data['stage'] = USER_LESSON_DENIED_BY_STUDENT;
 				} else {
-					$newStage = USER_LESSON_CANCELED_BY_TEACHER;
+                    $data['stage'] = USER_LESSON_CANCELED_BY_TEACHER;
 				}
 			break;
 		}
-			
+
 		if($userLessonData['teacher_lesson_id']) {
             App::import('Model', 'TeacherLesson');
             $teacherLessonObj = new TeacherLesson();
@@ -442,12 +442,10 @@ class UserLesson extends AppModel {
 		}
 		
 		//Update the user lesson
-		$this->updateAll(array('stage'=>$newStage), array('user_lesson_id'=>$userLessonId));
+		$this->updateAll($data, array('user_lesson_id'=>$userLessonId));
 		
-		
-		
-		$userLessonData['stage'] = $newStage;
-		$event = new CakeEvent('Model.UserLesson.afterCancelRequst', $this, array('user_lesson'=>$userLessonData));
+
+		$event = new CakeEvent('Model.UserLesson.afterCancelRequest', $this, array('user_lesson'=>$userLessonData, 'data'=>$data, 'by_user_id'=>$byUserId));
 		$this->getEventManager()->dispatch($event);
 		
 		
@@ -469,7 +467,7 @@ class UserLesson extends AppModel {
 			return false;
 		}
 		
-		$event = new CakeEvent('Model.UserLesson.beforeAccept', $this, array('user_lesson'=>$userLessonData));
+		$event = new CakeEvent('Model.UserLesson.beforeAccept', $this, array('user_lesson'=>$userLessonData, 'by_user_id'=>$byUserId));
 		$this->getEventManager()->dispatch($event);
 		if ($event->isStopped()) {
 			return false;
@@ -477,49 +475,52 @@ class UserLesson extends AppModel {
 
 		
 		$updateUserLesson = array('stage'=>USER_LESSON_ACCEPTED);
+        if(isSet($event->result['teacher_lesson_id'])) {
+            $updateUserLesson['teacher_lesson_id'] = $event->result['teacher_lesson_id'];
+        }
 		
-		
-		$counter = (($userLessonData['stage']==USER_LESSON_PENDING_STUDENT_APPROVAL ||
-                    $userLessonData['stage']==USER_LESSON_RESCHEDULED_BY_TEACHER) ? 'num_of_pending_invitations' : 'num_of_pending_join_requests');
+		/*$counter = (($userLessonData['stage']==USER_LESSON_PENDING_STUDENT_APPROVAL ||
+                    $userLessonData['stage']==USER_LESSON_RESCHEDULED_BY_TEACHER) ? 'num_of_pending_invitations' : 'num_of_pending_join_requests');*/
 		
 		//TODO: get teacher_lesson_id from event
-		if(!$userLessonData['teacher_lesson_id'] /*&& $userLessonData['teacher_user_id']==$byUserId*/) {
+		/*if(!$userLessonData['teacher_lesson_id']) {
 
 			//Create a lesson + set student_user_id
 			if(!$this->TeacherLesson->add(array('type'=>'user_lesson','id'=>$userLessonData['user_lesson_id']), null, null, array(  'teacher_user_id'=>$userLessonData['teacher_user_id'],
                                                                                                                                     'student_user_id'=>$userLessonData['student_user_id'],
-                                                                                                                                    $counter=>1))) {
+                                                                                                                                    $this->getAcceptLessonCounter($userLessonData['stage'])=>1))) {
                 return false;
             }
 
 			$userLessonData['teacher_lesson_id'] = $updateUserLesson['teacher_lesson_id'] = $this->TeacherLesson->id;
 		}
-        if($userLessonData['teacher_lesson_id']) {
+        if($userLessonData['teacher_lesson_id']) { //accepting join request
+            $counter = $this->getAcceptLessonCounter($userLessonData['stage']);
 			//Update the num_of_pending_invitations counter
-			App::import('Model', 'TeacherLesson');
-			$teacherLessonObj = new TeacherLesson();
-			$teacherLessonObj->id = $userLessonData['teacher_lesson_id'];
-			
-			$teacherLessonObj->set(array($counter=>$this->getDataSource()->expression($counter.'-1'), 'num_of_students'=>$this->getDataSource()->expression('num_of_students+1')));
-			$teacherLessonObj->save();
+            $this->TeacherLesson->id = $userLessonData['teacher_lesson_id'];
+
+            $this->TeacherLesson->set(array($counter=>$this->TeacherLesson->getDataSource()->expression($counter.'-1'), 'num_of_students'=>$this->TeacherLesson->getDataSource()->expression('num_of_students+1')));
+            $this->TeacherLesson->save();
 			
 			//TODO: check num_of_students - if exceed max_students
-		}
-		
+		}*/
 		
 		
 		//Update user lesson stage
 		$this->updateAll($updateUserLesson, array('UserLesson.user_lesson_id'=>$userLessonId));
 		
 		
-		
-		$userLessonData['stage'] = USER_LESSON_ACCEPTED;
-		$event = new CakeEvent('Model.UserLesson.afterAccept', $this, array('user_lesson'=>$userLessonData));
+
+		$event = new CakeEvent('Model.UserLesson.afterAccept', $this, array('user_lesson'=>$userLessonData, 'data'=>$updateUserLesson, 'by_user_id'=>$byUserId));
 		$this->getEventManager()->dispatch($event);
 		
 		
 		return true;
 	}
+
+    public function getAcceptLessonCounter($stage) {
+        return (($stage==USER_LESSON_PENDING_STUDENT_APPROVAL || $stage==USER_LESSON_RESCHEDULED_BY_TEACHER) ? 'num_of_pending_invitations' : 'num_of_pending_join_requests');
+    }
 
 
     public function reProposeRequest($userLessonId, $byUserId, array $data=array()) {
@@ -566,7 +567,7 @@ class UserLesson extends AppModel {
         }
 
 
-        $event = new CakeEvent('Model.UserLesson.beforeReProposeRequest', $this, array('user_lesson'=>$userLessonData, 'data'=>$data));
+        $event = new CakeEvent('Model.UserLesson.beforeReProposeRequest', $this, array('user_lesson'=>$userLessonData, 'data'=>$data, 'by_user_id'=>$byUserId));
         $this->getEventManager()->dispatch($event);
         if ($event->isStopped()) {
             return false;
@@ -576,7 +577,7 @@ class UserLesson extends AppModel {
         $this->set($data);
         $this->save();
 
-        $event = new CakeEvent('Model.UserLesson.afterReProposeRequest', $this, array('user_lesson'=>$userLessonData, 'data'=>$data));
+        $event = new CakeEvent('Model.UserLesson.afterReProposeRequest', $this, array('user_lesson'=>$userLessonData, 'data'=>$data, 'by_user_id'=>$byUserId));
         $this->getEventManager()->dispatch($event);
 
         return true;
@@ -660,7 +661,7 @@ class UserLesson extends AppModel {
 									'comment_by_'.$userType	=>$comment,
 									'stage'					=>$newStage);
 		
-		$event = new CakeEvent('Model.UserLesson.beforeRate', $this, array('user_lesson'=>$userLessonData, 'update'=>$updateUserLesson));
+		$event = new CakeEvent('Model.UserLesson.beforeRate', $this, array('user_lesson'=>$userLessonData, 'data'=>$updateUserLesson, 'by_user_id'=>$byUserId));
 		$this->getEventManager()->dispatch($event);
 		if ($event->isStopped()) {
 			$dataSource->rollback();
@@ -675,6 +676,10 @@ class UserLesson extends AppModel {
 		}
 		
 		$dataSource->commit();
+
+        $event = new CakeEvent('Model.UserLesson.afterRate', $this, array('user_lesson'=>$userLessonData, 'data'=>$updateUserLesson, 'by_user_id'=>$byUserId));
+		$this->getEventManager()->dispatch($event);
+
 		return true;
 		
 	}
@@ -858,7 +863,5 @@ class UserLesson extends AppModel {
 										'page'=>$page
 					));
 	}
-	
-
 }
 ?>

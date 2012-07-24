@@ -123,3 +123,4 @@ Cache::config('default', array('engine' => 'File'));
  *
  */
 CakePlugin::load('SignMeUp');
+App::build(array('Event' => array('%s'.'Event'.DS)), App::REGISTER);

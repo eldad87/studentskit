@@ -12,7 +12,8 @@ class HomeController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacher', 'subject', 'orderCalendar',
-							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons');
+							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons'/*,
+                            'test'*/);
 		$this->Auth->deny('submitOrder');
 	}
 	
@@ -23,6 +24,15 @@ class HomeController extends AppController {
 
         //TODO: get board last messages
 	}
+
+    /*public function test() {
+        App::import('Model', 'Notification');
+        $notificationObj = new Notification();
+
+        $notificationObj->addNotification(4, array('type'=>'teacher.subject.request.offer.sent', 'params'=>array('teacher_user_id'=>4, 'student_user_id'=>5 , 'name'=>'lesson name', 'datetime'=>'10/2/87')));
+        $notificationObj->addNotification(4, array('type'=>'teacher.subject.request.offer.sent', 'params'=>array('teacher_user_id'=>4, 'student_user_id'=>5 , 'name'=>'lesson name', 'datetime'=>'10/2/87')));
+        $notificationObj->addNotification(4, array('type'=>'teacher.subject.request.offer.sent', 'params'=>array('teacher_user_id'=>4, 'student_user_id'=>5 , 'name'=>'lesson name', 'datetime'=>'10/2/87')));
+    }*/
 
 	public function searchSubject() {
         $query = $this->_searchDefaultQueryParams();

@@ -6,7 +6,7 @@ echo 'Rating: '.$rating_by_teacher;
 echo '<br />';
 echo 'Comment: '.$comment_by_teacher;
 echo '<br />';
-echo 'image: '.$teacher_image; 
+echo 'image: '.$image;
 echo '<br />';
 echo 'datetime: '.$datetime; 
 ?>

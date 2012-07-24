@@ -74,7 +74,7 @@ class StudentController extends AppController {
 		if(!$this->UserLesson->acceptRequest( $userLessonId, $this->Auth->user('user_id') )) {
 			return $this->error(1, array('user_lesson_id'=>$userLessonId));
 		}
-		
+
 		return $this->success(1, array('user_lesson_id'=>$userLessonId));
 	}
 

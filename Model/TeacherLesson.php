@@ -212,7 +212,7 @@ class TeacherLesson extends AppModel {
         } else {
             return false;
         }
-		
+
 		$event = new CakeEvent('Model.TeacherLesson.beforeAdd', $this, array('teacher_lesson'=>$teacherLessonData, 'source'=>$source) );
 		$this->getEventManager()->dispatch($event);
 		if ($event->isStopped()) {
@@ -255,7 +255,7 @@ class TeacherLesson extends AppModel {
 		
 		
 		//TODO: move to event handler
-		//Get all user lessons that are about to cacnel
+		//Get all user lessons that are about to cancel
 		App::import('Model', 'Subject');
 		App::import('Model', 'UserLesson');
 		$userLessonObj = new UserLesson();

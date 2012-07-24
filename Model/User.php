@@ -125,7 +125,7 @@ class User extends AppModel {
 		$conditions = array('teacher_user_id'=>$studentUserId, 'stage'=>array(USER_LESSON_PENDING_STUDENT_RATING, USER_LESSON_DONE));
 		
 		return $ulObj->find('all', array(	'conditions'=>$conditions,
-											'fields'=>array('teacher_user_id', 'rating_by_teacher', 'comment_by_teacher', 'teacher_image', 'datetime'),
+											'fields'=>array('teacher_user_id', 'rating_by_teacher', 'comment_by_teacher', 'image', 'datetime'),
 											'limit'=>$limit,
 											'page'=>$page));
 		
