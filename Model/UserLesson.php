@@ -255,7 +255,8 @@ class UserLesson extends AppModel {
 			return false;
 		}
 		$teacherLessonData = $teacherLessonData['TeacherLesson'];
-		
+
+        App::import('Model', 'Subject');
 		//users can't join video lessons, only to live lessons, unless it's a lesson request
 		if($teacherLessonData['lesson_type']==LESSON_TYPE_VIDEO && $teacherLessonData['subject_type']==SUBJECT_TYPE_OFFER) {
 			return false;
@@ -799,17 +800,17 @@ class UserLesson extends AppModel {
 	}
 
 
-	//Lessons that waiting for the student to approval and SUBJECT_TYPE_OFFER
+	//Lessons that waiting for the student to approval
 	public function getTeacherInvitations($teacherUserId, $subjectId=null, $limit=null, $page=1) {
 		$this->Subject;
 		$conditions = array('UserLesson.teacher_user_id'=>$teacherUserId, 'UserLesson.teacher_lesson_id IS NULL');
 		if($subjectId) {
 			$conditions['UserLesson.subject_id'] = $teacherUserId;
 		}
-		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER), SUBJECT_TYPE_OFFER);
+		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER), array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
 	}
 
-    //Get lessons that waiting for student to approval and SUBJECT_TYPE_REQUEST
+    /*//Get lessons that waiting for student to approval and SUBJECT_TYPE_REQUEST
 	public function getPendingProposedTeacherLessons($teacherUserId, $subjectId=null, $limit=null, $page=1) {
         $this->unbindModel(array('belongsTo'=>array('Teacher', 'TeacherLesson')));
 
@@ -818,7 +819,7 @@ class UserLesson extends AppModel {
             $conditions['UserLesson.subject_id'] = $teacherUserId;
         }
         return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER), SUBJECT_TYPE_REQUEST);
-    }
+    }*/
 
     //Get lesson requests that waiting for the teacher approval
 	public function  getWaitingForTeacherApproval($teacherUserId, $subjectId=null, $limit=null, $page=1) {

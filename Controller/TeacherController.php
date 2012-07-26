@@ -116,9 +116,9 @@ class TeacherController extends AppController {
 		$lessonInvitations = $this->UserLesson->getTeacherInvitations($this->Auth->user('user_id'), null, $limit, $page);
 		$this->Set('lessonInvitations', $lessonInvitations);
 		
-		//Get lesson requests - proposed lessons
+		/*//Get lesson requests - proposed lessons
 		$pendingProposedLessons = $this->UserLesson->getPendingProposedTeacherLessons($this->Auth->user('user_id'), null, $limit, $page);
-		$this->Set('pendingProposedLessons', $pendingProposedLessons);
+		$this->Set('pendingProposedLessons', $pendingProposedLessons);*/
 	}
 
 	public function lessonsUpcoming( $limit=6, $page=1 ) {
@@ -137,10 +137,10 @@ class TeacherController extends AppController {
 		$lessonInvitations = $this->UserLesson->getTeacherInvitations($this->Auth->user('user_id'), null, $limit, $page);
 		return $this->success(1, array('lesson_invitaions'=>$lessonInvitations));
 	}
-	public function lessonsProposed($limit=6, $page=1) {
+	/*public function lessonsProposed($limit=6, $page=1) {
 		$pendingProposedLessons = $this->UserLesson->getPendingProposedLessons($this->Auth->user('user_id'), null, $limit, $page);
 		return $this->success(1, array('proposed_lessons'=>$pendingProposedLessons));
-	}
+	}*/
 
 
 	public function cacnelTeacherLesson( $teacherLessonId ) {
