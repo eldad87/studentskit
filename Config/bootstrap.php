@@ -122,5 +122,8 @@ Cache::config('default', array('engine' => 'File'));
  * CakePlugin::load('DebugKit'); //Loads a single plugin named DebugKit
  *
  */
+CakePlugin::load('Utils');
 CakePlugin::load('SignMeUp');
+
+CakePlugin::load('Forum');
 App::build(array('Event' => array('%s'.'Event'.DS)), App::REGISTER);

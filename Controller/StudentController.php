@@ -138,4 +138,55 @@ class StudentController extends AppController {
 		$studentReviews = $this->User->getStudentReviews( $this->Auth->user('user_id'), 10 );
 		$this->Set('studentReviews', $studentReviews);
 	}
+
+    public function invite() {
+        $this->request->data['teacher_lesson_id'] = 1;
+        $this->request->data['emails'] = 'eldad87@gmail.com';
+        $this->request->data['message'] = 'My message';
+
+        if (!empty($this->request->data)) {
+            if(!isSet($this->request->data['teacher_lesson_id']) || !isSet($this->request->data['emails']) || !isSet($this->request->data['message'])) {
+                return $this->error(1);
+            }
+
+            //Find teacher lesson
+            $this->TeacherLesson->recursive = -1;
+            $tlData = $this->TeacherLesson->find('first', array('teacher_lesson_id'=>$this->request->data['teacher_lesson_id']));
+            if(!$tlData) {
+                return $this->error(2);
+            }
+            $tlData = $tlData['TeacherLesson'];
+            $this->request->data['emails'] = explode(',', $this->request->data['emails']);
+
+
+            //If sender is the teacher
+            if($this->Auth->user('user_id')==$tlData['teacher_user_id']) {
+                //Find if any of those emails in our system, if so - send an invitation
+
+                $this->User->recursive = -1;
+                $users = $this->User->find('all', array('conditions'=>array('email'=>$this->request->data['emails'])));
+
+                $emailAsKeys = array_flip($this->request->data['emails']);
+                foreach($users AS $user) {
+                    $user = $user['User'];
+                    unset($emailAsKeys[$user['email']]); //Remove user from emailing list
+                    $this->UserLesson->joinRequest($this->request->data['teacher_lesson_id'], $user['user_id'], $this->Auth->user('user_id')); //Send invitation
+                }
+                $this->request->data['emails'] = array_flip($emailAsKeys);
+            }
+
+            //TODO: email users
+            //Email users
+            App::uses('CakeEmail', 'Network/Email');
+            $email = new CakeEmail();
+
+            foreach($this->request->data['emails'] AS $toEmail) {
+                $email->from(array('doNotReplay@studentskit.com' => 'Studentskit'));
+                $email->subject('Invitation for '.$tlData['name']);
+                $email->to($toEmail);
+                $email->send($this->request->data['message']);
+            }
+        }
+
+    }
 }

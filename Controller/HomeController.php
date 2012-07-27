@@ -25,6 +25,67 @@ class HomeController extends AppController {
         //TODO: get board last messages
 	}
 
+    public function testAddCategory() {
+        App::import('Model', 'SubjectCategory');
+        $scObj = new SubjectCategory();
+        $scObj->create();
+        $scObj->set(array('name'=>'Spirituality', 'description'=>'about spirituality'));
+        $scObj->save();
+        $id = $scObj->id;
+
+            $scObj->create();
+            $scObj->set(array('name'=>'Astrology', 'description'=>'Astrology', 'parent_subject_category_id'=>$id));
+            $scObj->save();
+            $id2 = $scObj->id;
+
+                $scObj->create();
+                $scObj->set(array('name'=>'Chinese Astrology', 'description'=>'Chinese Astrology', 'parent_subject_category_id'=>$id2));
+                $scObj->save();
+
+                $scObj->create();
+                $scObj->set(array('name'=>'Vedic Astrology', 'description'=>'Vedic Astrology', 'parent_subject_category_id'=>$id2));
+                $scObj->save();
+
+            $scObj->create();
+            $scObj->set(array('name'=>'Graphology', 'description'=>'Graphology', 'parent_subject_category_id'=>$id));
+            $scObj->save();
+
+
+
+        $scObj->create();
+        $scObj->set(array('name'=>'Computers', 'description'=>'Computers'));
+        $scObj->save();
+        $id = $scObj->id;
+
+            $scObj->create();
+            $scObj->set(array('name'=>'Applications', 'description'=>'Applications', 'parent_subject_category_id'=>$id));
+            $scObj->save();
+            $id2 = $scObj->id;
+
+                $scObj->create();
+                $scObj->set(array('name'=>'CAD', 'description'=>'CAD', 'parent_subject_category_id'=>$id2));
+                $scObj->save();
+
+                $scObj->create();
+                $scObj->set(array('name'=>'SAP', 'description'=>'SAP', 'parent_subject_category_id'=>$id2));
+                $scObj->save();
+
+            $scObj->create();
+            $scObj->set(array('name'=>'Databases', 'description'=>'Databases', 'parent_subject_category_id'=>$id));
+            $scObj->save();
+            $id2 = $scObj->id;
+
+                $scObj->create();
+                $scObj->set(array('name'=>'MySQL', 'description'=>'MySQL', 'parent_subject_category_id'=>$id2));
+                $scObj->save();
+
+                $scObj->create();
+                $scObj->set(array('name'=>'NoSQL', 'description'=>'NoSQL', 'parent_subject_category_id'=>$id2));
+                $scObj->save();
+
+
+
+    }
     /*public function test() {
         App::import('Model', 'Notification');
         $notificationObj = new Notification();
@@ -364,4 +425,53 @@ class HomeController extends AppController {
 			$this->UserLesson->lessonRequest($subjectId, $this->Auth->user('user_id'), $datetime);
 		}
 	}
+
+    /*
+     * The lesson will take place here.
+     * in case the lesson is taking place in the future - details about it will be shown.
+     */
+    public function lessonPage($teacherLessonId) {
+        //Find teacher lesson
+        $this->TeacherLesson->recursive = -1;
+        $tlData = $this->TeacherLesson->find('first', array('teacher_lesson_id'=>$teacherLessonId));
+        if(!$tlData) {
+            $this->Session->setFlash('Lesson not found');
+            $this->redirect($this->referer());
+        }
+        $tlData = $tlData['TeacherLesson'];
+        $isTeacher = $this->Auth->user('user_id')==$tlData['teacher_user_id'] ? true : false;
+
+        //Check if this user is register for this lesson or no
+        $this->UserLesson->recursive = -1;
+        $userLessonData = $this->UserLesson->find('first', array('conditions'=>array('teacher_lesson_id'=>$teacherLessonId, 'student_user_id'=>$this->Auth->user('user_id'))));
+        if($userLessonData) {
+            $userLessonData = $userLessonData['UserLessonId'];
+        }
+
+        if($tlData['datetime']<time()-($tlData['duration']*MIN)) {
+            //Lesson overdue
+
+            $this->Session->setFlash('Lesson over due');
+            if($userLessonData) {
+                //User paid for this lesson
+                $this->redirect(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'archive', 'user_lesson_id'=>$userLessonData['user_lesson_id']));
+
+            } else if ($isTeacher) {
+                $this->redirect(array('controller'=>'Teacher', 'action'=>'lessons', 'tab'=>'archive', 'teacher_lesson_id'=>$teacherLessonId));
+            } else {
+                $this->redirect('/');
+            }
+        } else {
+            if($userLessonData) {
+                //TODO: show counter
+            } else if ($isTeacher) {
+                //TODO: let him edit the lesson
+            } else {
+                //Take user to order page
+                //TODO: show a page with info about the lesson, with "order" button
+                $this->redirect(array('action'=>'submitOrder', 'join', $teacherLessonId));
+            }
+        }
+
+    }
 }

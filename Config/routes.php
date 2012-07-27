@@ -36,7 +36,7 @@
 /**
  * Enable the json and or xml extensions 
  */
-	Router::parseExtensions('json'/*, 'xml'*/);
+	Router::parseExtensions('json', 'rss'/*, 'xml'*/);
 	
 	////////////
 	Router::connect('/register', array('controller' => 'Users', 'action' => 'register'));
@@ -46,7 +46,13 @@
 	Router::connect('/login', array('controller' => 'Users', 'action' => 'login'));
 	Router::connect('/logout', array('controller' => 'Users', 'action' => 'logout'));
 	////////////
-	
+
+	////////////
+    Router::connect('/forum/help/*', array('plugin' => 'forum', 'controller' => 'forum', 'action' => 'help'));
+    Router::connect('/forum/rules/*', array('plugin' => 'forum', 'controller' => 'forum', 'action' => 'rules'));
+    Router::connect('/admin/forum/settings/*',  array('plugin' => 'forum', 'controller' => 'forum', 'action' => 'settings', 'admin' => true));
+	////////////
+
 	
 /**
  * Load all plugin routes.  See the CakePlugin documentation on 

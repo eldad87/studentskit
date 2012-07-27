@@ -4,7 +4,15 @@ class User extends AppModel {
 	public $useTable = 'users';
 	public $primaryKey = 'user_id';
 	public $actsAs = array('SignMeUp.SignMeUp');
-	public $validate = array(
+
+    public $virtualFields = array(
+        //'username' => 'CONCAT(`User.first_name`, " ", `User.last_name`)',
+        //'id' => 'User.user_id'
+    );
+    public $hasOne = array('Forum.Profile');
+    public $hasMany = array('Forum.Access', 'Forum.Moderator');
+
+    public $validate = array(
 		'user_id' => array(
 			'blank' => array(
 				'rule'	=> 'blank',

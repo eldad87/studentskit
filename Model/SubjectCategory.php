@@ -4,6 +4,20 @@ class SubjectCategory extends AppModel {
 	public $useTable = 'subject_categories';
 	public $primaryKey = 'subject_category_id';
 
+
+    public function __construct($id = false, $table = null, $ds = null) {
+        parent::__construct($id, $table, $ds);
+        static $eventListenterAttached = false;
+
+        if(!$eventListenterAttached) {
+            //Connect the event manager of this model
+            App::import( 'Event', 'ForumEventListener');
+            $fel = new ForumEventListener();
+            CakeEventManager::instance()->attach($fel);
+            $eventListenterAttached = true;
+        }
+    }
+
     public function getAllCategoriesOptions() {
         $categories = $this->find('threaded', array('parent'=>'parent_subject_category_id'));
         $return = array();
@@ -72,9 +86,19 @@ class SubjectCategory extends AppModel {
         }
     }
 
+    public function afterSave($created) {
+        parent::afterSave($created);
+
+        if($created) {
+            $event = new CakeEvent('Model.SubjectCategory.afterSave', $this, array('subject_category_id'=>$this->id) );
+            $this->getEventManager()->dispatch($event);
+        }
+    }
+
     public function beforeSave() {
         parent::beforeSave();
 
+        //Prepare path/deep/parent_subject_category_id
         if( !isSet($this->data['SubjectCategory']['parent_subject_category_id']) ) {
             if(!$this->id) {
                 //Create new record, no parent id so set default
