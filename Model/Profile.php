@@ -45,9 +45,6 @@ class Profile extends AppModel {
 
     public function afterSave($created) {
         parent::afterSave($created);
-        if(!$created) {
-            return false;
-        }
 
         //check if image was updated
         if(isSet($this->data['Subject']['image']) && $this->data['Subject']['image']) {

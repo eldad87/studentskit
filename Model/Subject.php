@@ -158,6 +158,16 @@ class Subject extends AppModel {
                 $this->data['Subject']['image'] = IMAGE_SUBJECT;
             }
         }
+
+        if(isSet($this->data['Subject']['subject_category_id'])) {
+            //Add forum to subject
+            App::import('Model', 'SubjectCategory');
+            $scObj = new SubjectCategory();
+            $scData = $scObj->findBySubjectCategoryId($this->data['Subject']['subject_category_id']);
+            if($scData && $scData['SubjectCategory']['forum_id']) {
+                $this->data['Subject']['forum_id'] = $scData['SubjectCategory']['forum_id'];
+            }
+        }
 	}
 
     public static function calcFullGroupStudentPriceIfNeeded(&$data) {
@@ -177,9 +187,6 @@ class Subject extends AppModel {
 
     public function afterSave($created) {
         parent::afterSave($created);
-        if(!$created) {
-            return false;
-        }
 
         if( isSet($this->data['Subject']['name']) ||
             isSet($this->data['Subject']['description']) ||
@@ -206,6 +213,7 @@ class Subject extends AppModel {
             $update['lesson_type']              = intval($subjectData['lesson_type']);
             $update['avarage_rating']           = $subjectData['avarage_rating'];
             $update['is_public']                = (boolean) $subjectData['is_public'];
+            $update['last_modified']            = $subjectData['modified'] ? $subjectData['modified'] : $subjectData['created'];
 
             if($subjectData['subject_category_id']) {
                 App::import('Model', 'SubjectCategory');
@@ -271,34 +279,6 @@ class Subject extends AppModel {
             $facetName = key($results['facet_counts']['facet_fields']);
             $return['facet']['name'] = $facetName;
             $return['facet']['results'] = (array) $results['facet_counts']['facet_fields'][$facetName];
-
-
-            /*if($facetName=='categories') {
-
-
-                $categoryIds = array(); //Hold all ids
-                $categories = array(); //Hold final results
-
-                //Generate array(subject_category_id, count) for each category
-                foreach($results['facet_counts']['facet_fields'][$facetName] AS $path=>$count) {
-                    $category = explode(',', $path);
-                    $categoryId = end($category);
-                    $categoryIds[] = $categoryId;
-                    $categories[$categoryId] = array('subject_category_id'=>$categoryId, 'count'=>$count);
-                }
-
-
-                //Add category name
-                App::Import('Model', 'SubjectCategory');
-                $scObj = new SubjectCategory();
-                $foundCategories = $scObj->find('list', array('conditions'=>array('subject_category_id'=>$categoryIds), 'fields'=>array('subject_category_id', 'name')));
-                foreach($foundCategories AS $subjectCategoryId=>$name) {
-                    $categories[$subjectCategoryId]['name'] = $name;
-                }
-                $return['facet']['results'] = $categories;
-            } else {
-                $return['facet']['results'] = (array) $results['facet_counts']['facet_fields'][$facetName];
-            }*/
         }
 
         return $return;

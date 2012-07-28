@@ -11,6 +11,7 @@ $config['solr']['servers'][] = array(
     'cores'=>array(
         SUBJECT_TYPE_OFFER  => 'subject_offers',
         SUBJECT_TYPE_REQUEST=> 'lesson_requests',
+        'forum'=> 'forum',
     ),
 
 );

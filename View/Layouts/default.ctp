@@ -40,9 +40,9 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 					<div id="slidetabsmenu">
 						<ul>
 							<li class="current"><a href="/" title="Home"><span>Home</span></a></li>
-							<li><a href="#" title="Board"><span>Board</span></a></li>
+							<li><?php echo $this->Html->link('<span>Forum</span>', array('controller'=>'forum', 'action'=>'/'), array('title'=>'Forum', 'escape'=>false)); ?></li>
 							<li><?php echo $this->Html->link('<span>Account</span>', array('controller'=>'Student', 'action'=>'/'), array('title'=>'Account', 'escape'=>false)); ?></li>
-							
+
 							<li><?php echo $this->Html->link('<span>Lesson request</span>', array('controller'=>'Requests', 'action'=>'/'), array('title'=>'Account', 'escape'=>false)); ?></li>
 							<li><a href="#" title="How it works"><span>How it works</span></a></li>	
 						</ul>

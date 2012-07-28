@@ -162,6 +162,8 @@ class TeacherLesson extends AppModel {
                 'lesson_type'				=> $subjectData['lesson_type'],
                 'language'				    => $subjectData['language'],
                 'datetime'					=> $this->Subject->datetimeToStr($datetime), //Convert timestamp to datetime
+                'subject_category_id'		=> $subjectData['subject_category_id'],
+                'forum_id'		            => $subjectData['forum_id'],
                 'name'						=> $subjectData['name'],
                 'description'				=> $subjectData['description'],
                 'is_public'					=> is_null($isPublic) ? $subjectData['is_public'] : $isPublic,

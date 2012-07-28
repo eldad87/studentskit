@@ -89,10 +89,10 @@ class SubjectCategory extends AppModel {
     public function afterSave($created) {
         parent::afterSave($created);
 
-        if($created) {
-            $event = new CakeEvent('Model.SubjectCategory.afterSave', $this, array('subject_category_id'=>$this->id) );
-            $this->getEventManager()->dispatch($event);
-        }
+
+        $event = new CakeEvent('Model.SubjectCategory.afterSave', $this, array('subject_category_id'=>$this->id) );
+        $this->getEventManager()->dispatch($event);
+
     }
 
     public function beforeSave() {

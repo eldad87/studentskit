@@ -6,7 +6,7 @@ class Solr {
 
     public function Solr( $core ) {
 
-       $this->core = strtolower($core);
+       $this->core = $core;
        Configure::load('solr');
 
         //Chose a rand solr server
@@ -53,13 +53,18 @@ class Solr {
 
     public function addDocument( $fields ) {
         $doc = new SolrInputDocument();
-
         foreach($fields AS $field=>$value) {
             if(is_array($value)) {
                 foreach($value AS $val) {
+                    if($field=='last_modified') {
+                        $val = $this->formatToUTC($val);
+                    }
                     $doc->addField($field, $val);
                 }
             } else {
+                if($field=='last_modified') {
+                    $value = $this->formatToUTC($value);
+                }
                 $doc->addField($field, $value);
             }
         }
@@ -72,6 +77,22 @@ class Solr {
             CakeLog::write('solr', 'options: '.var_export($this->client->getOptions(),true).', Message: '.$e->getMessage());
             return false;
         }
+    }
+
+    private function formatToUTC($passeddt) {
+        // Get the default timezone
+        $default_tz = date_default_timezone_get();
+
+        // Set timezone to UTC
+        date_default_timezone_set("UTC");
+
+        // convert datetime into UTC
+        $utc_format = date("Y-m-d\TG:i:s\Z", strtotime($passeddt));
+
+        // Might not need to set back to the default but did just in case
+        date_default_timezone_set($default_tz);
+
+        return $utc_format;
     }
 
 
