@@ -38,50 +38,50 @@ class HomeController extends AppController {
             $scObj->save();
             $id2 = $scObj->id;
 
-                $scObj->create();
-                $scObj->set(array('name'=>'Chinese Astrology', 'description'=>'Chinese Astrology', 'parent_subject_category_id'=>$id2));
-                $scObj->save();
-
-                $scObj->create();
-                $scObj->set(array('name'=>'Vedic Astrology', 'description'=>'Vedic Astrology', 'parent_subject_category_id'=>$id2));
-                $scObj->save();
-
-            $scObj->create();
-            $scObj->set(array('name'=>'Graphology', 'description'=>'Graphology', 'parent_subject_category_id'=>$id));
-            $scObj->save();
-
-
+        $scObj->create();
+        $scObj->set(array('name'=>'Chinese Astrology', 'description'=>'Chinese Astrology', 'parent_subject_category_id'=>$id2));
+        $scObj->save();
 
         $scObj->create();
-        $scObj->set(array('name'=>'Computers', 'description'=>'Computers'));
+        $scObj->set(array('name'=>'Vedic Astrology', 'description'=>'Vedic Astrology', 'parent_subject_category_id'=>$id2));
         $scObj->save();
-        $id = $scObj->id;
 
-            $scObj->create();
-            $scObj->set(array('name'=>'Applications', 'description'=>'Applications', 'parent_subject_category_id'=>$id));
-            $scObj->save();
-            $id2 = $scObj->id;
+    $scObj->create();
+    $scObj->set(array('name'=>'Graphology', 'description'=>'Graphology', 'parent_subject_category_id'=>$id));
+    $scObj->save();
 
-                $scObj->create();
-                $scObj->set(array('name'=>'CAD', 'description'=>'CAD', 'parent_subject_category_id'=>$id2));
-                $scObj->save();
 
-                $scObj->create();
-                $scObj->set(array('name'=>'SAP', 'description'=>'SAP', 'parent_subject_category_id'=>$id2));
-                $scObj->save();
 
-            $scObj->create();
-            $scObj->set(array('name'=>'Databases', 'description'=>'Databases', 'parent_subject_category_id'=>$id));
-            $scObj->save();
-            $id2 = $scObj->id;
+$scObj->create();
+$scObj->set(array('name'=>'Computers', 'description'=>'Computers'));
+$scObj->save();
+$id = $scObj->id;
 
-                $scObj->create();
-                $scObj->set(array('name'=>'MySQL', 'description'=>'MySQL', 'parent_subject_category_id'=>$id2));
-                $scObj->save();
+    $scObj->create();
+    $scObj->set(array('name'=>'Applications', 'description'=>'Applications', 'parent_subject_category_id'=>$id));
+    $scObj->save();
+    $id2 = $scObj->id;
 
-                $scObj->create();
-                $scObj->set(array('name'=>'NoSQL', 'description'=>'NoSQL', 'parent_subject_category_id'=>$id2));
-                $scObj->save();
+        $scObj->create();
+        $scObj->set(array('name'=>'CAD', 'description'=>'CAD', 'parent_subject_category_id'=>$id2));
+        $scObj->save();
+
+        $scObj->create();
+        $scObj->set(array('name'=>'SAP', 'description'=>'SAP', 'parent_subject_category_id'=>$id2));
+        $scObj->save();
+
+    $scObj->create();
+    $scObj->set(array('name'=>'Databases', 'description'=>'Databases', 'parent_subject_category_id'=>$id));
+    $scObj->save();
+    $id2 = $scObj->id;
+
+        $scObj->create();
+        $scObj->set(array('name'=>'MySQL', 'description'=>'MySQL', 'parent_subject_category_id'=>$id2));
+        $scObj->save();
+
+        $scObj->create();
+        $scObj->set(array('name'=>'NoSQL', 'description'=>'NoSQL', 'parent_subject_category_id'=>$id2));
+        $scObj->save();
 
 
 

@@ -218,7 +218,7 @@ class Subject extends AppModel {
             if($subjectData['subject_category_id']) {
                 App::import('Model', 'SubjectCategory');
                 $scObj = new SubjectCategory();
-                $update['categories']   = $scObj->getHierarchy($subjectData['subject_category_id'], true);
+                $update['categories']   = $scObj->getPathHierarchy($subjectData['subject_category_id'], true);
                 $update['category_id']  = $subjectData['subject_category_id'];
             } else {
                 $update['categories']   = null;
@@ -288,7 +288,7 @@ class Subject extends AppModel {
         if(isSet($query['fq']['category_id'])) {
             App::import('Model', 'SubjectCategory');
             $scObj = new SubjectCategory();
-            $hierarchy = $scObj->getHierarchy($query['fq']['category_id'], false);
+            $hierarchy = $scObj->getPathHierarchy($query['fq']['category_id'], false);
 
             $query['facet'] = array('field'=>'categories', 'mincount'=>1);
             if($hierarchy) {
@@ -366,7 +366,7 @@ class Subject extends AppModel {
         if($categoryId) {
             App::import('Model', 'SubjectCategory');
             $scObj = new SubjectCategory();
-            $hierarchy = $scObj->getHierarchy($categoryId);
+            $hierarchy = $scObj->getPathHierarchy($categoryId);
             $conditions['facet'] = array('field'=>'categories', 'prefix'=>$hierarchy, 'mincount'=>1);
         }
 

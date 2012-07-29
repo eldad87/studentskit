@@ -3,7 +3,10 @@ class SubjectCategory extends AppModel {
 	public $name = 'SubjectCategory';
 	public $useTable = 'subject_categories';
 	public $primaryKey = 'subject_category_id';
-
+    public $actsAs = array('Pathable' /*=> array(
+        'parent_field'  => 'parent_subject_category_id',
+        'right' => 'right_node'
+    )*/);
 
     public function __construct($id = false, $table = null, $ds = null) {
         parent::__construct($id, $table, $ds);
@@ -40,7 +43,7 @@ class SubjectCategory extends AppModel {
         }
     }
 
-    public function getHierarchy($sc_id, $fullPath=true) {
+    /*public function getPathHierarchy($sc_id, $fullPath=true) {
         if($sc_id==0) {
             if($fullPath) {
                 return array();
@@ -84,18 +87,18 @@ class SubjectCategory extends AppModel {
 
             return $hierarchy;
         }
-    }
+    }*/
 
     public function afterSave($created) {
         parent::afterSave($created);
 
 
-        $event = new CakeEvent('Model.SubjectCategory.afterSave', $this, array('subject_category_id'=>$this->id) );
+        $event = new CakeEvent('Model.SubjectCategory.afterSave', $this, array('subject_category_id'=>$this->id, 'created'=>$created) );
         $this->getEventManager()->dispatch($event);
 
     }
 
-    public function beforeSave() {
+    /*public function beforeSave() {
         parent::beforeSave();
 
         //Prepare path/deep/parent_subject_category_id
@@ -123,11 +126,10 @@ class SubjectCategory extends AppModel {
         }
 
         return true;
-    }
+    }*/
 
     public function afterDelete(){
         parent::afterDelete();
-        $this->id;
         //TODO: delete all sub-categories
         //TODO: move all subjects that belong to the sub-categories or current-category - to the parent-category
     }

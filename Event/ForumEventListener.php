@@ -81,6 +81,9 @@ class ForumEventListener implements CakeEventListener {
     }
 
     public function afterSaveSubjectCategory(CakeEvent $event) {
+        if(!$event->data['created']) {
+            return true; //Only new records gets a forum
+        }
         $scObj = $event->subject();
         $scData = $scObj->findBySubjectCategoryId($event->data['subject_category_id']);
         if(!$scData) {
