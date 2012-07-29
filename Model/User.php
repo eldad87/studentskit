@@ -5,10 +5,7 @@ class User extends AppModel {
 	public $primaryKey = 'user_id';
 	public $actsAs = array('SignMeUp.SignMeUp');
 
-    public $virtualFields = array(
-        //'username' => 'CONCAT(`User.first_name`, " ", `User.last_name`)',
-        //'id' => 'User.user_id'
-    );
+
     public $hasOne = array('Forum.Profile');
     public $hasMany = array('Forum.Access', 'Forum.Moderator');
 
@@ -35,6 +32,14 @@ class User extends AppModel {
 				'rule'		=> 'email',
 				'message'	=> 'Enter a valid email',
 			)
+		),
+		'username' => array(
+			'isUnique' => array(
+				'rule'    		=> 'isUnique',
+				'message' 		=> 'This username has already been taken.',
+				'required'		=> true,
+				'on'			=> 'create',
+			),
 		),
 		
 		/*'password'=>array(
@@ -95,6 +100,12 @@ class User extends AppModel {
 			'allowEmpty' 	=> false,
 		),
 	);
+
+    public function __construct($id = false, $table = null, $ds = null) {
+        parent::__construct($id, $table, $ds);
+        $this->virtualFields['username'] = sprintf('CONCAT(%s.first_name, " ", %s.last_name)', $this->alias, $this->alias);
+        $this->virtualFields['id'] = sprintf('%s.user_id', $this->alias); //Forum suppoer
+    }
 
     public function beforeSave($options) {
         parent::beforeSave($options=array());

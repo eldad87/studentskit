@@ -2,7 +2,7 @@
 class MessageController extends AppController {
 	public $name = 'Message';
 	public $uses = array('Thread', 'User');
-	public $components = array('Session', 'RequestHandler', 'Auth',/* 'Security'*/);
+	public $components = array('Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),/* 'Security'*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 	
 	public function index() {

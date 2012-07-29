@@ -21,7 +21,7 @@ class SignMeUpComponent extends Component {
 		'welcome_subject' => 'Welcome',
 		'activation_subject' => 'Please Activate Your Account',
 		'password_reset_field' => 'password_reset',
-		'username_field' => 'first_name',
+		'username_field' => 'username',
 		'email_field' => 'email',
 		'password_field' => 'password',
 		'activation_template' => 'activate',
@@ -277,5 +277,33 @@ class SignMeUpComponent extends Component {
 			}
 		}
 	}
+
+    private function _generateUserName($data) {
+        extract($this->settings);
+        $prefix = '';
+        if(isSet($data[$email_field]) && $data[$email_field]) {
+            $tmp = explode('@', $data[$email_field]);
+            $prefix = $tmp[0];
+        } else if(isSet($data[$display_name_field]) && $data[$display_name_field]) {
+            $prefix = str_ireplace(array(' ', "\n", "\t"), array('', '', ''), trim($display_name_field));
+        } else {
+            return null;
+        }
+
+
+
+        //Check that username is unique
+        $model = $this->controller->modelClass;
+        $newUsername = $prefix;
+        $foundUsername = true;
+        while($foundUsername) {
+            $foundUsername = $this->controller->{$model}->find('first', array('conditions'=>array($username_field=>$newUsername)));
+            if($foundUsername) {
+                $newUsername = $prefix.'_'.rand(1, 99);
+            }
+        }
+
+        return $newUsername;
+    }
 
 }

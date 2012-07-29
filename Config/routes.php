@@ -37,21 +37,23 @@
  * Enable the json and or xml extensions 
  */
 	Router::parseExtensions('json', 'rss'/*, 'xml'*/);
-	
-	////////////
-	Router::connect('/register', array('controller' => 'Users', 'action' => 'register'));
-	Router::connect('/activate', array('controller' => 'Users', 'action' => 'activate'));
-	Router::connect('/activate/:activation_code', array('controller' => 'Users', 'action' => 'activate'), array('pass' => 'activation_code'));
-	Router::connect('/forgotten_password/:password_reset', array('controller' => 'Users', 'action' => 'forgotten_password'), array('pass' => 'password_reset_code'));
-	Router::connect('/login', array('controller' => 'Users', 'action' => 'login'));
-	Router::connect('/logout', array('controller' => 'Users', 'action' => 'logout'));
-	////////////
 
-	////////////
-    Router::connect('/forum/help/*', array('plugin' => 'forum', 'controller' => 'forum', 'action' => 'help'));
-    Router::connect('/forum/rules/*', array('plugin' => 'forum', 'controller' => 'forum', 'action' => 'rules'));
-    Router::connect('/admin/forum/settings/*',  array('plugin' => 'forum', 'controller' => 'forum', 'action' => 'settings', 'admin' => true));
-	////////////
+////////////
+Router::connect('/forum/help/*', array('plugin' => 'forum', 'controller' => 'forum', 'action' => 'help'));
+Router::connect('/forum/rules/*', array('plugin' => 'forum', 'controller' => 'forum', 'action' => 'rules'));
+Router::connect('/admin/forum/settings/*',  array('plugin' => 'forum', 'controller' => 'forum', 'action' => 'settings', 'admin' => true));
+////////////
+
+////////////
+Router::connect('/register', array('controller' => 'Accounts', 'action' => 'register', 'plugin'=>false));
+Router::connect('/activate', array('controller' => 'Accounts', 'action' => 'activate', 'plugin'=>false));
+Router::connect('/activate/:activation_code', array('controller' => 'Accounts', 'action' => 'activate', 'plugin'=>false), array('pass' => 'activation_code'));
+Router::connect('/forgotten_password/:password_reset', array('controller' => 'Accounts', 'action' => 'forgotten_password', 'plugin'=>false), array('pass' => 'password_reset_code'));
+Router::connect('/login', array('controller' => 'Accounts', 'action' => 'login', 'plugin'=>false));
+Router::connect('/logout', array('controller' => 'Accounts', 'action' => 'logout', 'plugin'=>false));
+
+
+////////////
 
 	
 /**

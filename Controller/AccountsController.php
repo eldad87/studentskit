@@ -1,6 +1,6 @@
 <?php
-class UsersController extends AppController {
-	public $name = 'Users';
+class AccountsController extends AppController {
+	public $name = 'Accounts';
 	public $uses = array('User');
 	public $components = array('Session', 'RequestHandler', 'SignMeUp.SignMeUp'=>array(
 																'activation_field'=>false,
@@ -9,10 +9,10 @@ class UsersController extends AppController {
 																'username_field'=>'first_name',
 															),
 															'Auth' => array(
-																/*'loginAction' => array(
-																	'controller' => 'User',
+																'loginAction' => array(
+																	'controller' => 'Accounts',
 																	'action' => 'login',
-																),*/
+																),
 																'authenticate' => array(
 																	'Form' => array(
 																		'fields' => array('username' => 'email')
@@ -35,6 +35,10 @@ class UsersController extends AppController {
             App::import( 'Event', 'ForumEventListener');
             $fel = new ForumEventListener();
             CakeEventManager::instance()->attach($fel);
+
+            App::import( 'Event', 'LoginEventListener');
+            $lel = new LoginEventListener();
+            CakeEventManager::instance()->attach($lel);
             $eventListenterAttached = true;
         }
     }
@@ -64,7 +68,7 @@ class UsersController extends AppController {
                     $this->redirect('/');
                 }
 
-                $event = new CakeEvent('Controller.Users.afterLogin', $this, array('user_id'=>$this->Auth->user('user_id')) );
+                $event = new CakeEvent('Controller.Accounts.afterLogin', $this, array('user_id'=>$this->Auth->user('user_id')) );
                 $this->getEventManager()->dispatch($event);
 
 				return $this->redirect($this->Auth->redirect());
@@ -78,12 +82,12 @@ class UsersController extends AppController {
 
         $userId = $this->Auth->user('user_id');
 
-        $event = new CakeEvent('Controller.Users.beforeLogout', $this, array('user_id'=>$userId) );
+        $event = new CakeEvent('Controller.Accounts.beforeLogout', $this, array('user_id'=>$userId) );
         $this->getEventManager()->dispatch($event);
 
 		$this->Auth->logout();
 
-        $event = new CakeEvent('Controller.Users.afterLogout', $this, array('user_id'=>$userId) );
+        $event = new CakeEvent('Controller.Accounts.afterLogout', $this, array('user_id'=>$userId) );
         $this->getEventManager()->dispatch($event);
 
 

@@ -2,7 +2,7 @@
 class TeacherController extends AppController {
 	public $name = 'Teacher';
 	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
-	public $components = array('Session', 'RequestHandler', 'Auth',/* 'Security'*/);
+	public $components = array('Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),/* 'Security'*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 
 

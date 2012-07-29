@@ -8,8 +8,8 @@ class ForumEventListener implements CakeEventListener {
 
     public function implementedEvents() {
         return array(
-            'Controller.Users.afterLogout'       => 'afterLogout',
-            'Controller.Users.afterLogin'        => 'afterLogin',
+            'Controller.Accounts.afterLogout'       => 'afterLogout',
+            'Controller.Accounts.afterLogin'        => 'afterLogin',
             //'Model.SubjectCategory.afterSave'  => 'afterSaveSubjectCategory',
             'Model.Forum.Topic.afterSave'        => 'afterSaveTopic',
             'Model.Forum.Post.afterSave'         => 'afterSavePost',
