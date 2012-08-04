@@ -5,7 +5,7 @@ class AutoApproveLessonRequest extends AppModel {
 	public $primaryKey = 'teacher_user_id';
 	
 	public function setSettings( $teacherUserId, $liveAutoEnable, WeekRange $weekRange, $videoAutoEnable ) {
-		
+
 		$this->set(	array(	'teacher_user_id'	=>$teacherUserId,
 							'live'				=>$liveAutoEnable,
 							'live_range_of_time'=>$weekRange->export(),
@@ -13,19 +13,19 @@ class AutoApproveLessonRequest extends AppModel {
 		return $this->save();
 	}
 	
-	public function getSettings($teacherUserid) {
-		$aalrData = $this->findByTeacherUserId($teacherUserid);
+	public function getSettings($teacherUserId) {
+        $this->recursive = -1;
+		$aalrData = $this->findByTeacherUserId($teacherUserId);
 		if(!$aalrData) {
-			return false;
+			return array('teacher_user_id'=>$teacherUserId, 'live'=>false, 'live_range_of_time'=>array(), 'video'=>true);//default
 		}
 		return $aalrData['AutoApproveLessonRequest'];
 	}
 	
-	public function isAutoApprove($teacherUserid, $lessonType, $date) {
-		$aalrData = $this->getSettings($teacherUserid);
-		
+	public function isAutoApprove($teacherUserId, $lessonType, $date=null) {
+		$aalrData = $this->getSettings($teacherUserId);
 		if($lessonType==LESSON_TYPE_VIDEO) {
-			return $aalrData['video'] ? true : false;
+			return ($aalrData['video'] ? true : false);
 		} else if($lessonType==LESSON_TYPE_LIVE) {
 			//TODO: check if there is a lesson during that time. also note for userLesson for subject type request
 			

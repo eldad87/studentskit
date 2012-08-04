@@ -27,12 +27,29 @@ class TeacherController extends AppController {
 	}
 	
 	public function subject( $subjectId=null ) {
+        if($subjectId) {
+            if(!$this->verifyOwnership('subject', $subjectId)) {
+                $this->Session->setFlash('Cannot view this subject');
+                $this->redirect($this->referer());
+            }
+        }
+
+        if (!empty($this->request->data)) {
+            App::import('Model', 'Subject');
+            $this->request->data['Subject']['user_id'] = $this->Auth->user('user_id');
+            $this->request->data['Subject']['type'] = SUBJECT_TYPE_OFFER;
+            //$this->Subject->set($this->request->data);
+
+            if($this->Subject->save($this->request->data)) {
+
+                $this->Session->setFlash('Subject saved');
+                $this->redirect(array('action'=>'subjects'));
+            }
+            //var_dump($this->Subject->validationErrors);
+        }
+
 		if($subjectId) {
-			if(!$this->verifyOwnership('subject', $subjectId)) {
-				$this->Session->setFlash('Cannot view this subject');
-				$this->redirect($this->referer());
-			}
-			//Default subject data
+        //Default subject data
 			if (empty($this->request->data)) {
 				$this->request->data = $this->Subject->findBySubjectId($subjectId);
 			}
@@ -45,28 +62,12 @@ class TeacherController extends AppController {
 			$this->set('nextLessons', $nextLessons);
 			*/
 			//Get subject FS
-			App::import('Model', 'FileSystem');
-			$fsObj = new FileSystem();
-			$fileSystem = $fsObj->getFS('subject', $subjectId);
-			$this->set('fileSystem', $fileSystem);
-			
-			//Get subject tests
-			App::import('Model', 'StudentTest');
-			$testObj = new StudentTest();
-			$tests = $testObj->getTests('subject', $subjectId);
-			$this->set('tests', $tests);
+
+			$this->set('fileSystem', $this->Subject->getFileSystem($subjectId));
+			$this->set('tests', $this->Subject->getTests($subjectId));
 		}
 
-		if (!empty($this->request->data)) {
-			App::import('Model', 'Subject');
-			$this->request->data['Subject']['user_id'] = $this->Auth->user('user_id');
-			$this->request->data['Subject']['type'] = SUBJECT_TYPE_OFFER;
-			//$this->Subject->set($this->request->data);
-			if($this->Subject->save($this->request->data)) {
-                $this->Session->setFlash('Subject saved');
-                $this->redirect(array('action'=>'subjects'));
-            }
-		}
+
 
         //Get subejct categories
         App::Import('Model', 'SubjectCategory');
@@ -188,7 +189,7 @@ class TeacherController extends AppController {
 	}
 	public function setReview($userLessonId) {
 		if (!empty($this->request->data)) {
-			if($this->UserLesson->rate(	$userLessonId, $this->Auth->user('user_id'), 
+			if($this->UserLesson->rate(	$userLessonId, $this->Auth->user('user_id'),
 			  							$this->request->data['UserLesson']['rating_by_teacher'], 
 			  							$this->request->data['UserLesson']['comment_by_teacher'])) {
 				$this->redirect(array('action'=>'awaitingReview'));
@@ -205,6 +206,10 @@ class TeacherController extends AppController {
 		$teacherReviews = $this->User->getTeachertReviews( $this->Auth->user('user_id'), 10 );
 		$this->Set('teacherReviews', $teacherReviews);
 	}
+
+    public function getLiveLessonMeeting($teacherLessonId) {
+        return 'wft-234';
+    }
 	
 	private function verifyOwnership($entityType, $entityId) {
 		$foundRecord = false;

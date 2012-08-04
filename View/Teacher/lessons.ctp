@@ -117,9 +117,9 @@ foreach($lessonInvitations AS $lessonInvitation) {
 }
 ?>
 
-<h3>Proposed Lessons (pending student approval)</h3>
-<?php 
-foreach($pendingProposedLessons AS $pendingProposedLesson) {
+<?php
+//<h3>Proposed Lessons (pending student approval)</h3>
+/*foreach($pendingProposedLessons AS $pendingProposedLesson) {
 	echo 'SubjectId: ',$pendingProposedLesson['UserLesson']['subject_id'],'<br />';
 	echo 'Name: ',$pendingProposedLesson['UserLesson']['name'],'<br />';
 	echo 'description: ',$pendingProposedLesson['UserLesson']['description'],'<br />';
@@ -142,5 +142,5 @@ foreach($pendingProposedLessons AS $pendingProposedLesson) {
 	echo $this->Html->link('Cancel', array('controller'=>'Teacher','action'=>'cacnelUserLesson', $pendingProposedLesson['UserLesson']['user_lesson_id'])),'<br />';
 	
 	echo '<br /><br /><br />';
-}
+}*/
 ?>

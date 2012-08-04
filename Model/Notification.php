@@ -19,10 +19,10 @@ class Notification extends AppModel {
         $this->create();
         $this->set(array(
                 'user_id'       =>$userId,
-                'message'       =>$this->formatMessage($userId, $message['type'], $message['params']),
-                'message_type'  =>$message['type'],
+                'message'       =>$this->formatMessage($userId, $message['message_enum'], $message['params']),
+                'message_enum'  =>$message['message_enum'],
                 'message_params'=>json_encode($message),
-                'link'          =>json_encode($this->formatLink($userId, $message['type'], $message['params'])),
+                'link'          =>json_encode($this->formatLink($userId, $message['message_enum'], $message['params'])),
 
             ));
         return $this->save();
@@ -31,7 +31,7 @@ class Notification extends AppModel {
     private function formatLink($toUserId, $type, $params) {
         return array('/');
     }
-    private function formatMessage($toUserId, $type, $params) {
+    private function formatMessage($toUserId, $enum, $params) {
         static $users = array();
 
         /* Format according to user language
@@ -66,7 +66,7 @@ class Notification extends AppModel {
             $users[$params[$byUserType.'_user_id']] = $userFullName;
         }
 
-        return sprintf(Configure::read('notification.'.$type), $userFullName, $params['name'], $params['datetime']);
+        return sprintf(Configure::read('notification.'.$enum), $userFullName, $params['name'], $params['datetime']);
     }
 
     public function getUnreadNotifications() {

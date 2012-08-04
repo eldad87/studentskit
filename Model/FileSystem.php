@@ -14,7 +14,7 @@ class FileSystem extends AppModel {
 		
 		//Split nodes into folders/files
 		foreach($nodes AS $node) {
-			$node = $file['FileSystem'];
+			$node = $node['FileSystem'];
 			$type = $node['type'];
 			
 			unset($node['entity_type'], $node['entity_id'], $node['type']);

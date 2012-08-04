@@ -138,34 +138,5 @@ class ForumEventListener implements CakeEventListener {
     public function afterLogin(CakeEvent $event) {
         $event->subject()->Session->delete('Forum');
     }
-
-    public function beforeAccept(CakeEvent $event) {
-        App::import('Model', 'TeacherLesson');
-        $tlObj = new TeacherLesson();
-
-        if(!$event->data['user_lesson']['teacher_lesson_id']) {
-            //Create a lesson + set student_user_id
-
-            if(!$tlObj->add(array('type'=>'user_lesson','id'=>$event->data['user_lesson']['user_lesson_id']), null, null, array('teacher_user_id'=>$event->data['user_lesson']['teacher_user_id'],
-                'student_user_id'=>$event->data['user_lesson']['student_user_id'],
-                'num_of_students'=>$tlObj->getDataSource()->expression('num_of_students+1')))) {
-                return false;
-            }
-
-
-            $event->result['teacher_lesson_id'] = $tlObj->id;
-        } else {
-            $counter = $event->subject()->getAcceptLessonCounter($event->data['user_lesson']['stage']);
-            //Update the num_of_pending_invitations counter
-            $this->TeacherLesson->id = $event->data['user_lesson']['teacher_lesson_id'];
-
-            $this->TeacherLesson->set(array($counter=>$tlObj->getDataSource()->expression($counter.'-1'), 'num_of_students'=>$tlObj->getDataSource()->expression('num_of_students+1')));
-            if(!$this->TeacherLesson->save()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 }
 ?>

@@ -15,6 +15,7 @@ foreach($groupLessons AS $groupLesson) {
 }
 echo '<br />';
 
+echo '<h3>All Lessons</h3>';
 pr($allLessons);
 //var_dump($subjectData, $teacherUserData, $allLessons, $aalr);
 

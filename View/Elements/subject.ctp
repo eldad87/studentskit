@@ -18,7 +18,7 @@ echo 'Full Group Total price: '.$full_group_total_price;
 echo '<br />';
 echo 'Max students: '.$max_students;
 echo '<br />';
-echo $this->Html->link('Order', array('controller'=>'Home', 'action'=>'orderCalendar', $subject_id));
+echo $this->Html->link('Order', array('controller'=>'Home', 'action'=>'order', $subject_id));
 echo '<br />';
 echo $this->Html->link('Teacher page', array('controller'=>'Home', 'action'=>'teacher', (isSet($user_id) ? $user_id : $student_user_id)));
 echo '<br />';

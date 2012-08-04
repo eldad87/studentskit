@@ -49,6 +49,20 @@ $config['Home.subjectSuggestions.success.1.description'] = 'Subjects suggestions
 /*-------------------- Home.getTeacherLessons	--------------------*/
 $config['Home.getUserLessons.success.1.title'] = 'Success';
 $config['Home.getUserLessons.success.1.description'] = 'All lessons';
+/*-------------------- Home.canWatchVideo	--------------------*/
+$config['Home.canWatchVideo.success.1.title'] = 'Success';
+$config['Home.canWatchVideo.success.1.description'] = 'Payment needed first';
+$config['Home.canWatchVideo.success.2.title'] = 'Success';
+$config['Home.canWatchVideo.success.2.description'] = 'Pending teacher\'s approval, a request sent to the teacher';
+$config['Home.canWatchVideo.success.3.title'] = 'Success';
+$config['Home.canWatchVideo.success.3.description'] = 'Pending your approval';
+$config['Home.canWatchVideo.success.4.title'] = 'Success';
+$config['Home.canWatchVideo.success.4.description'] = 'You can watch the video';
+
+$config['Home.canWatchVideo.error.1.title'] = 'Error';
+$config['Home.canWatchVideo.error.1.description'] = 'Cannot find subject';
+$config['Home.canWatchVideo.error.2.title'] = 'Error';
+$config['Home.canWatchVideo.error.2.description'] = 'Internal error';
 /********************* Home - End		******************************************/
 
 
@@ -119,19 +133,31 @@ $config['Teacher.disableSubject.error.2.description'] = 'Interanl error';
 /********************* Teacher - End		******************************************/
 
 
-/********************* Reqtests - Start		******************************************/
+/********************* Requests - Start		******************************************/
 /*-------------------- Teacher.makeRequest	--------------------*/
-$config['Teacher.makeRequest.success.1.title'] = 'Success';
-$config['Teacher.makeRequest.success.1.description'] = 'Subject request';
-$config['Teacher.makeRequest.error.1.title'] = 'Success';
-$config['Teacher.makeRequest.error.1.description'] = 'Cannot create subject request';
+$config['Requests.makeRequest.success.1.title'] = 'Success';
+$config['Requests.makeRequest.success.1.description'] = 'Subject request';
+$config['Requests.makeRequest.error.1.title'] = 'Success';
+$config['Requests.makeRequest.error.1.description'] = 'Cannot create subject request';
 /*-------------------- Teacher.offerLesson	--------------------*/
-$config['Teacher.makeRequest.success.1.title'] = 'Success';
-$config['Teacher.makeRequest.success.1.description'] = 'Lesson offer sent';
-$config['Teacher.makeRequest.error.1.title'] = 'Success';
-$config['Teacher.makeRequest.error.1.description'] = 'Cannot send lesson offer';
+$config['Requests.makeRequest.success.1.title'] = 'Success';
+$config['Requests.makeRequest.success.1.description'] = 'Lesson offer sent';
+$config['Requests.makeRequest.error.1.title'] = 'Success';
+$config['Requests.makeRequest.error.1.description'] = 'Cannot send lesson offer';
 /*-------------------- Teacher.subjectSuggestions	--------------------*/
-$config['Teacher.subjectSuggestions.success.1.title'] = 'Success';
-$config['Teacher.subjectSuggestions.success.1.description'] = 'Lesson offer sent';
+$config['Requests.subjectSuggestions.success.1.title'] = 'Success';
+$config['Requests.subjectSuggestions.success.1.description'] = 'Lesson offer sent';
+/********************* Requests - End		******************************************/
+
+/********************* Reqtests - Start		******************************************/
+/*-------------------- Student.invite	--------------------*/
+$config['Lessons.invite.success.1.title'] = 'Success';
+$config['Lessons.invite.success.1.description'] = 'Invitations sent';
+$config['Lessons.invite.error.1.title'] = 'Success';
+$config['Lessons.invite.error.1.description'] = 'Missing parameters';
+$config['Lessons.invite.error.2.title'] = 'Success';
+$config['Lessons.invite.error.2.description'] = 'Cannot send invitations';
+$config['Lessons.invite.error.3.title'] = 'Success';
+$config['Lessons.invite.error.3.description'] = 'Cannot send invitations';
 /********************* Reqtests - End		******************************************/
 ?>

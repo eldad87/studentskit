@@ -37,7 +37,7 @@ class UserLessonEventListener implements CakeEventListener {
         }
 
         return $this->notification->addNotification(    $toUserId, //To user id
-                                                        array( 'type'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
+                                                        array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
     }
     public function afterCancelRequest(CakeEvent $event) {
         $toUserId = $messageType = null;
@@ -127,18 +127,19 @@ class UserLessonEventListener implements CakeEventListener {
         }
 
         return $this->notification->addNotification(    $toUserId, //To user id
-                                                        array( 'type'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
+                                                        array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
     }
     public function beforeAccept(CakeEvent $event) {
         App::import('Model', 'TeacherLesson');
         $tlObj = new TeacherLesson();
 
-        if(!$event->data['user_lesson']['teacher_lesson_id']) {
-            //Create a lesson + set student_user_id
+        if(empty($event->data['user_lesson']['teacher_lesson_id'])) {
 
+            //Create a lesson + set student_user_id
             if(!$tlObj->add(array('type'=>'user_lesson','id'=>$event->data['user_lesson']['user_lesson_id']), null, null, array('teacher_user_id'=>$event->data['user_lesson']['teacher_user_id'],
-                'student_user_id'=>$event->data['user_lesson']['student_user_id'],
-                'num_of_students'=>$tlObj->getDataSource()->expression('num_of_students+1')))) {
+                                    'student_user_id'=>$event->data['user_lesson']['student_user_id'],
+                                    'num_of_students'=>$tlObj->getDataSource()->expression('num_of_students+1')))) {
+
                 return false;
             }
 
@@ -153,9 +154,9 @@ class UserLessonEventListener implements CakeEventListener {
             if(!$this->TeacherLesson->save()) {
                 return false;
             }
-        }
 
-        return true;
+            return true;
+        }
     }
     public function afterAccept(CakeEvent $event) {
         $toUserId = $messageType = null;
@@ -242,7 +243,7 @@ class UserLessonEventListener implements CakeEventListener {
         }
 
         return $this->notification->addNotification(    $toUserId, //To user id
-                                                        array( 'type'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
+                                                        array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
     }
     public function afterReProposeRequest(CakeEvent $event) {
         $toUserId = $messageType = null;
@@ -339,7 +340,7 @@ class UserLessonEventListener implements CakeEventListener {
         }
 
         return $this->notification->addNotification(    $toUserId, //To user id
-                                                        array( 'type'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
+                                                        array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
 
     }
 
@@ -349,11 +350,10 @@ class UserLessonEventListener implements CakeEventListener {
     public function afterLessonRequest(CakeEvent $event) {
         $toUserId = $messageType = null;
         $byUserId = $event->data['by_user_id'];
-
         if($event->data['user_lesson']['subject_type']==SUBJECT_TYPE_OFFER) {
             if($byUserId==$event->data['user_lesson']['teacher_user_id']) {
 
-                //Invitation sent from teacher
+                //Invitation sent by teacher
                 $toUserId = $event->data['user_lesson']['student_user_id'];
                 $messageType = 'teacher.invitation.sent';
 
@@ -370,19 +370,19 @@ class UserLessonEventListener implements CakeEventListener {
                 //Check if its auto approve
                 App::import('Model', 'AutoApproveLessonRequest');
                 $aalsObj = new AutoApproveLessonRequest();
-                if($aalsObj->isAutoApprove($event->data['user_lesson']['teacher_user_id'], $event->data['user_lesson']['lesson_type'], $event->data['user_lesson']['datetime'])) {
 
-                    $this->getEventManager()->detach($this, 'Model.UserLesson.afterAccept');
-                    if($event->subject()->acceptRequest($this->id, $event->data['user_lesson']['teacher_user_id'])) {
+                if($aalsObj->isAutoApprove($event->data['user_lesson']['teacher_user_id'], $event->data['user_lesson']['lesson_type'], $event->data['user_lesson']['datetime'])) {
+                    CakeEventManager::instance()->detach($this, 'Model.UserLesson.afterAccept');
+                    if($event->subject()->acceptRequest($event->subject()->id, $event->data['user_lesson']['teacher_user_id'])) {
                         //Send a confirmation - that his request been auto-approved
                         $this->notification->addNotification(   $event->data['user_lesson']['student_user_id'], //To user id
-                                                                array( 'message'=>'teacher.booking.request.auto.approve', 'params'=>$event->data['user_lesson']) ); //Message
+                            array( 'message_enum'=>'teacher.booking.request.auto.approve', 'params'=>$event->data['user_lesson']) ); //Message
                         $this->notification->addNotification(   $event->data['user_lesson']['teacher_user_id'], //To user id
-                                                                array( 'message'=>'student.booking.request.auto.approve', 'params'=>$event->data['user_lesson'])); //Message
+                            array( 'message_enum'=>'student.booking.request.auto.approve', 'params'=>$event->data['user_lesson'])); //Message
 
-                        unset($toUserId, $messageType);
+                        $toUserId = $messageType = null;
                     }
-                    $this->getEventManager()->attach($this, 'Model.UserLesson.afterAccept');
+                    CakeEventManager::instance()->attach($this, 'Model.UserLesson.afterAccept');
                 }
             }
         } else {
@@ -397,8 +397,9 @@ class UserLessonEventListener implements CakeEventListener {
 
         if($toUserId && $messageType) {
             return $this->notification->addNotification( $toUserId, //To user id
-                                                         array( 'type'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
+                                                         array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
         }
+
 
         return true;
     }

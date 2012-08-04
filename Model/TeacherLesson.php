@@ -47,24 +47,24 @@ class TeacherLesson extends AppModel {
 			'price_range' => array(
 				'required'	=> 'create',
 				'allowEmpty'=> false,
-				'rule'    	=> array('range', 1, 500),
-				'message' 	=> 'Price must be more then 1 and less then 500'
+				'rule'    	=> array('range', -1, 500),
+				'message' 	=> 'Price must be more then 0 and less then 500'
 			)
 		),
-		'max_students'=> array(
-			'range' 		=> array(
-				'required'	=> 'create',
-				'allowEmpty'=> false,
-				'rule'    	=> array('range', 0, 1025),
-				'message' 	=> 'Lesson must have more then 1 or less then 1024 students'
-			),
-			'max_students' 	=> array(
-				'required'	=> 'create',
-				'allowEmpty'=> false,
-				'rule'    	=> 'maxStudentsCheck',
-				'message' 	=> 'You must set group price'
-			)
-		),
+        'max_students'=> array(
+                'range' 		=> array(
+                    'required'	=> 'create',
+                    'allowEmpty'=> true,
+                    'rule'    	=> array('range', 0, 1025),
+                    'message' 	=> 'Lesson must have more then 1 or less then 1024 students'
+                ),
+                'max_students' 	=> array(
+                    'required'	=> 'create',
+                    'allowEmpty'=> true,
+                    'rule'    	=> 'maxStudentsCheck',
+                    'message' 	=> 'You must set group price'
+                )
+            ),
 		'full_group_total_price'=> array(
 			'price' => array(
 				'allowEmpty'=> true,
@@ -73,8 +73,8 @@ class TeacherLesson extends AppModel {
 			),
 			'price_range' => array(
 				'allowEmpty'=> true,
-				'rule'    	=> array('range', 1, 2500),
-				'message' 	=> 'Price must be more then 1 and less then 2500'
+				'rule'    	=> array('range', -1, 2500),
+				'message' 	=> 'Price must be more then 0 and less then 2500'
 			),
 			'full_group_total_price' 	=> array(
 				//'required'	=> 'create',
@@ -127,11 +127,14 @@ class TeacherLesson extends AppModel {
 		}
 		return true;
 	}
-	
-	public function beforeSave($options=array()) {
-		parent::beforeSave($options);
-		$this->Subject->calcFullGroupStudentPriceIfNeeded($this->data['TeacherLesson']);
-	}
+
+    public function beforeValidate($options=array()) {
+        parent::beforeValidate($options);
+
+        App::import('Model', 'Subject');
+        Subject::calcFullGroupStudentPriceIfNeeded($this->data['UserLesson'], ($this->id || !empty($this->data['Subject'][$this->primaryKey])) );
+        Subject::extraValidation($this);
+    }
 
 
 
@@ -174,6 +177,11 @@ class TeacherLesson extends AppModel {
                 'full_group_student_price'	=> $subjectData['full_group_student_price'],
                 'full_group_total_price'	=> $subjectData['full_group_total_price'],
             );
+
+            //Set the end of the lesson, video lesson end date is first-watching-time+2 days
+            if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
+                $teacherLessonData['end_datetime'] = $this->Subject->datetimeToStr($datetime, $subjectData['duration_minutes']);
+            }
 
             if($teacherLessonData['subject_type'] == SUBJECT_TYPE_OFFER) {
                 //Only the teacher that opened the subject can teach it
@@ -292,17 +300,22 @@ class TeacherLesson extends AppModel {
 		return true;
 	}
 	
-	public function getLessonsByDate( $teacherUserId, $year, $month=null ) {
+	public function getLiveLessonsByDate( $teacherUserId, $year, $month=null ) {
 		$this->getDataSource();
-		
+        $this->Subject; //Init const LESSON_TYPE_LIVE
+
 		$startDate = $year.'-'.($month ? $month : 1).'-1';
 		$endDate = $year.'-'.($month ? $month : 12).'-1';
 		
 		
-		$conditions = array('teacher_user_id'=>$teacherUserId, 
-							'datetime BETWEEN ? AND ?' => array($startDate, $this->getDataSource()->expression('date_add(\''.$endDate.'\',interval 1 month)')),
+		$conditions = array('teacher_user_id'=>$teacherUserId, $this->alias.'.lesson_type'=>LESSON_TYPE_LIVE,
+                            'OR'=>array(
+                                'datetime BETWEEN ? AND ?' => array($startDate, $this->getDataSource()->expression('date_add(\''.$endDate.'\',interval 1 month)')),
+                                'end_datetime BETWEEN ? AND ?' => array($startDate, $this->getDataSource()->expression('date_add(\''.$endDate.'\',interval 1 month)'))
+
+                            ),
 							'is_deleted'=>0 );
-		
+
 		return $this->find('all', array('conditions'=>$conditions));
 	}
 	
@@ -313,7 +326,7 @@ class TeacherLesson extends AppModel {
 		}
 		
 		$conditions['OR'] = array(
-			'datetime < NOW()',
+			array('end_datetime < NOW()', 'end_datetime IS NOT NULL' ),
 			'is_deleted'=>1
 		);
 		
@@ -327,12 +340,28 @@ class TeacherLesson extends AppModel {
 	
 	public function getUpcomming($teacherUserId, $subectId=null, $limit=null, $page=1) {
 		$this->Subject;
-		$conditions = array( 'teacher_user_id'=>$teacherUserId, 'datetime > NOW()', 'is_deleted'=>0,
-								'OR'=>array(
-										array('subject_type'=>SUBJECT_TYPE_OFFER), //Offers
-										array('subject_type'=>SUBJECT_TYPE_REQUEST, 'num_of_students > 0') //approved lesson requests
-									)
-							);
+		$conditions = array( 'teacher_user_id'=>$teacherUserId, 'is_deleted'=>0,
+            'AND' => array(
+                array(
+                    'OR'=>array(
+                        array('subject_type'=>SUBJECT_TYPE_OFFER), //Offers
+                        array('subject_type'=>SUBJECT_TYPE_REQUEST, 'num_of_students > 0') //approved lesson requests
+                    ),
+                ),
+                array(
+                    'OR'=>array(
+                        array('end_datetime > NOW()'),
+                        array('end_datetime IS NULL')
+
+                    ),
+                ),
+
+            )
+		);
+
+
+
+
 		if($subectId) {
 			$conditions['TeacherLesson.subject_id'] = $subectId;
 		}
@@ -356,6 +385,36 @@ class TeacherLesson extends AppModel {
 			'limit'=>$limit
 		));
 	} */
+    public function getLiveLessonMeeting($teacherLessonId) {
+        return 'wfg-213';
+    }
+    public function getVideoUrl($teacherLessonId) {
+        return 'videoUrl';
+    }
+    public function getFileSystem($teacherLessonId) {
+        App::import('Model', 'FileSystem');
+        $fsObj = new FileSystem();
+        return $fsObj->getFS('lesson', $teacherLessonId);
+    }
+
+    public function getTests($teacherLessonId) {
+        //Get subject tests
+        App::import('Model', 'StudentTest');
+        $testObj = new StudentTest();
+        return $testObj->getTests('lesson', $teacherLessonId);;
+    }
+
+    public static function getLessonTiming($datetime, $duration) {
+        $return = array('overdue'=>false, 'about_to_start'=>false);
+        //Check the time status of the lesson
+        if(($datetime+$duration*MIN)<time()) { //duetime > now = overdue
+            $return['overdue'] = true;
+        } if($datetime<time()) { //start time < now = not yer started
+            $return['about_to_start'] = true;
+        } else {
+            $return['in_process'] = true;
+        }
+    }
 	
 }
 ?>

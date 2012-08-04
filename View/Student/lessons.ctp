@@ -73,7 +73,7 @@ foreach($bookingRequests AS $upcommingLesson) {
 <h3>Archive</h3>
 <?php 
 foreach($archiveLessons AS $archiveLesson) {
-	echo 'user_lesson_id: ',$upcommingLesson['UserLesson']['user_lesson_id'],'<br />';
+	echo 'user_lesson_id: ',$archiveLesson['UserLesson']['user_lesson_id'],'<br />';
 	echo 'datetime: ',$archiveLesson['UserLesson']['datetime'],'<br />';
 	echo 'Name: ',$archiveLesson['UserLesson']['name'],'<br />';
 	echo '<br />';

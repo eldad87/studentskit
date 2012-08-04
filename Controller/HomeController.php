@@ -11,7 +11,7 @@ class HomeController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacher', 'subject', 'orderCalendar',
+		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacher', 'subject', 'order',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons'/*,
                             'test'*/);
 		$this->Auth->deny('submitOrder');
@@ -90,9 +90,9 @@ $id = $scObj->id;
         App::import('Model', 'Notification');
         $notificationObj = new Notification();
 
-        $notificationObj->addNotification(4, array('type'=>'teacher.subject.request.offer.sent', 'params'=>array('teacher_user_id'=>4, 'student_user_id'=>5 , 'name'=>'lesson name', 'datetime'=>'10/2/87')));
-        $notificationObj->addNotification(4, array('type'=>'teacher.subject.request.offer.sent', 'params'=>array('teacher_user_id'=>4, 'student_user_id'=>5 , 'name'=>'lesson name', 'datetime'=>'10/2/87')));
-        $notificationObj->addNotification(4, array('type'=>'teacher.subject.request.offer.sent', 'params'=>array('teacher_user_id'=>4, 'student_user_id'=>5 , 'name'=>'lesson name', 'datetime'=>'10/2/87')));
+        $notificationObj->addNotification(4, array('message_enum'=>'teacher.subject.request.offer.sent', 'params'=>array('teacher_user_id'=>4, 'student_user_id'=>5 , 'name'=>'lesson name', 'datetime'=>'10/2/87')));
+        $notificationObj->addNotification(4, array('message_enum'=>'teacher.subject.request.offer.sent', 'params'=>array('teacher_user_id'=>4, 'student_user_id'=>5 , 'name'=>'lesson name', 'datetime'=>'10/2/87')));
+        $notificationObj->addNotification(4, array('message_enum'=>'teacher.subject.request.offer.sent', 'params'=>array('teacher_user_id'=>4, 'student_user_id'=>5 , 'name'=>'lesson name', 'datetime'=>'10/2/87')));
     }*/
 
 	public function searchSubject() {
@@ -217,7 +217,7 @@ $id = $scObj->id;
     }
 
 
-	
+
 	public function teacherSubject($subjectId) {
 		//Get subject data, students_amount, raters_amount, avarage_rating
 		$subjectData = $this->Subject->findBySubjectId( $subjectId );
@@ -230,7 +230,7 @@ $id = $scObj->id;
 			return false;
 		}
 		$subjectData = $subjectData['Subject'];
-		
+
 		//$totalTeachingTime = $subjectData['students_amount'] * $subjectData['duration_minutes'];
 		
 		//Get students comments for that subject
@@ -238,7 +238,7 @@ $id = $scObj->id;
 		
 		//Get teacher other subjects
 		$teacherOtherSubjects = $this->Subject->getbyTeacher( $subjectData['user_id'], false, SUBJECT_TYPE_OFFER, 1, 6, null, $subjectId );
-		
+
 		//Get teacher data
 		$teacherData = $this->User->findByUserId( $subjectData['user_id'] );
 		if(!$teacherData) {
@@ -248,10 +248,10 @@ $id = $scObj->id;
 			}
 			return false;
 		}
-		
-		
+
+
 		//Get other teacher's subjects same as this one, TODO: check user lang
-		if($subjectData['category_id']) {
+		if(!empty($subjectData['category_id'])) {
             $query = array(
                 'search'=>$subjectData['name'],
                 'fq'=>array('is_public'=>SUBJECT_IS_PUBLIC_TRUE, 'category_id'=>$subjectData['category_id'], 'language'=>$subjectData['language']),
@@ -271,6 +271,57 @@ $id = $scObj->id;
 		$this->set('teacherOtherSubjects', 		$teacherOtherSubjects);
 		$this->set('teacherUserData', 			$teacherData['User']);
 	}
+
+    public function teacherLesson($teacherLessonId) {
+        $this->TeacherLesson->recursive = -1;
+        $teacherLessonData = $this->TeacherLesson->findByTeacherLessonId($teacherLessonId);
+        if(!$teacherLessonData) {
+            $this->redirect($this->referer('/'));
+        }
+        $teacherLessonData = $teacherLessonData['TeacherLesson'];
+
+
+        $this->set('showPayment', false);
+        $this->set('showPendingTeacherApproval', false);
+        $this->set('showPendingUserApproval', false);
+        $this->set('showLessonPage', false);
+
+        //Get the lesson status
+        $liveRequestStatus = $this->UserLesson->getLiveLessonStatus($teacherLessonId, $this->Auth->user('user_id'));
+        if($liveRequestStatus['overdue']) {
+            $this->Session->setFlash('Lesson is overdue');
+            $this->redirect(array('controller'=>'Home', 'action'=>'teacherSubject', $teacherLessonData['subject_id']));
+        } else if($liveRequestStatus['payment_needed']) {
+            $this->set('showPayment', true);
+        } else if($liveRequestStatus['pending_teacher_approval']) {
+            $this->set('showPendingTeacherApproval', true);
+        } else if($liveRequestStatus['pending_user_approval']) {
+            $this->set('showPendingUserApproval', true);
+        } else {
+            $this->set('showLessonPage', true);
+        }
+
+        $this->set('teacherLessonData', $teacherLessonData);
+    }
+
+    public function canWatchVideo($subjectId) {
+        $canWatchVideo = $this->UserLesson->getVideoLessonStatus($subjectId, $this->Auth->user('user_id'), false);
+        if(!$canWatchVideo) {
+            return $this->error(1);
+        }
+
+        if($canWatchVideo['payment_needed']) {
+            return $this->success(1, array('url'=>Router::url(array('controller'=>'Home', 'action'=>'order', $subjectId), true)));
+        } else if($canWatchVideo['pending_teacher_approval']) {
+            return $this->success(2);
+        } else if($canWatchVideo['pending_user_approval']) {
+            return $this->success(3, array('url'=>Router::url(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'invitations', $canWatchVideo['user_lesson_id']), true)));
+        } else if($canWatchVideo['show_video']) {
+            return $this->success(4, array('url'=>Router::url(array('controller'=>'Lessons', 'action'=>'video', $subjectId), true)));
+        }
+
+        return $this->error(2);
+    }
 	public function getOtherTeachersForSubject($subjectId, $limit=6, $page=1) {
 		$subjectData = $this->Subject->findBySubjectId( $subjectId );
 		if(!$subjectData) {
@@ -332,8 +383,13 @@ $id = $scObj->id;
 		//TODO: find teachers by catalog
 		//TODO: get board messages
 	}
-	
-	public function	orderCalendar($subjectId, $year=null, $month=null) {
+
+
+
+
+
+	public function	order($subjectId, $year=null, $month=null) {
+        //TODO: video - there is no need to show calendar
 		if(!$year) {
 			$year = date('Y');
 		}
@@ -383,7 +439,7 @@ $id = $scObj->id;
 		
 		$groupLessons = array();
 		foreach($allLessons AS $lesson) {
-			if($lesson['type']=='TeacherLesson' && isSet($lesson['max_students']) &&  $lesson['max_students']>$lesson['num_of_students']) {
+			if($lesson['type']=='TeacherLesson' && isSet($lesson['max_students']) && $lesson['max_students']>1 &&  $lesson['max_students']>$lesson['num_of_students']) {
 				$groupLessons[] = $lesson;
 			}
 		}
@@ -391,7 +447,7 @@ $id = $scObj->id;
 		
 		$this->set('subjectData', 			$subjectData);
 		$this->set('teacherUserData',		$teacherData['User']);
-		$this->set('aalr', 					$aalr ? $aalr['AutoApproveLessonRequest'] : array());
+		$this->set('aalr', 					$aalr);
 		$this->set('groupLessons',	 		$groupLessons);
 		$this->set('allLessons',	 		$allLessons);
 	}
@@ -399,7 +455,7 @@ $id = $scObj->id;
 		$allLessons = $this->User->getLessons( $userId, false, $year, $month);
 		return $this->success(1, array('lessons'=>$allLessons));
 	}
-	
+
 	public function submitOrder($requestType, $subjectId) {
 		App::import('Model', 'Subject');
 		App::import('Model', 'UserLesson');
@@ -409,8 +465,10 @@ $id = $scObj->id;
 		if(strtolower($requestType)=='join') {
 			//Join
 			if(!$this->UserLesson->joinRequest( $subjectId, $this->Auth->user('user_id') )) {
-				$this->Session->setFlash('Cannot join lesson');
-				$this->redirect($this->referer());
+                echo 'cannot join';
+                return ;
+				//$this->Session->setFlash('Cannot join lesson');
+				//$this->redirect($this->referer());
 			}
 		} else { //New
 			
@@ -419,59 +477,12 @@ $id = $scObj->id;
 			$datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
 			
 			if($datetime<time()) {
-				$this->Session->setFlash('Invalid order date');
-				$this->redirect($this->referer());
+                echo 'invalid date';
+                return ;
+				//$this->Session->setFlash('Invalid order date');
+				//$this->redirect($this->referer());
 			}
 			$this->UserLesson->lessonRequest($subjectId, $this->Auth->user('user_id'), $datetime);
 		}
-	}
-
-    /*
-     * The lesson will take place here.
-     * in case the lesson is taking place in the future - details about it will be shown.
-     */
-    public function lessonPage($teacherLessonId) {
-        //Find teacher lesson
-        $this->TeacherLesson->recursive = -1;
-        $tlData = $this->TeacherLesson->find('first', array('teacher_lesson_id'=>$teacherLessonId));
-        if(!$tlData) {
-            $this->Session->setFlash('Lesson not found');
-            $this->redirect($this->referer());
-        }
-        $tlData = $tlData['TeacherLesson'];
-        $isTeacher = $this->Auth->user('user_id')==$tlData['teacher_user_id'] ? true : false;
-
-        //Check if this user is register for this lesson or no
-        $this->UserLesson->recursive = -1;
-        $userLessonData = $this->UserLesson->find('first', array('conditions'=>array('teacher_lesson_id'=>$teacherLessonId, 'student_user_id'=>$this->Auth->user('user_id'))));
-        if($userLessonData) {
-            $userLessonData = $userLessonData['UserLessonId'];
-        }
-
-        if($tlData['datetime']<time()-($tlData['duration']*MIN)) {
-            //Lesson overdue
-
-            $this->Session->setFlash('Lesson over due');
-            if($userLessonData) {
-                //User paid for this lesson
-                $this->redirect(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'archive', 'user_lesson_id'=>$userLessonData['user_lesson_id']));
-
-            } else if ($isTeacher) {
-                $this->redirect(array('controller'=>'Teacher', 'action'=>'lessons', 'tab'=>'archive', 'teacher_lesson_id'=>$teacherLessonId));
-            } else {
-                $this->redirect('/');
-            }
-        } else {
-            if($userLessonData) {
-                //TODO: show counter
-            } else if ($isTeacher) {
-                //TODO: let him edit the lesson
-            } else {
-                //Take user to order page
-                //TODO: show a page with info about the lesson, with "order" button
-                $this->redirect(array('action'=>'submitOrder', 'join', $teacherLessonId));
-            }
-        }
-
     }
 }

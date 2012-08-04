@@ -1,6 +1,8 @@
 <?php
-define('LESSON_TYPE_VIDEO', 1);
-define('LESSON_TYPE_LIVE', 2);
+define('LESSON_TYPE_VIDEO', 'video');
+define('LESSON_TYPE_LIVE', 'live');
+
+define('LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC', DAY*2);
 
 
 define('SUBJECT_TYPE_OFFER', 1);
@@ -48,9 +50,9 @@ class Subject extends AppModel {
             'inList' => array(
                 'required'	=> 'create',
                 'allowEmpty'=> false,
-                'rule'    	=> array('inList', array('1', '2') ),//array(LESSON_TYPE_VIDEO, LESSON_TYPE_LIVE)
+                'rule'    	=> array('inList', array(LESSON_TYPE_VIDEO, LESSON_TYPE_LIVE) ),//array(LESSON_TYPE_VIDEO, LESSON_TYPE_LIVE)
                 'message' 	=> 'Please select a lesson type',
-                'last'      =>true
+                //'last'      =>true
             )
         ),
 		'duration_minutes'=> array(
@@ -71,20 +73,20 @@ class Subject extends AppModel {
 			'price_range' => array(
 				'required'	=> 'create',
 				'allowEmpty'=> false,
-				'rule'    	=> array('range', 1, 500),
-				'message' 	=> 'Price must be more then 1 and less then 500'
+				'rule'    	=> array('range', -1, 500),
+				'message' 	=> 'Price must be more then 0 and less then 500'
 			)
 		),
 		'max_students'=> array(
 			'range' 		=> array(
 				'required'	=> 'create',
-				'allowEmpty'=> false,
-				'rule'    	=> array('range', 0, 1025),
+				'allowEmpty'=> true,
+				'rule'    	=> array('between', 1, 1024),
 				'message' 	=> 'Lesson must have more then 1 or less then 1024 students'
 			),
 			'max_students' 	=> array(
 				'required'	=> 'create',
-				'allowEmpty'=> false,
+				'allowEmpty'=> true,
 				'rule'    	=> 'maxStudentsCheck',
 				'message' 	=> 'You must set group price'
 			)
@@ -97,8 +99,8 @@ class Subject extends AppModel {
 			),
 			'price_range' => array(
 				'allowEmpty'=> true,
-				'rule'    	=> array('range', 1, 2500),
-				'message' 	=> 'Price must be more then 1 and less then 2500'
+				'rule'    	=> array('range', -1, 2500),
+				'message' 	=> 'Price must be more then 0 and less then 2500'
 			),
 			'full_group_total_price' 	=> array(
 				//'required'	=> 'create',
@@ -115,9 +117,10 @@ class Subject extends AppModel {
 			$this->invalidate('max_students', 'Please enter a valid max students');
 			return false;
 		} else  {
-			if(	isSet($this->data['Subject']['full_group_total_price']) && !empty($this->data['Subject']['full_group_total_price']) && 
-				$this->data['Subject']['max_students'] && $this->data['Subject']['1_on_1_price']) {
-				
+			if(	isSet($this->data['Subject']['full_group_total_price']) && !empty($this->data['Subject']['full_group_total_price']) &&
+				isSet($this->data['Subject']['max_students']) && $this->data['Subject']['max_students'] &&
+                isSet($this->data['Subject']['1_on_1_price']) && $this->data['Subject']['1_on_1_price']) {
+
 				//Check if full_group_total_price is MORE then  max_students*1_on_1_price
 				$maxAllowed = $this->data['Subject']['max_students']*$this->data['Subject']['1_on_1_price'];
 				if($this->data['Subject']['full_group_total_price']>$maxAllowed) {
@@ -138,11 +141,17 @@ class Subject extends AppModel {
 		}
 		return true;
 	}
-	
+
+    public function beforeValidate($options=array()) {
+        parent::beforeValidate($options);
+        App::import('Model', 'Subject');
+        $this->calcFullGroupStudentPriceIfNeeded($this->data['Subject'], ($this->id || !empty($this->data['Subject'][$this->primaryKey])) );
+        $this->extraValidation($this);
+    }
+
 	public function beforeSave($options=array()) {
 		parent::beforeSave($options);
-		//Calculate full_group_student_price
-        $this->calcFullGroupStudentPriceIfNeeded($this->data['Subject']);
+
         //TODO: save description as array('lang'=>description); and lang
 
         //New record
@@ -170,7 +179,7 @@ class Subject extends AppModel {
         }
 	}
 
-    public static function calcFullGroupStudentPriceIfNeeded(&$data) {
+    public static function calcFullGroupStudentPriceIfNeeded(&$data, $existingRecord) {
         //Calculate full_group_student_price
         if(	isSet($data['max_students']) && $data['max_students']>1  &&
             $data['full_group_total_price'] && !empty($data['full_group_total_price'])) {
@@ -181,6 +190,43 @@ class Subject extends AppModel {
             unset(	$data['max_students'],
             $data['full_group_total_price'],
             $data['full_group_student_price']);
+
+            if(!$existingRecord) {
+                $data['max_students'] = 1;
+            }
+        }
+    }
+
+    public static function extraValidation(&$obj) {
+        $objData =& $obj->data[$obj->name];
+
+        $lessonType = null;
+        if(isSet($objData['lesson_type'])) {
+            $lessonType = $objData['lesson_type'];
+        } else {
+            //Find object PK
+            $objId = false;
+            if($obj->id) {
+                $objId = $obj->id;
+            } else if(isSet($objData[$obj->primaryKey]) && !empty($objData[$obj->primaryKey])) {
+                $objId = $objData[$obj->primaryKey];
+            }
+            if(!$objId) {
+                return true;
+            }
+
+            //Load object data
+            $foundData = $obj->find('first', array('conditions'=>array($obj->primaryKey=>$objId)));
+            if(!$foundData) {
+                return false;
+            }
+
+            $lessonType = $foundData[$obj->name]['lesson_type'];
+        }
+
+        if($lessonType==LESSON_TYPE_VIDEO) {
+            $objData['max_students'] = 1;
+            unset($objData['full_group_student_price'], $objData['full_group_total_price']);
         }
     }
 
@@ -505,12 +551,38 @@ class Subject extends AppModel {
 		return $this->save();
 	}
 	
-	public function datetimeToStr( $datetime ) {
+	public function datetimeToStr( $datetime, $addMinutes=null ) {
+        if($addMinutes) {
+            if(!is_numeric($datetime)) {
+                $datetime = strtotime($datetime);
+            }
+            $datetime += $addMinutes*MINUTE;
+        }
+
 		if(is_numeric($datetime)) {
 			$datetime = date('Y-m-d H:i:s', $datetime);
 		}
+
+
 		return $datetime;
 	}
-	
+
+
+    public function getFileSystem($subjectId) {
+
+        App::import('Model', 'FileSystem');
+        $fsObj = new FileSystem();
+        return $fsObj->getFS('subject', $subjectId);
+
+    }
+
+    public function getTests($subjectId) {
+        //Get subject tests
+        App::import('Model', 'StudentTest');
+        $testObj = new StudentTest();
+        return $testObj->getTests('subject', $subjectId);
+    }
+
+
 }
 ?>
