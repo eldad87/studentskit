@@ -160,7 +160,7 @@ class User extends AppModel {
 		return $this->save();
 	}
 	
-	public function getLessons( $userId, $isOwner=true, $year, $month=null ) {
+	public function getLiveLessonsByDate( $userId, $isOwner=true, $year=null, $month=null ) {
 		App::import('Model', 'TeacherLesson');
 		App::import('Model', 'UserLesson');
 		$tlObj = new TeacherLesson();

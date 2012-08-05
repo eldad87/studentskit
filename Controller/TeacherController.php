@@ -21,7 +21,7 @@ class TeacherController extends AppController {
 	}
 	
 	public function subjects($limit=5, $page=1) {
-		$subjects = $this->Subject->getbyTeacher($this->Auth->user('user_id'), true, SUBJECT_TYPE_OFFER, $page, $limit);
+		$subjects = $this->Subject->getbyTeacher($this->Auth->user('user_id'), true, SUBJECT_TYPE_OFFER, null, $page, $limit);
 		$this->Set('teacherImage', $this->Auth->user('image'));
 		$this->Set('subjects', $subjects);
 	}
@@ -102,7 +102,7 @@ class TeacherController extends AppController {
 	
 	//"upcoming", "archive", "booking requests", "invitations sent" and "proposed lessons"
 	public function lessons($limit=5, $page=1) {
-		$upcommingLessons = $this->TeacherLesson->getUpcomming($this->Auth->user('user_id'), null, $limit, $page);
+		    $upcommingLessons = $this->TeacherLesson->getUpcomming($this->Auth->user('user_id'), null, $limit, $page);
 		$this->Set('upcommingLessons', $upcommingLessons);
 
         $archiveLessons = $this->TeacherLesson->getArchive($this->Auth->user('user_id'), null, $limit, $page);

@@ -237,7 +237,7 @@ $id = $scObj->id;
 		$subjectRatingByStudents = $this->Subject->getRatingByStudents( $subjectId, 2 );
 		
 		//Get teacher other subjects
-		$teacherOtherSubjects = $this->Subject->getbyTeacher( $subjectData['user_id'], false, SUBJECT_TYPE_OFFER, 1, 6, null, $subjectId );
+		$teacherOtherSubjects = $this->Subject->getbyTeacher( $subjectData['user_id'], false, SUBJECT_TYPE_OFFER, null, 1, 6, null, $subjectId );
 
 		//Get teacher data
 		$teacherData = $this->User->findByUserId( $subjectData['user_id'] );
@@ -356,7 +356,7 @@ $id = $scObj->id;
 		}
 		
 		//Get teacher other subjects
-		$teacherSubjects = $this->Subject->getbyTeacher( $teacherUserId, false, SUBJECT_TYPE_OFFER, 1, 6 );
+		$teacherSubjects = $this->Subject->getbyTeacher( $teacherUserId, false, SUBJECT_TYPE_OFFER, null, 1, 6 );
 
 		
 		//Get students comments for that teacher
@@ -373,7 +373,7 @@ $id = $scObj->id;
 		return $this->success(1, array('rating'=>$subjectRatingByStudents));
 	}
 	public function getTeacherSubjects($teacherUserId, $limit=6, $page=1) {
-		$teacherOtherSubjects = $this->Subject->getbyTeacher( $teacherUserId, false, SUBJECT_TYPE_OFFER, $page, $limit );
+		$teacherOtherSubjects = $this->Subject->getbyTeacher( $teacherUserId, false, SUBJECT_TYPE_OFFER, null, $page, $limit );
 		return $this->success(1, array('subjects'=>$teacherOtherSubjects));
 	}
 	
@@ -390,23 +390,7 @@ $id = $scObj->id;
 
 	public function	order($subjectId, $year=null, $month=null) {
         //TODO: video - there is no need to show calendar
-		if(!$year) {
-			$year = date('Y');
-		}
-		if(!$month) {
-			$month = date('m');
-		}
-		
-		//make sure this is the current month or a future one
-		if($year<date('Y')) {
-			$this->Session->setFlash('Invalid order date');
-			$this->redirect($this->referer());
-		} else if($year==date('Y') && $month<date('m')) {
-			$this->Session->setFlash('Invalid order date');
-			$this->redirect($this->referer());
-		}
-		
-		
+
 		//Get subject data, students_amount, raters_amount, avarage_rating
 		$subjectData = $this->Subject->findBySubjectId( $subjectId );
 		if(!$subjectData || $subjectData['Subject']['is_enable']==SUBJECT_IS_ENABLE_FALSE) {
@@ -433,26 +417,32 @@ $id = $scObj->id;
 		$aalsObj = new AutoApproveLessonRequest();
 		$aalr = $aalsObj->getSettings($subjectData['user_id']);
 		
+
+        //Only live lesson needs a calender and have group
+        $isLiveLesson = false;
+        if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
+            $isLiveLesson = true;
+            //Get student lessons for a given month
+            $allLiveLessons = $this->User->getLiveLessonsByDate( $subjectData['user_id'], false, $year, $month);
+
+            $groupLessons = array();
+            foreach($allLiveLessons AS $lesson) {
+                if($lesson['type']=='TeacherLesson' && isSet($lesson['max_students']) && $lesson['max_students']>1 &&  $lesson['max_students']>$lesson['num_of_students']) {
+                    $groupLessons[] = $lesson;
+                }
+            }
+            $this->set('groupLessons',	 		$groupLessons);
+            $this->set('allLiveLessons',	 	$allLiveLessons);
+        }
 		
-		//Get student lessons for a given month
-		$allLessons = $this->User->getLessons( $subjectData['user_id'], false, $year, $month);
-		
-		$groupLessons = array();
-		foreach($allLessons AS $lesson) {
-			if($lesson['type']=='TeacherLesson' && isSet($lesson['max_students']) && $lesson['max_students']>1 &&  $lesson['max_students']>$lesson['num_of_students']) {
-				$groupLessons[] = $lesson;
-			}
-		}
-		
-		
+		$this->set('isLiveLesson', 		    $isLiveLesson);
 		$this->set('subjectData', 			$subjectData);
 		$this->set('teacherUserData',		$teacherData['User']);
 		$this->set('aalr', 					$aalr);
-		$this->set('groupLessons',	 		$groupLessons);
-		$this->set('allLessons',	 		$allLessons);
+
 	}
 	public function getUserLessons($userId, $year, $month=null) {
-		$allLessons = $this->User->getLessons( $userId, false, $year, $month);
+		$allLessons = $this->User->getLiveLessonsByDate( $userId, false, $year, $month);
 		return $this->success(1, array('lessons'=>$allLessons));
 	}
 
@@ -465,24 +455,21 @@ $id = $scObj->id;
 		if(strtolower($requestType)=='join') {
 			//Join
 			if(!$this->UserLesson->joinRequest( $subjectId, $this->Auth->user('user_id') )) {
-                echo 'cannot join';
-                return ;
-				//$this->Session->setFlash('Cannot join lesson');
-				//$this->redirect($this->referer());
+				$this->Session->setFlash('Cannot join lesson');
+				$this->redirect($this->referer());
 			}
 		} else { //New
-			
+
 			//Create timestamp TODO: check user timezone
-			$datetime = $this->request->query['date'];
-			$datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
-			
-			if($datetime<time()) {
-                echo 'invalid date';
-                return ;
-				//$this->Session->setFlash('Invalid order date');
-				//$this->redirect($this->referer());
-			}
-			$this->UserLesson->lessonRequest($subjectId, $this->Auth->user('user_id'), $datetime);
+            $datetime = null;
+            if(isSet($this->request->query['datetime']) && !empty($this->request->query['datetime'])) {
+                $datetime = $this->request->query['datetime'];
+                $datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
+            }
+			if(!$this->UserLesson->lessonRequest($subjectId, $this->Auth->user('user_id'), $datetime)) {
+                $this->Session->setFlash('Cannot order lesson');
+                $this->redirect($this->referer());
+            }
 		}
     }
 }

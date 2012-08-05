@@ -21,14 +21,22 @@ class TeacherLesson extends AppModel {
 				'message' 	=> 'Must be more then 15 characters'
 			)
 		),
-		'datetime'=> array(
-			'between' => array(
-            	'required'	=> 'create',
-				'allowEmpty'=> false,
-				'rule'    	=> array('datetime', 'ymd'),
-				'message' 	=> 'Between 2 to 45 characters'
-			)
-		),
+        'subject_id'=> array(
+            'validate_subject_id' 	=> array(
+                'allowEmpty'=> true,
+                'rule'    	=> 'validateSubjectId',
+                'message' 	=> 'You cannot use this subject'
+            )
+        ),
+        'request_subject_id'=> array(
+            'validate_request_subject_id' 	=> array(
+                'allowEmpty'=> true,
+                'rule'    	=> 'validateRequestSubjectId',
+                'message' 	=> 'You cannot offer this subject'
+            )
+        ),
+        //Datetime: Cannot be empty for lesson_type=live, it will be checked in beforeValidate below
+
 		'duration_minutes'=> array(
 			'range' 		=> array(
 				'required'	=> 'create',
@@ -97,7 +105,66 @@ class TeacherLesson extends AppModel {
 						'fields'	=>array('avarage_rating', 'image', 'type' )
 					)
 				);
-	
+
+    public function isFutureDatetime($datetime) {
+        return strtotime($datetime['datetime'])>=time();
+    }
+    public function validateSubjectId($subjectID){
+        $subjectID = $subjectID['subject_id'];
+
+        //Load the requested subject
+        $subjectData = $this->Subject->findBySubjectId($subjectID);
+        if(!$subjectData) {
+            $this->invalidate('subject_id', 'Invalid request subject');
+        }
+        $subjectData = $subjectData['Subject'];
+
+        //Validate its a subject offer
+        if($subjectData['type']!=SUBJECT_TYPE_OFFER) {
+            $this->invalidate('request_subject_id', 'must be a offer subject');
+        }
+
+        //The teacher must be the subject owner
+        if(isSet($this->data['TeacherLesson']['teacher_user_id']) && !empty($this->data['TeacherLesson']['teacher_user_id'])) {
+            if($this->data['TeacherLesson']['teacher_user_id']!=$subjectData['user_id']) {
+                $this->invalidate('request_subject_id', 'The teacher must be the subject owner');
+            }
+        }
+
+        return true;
+    }
+    public function validateRequestSubjectId($requestSubjectID){
+        $requestSubjectID = $requestSubjectID['request_subject_id'];
+
+        //Load the requested subject
+        $requestSubjectData = $this->Subject->findBySubjectId($requestSubjectID);
+        if(!$requestSubjectData) {
+            $this->invalidate('request_subject_id', 'Invalid request subject');
+        }
+        $requestSubjectData = $requestSubjectData['Subject'];
+
+        //Validate its a subject request
+        if($requestSubjectID['subject_type']!=SUBJECT_TYPE_REQUEST) {
+            $this->invalidate('request_subject_id', 'must be a request subject');
+        }
+
+        //Validate the the 2 subjects share the same type live/video
+        if(isSet($this->data['TeacherLesson']['lesson_type']) && !empty($this->data['TeacherLesson']['lesson_type'])) {
+            if($requestSubjectData['lesson_type']!=$this->data['TeacherLesson']['lesson_type']) {
+                $this->invalidate('request_subject_id', 'The lesson type must be type of '.$requestSubjectData['type']);
+            }
+        }
+
+        //Check that the owner of $requestSubjectID is the main student
+        if(isSet($this->data['TeacherLesson']['student_user_id']) && !empty($this->data['TeacherLesson']['student_user_id'])) {
+            if($this->data['TeacherLesson']['student_user_id']!=$requestSubjectData['user_id']) {
+                $this->invalidate('request_subject_id', 'The main student must be the owner of the requested subject');
+            }
+        }
+
+        return true;
+    }
+
 	/* Taken from Subject model - start */
 	public function fullGroupTotalPriceCheck( $price ) {
 		if(!isSet($this->data['TeacherLesson']['max_students'])) {
@@ -134,6 +201,40 @@ class TeacherLesson extends AppModel {
         App::import('Model', 'Subject');
         Subject::calcFullGroupStudentPriceIfNeeded($this->data['UserLesson'], ($this->id || !empty($this->data['Subject'][$this->primaryKey])) );
         Subject::extraValidation($this);
+
+
+        if(isSet($this->data['TeacherLesson']['subject_id']) || !empty($this->data['TeacherLesson']['subject_id'])) {
+            $subjectData = $this->Subject->findBySubjectId($this->data['TeacherLesson']['subject_id']);
+            if(!$subjectData) {
+                return false;
+            }
+            $subjectData = $subjectData['Subject'];
+
+
+            if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
+                //Make sure that datetime is not blank for live lessons and that its a future datetime + 1 hour from now
+                $this->validator()->add('datetime', 'datetime', array(
+                    'required'	=> 'create',
+                    'allowEmpty'=> false,
+                    'rule'    	=> array('datetime', 'ymd'),
+                    'message' 	=> 'Invalid datetime format'
+                ))->add('datetime', 'future_datetime', array(
+                    'required'	=> 'create',
+                    'allowEmpty'=> false,
+                    'rule'    	=> 'isFutureDatetime',
+                    'message' 	=> 'Please set a future datetime'
+                ));
+
+            } else if($subjectData['lesson_type']==LESSON_TYPE_VIDEO) {
+
+                //Allow datetime to be blank, or be set to now || any future datetime
+                $this->validator()->add('datetime', 'datetime', array(
+                    'allowEmpty'=> true,
+                    'rule'    	=> array('datetime', 'ymd'),
+                    'message' 	=> 'Invalid datetime format'
+                ));
+            }
+        }
     }
 
 
@@ -158,7 +259,7 @@ class TeacherLesson extends AppModel {
             $subjectData = $subjectData['Subject'];
 
             //Preparer the teacher lesson generic data
-            $teacherLessonData  = array(
+            $teacherLessonData  = array(//request_subject_id
                 'subject_id'				=> $source['id'],
                 'teacher_user_id'			=> $subjectData['user_id'],
                 'subject_type'				=> $subjectData['type'],
@@ -304,6 +405,13 @@ class TeacherLesson extends AppModel {
 		$this->getDataSource();
         $this->Subject; //Init const LESSON_TYPE_LIVE
 
+        if(!$year) {
+            $year = date('Y');
+            $month = date('m');
+        } else if(!$month) {
+            $month = date('m');
+        }
+
 		$startDate = $year.'-'.($month ? $month : 1).'-1';
 		$endDate = $year.'-'.($month ? $month : 12).'-1';
 		
@@ -341,22 +449,21 @@ class TeacherLesson extends AppModel {
 	public function getUpcomming($teacherUserId, $subectId=null, $limit=null, $page=1) {
 		$this->Subject;
 		$conditions = array( 'teacher_user_id'=>$teacherUserId, 'is_deleted'=>0,
-            'AND' => array(
+            /*'AND' => array(
                 array(
                     'OR'=>array(
                         array('subject_type'=>SUBJECT_TYPE_OFFER), //Offers
                         array('subject_type'=>SUBJECT_TYPE_REQUEST, 'num_of_students > 0') //approved lesson requests
                     ),
                 ),
-                array(
+                array(*/
                     'OR'=>array(
                         array('end_datetime > NOW()'),
                         array('end_datetime IS NULL')
 
                     ),
-                ),
-
-            )
+               /* ),
+            )*/
 		);
 
 

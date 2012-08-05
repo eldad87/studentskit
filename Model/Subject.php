@@ -157,11 +157,11 @@ class Subject extends AppModel {
         //New record
         if( !$this->id && !isSet($this->data['Subject']['subject_id'])) {
             if(!isSet($this->data['Subject']['image'])) {
-                //Without image - Set profile image value
-                App::import('Model', 'Profile');
-                $profileObj = new Profile();
-                $profileData = $profileObj->findByUserId($this->data['Subject']['user_id']);
-                $this->data['Subject']['image'] = $profileData['Profile']['image'];
+                //Without image - Set user image value
+                App::import('Model', 'User');
+                $userObj = new User();
+                $UserData = $userObj->findByUserId($this->data['Subject']['user_id']);
+                $this->data['Subject']['image'] = $UserData['User']['image'];
             } else {
                 //Just making sure the right flag is set for subject-image
                 $this->data['Subject']['image'] = IMAGE_SUBJECT;
@@ -468,7 +468,7 @@ class Subject extends AppModel {
 										'limit'=>$limit,
 										'page'=>$page));
 	}*/
-	public function getbyTeacher($teacherUserId, $isOwner=true, $type=SUBJECT_TYPE_OFFER, $page=1, $limit=12, $categoryId=null, $excludeSubject=null ) {
+	public function getbyTeacher($teacherUserId, $isOwner=true, $type=SUBJECT_TYPE_OFFER, $lessonType=null, $page=null, $limit=null, $categoryId=null, $excludeSubject=null ) {
 		$conditions = array('user_id'=>$teacherUserId, 'type'=>SUBJECT_TYPE_OFFER);
 		if(!is_null($excludeSubject)) {
 			$conditions['subject_id !='] = $excludeSubject;
@@ -489,10 +489,18 @@ class Subject extends AppModel {
 		if(!$isOwner) {
 			$conditions['is_public'] = SUBJECT_IS_PUBLIC_TRUE;
 		}
-		
-		return $this->find('all', array('conditions'=>$conditions,
-										'limit'=>$limit,
-										'page'=>$page));
+        if($lessonType) {
+            $conditions['lesson_type'] = $lessonType;
+        }
+
+        $allConditions = array('conditions'=>$conditions);
+        if($page) {
+            $allConditions['page'] = $page;
+        }
+        if($limit) {
+            $allConditions['limit'] = $limit;
+        }
+		return $this->find('all', $allConditions);
 	}
 	
 	public function disable($subjectId) {

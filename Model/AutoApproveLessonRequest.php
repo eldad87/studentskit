@@ -26,12 +26,16 @@ class AutoApproveLessonRequest extends AppModel {
 		$aalrData = $this->getSettings($teacherUserId);
 		if($lessonType==LESSON_TYPE_VIDEO) {
 			return ($aalrData['video'] ? true : false);
-		} else if($lessonType==LESSON_TYPE_LIVE) {
+		} else if($lessonType==LESSON_TYPE_LIVE && $date) {
 			//TODO: check if there is a lesson during that time. also note for userLesson for subject type request
-			
+
+            if(!is_numeric($date)) {
+                $date = strtotime($date);
+            }
 			$weekRange = new WeekRange(json_decode($aalrData['live_range_of_time'], true));
 			return $weekRange->isInRange(date('N', $date), date('G', $date));
 		}
+        return false;
 	}
 }
 
@@ -102,6 +106,9 @@ class HourRange {
 	}
 	
 	public function isInRange($hour) {
+        if(!$this->range) {
+            return false;
+        }
 		return ($hour>=$this->range['start'] && $this->range['end']>=$hour);
 	}
 	
