@@ -331,7 +331,7 @@ CREATE TABLE `notifications` (
 
 /*Data for the table `notifications` */
 
-insert  into `notifications`(`notification_id`,`user_id`,`message`,`message_enum`,`message_params`,`link`) values (1,4,'Sivan Yamin requesting \"video subject 1\" on ','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":null,\"name\":\"video subject 1\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]'),(2,5,'Eldad Yamin accepted you\'r request for \"video subject 1\" on ','teacher.booking.request.accepted','{\"message_enum\":\"teacher.booking.request.accepted\",\"params\":{\"user_lesson_id\":\"1\",\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":null,\"name\":\"video subject 1\"}}','[\"\\/\"]');
+insert  into `notifications`(`notification_id`,`user_id`,`message`,`message_enum`,`message_params`,`link`) values (1,5,'Eldad Yamin propose himself for \"video subject 1\" on ','teacher.subject.request.offer.sent','{\"message_enum\":\"teacher.subject.request.offer.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":null,\"name\":\"video subject 1\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]'),(2,4,'Sivan Yamin accepted you\'r proposal for \"video subject 1\" on ','student.subject.request.offer.accepted','{\"message_enum\":\"student.subject.request.offer.accepted\",\"params\":{\"user_lesson_id\":\"1\",\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":null,\"name\":\"video subject 1\"}}','[\"\\/\"]');
 
 /*Table structure for table `payment_info` */
 
@@ -444,7 +444,6 @@ CREATE TABLE `teacher_lessons` (
   `end_datetime` datetime DEFAULT NULL,
   `subject_category_id` int(11) DEFAULT NULL,
   `forum_id` int(11) DEFAULT NULL,
-  `subject_type` tinyint(2) NOT NULL DEFAULT '1',
   `lesson_type` enum('live','video') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'live',
   `is_public` tinyint(2) unsigned NOT NULL DEFAULT '1',
   `is_deleted` tinyint(2) DEFAULT '0',
@@ -464,7 +463,7 @@ CREATE TABLE `teacher_lessons` (
 
 /*Data for the table `teacher_lessons` */
 
-insert  into `teacher_lessons`(`teacher_lesson_id`,`subject_id`,`request_subject_id`,`teacher_user_id`,`student_user_id`,`datetime`,`end_datetime`,`subject_category_id`,`forum_id`,`subject_type`,`lesson_type`,`is_public`,`is_deleted`,`name`,`description`,`language`,`duration_minutes`,`1_on_1_price`,`max_students`,`full_group_student_price`,`full_group_total_price`,`num_of_pending_join_requests`,`num_of_students`,`num_of_pending_invitations`) values (1,1,NULL,4,5,'2012-08-05 05:34:44','2012-08-07 05:34:44',NULL,NULL,1,'video',1,0,'video subject 1','video subject 1\r\nvideo subject 1\r\nvideo subject 1\r\nvideo subject 1','he',60,0,1,NULL,NULL,0,1,0);
+insert  into `teacher_lessons`(`teacher_lesson_id`,`subject_id`,`request_subject_id`,`teacher_user_id`,`student_user_id`,`datetime`,`end_datetime`,`subject_category_id`,`forum_id`,`lesson_type`,`is_public`,`is_deleted`,`name`,`description`,`language`,`duration_minutes`,`1_on_1_price`,`max_students`,`full_group_student_price`,`full_group_total_price`,`num_of_pending_join_requests`,`num_of_students`,`num_of_pending_invitations`) values (1,1,2,4,5,NULL,NULL,NULL,NULL,'video',1,0,'video subject 1','video subject 1\r\nvideo subject 1\r\nvideo subject 1\r\nvideo subject 1','he',60,0,1,NULL,NULL,0,1,0);
 
 /*Table structure for table `threads` */
 
@@ -505,7 +504,6 @@ CREATE TABLE `user_lessons` (
   `subject_category_id` int(11) DEFAULT NULL,
   `forum_id` int(11) DEFAULT NULL,
   `is_public` tinyint(2) unsigned NOT NULL DEFAULT '1',
-  `subject_type` tinyint(2) NOT NULL DEFAULT '1',
   `lesson_type` enum('live','video') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'video',
   `name` text COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci NOT NULL,
@@ -525,7 +523,7 @@ CREATE TABLE `user_lessons` (
 
 /*Data for the table `user_lessons` */
 
-insert  into `user_lessons`(`user_lesson_id`,`teacher_lesson_id`,`subject_id`,`request_subject_id`,`teacher_user_id`,`student_user_id`,`datetime`,`end_datetime`,`stage`,`subject_category_id`,`forum_id`,`is_public`,`subject_type`,`lesson_type`,`name`,`description`,`language`,`duration_minutes`,`1_on_1_price`,`max_students`,`full_group_student_price`,`full_group_total_price`,`rating_by_student`,`comment_by_student`,`student_image`,`rating_by_teacher`,`comment_by_teacher`) values (1,1,1,NULL,4,5,'2012-08-05 05:34:44','2012-08-07 05:34:44',7,NULL,NULL,1,1,'video','video subject 1','video subject 1\r\nvideo subject 1\r\nvideo subject 1\r\nvideo subject 1','he',60,0,1,NULL,NULL,NULL,NULL,0,NULL,NULL);
+insert  into `user_lessons`(`user_lesson_id`,`teacher_lesson_id`,`subject_id`,`request_subject_id`,`teacher_user_id`,`student_user_id`,`datetime`,`end_datetime`,`stage`,`subject_category_id`,`forum_id`,`is_public`,`lesson_type`,`name`,`description`,`language`,`duration_minutes`,`1_on_1_price`,`max_students`,`full_group_student_price`,`full_group_total_price`,`rating_by_student`,`comment_by_student`,`student_image`,`rating_by_teacher`,`comment_by_teacher`) values (1,1,1,2,4,5,NULL,NULL,7,NULL,NULL,1,'video','video subject 1','video subject 1\r\nvideo subject 1\r\nvideo subject 1\r\nvideo subject 1','he',60,0,1,NULL,NULL,NULL,NULL,0,NULL,NULL);
 
 /*Table structure for table `users` */
 
@@ -568,7 +566,7 @@ CREATE TABLE `users` (
 
 /*Data for the table `users` */
 
-insert  into `users`(`user_id`,`email`,`password`,`password_reset`,`activation_code`,`active`,`first_name`,`last_name`,`image`,`dob`,`phone`,`address`,`zipcode`,`student_avarage_rating`,`student_raters_amount`,`student_total_lessons`,`teacher_about`,`teaching_address`,`teacher_zipcode`,`teacher_total_teaching_minutes`,`teacher_students_amount`,`teacher_total_lessons`,`teacher_avarage_rating`,`teacher_raters_amount`,`language`,`title`,`locale`,`timezone`,`currentLogin`,`lastLogin`,`created`) values (4,'eldad87@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','Yamin',0,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,NULL,'eng','+2','2012-08-05 05:27:49','2012-08-05 01:22:27','2012-07-19 22:50:32'),(5,'sivaneshokol@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Sivan','Yamin',0,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,NULL,NULL,NULL,'2012-08-05 01:59:18','2012-08-04 20:50:30',NULL),(6,'test@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'bba6d5957eff80ee1aa2f0e85f75f9979b4823c2',2,'nana','banana',0,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(7,'nanan@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'6d09a6fbb100b57426819a982cd1d65f35f2ab04',0,'eldad','yamin',0,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(8,'nanan2@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'c0631ff1d127d0af5c855e3c698fac887e6de6e4',0,'eldad','yamin',0,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(9,'nanan3@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'e4154b450ab649927690083bd87d4398458fde11',0,'eldad','yamin',0,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+insert  into `users`(`user_id`,`email`,`password`,`password_reset`,`activation_code`,`active`,`first_name`,`last_name`,`image`,`dob`,`phone`,`address`,`zipcode`,`student_avarage_rating`,`student_raters_amount`,`student_total_lessons`,`teacher_about`,`teaching_address`,`teacher_zipcode`,`teacher_total_teaching_minutes`,`teacher_students_amount`,`teacher_total_lessons`,`teacher_avarage_rating`,`teacher_raters_amount`,`language`,`title`,`locale`,`timezone`,`currentLogin`,`lastLogin`,`created`) values (4,'eldad87@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','Yamin',0,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,NULL,'eng','+2','2012-08-05 05:27:49','2012-08-05 01:22:27','2012-07-19 22:50:32'),(5,'sivaneshokol@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Sivan','Yamin',0,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,NULL,NULL,NULL,'2012-08-05 07:27:40','2012-08-05 01:59:18',NULL),(6,'test@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'bba6d5957eff80ee1aa2f0e85f75f9979b4823c2',2,'nana','banana',0,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(7,'nanan@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'6d09a6fbb100b57426819a982cd1d65f35f2ab04',0,'eldad','yamin',0,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(8,'nanan2@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'c0631ff1d127d0af5c855e3c698fac887e6de6e4',0,'eldad','yamin',0,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(9,'nanan3@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'e4154b450ab649927690083bd87d4398458fde11',0,'eldad','yamin',0,NULL,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

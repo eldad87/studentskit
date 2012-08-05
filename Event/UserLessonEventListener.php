@@ -45,7 +45,8 @@ class UserLessonEventListener implements CakeEventListener {
 
         if($event->data['user_lesson']['teacher_user_id']==$byUserId) {
             $toUserId = $event->data['user_lesson']['student_user_id'];
-            if($event->data['user_lesson']['subject_type']==SUBJECT_TYPE_OFFER) {
+
+            if(empty($event->data['user_lesson']['request_subject_id'])) {
                 //Made on subject offer
                 switch($event->data['user_lesson']['stage']) {
 
@@ -86,7 +87,7 @@ class UserLessonEventListener implements CakeEventListener {
             }
         } else {
             $toUserId = $event->data['user_lesson']['teacher_user_id'];
-            if($event->data['user_lesson']['subject_type']==SUBJECT_TYPE_OFFER) {
+            if(empty($event->data['user_lesson']['request_subject_id'])) {
                 //Made on subject offer
                 switch($event->data['user_lesson']['stage']) {
                     case USER_LESSON_RESCHEDULED_BY_STUDENT:
@@ -164,7 +165,7 @@ class UserLessonEventListener implements CakeEventListener {
 
         if($event->data['user_lesson']['teacher_user_id']==$byUserId) {
             $toUserId = $event->data['user_lesson']['student_user_id'];
-            if($event->data['user_lesson']['subject_type']==SUBJECT_TYPE_OFFER) {
+            if(empty($event->data['user_lesson']['request_subject_id'])) {
                 //Made on subject offer
                 switch($event->data['user_lesson']['stage']) {
                     case USER_LESSON_PENDING_TEACHER_APPROVAL:
@@ -204,7 +205,7 @@ class UserLessonEventListener implements CakeEventListener {
         } else {
             $toUserId = $event->data['user_lesson']['teacher_user_id'];
 
-            if($event->data['user_lesson']['subject_type']==SUBJECT_TYPE_OFFER) {
+            if(empty($event->data['user_lesson']['request_subject_id'])) {
                 //Made on subject offer
                 switch($event->data['user_lesson']['stage']) {
                     case USER_LESSON_RESCHEDULED_BY_TEACHER:
@@ -254,7 +255,7 @@ class UserLessonEventListener implements CakeEventListener {
             //Proposal is made by the teacher
             $toUserId = $event->data['user_lesson']['student_user_id'];
 
-            if($event->data['user_lesson']['subject_type']==SUBJECT_TYPE_OFFER) {
+            if(empty($event->data['user_lesson']['request_subject_id'])) {
                 //Made on subject offer
 
                 switch($event->data['user_lesson']['stage']) {
@@ -299,7 +300,7 @@ class UserLessonEventListener implements CakeEventListener {
             //Proposal is made by the student
             $toUserId = $event->data['user_lesson']['teacher_user_id'];
 
-            if($event->data['user_lesson']['subject_type']==SUBJECT_TYPE_OFFER) {
+            if(empty($event->data['user_lesson']['request_subject_id'])) {
                 //Made on subject offer
                 switch($event->data['user_lesson']['stage']) {
                     case USER_LESSON_RESCHEDULED_BY_STUDENT:
@@ -350,7 +351,7 @@ class UserLessonEventListener implements CakeEventListener {
     public function afterLessonRequest(CakeEvent $event) {
         $toUserId = $messageType = null;
         $byUserId = $event->data['by_user_id'];
-        if($event->data['user_lesson']['subject_type']==SUBJECT_TYPE_OFFER) {
+        if(empty($event->data['user_lesson']['request_subject_id'])) {
             if($byUserId==$event->data['user_lesson']['teacher_user_id']) {
 
                 //Invitation sent by teacher

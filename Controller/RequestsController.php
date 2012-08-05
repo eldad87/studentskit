@@ -87,8 +87,11 @@ class RequestsController extends AppController {
 
 		if (!empty($this->request->data)) {
             //Format datetime
-			$datetime = $this->request->data['UserLesson']['datetime'];
-			$datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
+            $datetime = null;
+            if(isSet($this->request->query['datetime']) && !empty($this->request->query['datetime'])) {
+                $datetime = $this->request->data['UserLesson']['datetime'];
+                $datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
+            }
 			unset($this->request->data['UserLesson']['datetime']);
 
 
@@ -106,7 +109,7 @@ class RequestsController extends AppController {
 
 
         //Get teacher subjects
-        $teacherSubjectsData = $this->Subject->getbyTeacher($this->Auth->user('user_id'), true, SUBJECT_TYPE_OFFER, $subjectData['lesson_type']);
+        $teacherSubjectsData = $this->Subject->getOffersByTeacher($this->Auth->user('user_id'), true, $subjectData['lesson_type']);
 
         //Build DropDown options
         $teacherSubjectsSuggestions = array();
@@ -122,14 +125,20 @@ class RequestsController extends AppController {
 			$this->redirect($this->referer());
 		}
 
-		//Get student lessons for this month - unless $year/$month are set
-        $allLiveLessons = $this->User->getLiveLessonsByDate( $subjectData['user_id'], false, $year, $month);
+        $isLiveLesson = false;
+        if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
+            $isLiveLesson = true;
 
+            //Get student lessons for this month - unless $year/$month are set
+            $allLiveLessons = $this->User->getLiveLessonsByDate( $subjectData['user_id'], false, $year, $month);
 
+            $this->set('allLiveLessons',	 	    $allLiveLessons);
+        }
+
+        $this->set('isLiveLesson',	 	            $isLiveLesson);
 		$this->set('requestSubjectId', 			    $requestSubjectId);
 		$this->set('subjectData', 			        $subjectData);
 		$this->set('studentUserData',		        $studentData['User']);
-		$this->set('allLiveLessons',	 	        $allLiveLessons);
         $this->set('teacherSubjectsSuggestions',    $teacherSubjectsSuggestions);
         $this->set('teacherSubjectsData',           $teacherSubjectsData);
 	}

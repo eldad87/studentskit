@@ -370,17 +370,7 @@ class Subject extends AppModel {
     }
 
 
-    public function getSubjectRequestsForStudent($userId, $limit=12, $page=1) {
-        $this->bindStudentOnLessonRequest();
-        return $this->find('all', array('conditions'=>array(
-                                                    'Subject.user_id'=>$userId,
-                                                    'type'=>SUBJECT_TYPE_REQUEST,
-                                                    'is_enable'=>SUBJECT_IS_PUBLIC_TRUE
-                                                   ),
-                                                    'limit'=>$limit,
-                                                    'page'=>$page
-        ));
-    }
+
 
 	/*public function search( $subjectType=SUBJECT_TYPE_OFFER, $ownerSearch=true, $lang=null, $userId=null, $name=null, $lessonType=null, $categoryId=null, $limit=12, $page=1 ) {
         App::import('Vendor', 'Solr');
@@ -468,7 +458,7 @@ class Subject extends AppModel {
 										'limit'=>$limit,
 										'page'=>$page));
 	}*/
-	public function getbyTeacher($teacherUserId, $isOwner=true, $type=SUBJECT_TYPE_OFFER, $lessonType=null, $page=null, $limit=null, $categoryId=null, $excludeSubject=null ) {
+	public function getOffersByTeacher($teacherUserId, $isOwner=true, $lessonType=null, $page=null, $limit=null, $categoryId=null, $excludeSubject=null ) {
 		$conditions = array('user_id'=>$teacherUserId, 'type'=>SUBJECT_TYPE_OFFER);
 		if(!is_null($excludeSubject)) {
 			$conditions['subject_id !='] = $excludeSubject;
@@ -502,6 +492,17 @@ class Subject extends AppModel {
         }
 		return $this->find('all', $allConditions);
 	}
+    public function getOffersByStudent($userId, $limit=12, $page=1) {
+        $this->bindStudentOnLessonRequest();
+        return $this->find('all', array('conditions'=>array(
+            'Subject.user_id'=>$userId,
+            'type'=>SUBJECT_TYPE_REQUEST,
+            'is_enable'=>SUBJECT_IS_PUBLIC_TRUE
+        ),
+            'limit'=>$limit,
+            'page'=>$page
+        ));
+    }
 	
 	public function disable($subjectId) {
 		//TODO: check for active waiting teacher lessons, if so - stop

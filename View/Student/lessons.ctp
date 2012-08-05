@@ -101,7 +101,7 @@ foreach($archiveLessons AS $archiveLesson) {
 <?php 
 foreach($lessonInvitations AS $lessonInvitation) {
 	echo 'user_lesson_id: ',$lessonInvitation['UserLesson']['user_lesson_id'],'<br />';
-	echo 'Is offer: ',($lessonInvitation['UserLesson']['subject_type']==SUBJECT_TYPE_OFFER ? 'Offer' : 'Request'),'<br />';
+	echo 'Is offer: ',(empty($lessonInvitation['UserLesson']['request_subject_id']) ? 'Offer' : 'Request'),'<br />';
 	
 	echo 'datetime: ',$lessonInvitation['UserLesson']['datetime'],'<br />';
 	echo 'Name: ',$lessonInvitation['UserLesson']['name'],'<br />';

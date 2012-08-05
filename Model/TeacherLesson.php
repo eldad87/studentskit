@@ -144,7 +144,7 @@ class TeacherLesson extends AppModel {
         $requestSubjectData = $requestSubjectData['Subject'];
 
         //Validate its a subject request
-        if($requestSubjectID['subject_type']!=SUBJECT_TYPE_REQUEST) {
+        if($requestSubjectData['type']!=SUBJECT_TYPE_REQUEST) {
             $this->invalidate('request_subject_id', 'must be a request subject');
         }
 
@@ -245,8 +245,6 @@ class TeacherLesson extends AppModel {
         //TODO: check if there is no lesson at that time
         $teacherLessonData = array();
         if($source['type']=='subject') {
-
-
             App::import('Model', 'Subject');
             $subjectObj = new Subject();
 
@@ -258,11 +256,15 @@ class TeacherLesson extends AppModel {
             }
             $subjectData = $subjectData['Subject'];
 
+            //Teacher lesson must be for lesson type offer
+            if($subjectData['type']!=SUBJECT_TYPE_OFFER) {
+                return false;
+            }
+
             //Preparer the teacher lesson generic data
             $teacherLessonData  = array(//request_subject_id
                 'subject_id'				=> $source['id'],
                 'teacher_user_id'			=> $subjectData['user_id'],
-                'subject_type'				=> $subjectData['type'],
                 'lesson_type'				=> $subjectData['lesson_type'],
                 'language'				    => $subjectData['language'],
                 'datetime'					=> $this->Subject->datetimeToStr($datetime), //Convert timestamp to datetime
@@ -271,7 +273,6 @@ class TeacherLesson extends AppModel {
                 'name'						=> $subjectData['name'],
                 'description'				=> $subjectData['description'],
                 'is_public'					=> is_null($isPublic) ? $subjectData['is_public'] : $isPublic,
-                'subject_type'				=> $subjectData['type'],
                 'duration_minutes'			=> $subjectData['duration_minutes'],
                 'max_students'				=> $subjectData['max_students'],
                 '1_on_1_price'				=> $subjectData['1_on_1_price'],
@@ -284,24 +285,12 @@ class TeacherLesson extends AppModel {
                 $teacherLessonData['end_datetime'] = $this->Subject->datetimeToStr($datetime, $subjectData['duration_minutes']);
             }
 
-            if($teacherLessonData['subject_type'] == SUBJECT_TYPE_OFFER) {
-                //Only the teacher that opened the subject can teach it
-                unset($extra['teacher_user_id']);
-            }
+            //The teacher must be the subject owner
+            unset($extra['teacher_user_id']);
             $teacherLessonData = am($teacherLessonData, $extra);
 
-            if($teacherLessonData['subject_type'] == SUBJECT_TYPE_REQUEST && $subjectData['user_id']==$teacherLessonData['teacher_user_id']) {
-                //The subject owner cannot teach it
-                return false;
-            }
-
             if(!isSet($teacherLessonData['student_user_id'])) {
-                if($teacherLessonData['subject_type'] == SUBJECT_TYPE_REQUEST) {
-                    //Deafult student user id
-                    $teacherLessonData['student_user_id'] = $subjectData['user_id'];
-                } else {
-                    return false;
-                }
+                return false;
             }
 
         } else if($source['type']=='user_lesson') {
@@ -314,10 +303,8 @@ class TeacherLesson extends AppModel {
             }
             $teacherLessonData = $ulData['UserLesson'];
 
-            if($teacherLessonData['subject_type'] == SUBJECT_TYPE_OFFER) {
-                //Only the teacher that opened the subject can teach it
-                unset($extra['teacher_user_id']);
-            }
+            //Only the teacher that opened the subject can teach it
+            unset($extra['teacher_user_id']);
             $teacherLessonData = am($teacherLessonData, $extra);
 
         } else {
@@ -449,21 +436,11 @@ class TeacherLesson extends AppModel {
 	public function getUpcomming($teacherUserId, $subectId=null, $limit=null, $page=1) {
 		$this->Subject;
 		$conditions = array( 'teacher_user_id'=>$teacherUserId, 'is_deleted'=>0,
-            /*'AND' => array(
-                array(
-                    'OR'=>array(
-                        array('subject_type'=>SUBJECT_TYPE_OFFER), //Offers
-                        array('subject_type'=>SUBJECT_TYPE_REQUEST, 'num_of_students > 0') //approved lesson requests
-                    ),
-                ),
-                array(*/
-                    'OR'=>array(
-                        array('end_datetime > NOW()'),
-                        array('end_datetime IS NULL')
+                'OR'=>array(
+                    array('end_datetime > NOW()'),
+                    array('end_datetime IS NULL')
 
-                    ),
-               /* ),
-            )*/
+                )
 		);
 
 
@@ -481,7 +458,7 @@ class TeacherLesson extends AppModel {
 	}
 	
 	/*public function getPendingProposedLessons($teacherUserId, $subectId=null, $limit=null, $page=1) {
-		$conditions = array( 'teacher_user_id'=>$teacherUserId, 'datetime > NOW()', 'is_deleted'=>0, 'subject_type'=>SUBJECT_TYPE_REQUEST, 'num_of_students'=>0 );
+		$conditions = array( 'teacher_user_id'=>$teacherUserId, 'datetime > NOW()', 'is_deleted'=>0, 'request_subject_id IS NOT NULL', 'num_of_students'=>0 );
 		if($subectId) {
 			$conditions['TeacherLesson.subject_id'] = $subectId;
 		}

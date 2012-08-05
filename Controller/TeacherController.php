@@ -21,7 +21,7 @@ class TeacherController extends AppController {
 	}
 	
 	public function subjects($limit=5, $page=1) {
-		$subjects = $this->Subject->getbyTeacher($this->Auth->user('user_id'), true, SUBJECT_TYPE_OFFER, null, $page, $limit);
+		$subjects = $this->Subject->getOffersByTeacher($this->Auth->user('user_id'), true, null, $page, $limit);
 		$this->Set('teacherImage', $this->Auth->user('image'));
 		$this->Set('subjects', $subjects);
 	}
@@ -41,7 +41,6 @@ class TeacherController extends AppController {
             //$this->Subject->set($this->request->data);
 
             if($this->Subject->save($this->request->data)) {
-
                 $this->Session->setFlash('Subject saved');
                 $this->redirect(array('action'=>'subjects'));
             }

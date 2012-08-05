@@ -205,7 +205,7 @@ class UserLesson extends AppModel {
         $requestSubjectData = $requestSubjectData['Subject'];
 
         //Validate its a subject request
-        if($requestSubjectID['subject_type']!=SUBJECT_TYPE_REQUEST) {
+        if($requestSubjectData['type']!=SUBJECT_TYPE_REQUEST) {
             $this->invalidate('request_subject_id', 'must be a request subject');
         }
 
@@ -340,6 +340,11 @@ class UserLesson extends AppModel {
 		}
         $subjectData = $subjectData['Subject'];
 
+        //User lesson must be for lesson type offer
+        if($subjectData['type']!=SUBJECT_TYPE_OFFER) {
+            return false;
+        }
+
 		//Prepare the user lesson generic data
 		$userLesson = array(
 			//'teacher_lesson_id'		=> null,
@@ -350,12 +355,10 @@ class UserLesson extends AppModel {
 			'subject_category_id'		=> $subjectData['subject_category_id'],
 			'forum_id'		            => $subjectData['forum_id'],
 			'datetime'					=> $datetime ? $this->Subject->datetimeToStr($datetime) : null,
-			'subject_type'				=> $subjectData['type'],
 			'lesson_type'				=> $subjectData['lesson_type'],
 			'language'				    => $subjectData['language'],
 			'name'						=> $subjectData['name'],
 			'description'				=> $subjectData['description'],
-			'subject_type'				=> $subjectData['type'],
 			'duration_minutes'			=> $subjectData['duration_minutes'],
 			'max_students'				=> $subjectData['max_students'],
 			'1_on_1_price'				=> $subjectData['1_on_1_price'],
@@ -367,6 +370,7 @@ class UserLesson extends AppModel {
         //Reverse the stages, in use for teacher invite students, or on SUBJECT_TYPE_REQUEST - sending requests to teachers
         if($reverseStage) {
            $userLesson['stage'] = ($userLesson['stage']==USER_LESSON_PENDING_TEACHER_APPROVAL) ? USER_LESSON_PENDING_STUDENT_APPROVAL : USER_LESSON_PENDING_TEACHER_APPROVAL;
+           $userId = ($userId==$userLesson['teacher_user_id']) ? $userLesson['student_user_id'] : $userLesson['teacher_user_id'];
         }
 
         //Set the end of the lesson, video lesson end date is first-watching-time+2 days
@@ -416,12 +420,12 @@ class UserLesson extends AppModel {
 		$teacherLessonData = $teacherLessonData['TeacherLesson'];
 
         App::import('Model', 'Subject');
-		//users can't join video lessons, only to live lessons, unless it's a lesson request
-		if($teacherLessonData['lesson_type']==LESSON_TYPE_VIDEO && $teacherLessonData['subject_type']==SUBJECT_TYPE_OFFER) {
+		//users can't join video lessons, only to live lessons
+		if($teacherLessonData['lesson_type']==LESSON_TYPE_VIDEO) {
 			return false;
 		}
-		if($teacherLessonData['subject_type']==SUBJECT_TYPE_REQUEST && is_null($studentUserId)) {
-			$subjectData = $this->Subject->findBySubjectId($teacherLessonData['subject_id']);
+		if(!empty($teacherLessonData['request_subject_id']) && is_null($studentUserId)) {
+			$subjectData = $this->Subject->findBySubjectId($teacherLessonData['request_subject_id']);
 			if(!$subjectData) {
 				return false;
 			}
@@ -477,7 +481,6 @@ class UserLesson extends AppModel {
 			'language'				    => $teacherLessonData['language'],
 			'name'						=> $teacherLessonData['name'],
 			'description'				=> $teacherLessonData['description'],
-			'subject_type'				=> $teacherLessonData['subject_type'],
 			'duration_minutes'			=> $teacherLessonData['duration_minutes'],
 			'max_students'				=> $teacherLessonData['max_students'],
 			'1_on_1_price'				=> $teacherLessonData['1_on_1_price'],
@@ -586,18 +589,15 @@ class UserLesson extends AppModel {
             App::import('Model', 'TeacherLesson');
             $teacherLessonObj = new TeacherLesson();
 
-			//if subject type=request, and the cancel user is the subject owner, cancel all other invitations+teacher lesson
-			if($userLessonData['subject_type']==SUBJECT_TYPE_REQUEST) {
-				//Find the teacher lesson
-				$teacherLessonData = $teacherLessonObj->findByTeacherLessonId($userLessonData['teacher_lesson_id']);
-				if($teacherLessonData['TeacherLesson']['student_user_id']==$byUserId) {
-					if(!$teacherLessonObj->cancel($teacherLessonData['student_user_id'])) {
-						return false;
-					}
-				}
+			//if the cancel user is the TeacherLesson owner student, cancel all other invitations+teacher lesson
+            $teacherLessonData = $teacherLessonObj->findByTeacherLessonId($userLessonData['teacher_lesson_id']);
+            if($teacherLessonData['TeacherLesson']['student_user_id']==$byUserId) {
+                if(!$teacherLessonObj->cancel($teacherLessonData['student_user_id'])) {
+                    return false;
+                }
+            }
 				
-			}
-			
+
 			//Update the num_of_pending_invitations/num_of_pending_join_requests counter
 			$teacherLessonObj->id = $userLessonData['teacher_lesson_id'];
 			$teacherLessonObj->set(array($counterDBField=>$this->getDataSource()->expression($counterDBField.'-1')));
@@ -852,29 +852,6 @@ class UserLesson extends AppModel {
 	
 	/**
 	 * 
-	 * Get all new lessons requests for a spesific subject
-	 * @param unknown_type $subjectId
-	 * @param unknown_type $page
-	 * @param unknown_type $limit
-	 */
-	public function getNewLessonRequest( $subjectId, $page=1, $limit=1 ) {
-		App::import('Model', 'Subject');
-		$conditions = array('subject_id'=>$subjectId,
-							'subject_type'=>SUBJECT_TYPE_OFFER,
-							'teacher_lesson_id IS NULL',
-							'stage'=>USER_LESSON_PENDING_TEACHER_APPROVAL);
-		
-		
-		
-		return $this->find('all', array('conditions'=>$conditions, 
-								'order'=>'datetime',
-								'limit'=>( $limit ? $limit : null),
-								'page'=>$page
-			));
-	}
-	
-	/**
-	 * 
 	 * Get all student lessons for given $stages in a given year/month
 	 * @param unknown_type $studentUserId
 	 * @param unknown_type $stages
@@ -912,7 +889,7 @@ class UserLesson extends AppModel {
 	public function getUpcomming($studentUserId, $limit=null, $page=1) {
 		$this->Subject;
 		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId, 'UserLesson.teacher_lesson_id IS NOT NULL'), '>', $limit, $page,
-                                    array(USER_LESSON_ACCEPTED), array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
+                                    array(USER_LESSON_ACCEPTED));
 	}
 
 	public function getArchive($studentUserId, $limit=null, $page=1) {
@@ -934,20 +911,18 @@ class UserLesson extends AppModel {
 	}
 
     public function getBooking($studentUserId, $limit=null, $page=1) {
-        return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), '>', $limit, $page, array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT),
-                                                                                                            array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
+        return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), '>', $limit, $page, array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT));
     }
 	public function getInvitations($studentUserId, $limit=null, $page=1) {
 		$this->Subject;
-		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER),
-                                                                                                            array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
+		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER));
 	}
 	
 	/*public function withTeacherReview($studentUserId, $limit=null, $page=1) {
 		return $this->getLessons(array('student_user_id'=>$studentUserId), null, $limit, $page, array(USER_LESSON_PENDING_STUDENT_RATING, USER_LESSON_DONE));
 	}*/
 	public function waitingStudentReview($studentUserId, $limit=null, $page=1) {
-		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), null, $limit, $page, array(USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_STUDENT_RATING), array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
+		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), null, $limit, $page, array(USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_STUDENT_RATING));
 	}
 
 
@@ -958,10 +933,10 @@ class UserLesson extends AppModel {
 		if($subjectId) {
 			$conditions['UserLesson.subject_id'] = $teacherUserId;
 		}
-		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER), array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
+		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER));
 	}
 
-    /*//Get lessons that waiting for student to approval and SUBJECT_TYPE_REQUEST
+    /*//Get lessons that waiting for student to approval and
 	public function getPendingProposedTeacherLessons($teacherUserId, $subjectId=null, $limit=null, $page=1) {
         $this->unbindModel(array('belongsTo'=>array('Teacher', 'TeacherLesson')));
 
@@ -969,7 +944,8 @@ class UserLesson extends AppModel {
         if($subjectId) {
             $conditions['UserLesson.subject_id'] = $teacherUserId;
         }
-        return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER), SUBJECT_TYPE_REQUEST);
+        $conditions[] = 'request_subject_id IS NOT NULL';
+        return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER));
     }*/
 
     //Get lesson requests that waiting for the teacher approval
@@ -980,20 +956,19 @@ class UserLesson extends AppModel {
 		if($subjectId) {
 			$conditions['UserLesson.subject_id'] = $teacherUserId;
 		}
-		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT), array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
+		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT));
 	}
 
 	public function waitingTeacherReview($teacehrUserId, $limit=null, $page=1) {
         $this->Subject;
         //Teacher cannot rate video lesson student.
-		return $this->getLessons(array('UserLesson.teacher_user_id'=>$teacehrUserId, 'lesson_type'=>LESSON_TYPE_LIVE), null, $limit, $page, array(USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING), array(SUBJECT_TYPE_OFFER, SUBJECT_TYPE_REQUEST));
+		return $this->getLessons(array('UserLesson.teacher_user_id'=>$teacehrUserId, 'lesson_type'=>LESSON_TYPE_LIVE), null, $limit, $page, array(USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING));
 	}
 	
-	public function getLessons($conditions, $time='>', $limit=null, $page=1, $stage=array(), $subjectType=null) {
+	public function getLessons($conditions, $time='>', $limit=null, $page=1, $stage=array()) {
 		
 		$find = 'all';
 		App::import('Model', 'Subject');
-		$conditions['UserLesson.subject_type'] = (!$subjectType ? SUBJECT_TYPE_OFFER : $subjectType);
 		
 		
 		if(is_numeric($time)) {

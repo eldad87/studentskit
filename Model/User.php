@@ -182,7 +182,7 @@ class User extends AppModel {
 			//Dim all none public/subject request teacherLessons
 			foreach($teacherLessons AS &$teacherLesson) {
 				//If !$isOwner, hide details about teacherLessons
-				if( !$isOwner && ( !$teacherLesson['TeacherLesson']['is_public'] || $teacherLesson['TeacherLesson']['subject_type']!=SUBJECT_TYPE_OFFER))  {
+				if( !$isOwner && !$teacherLesson['TeacherLesson']['is_public'] )  {
 					$allLessons[] = array(	'name'=>null, 'type'=>'TeacherLesson', 
 											'datetime'=>$teacherLesson['TeacherLesson']['datetime'], 'duration_minutes'=>$teacherLesson['TeacherLesson']['duration_minutes']);
 					
@@ -193,7 +193,7 @@ class User extends AppModel {
 											'num_of_students'=>$teacherLesson['TeacherLesson']['num_of_students'],'max_students'=>$teacherLesson['TeacherLesson']['max_students'],
 											'1_on_1_price'=>$teacherLesson['TeacherLesson']['1_on_1_price'],'full_group_total_price'=>$teacherLesson['TeacherLesson']['full_group_total_price'],
 											'full_group_student_price'=>$teacherLesson['TeacherLesson']['full_group_student_price'],
-											'subject_type'=>$teacherLesson['TeacherLesson']['subject_type']
+											'request_subject_id'=>$teacherLesson['TeacherLesson']['request_subject_id']
 											);
 				}
 			}
@@ -204,19 +204,19 @@ class User extends AppModel {
 			//Dim all none public userLessons or if user does not allow to publish his lessons as a student (!$showUserLessonsToOthers)
 			foreach($userLessons AS &$userLesson) {
 				//If !$isOwner, hide details about userLessons
-					if(!$isOwner && (!$showUserLessonsToOthers || !$userLesson['UserLesson']['is_public'] || $userLesson['UserLesson']['subject_type']!=SUBJECT_TYPE_OFFER)) {
+					if(!$isOwner && (!$showUserLessonsToOthers || !$userLesson['UserLesson']['is_public'])) {
 						//unset($userLesson['Subject'], $userLesson['Teacher'], $userLesson['Student']);
 						$allLessons[] = array(	'name'=>null, 'type'=>'UserLesson', 
 												'datetime'=>$userLesson['UserLesson']['datetime'], 'duration_minutes'=>$userLesson['UserLesson']['duration_minutes']);
 					} else {
 						
 						$allLessons[] = array(	'user_lesson_id'=>$userLesson['UserLesson']['user_lesson_id'], 'teacher_lesson_id'=>$userLesson['UserLesson']['teacher_lesson_id'],
-												'name'=>$userLesson['UserLesson']['name'], 'stage'=>$userLesson['UserLesson']['stage'], 'type'=>'UserLesson', 
+												'name'=>$userLesson['UserLesson']['name'], 'stage'=>$userLesson['UserLesson']['stage'], 'type'=>'UserLesson',
 												'datetime'=>$userLesson['UserLesson']['datetime'], 'duration_minutes'=>$userLesson['UserLesson']['duration_minutes'],
 												'num_of_students'=>$userLesson['TeacherLesson']['num_of_students'], 'max_students'=>$userLesson['TeacherLesson']['max_students'],
 												'1_on_1_price'=>$userLesson['UserLesson']['1_on_1_price'], 'full_group_total_price'=>$userLesson['UserLesson']['full_group_total_price'],
 												'full_group_student_price'=>$userLesson['UserLesson']['full_group_student_price'],
-												'subject_type'=>$userLesson['UserLesson']['subject_type']
+												'request_subject_id'=>$userLesson['UserLesson']['request_subject_id']
 												);
 					}
 			}

@@ -237,7 +237,7 @@ $id = $scObj->id;
 		$subjectRatingByStudents = $this->Subject->getRatingByStudents( $subjectId, 2 );
 		
 		//Get teacher other subjects
-		$teacherOtherSubjects = $this->Subject->getbyTeacher( $subjectData['user_id'], false, SUBJECT_TYPE_OFFER, null, 1, 6, null, $subjectId );
+		$teacherOtherSubjects = $this->Subject->getOffersByTeacher( $subjectData['user_id'], false, null, 1, 6, null, $subjectId );
 
 		//Get teacher data
 		$teacherData = $this->User->findByUserId( $subjectData['user_id'] );
@@ -356,7 +356,7 @@ $id = $scObj->id;
 		}
 		
 		//Get teacher other subjects
-		$teacherSubjects = $this->Subject->getbyTeacher( $teacherUserId, false, SUBJECT_TYPE_OFFER, null, 1, 6 );
+		$teacherSubjects = $this->Subject->getOffersByTeacher( $teacherUserId, false, null, 1, 6 );
 
 		
 		//Get students comments for that teacher
@@ -373,7 +373,7 @@ $id = $scObj->id;
 		return $this->success(1, array('rating'=>$subjectRatingByStudents));
 	}
 	public function getTeacherSubjects($teacherUserId, $limit=6, $page=1) {
-		$teacherOtherSubjects = $this->Subject->getbyTeacher( $teacherUserId, false, SUBJECT_TYPE_OFFER, null, $page, $limit );
+		$teacherOtherSubjects = $this->Subject->getOffersByTeacher( $teacherUserId, false, null, $page, $limit );
 		return $this->success(1, array('subjects'=>$teacherOtherSubjects));
 	}
 	
