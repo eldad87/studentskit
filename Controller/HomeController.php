@@ -28,7 +28,23 @@ class HomeController extends AppController {
     public function testAddCategory() {
         App::import('Model', 'SubjectCategory');
         $scObj = new SubjectCategory();
+
+
+       /* $scObj->create();
+        $scObj->set(array('name'=>'Spirituality', 'description'=>'about spirituality'));
+        $scObj->save();
+        $id = $scObj->id;
+
+
         $scObj->create();
+        $scObj->locale = 'heb'; // we are going to save the german version
+        $scObj->id = $id;
+        $scObj->save(array('name'=>'רוחניות', 'description'=>'אודות רוחניות'));
+
+        $scObj->locale = 'he_he';
+        pr($scObj->find('all'));*/
+
+        /*$scObj->create();
         $scObj->set(array('name'=>'Spirituality', 'description'=>'about spirituality'));
         $scObj->save();
         $id = $scObj->id;
@@ -81,7 +97,7 @@ $id = $scObj->id;
 
         $scObj->create();
         $scObj->set(array('name'=>'NoSQL', 'description'=>'NoSQL', 'parent_subject_category_id'=>$id2));
-        $scObj->save();
+        $scObj->save();*/
 
 
 
@@ -224,7 +240,7 @@ $id = $scObj->id;
 		if(!$subjectData || $subjectData['Subject']['is_enable']==SUBJECT_IS_ENABLE_FALSE) {
 			
 			if (!$this->RequestHandler->isAjax()) {
-				$this->Session->setFlash('Cannot view this subject');
+				$this->Session->setFlash(__('Cannot view this subject'));
 				$this->redirect($this->referer());
 			}
 			return false;
@@ -243,7 +259,7 @@ $id = $scObj->id;
 		$teacherData = $this->User->findByUserId( $subjectData['user_id'] );
 		if(!$teacherData) {
 			if (!$this->RequestHandler->isAjax()) {
-				$this->Session->setFlash('Internal error');
+				$this->Session->setFlash(__('Internal error'));
 				$this->redirect($this->referer());
 			}
 			return false;
@@ -289,7 +305,7 @@ $id = $scObj->id;
         //Get the lesson status
         $liveRequestStatus = $this->UserLesson->getLiveLessonStatus($teacherLessonId, $this->Auth->user('user_id'));
         if($liveRequestStatus['overdue']) {
-            $this->Session->setFlash('Lesson is overdue');
+            $this->Session->setFlash(__('Lesson is overdue'));
             $this->redirect(array('controller'=>'Home', 'action'=>'teacherSubject', $teacherLessonData['subject_id']));
         } else if($liveRequestStatus['payment_needed']) {
             $this->set('showPayment', true);
@@ -394,20 +410,20 @@ $id = $scObj->id;
 		//Get subject data, students_amount, raters_amount, avarage_rating
 		$subjectData = $this->Subject->findBySubjectId( $subjectId );
 		if(!$subjectData || $subjectData['Subject']['is_enable']==SUBJECT_IS_ENABLE_FALSE) {
-			$this->Session->setFlash('This subject is no longer available');
+			$this->Session->setFlash(__('This subject is no longer available'));
 			$this->redirect($this->referer());
 		}
 		$subjectData = $subjectData['Subject'];
 		
 		if($subjectData['type']!=SUBJECT_TYPE_OFFER) {
-			$this->Session->setFlash('This lesson cannot be ordered');
+			$this->Session->setFlash(__('This lesson cannot be ordered'));
 			$this->redirect($this->referer());
 		}
 		
 		//Get teacher data
 		$teacherData = $this->User->findByUserId( $subjectData['user_id'] );
 		if(!$teacherData) {
-			$this->Session->setFlash('Internal error');
+			$this->Session->setFlash(__('Internal error'));
 			$this->redirect($this->referer());
 		}
 		
@@ -455,7 +471,7 @@ $id = $scObj->id;
 		if(strtolower($requestType)=='join') {
 			//Join
 			if(!$this->UserLesson->joinRequest( $subjectId, $this->Auth->user('user_id') )) {
-				$this->Session->setFlash('Cannot join lesson');
+				$this->Session->setFlash__(('Cannot join lesson'));
 				$this->redirect($this->referer());
 			}
 		} else { //New
@@ -467,7 +483,7 @@ $id = $scObj->id;
                 $datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
             }
 			if(!$this->UserLesson->lessonRequest($subjectId, $this->Auth->user('user_id'), $datetime)) {
-                $this->Session->setFlash('Cannot order lesson');
+                $this->Session->setFlash(__('Cannot order lesson'));
                 $this->redirect($this->referer());
             }
 		}

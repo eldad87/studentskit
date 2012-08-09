@@ -48,7 +48,7 @@ class UserLesson extends AppModel {
                     'required'	=> 'create',
                     'allowEmpty'=> false,
                     'rule'    	=> array('between', 2, 45),
-                    'message' 	=> 'Between 2 to 45 characters'
+                    'message' 	=> 'Between %d to %d characters'
                 )
             ),
             'description'=> array(
@@ -56,7 +56,7 @@ class UserLesson extends AppModel {
                     'required'	=> 'create',
                     'allowEmpty'=> false,
                     'rule'    	=> array('minLength', 15),
-                    'message' 	=> 'Must be more then 15 characters'
+                    'message' 	=> 'Must be more then %d characters'
                 )
             ),
             'subject_id'=> array(
@@ -79,7 +79,7 @@ class UserLesson extends AppModel {
                     'required'	=> 'create',
                     'allowEmpty'=> false,
                     'rule'    	=> array('range', 4, 241),
-                    'message' 	=> 'Lesson must be more then 5 minutes and less then 240 minutes (4 hours)'
+                    'message' 	=> 'Lesson must be more then %d minutes and less then %d minutes'
                 )
             ),
             '1_on_1_price'=> array(
@@ -93,7 +93,7 @@ class UserLesson extends AppModel {
                     'required'	=> 'create',
                     'allowEmpty'=> false,
                     'rule'    	=> array('range', -1, 500),
-                    'message' 	=> 'Price must be more then 0 and less then 500'
+                    'message' 	=> 'Price must be more then %d and less then %d'
                 )
             ),
            'max_students'=> array(
@@ -107,7 +107,7 @@ class UserLesson extends AppModel {
                     'required'	=> 'create',
                     'allowEmpty'=> true,
                     'rule'    	=> array('range', 0, 1025),
-                    'message' 	=> 'Lesson must have more then 1 or less then 1024 students'
+                    'message' 	=> 'Lesson must have more then %d or less then %d students'
                 ),
             ),
 
@@ -119,8 +119,8 @@ class UserLesson extends AppModel {
                 ),
                 'price_range' => array(
                     'allowEmpty'=> true,
-                    'rule'    	=> array('range', -1, 2500),
-                    'message' 	=> 'Price must be more then 0 and less then 2500'
+                    'rule'    	=> array('range', -1, 2501),
+                    'message' 	=> 'Price must be more then %d and less then %d'
                 ),
                 'full_group_total_price' 	=> array(
                     //'required'	=> 'create',
@@ -134,7 +134,7 @@ class UserLesson extends AppModel {
 					'rule'			=> array('between', 15, 255),
 					'on'			=> 'update',
 					'allowEmpty'	=> false,
-					'message' 		=> 'Please write a review with 15-255 characters'
+					'message' 		=> 'Please write a review with %d-%d characters'
 				)
 			),
 			'rating_by_student' => array(
@@ -148,7 +148,7 @@ class UserLesson extends AppModel {
 					'rule'			=> array('range', 0, 5),
 					'on'			=> 'update',
 					'allowEmpty'	=> false,
-					'message' 		=> 'Please enter a number between 0 and 5'
+					'message' 		=> 'Please enter a number between %d and %d'
 				),
 			),
 		);
@@ -174,19 +174,19 @@ class UserLesson extends AppModel {
         //Load the requested subject
         $subjectData = $this->Subject->findBySubjectId($subjectID);
         if(!$subjectData) {
-            $this->invalidate('subject_id', 'Invalid request subject');
+            $this->invalidate('subject_id', __('Invalid request subject'));
         }
         $subjectData = $subjectData['Subject'];
 
         //Validate its a subject offer
         if($subjectData['type']!=SUBJECT_TYPE_OFFER) {
-            $this->invalidate('request_subject_id', 'must be a offer subject');
+            $this->invalidate('request_subject_id', __('must be a offer subject'));
         }
 
         //The teacher must be the subject owner
         if(isSet($this->data['UserLesson']['teacher_user_id']) && !empty($this->data['UserLesson']['teacher_user_id'])) {
             if($this->data['UserLesson']['teacher_user_id']!=$subjectData['user_id']) {
-                $this->invalidate('request_subject_id', 'The teacher must be the subject owner');
+                $this->invalidate('request_subject_id', __('The teacher must be the subject owner'));
             }
         }
 
@@ -200,26 +200,30 @@ class UserLesson extends AppModel {
         //Load the requested subject
         $requestSubjectData = $this->Subject->findBySubjectId($requestSubjectID);
         if(!$requestSubjectData) {
-            $this->invalidate('request_subject_id', 'Invalid request subject');
+            $this->invalidate('request_subject_id', __('Invalid request subject'));
         }
         $requestSubjectData = $requestSubjectData['Subject'];
 
         //Validate its a subject request
         if($requestSubjectData['type']!=SUBJECT_TYPE_REQUEST) {
-            $this->invalidate('request_subject_id', 'must be a request subject');
+            $this->invalidate('request_subject_id', __('must be a request subject'));
         }
 
         //Validate the the 2 subjects share the same type live/video
         if(isSet($this->data['UserLesson']['lesson_type']) && !empty($this->data['UserLesson']['lesson_type'])) {
             if($requestSubjectData['lesson_type']!=$this->data['UserLesson']['lesson_type']) {
-                $this->invalidate('request_subject_id', 'The lesson type must be type of '.$requestSubjectData['type']);
+                if($requestSubjectData['type']==LESSON_TYPE_LIVE) {
+                    $this->invalidate('request_subject_id', __('Please chose a LIVE lesson as a suggestion') );
+                }  else if($requestSubjectData['type']==LESSON_TYPE_VIDEO) {
+                    $this->invalidate('request_subject_id', __('Please chose a VIDEO lesson as a suggestion') );
+                }
             }
         }
 
         //Check that the owner of $requestSubjectID is the main student
         /*if(isSet($this->data['UserLesson']['student_user_id']) && !empty($this->data['UserLesson']['student_user_id'])) {
             if($this->data['UserLesson']['student_user_id']!=$requestSubjectData['user_id']) {
-                $this->invalidate('request_subject_id', 'The main student must be the owner of the requested subject');
+                $this->invalidate('request_subject_id', __('The main student must be the owner of the requested subject'));
             }
         }*/
 
@@ -227,7 +231,7 @@ class UserLesson extends AppModel {
     }
     public function fullGroupTotalPriceCheck( $price ) {
         if(!isSet($this->data['UserLesson']['max_students'])) {
-            $this->invalidate('max_students', 'Please enter a valid max students');
+            $this->invalidate('max_students', __('Please enter a valid max students'));
             return false;
         } else  {
             if(	isSet($this->data['UserLesson']['full_group_total_price']) && !empty($this->data['UserLesson']['full_group_total_price']) &&
@@ -236,11 +240,11 @@ class UserLesson extends AppModel {
                 //Check if full_group_total_price is MORE then  max_students*1_on_1_price
                 $maxAllowed = $this->data['UserLesson']['max_students']*$this->data['UserLesson']['1_on_1_price'];
                 if($this->data['UserLesson']['full_group_total_price']>$maxAllowed) {
-                    $this->invalidate('max_students', 'Group price error, max is '.$maxAllowed.'. (max students * 1 on 1 price)');
+                    $this->invalidate('max_students', sprintf(__('Group price error, max is %d. (max students * 1 on 1 price)'), $maxAllowed));
 
                     //Check if total group price is LESS then 1 on 1 price (1 on 1 price is NOT 0)
                 } else if($this->data['UserLesson']['full_group_total_price']<=$this->data['UserLesson']['1_on_1_price']) {
-                    $this->invalidate('full_group_total_price', 'Full group price must be more the 1 on 1 price ('.$this->data['UserLesson']['1_on_1_price'].')');
+                    $this->invalidate('full_group_total_price', sprintf(__('Full group price must be more the 1 on 1 price (%d)')), $this->data['UserLesson']['1_on_1_price']) ;
                 }
             }
         }
@@ -248,7 +252,7 @@ class UserLesson extends AppModel {
     }
     public function maxStudentsCheck( $maxStudents ) {
         if($maxStudents['max_students']>1 && (!isSet($this->data['UserLesson']['full_group_total_price']) || !$this->data['UserLesson']['full_group_total_price'])) {
-            $this->invalidate('full_group_total_price', 'Please enter a valid group price or set Max students to 1');
+                $this->invalidate('full_group_total_price', __('Please enter a valid group price or set Max students to 1'));
             return false;
         }
         return true;
@@ -281,7 +285,7 @@ class UserLesson extends AppModel {
                     'required'	=> 'create',
                     'allowEmpty'=> false,
                     'rule'    	=> 'isFutureDatetime',
-                    'message' 	=> 'Please set a future datetime'
+                    'message' 	=> __('Please set a future datetime')
                 ));
 
             } else if($subjectData['lesson_type']==LESSON_TYPE_VIDEO) {
@@ -290,7 +294,7 @@ class UserLesson extends AppModel {
                 $this->validator()->add('datetime', 'datetime', array(
                     'allowEmpty'=> true,
                     'rule'    	=> array('datetime', 'ymd'),
-                    'message' 	=> 'Invalid datetime format'
+                    'message' 	=> __('Invalid datetime format')
                 ));
             }
 

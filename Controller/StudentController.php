@@ -86,11 +86,13 @@ class StudentController extends AppController {
                     return $this->success(1, array('user_lesson_id'=>$userLessonId));
                 }
 
-                //$this->Session->setFlash('Re-Propose sent');
-                //$this->redirect($this->referer());
+                $this->Session->setFlash(__('Re-Propose sent'));
+                $this->redirect($this->referer());
             } else if(isSet($this->params['ext'])) {
                 return $this->error(1, array('validation_errors'=>$this->UserLesson->validationErrors));
             }
+            $this->Session->setFlash(__('Error, cannot Re-Propose'));
+            $this->redirect($this->referer());
         }
 
         //Group pricing

@@ -25,13 +25,13 @@ class LessonsController extends AppController {
     public function index($teacherLessonId) {
         $videoRequestStatus = $this->UserLesson->getLiveLessonStatus($teacherLessonId, $this->Auth->user('user_id'));
         if(!$videoRequestStatus) {
-            $this->Session->setFlash('Invalid request');
+            $this->Session->setFlash(__('Invalid request'));
             $this->redirect('/');
         }
 
         //Check if overdue
         if($videoRequestStatus['overdue']) {
-            $this->Session->setFlash('The lesson you\'re trying to enter is overdue');
+            $this->Session->setFlash(__('The lesson you\'re trying to enter is overdue'));
             return $this->error(2, array('url'=>array('controller'=>'Home', 'action'=>'teacherSubject', $videoRequestStatus['subject_id'])));
 
         } else if($videoRequestStatus['in_process'] || $videoRequestStatus['about_to_start']) {
@@ -66,18 +66,18 @@ class LessonsController extends AppController {
 
         $canWatchData = $this->UserLesson->getVideoLessonStatus($subjectId, $this->Auth->user('user_id'), true);
         if(!$canWatchData) {
-            $this->Session->setFlash('Invalid request');
+            $this->Session->setFlash(__('Invalid request'));
             $this->redirect('/');
         }
 
         if(!$canWatchData['show_video']) {
             if($canWatchData['pending_teacher_approval']) {
-                $this->Session->setFlash('This video is waiting the teacher\'s approval');
+                $this->Session->setFlash(__('This video is waiting the teacher\'s approval'));
             } else if($canWatchData['pending_user_approval']) {
-                $this->Session->setFlash('This video require your approval');
+                $this->Session->setFlash(__('This video require your approval'));
                 $this->redirect(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'invitations', $canWatchData['user_lesson_id']));
             } else if($canWatchData['payment_needed']) {
-                $this->Session->setFlash('This video is a premium video, please pay for it first');
+                $this->Session->setFlash(__('This video is a premium video, please pay for it first'));
 
             }
 
@@ -201,52 +201,4 @@ class LessonsController extends AppController {
         }
         return array_flip($emailAsKeys);
     }
-    /*
-     * The lesson will take place here.
-     * in case the lesson is taking place in the future - details about it will be shown.
-     */
-    /*public function lessonPage($teacherLessonId) {
-        //Find teacher lesson
-        $this->TeacherLesson->recursive = -1;
-        $tlData = $this->TeacherLesson->find('first', array('teacher_lesson_id'=>$teacherLessonId));
-        if(!$tlData) {
-            $this->Session->setFlash('Lesson not found');
-            $this->redirect($this->referer());
-        }
-        $tlData = $tlData['TeacherLesson'];
-        $isTeacher = $this->Auth->user('user_id')==$tlData['teacher_user_id'] ? true : false;
-
-        //Check if this user is register for this lesson or no
-        $this->UserLesson->recursive = -1;
-        $userLessonData = $this->UserLesson->find('first', array('conditions'=>array('teacher_lesson_id'=>$teacherLessonId, 'student_user_id'=>$this->Auth->user('user_id'))));
-        if($userLessonData) {
-            $userLessonData = $userLessonData['UserLessonId'];
-        }
-
-        if($tlData['datetime']<time()-($tlData['duration']*MIN)) {
-            //Lesson overdue
-
-            $this->Session->setFlash('Lesson over due');
-            if($userLessonData) {
-                //User paid for this lesson
-                $this->redirect(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'archive', 'user_lesson_id'=>$userLessonData['user_lesson_id']));
-
-            } else if ($isTeacher) {
-                $this->redirect(array('controller'=>'Teacher', 'action'=>'lessons', 'tab'=>'archive', 'teacher_lesson_id'=>$teacherLessonId));
-            } else {
-                $this->redirect('/');
-            }
-        } else {
-            if($userLessonData) {
-                //TODO: show counter
-            } else if ($isTeacher) {
-                //TODO: let him edit the lesson
-            } else {
-                //Take user to order page
-                //TODO: show a page with info about the lesson, with "order" button
-                $this->redirect(array('action'=>'submitOrder', 'join', $teacherLessonId));
-            }
-        }
-
-    }*/
 }

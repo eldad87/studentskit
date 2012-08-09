@@ -15,7 +15,6 @@ class TeacherController extends AppController {
 		$aboutToStartLessons = $this->TeacherLesson->getUpcomming($this->Auth->user('user_id'). null, 2, 1);
 
 		//TODO: get board messages
-		
 					
 		$this->Set('aboutToStartLessons', $aboutToStartLessons);
 	}
@@ -29,7 +28,7 @@ class TeacherController extends AppController {
 	public function subject( $subjectId=null ) {
         if($subjectId) {
             if(!$this->verifyOwnership('subject', $subjectId)) {
-                $this->Session->setFlash('Cannot view this subject');
+                $this->Session->setFlash(__('Cannot view this subject'));
                 $this->redirect($this->referer());
             }
         }
@@ -41,7 +40,7 @@ class TeacherController extends AppController {
             //$this->Subject->set($this->request->data);
 
             if($this->Subject->save($this->request->data)) {
-                $this->Session->setFlash('Subject saved');
+                $this->Session->setFlash(__('Subject saved'));
                 $this->redirect(array('action'=>'subjects'));
             }
             //var_dump($this->Subject->validationErrors);
@@ -53,14 +52,6 @@ class TeacherController extends AppController {
 				$this->request->data = $this->Subject->findBySubjectId($subjectId);
 			}
 			$this->set('subjectId', $subjectId);
-			
-			/*
-			//Get lessons for this subject
-			$this->TeacherLesson->unbindModel(array('belongsTo'=>array('User')));
-			$nextLessons = $this->TeacherLesson->getUpcomming($this->Auth->user('user_id'), $subjectId, 6);
-			$this->set('nextLessons', $nextLessons);
-			*/
-			//Get subject FS
 
 			$this->set('fileSystem', $this->Subject->getFileSystem($subjectId));
 			$this->set('tests', $this->Subject->getTests($subjectId));
@@ -83,8 +74,7 @@ class TeacherController extends AppController {
 			$this->set('groupPrice', $groupPrice);
 		}
 
-        Configure::load('language');
-        $this->set('language',Configure::read('language'));
+        $this->set('language',Configure::read('Config.languages'));
 
 	}
 	
@@ -101,7 +91,7 @@ class TeacherController extends AppController {
 	
 	//"upcoming", "archive", "booking requests", "invitations sent" and "proposed lessons"
 	public function lessons($limit=5, $page=1) {
-		    $upcommingLessons = $this->TeacherLesson->getUpcomming($this->Auth->user('user_id'), null, $limit, $page);
+		$upcommingLessons = $this->TeacherLesson->getUpcomming($this->Auth->user('user_id'), null, $limit, $page);
 		$this->Set('upcommingLessons', $upcommingLessons);
 
         $archiveLessons = $this->TeacherLesson->getArchive($this->Auth->user('user_id'), null, $limit, $page);

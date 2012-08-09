@@ -25,7 +25,7 @@ class Subject extends AppModel {
             	'required'	=> 'create',
 				'allowEmpty'=> false,
                 'rule'    	=> array('between', 2, 45),
-				'message' 	=> 'Between 2 to 45 characters',
+				'message' 	=> 'Between %d to %d characters',
                 'last'      =>true
 			)
 		),
@@ -34,7 +34,7 @@ class Subject extends AppModel {
 				'required'	=> 'create',
 				'allowEmpty'=> false,
 				'rule'    	=> array('minLength', 15),
-				'message' 	=> 'Must be more then 15 characters'
+				'message' 	=> 'Must be more then %d characters'
 			)
 		),
         'language'=> array(
@@ -60,7 +60,7 @@ class Subject extends AppModel {
 				'required'	=> 'create',
 				'allowEmpty'=> false,
 				'rule'    	=> array('range', 4, 241),
-				'message' 	=> 'Lesson must be more then 5 minutes and less then 240 minutes (4 hours)'
+				'message' 	=> 'Lesson must be more then %d minutes and less then %d minutes'
 			)
 		),
 		'1_on_1_price'=> array(
@@ -74,7 +74,7 @@ class Subject extends AppModel {
 				'required'	=> 'create',
 				'allowEmpty'=> false,
 				'rule'    	=> array('range', -1, 500),
-				'message' 	=> 'Price must be more then 0 and less then 500'
+				'message' 	=> 'Price must be more then %d and less then %d'
 			)
 		),
 		'max_students'=> array(
@@ -82,7 +82,7 @@ class Subject extends AppModel {
 				'required'	=> 'create',
 				'allowEmpty'=> true,
 				'rule'    	=> array('between', 1, 1024),
-				'message' 	=> 'Lesson must have more then 1 or less then 1024 students'
+				'message' 	=> 'Lesson must have more then %d or less then %d students'
 			),
 			'max_students' 	=> array(
 				'required'	=> 'create',
@@ -99,8 +99,8 @@ class Subject extends AppModel {
 			),
 			'price_range' => array(
 				'allowEmpty'=> true,
-				'rule'    	=> array('range', -1, 2500),
-				'message' 	=> 'Price must be more then 0 and less then 2500'
+				'rule'    	=> array('range', -1, 2501),
+				'message' 	=> 'Price must be more then %d and less then %d'
 			),
 			'full_group_total_price' 	=> array(
 				//'required'	=> 'create',
@@ -114,7 +114,7 @@ class Subject extends AppModel {
 
 	public function fullGroupTotalPriceCheck( $price) {
 		if(!isSet($this->data['Subject']['max_students'])) {
-			$this->invalidate('max_students', 'Please enter a valid max students');
+			$this->invalidate('max_students', __('Please enter a valid max students'));
 			return false;
 		} else  {
 			if(	isSet($this->data['Subject']['full_group_total_price']) && !empty($this->data['Subject']['full_group_total_price']) &&
@@ -124,11 +124,11 @@ class Subject extends AppModel {
 				//Check if full_group_total_price is MORE then  max_students*1_on_1_price
 				$maxAllowed = $this->data['Subject']['max_students']*$this->data['Subject']['1_on_1_price'];
 				if($this->data['Subject']['full_group_total_price']>$maxAllowed) {
-					$this->invalidate('max_students', 'Group price error, max is '.$maxAllowed.'. (max students * 1 on 1 price)');
+					$this->invalidate('max_students', sprintf(__('Group price error, max is %d (max students * 1 on 1 price)', $maxAllowed)));
 
                     //Check if total group price is LESS then 1 on 1 price (1 on 1 price is NOT 0)
                 } else if($this->data['Subject']['full_group_total_price']<=$this->data['Subject']['1_on_1_price']) {
-                    $this->invalidate('full_group_total_price', 'Full group price must be more the 1 on 1 price ('.$this->data['Subject']['1_on_1_price'].')');
+                    $this->invalidate('full_group_total_price', sprintf(__('Full group price must be more the 1 on 1 price (%d)'), $this->data['Subject']['1_on_1_price']) );
                 }
 			}
 		}
@@ -136,7 +136,7 @@ class Subject extends AppModel {
 	}
 	public function maxStudentsCheck( $maxStudents ) {
 		if($maxStudents['max_students']>1 && (!isSet($this->data['Subject']['full_group_total_price']) || !$this->data['Subject']['full_group_total_price'])) {
-			$this->invalidate('full_group_total_price', 'Please enter a valid group price or set Max students to 1');
+			$this->invalidate('full_group_total_price', __('Please enter a valid group price or set Max students to 1'));
 			return false;
 		}
 		return true;

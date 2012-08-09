@@ -9,7 +9,7 @@ class PathableBehavior extends ModelBehavior {
             'path_field'=>'path'
         );
 
-        $this->settings[$model->name] = array_merge($settings, $config);
+        $this->settings[$model->alias] = array_merge($settings, $config);
 
     }
 
@@ -17,27 +17,27 @@ class PathableBehavior extends ModelBehavior {
         parent::beforeSave($model);
 
         //Prepare path/deep/parent_subject_category_id
-        if( !isSet($model->data[$model->name][$this->settings[$model->name]['parent_field']]) ) {
+        if( !isSet($model->data[$model->alias][$this->settings[$model->alias]['parent_field']]) ) {
             if(!$model->id) {
                 //Create new record, no parent id so set default
-                $model->data[$model->name][$this->settings[$model->name]['deep_field']] = 1;
-                $model->data[$model->name][$this->settings[$model->name]['path_field']] = null;
-                $model->data[$model->name][$this->settings[$model->name]['parent_field']] = 0;
+                $model->data[$model->alias][$this->settings[$model->alias]['deep_field']] = 1;
+                $model->data[$model->alias][$this->settings[$model->alias]['path_field']] = null;
+                $model->data[$model->alias][$this->settings[$model->alias]['parent_field']] = 0;
             }
-        } else if(!$model->data[$model->name][$this->settings[$model->name]['parent_field']]) {
+        } else if(!$model->data[$model->alias][$this->settings[$model->alias]['parent_field']]) {
             //if($this->id) - user change parent, else its a new main category
-            $model->data[$model->name][$this->settings[$model->name]['deep_field']] = 1;
-            $model->data[$model->name][$this->settings[$model->name]['path_field']] = null;
-            $model->data[$model->name][$this->settings[$model->name]['parent_field']] = 0;
+            $model->data[$model->alias][$this->settings[$model->alias]['deep_field']] = 1;
+            $model->data[$model->alias][$this->settings[$model->alias]['path_field']] = null;
+            $model->data[$model->alias][$this->settings[$model->alias]['parent_field']] = 0;
         } else {
-            $parentData = $model->find('first', array('conditions'=>array( $model->primaryKey=> $model->data[$model->name][$this->settings[$model->name]['parent_field']])));
-            $parentData = $parentData[$model->name];
+            $parentData = $model->find('first', array('conditions'=>array( $model->alias.'.'.$model->primaryKey=> $model->data[$model->alias][$this->settings[$model->alias]['parent_field']])));
+            $parentData = $parentData[$model->alias];
 
-            $model->data[$model->name][$this->settings[$model->name]['deep_field']] = $parentData[$this->settings[$model->name]['deep_field']]+1;
+            $model->data[$model->alias][$this->settings[$model->alias]['deep_field']] = $parentData[$this->settings[$model->alias]['deep_field']]+1;
 
-            $parentPath = $parentData[$this->settings[$model->name]['path_field']] ? explode(',', $parentData[$this->settings[$model->name]['path_field']]) : array();
+            $parentPath = $parentData[$this->settings[$model->alias]['path_field']] ? explode(',', $parentData[$this->settings[$model->alias]['path_field']]) : array();
             $parentPath[] = $parentData[$model->primaryKey];
-            $model->data[$model->name][$this->settings[$model->name]['path_field']] = implode(',', $parentPath);
+            $model->data[$model->alias][$this->settings[$model->alias]['path_field']] = implode(',', $parentPath);
         }
 
         return true;
@@ -54,22 +54,22 @@ class PathableBehavior extends ModelBehavior {
 
 
         $model->recursive = -1;
-        $data = $model->find('first', array('conditions'=>array( $model->primaryKey=> $id )));
+        $data = $model->find('first', array('conditions'=>array( $model->alias.'.'.$model->primaryKey=> $id )));
         if(!$data) {
             return array();
         }
-        $data = $data[$model->name];
+        $data = $data[$model->alias];
 
         if($fullPath) {
             $return = array();
-            for($deep=1; $deep<=$data[$this->settings[$model->name]['deep_field']]; $deep++) {
+            for($deep=1; $deep<=$data[$this->settings[$model->alias]['deep_field']]; $deep++) {
                 $hierarchy = $deep;
-                if($data[$this->settings[$model->name]['path_field']]) {
-                    $path = explode(',', $data[$this->settings[$model->name]['path_field']]);
+                if($data[$this->settings[$model->alias]['path_field']]) {
+                    $path = explode(',', $data[$this->settings[$model->alias]['path_field']]);
                     $path = array_slice($path, 0, $deep);
                     $hierarchy .= ','.implode(',', $path);
                 }
-                if($deep==$data[$this->settings[$model->name]['deep_field']]) {
+                if($deep==$data[$this->settings[$model->alias]['deep_field']]) {
                     $hierarchy .= ','.$id;
                 }
 
@@ -79,13 +79,15 @@ class PathableBehavior extends ModelBehavior {
             return $return;
 
         } else {
-            $hierarchy = $data[$this->settings[$model->name]['deep_field']]; //In order to get all children
-            if($data[$this->settings[$model->name]['path_field']]) {
-                $hierarchy .= ','.$data[$this->settings[$model->name]['path_field']];
+            $hierarchy = $data[$this->settings[$model->alias]['deep_field']]; //In order to get all children
+            if($data[$this->settings[$model->alias]['path_field']]) {
+                $hierarchy .= ','.$data[$this->settings[$model->alias]['path_field']];
             }
             $hierarchy .= ','.$id;
 
             return $hierarchy;
         }
+        
     }
+    
 }

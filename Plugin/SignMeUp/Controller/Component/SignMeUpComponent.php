@@ -48,7 +48,7 @@ class SignMeUpComponent extends Component {
 
 	private function __loadConfig() {
 		if (Configure::load('SignMeUp.sign_me_up') === false) {
-			die('Could not load sign me up config');
+			die(__d('SignMeUp','Could not load sign me up config'));
 		}
 	}
 
@@ -228,7 +228,7 @@ class SignMeUpComponent extends Component {
 			$this->controller->set(compact('password'));
 			if ($this->controller->{$model}->save($user) && $this->__sendNewPassword($user[$model])) {
 				if (!$this->RequestHandler->isAjax()) {
-					$this->Session->setFlash('Thank you '.$user[$model][$username_field].', your new password has been emailed to you.'); //TOGO: log in the user+show him the reset password page
+					$this->Session->setFlash(sprintf(__d('SignMeUp','Thank you %s, your new password has been emailed to you.'),$user[$model][$username_field])); //TOGO: log in the user+show him the reset password page
 					$this->controller->redirect($this->Auth->loginAction);
 				} else {
 					return true;
@@ -257,14 +257,14 @@ class SignMeUpComponent extends Component {
 
 			if ($this->controller->{$model}->save($saveData) && $this->__sendForgottenPassword($user[$model])) {
 				if (!$this->RequestHandler->isAjax()) {
-					$this->Session->setFlash('Thank you. A password recovery email has now been sent to '.$data['email']);
+					$this->Session->setFlash( sprintf(__d('SignMeUp','Thank you. A password recovery email has now been sent to %s'), $data['email']) );
 					$this->controller->redirect($this->Auth->loginAction);
 				} else {
 					return true;
 				}
 			}
 		} else {
-			$this->controller->{$model}->invalidate('email', 'No user found with email: '.$data['email']);
+			$this->controller->{$model}->invalidate('email', sprintf(__d('SignMeUp','No user found with email: %s', $data['email'])));
 		}
 	}
 
@@ -278,7 +278,7 @@ class SignMeUpComponent extends Component {
 		}
 	}
 
-    private function _generateUserName($data) {
+   /* private function _generateUserName($data) {
         extract($this->settings);
         $prefix = '';
         if(isSet($data[$email_field]) && $data[$email_field]) {
@@ -304,6 +304,6 @@ class SignMeUpComponent extends Component {
         }
 
         return $newUsername;
-    }
+    }*/
 
 }

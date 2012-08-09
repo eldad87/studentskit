@@ -18,7 +18,7 @@ class User extends AppModel {
 			),
 			'numeric' => array(
 				'rule'	=> 'numeric',
-				'message' => 'This field contain numeric value'
+				'message' => 'This field must be a numeric value'
 			)
 		),
 		'email' => array(
@@ -36,7 +36,7 @@ class User extends AppModel {
 		'username' => array(
 			'isUnique' => array(
 				'rule'    		=> 'isUnique',
-				'message' 		=> 'This username has already been taken.',
+				'message' 		=> 'This email has already been taken.',
 				'required'		=> true,
 				'on'			=> 'create',
 			),
@@ -62,7 +62,7 @@ class User extends AppModel {
             ),
 			'between' => array(
 				'rule'    => array('between', 2, 45),
-				'message' => 'Between 2 to 45 characters'
+				'message' => 'Between %d to %d characters'
 			)
 		),
 		
@@ -75,7 +75,7 @@ class User extends AppModel {
             ),
 			'between' => array(
 				'rule'    => array('between', 2, 45),
-				'message' => 'Between 2 to 45 characters',
+				'message' => 'Between %d to %d characters',
 			)
 		),
 		'dob' => array(

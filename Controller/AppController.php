@@ -32,15 +32,36 @@ App::uses('Controller', 'Controller');
  * @link http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-	public $components = array('RequestHandler');
+	public $components = array('RequestHandler', 'Session');
 	
 	public function beforeFilter() {
+        $this->_setLanguage();
+
 		parent::beforeFilter();
 		if ($this->request->is('ajax')) {
 			$this->autoLayout = false;
 			$this->disableCache();
 		}
 	}
+
+    private function _setLanguage() {
+        App::uses('L10n', 'I18n');
+        $localize = new L10n();
+
+        if($this->Session->read('locale')) {
+            //Set user chose of language
+            $locale = $this->Session->read('locale');
+            Configure::write('Config.language', $locale);
+            setlocale(LC_ALL, $locale .'UTF8', $locale .'UTF-8', $locale, 'eng.UTF8', 'eng.UTF-8', 'eng', 'en_US');
+        } else {
+            //Get language from browser
+            $locale = $localize->get();
+        }
+
+        //Set language direction
+        $localeLang = $localize->catalog($locale);
+        Configure::write('Config.languageDirection', isSet($localeLang['direction']) ? $localeLang['direction'] : 'ltr');
+    }
 	
 	protected function error( $code, $data=array() ) {
 		return $this->apiMessage('error', $code, $data);
@@ -55,7 +76,7 @@ class AppController extends Controller {
 		Configure::load('api');
 		$data = Configure::read($this->name.'.'.$this->params['action'].'.'.$type.'.'.$code);
 		
-		$reposne = array(
+		$response = array(
 				'code'=>array($code),
 				'type'=>array($type),
 				'title'=>array($data['title']),
@@ -64,14 +85,14 @@ class AppController extends Controller {
 		
 		if($extra) {
 			key($extra);
-			$reposne[key($extra)] = $extra[key($extra)];
+			$response[key($extra)] = $extra[key($extra)];
 		}
 		
 		if($this->responseType=='array') {
-			return $reposne;
+			return $response;
 		}
 		
-		$this->set('response', array('response'=>$reposne));
+		$this->set('response', array('response'=>$response));
 		$this->set('_serialize', 'response');
 		
 		if(Configure::read('debug')==2 && !isSet($this->params['ext']) && !$this->RequestHandler->isAjax()) {

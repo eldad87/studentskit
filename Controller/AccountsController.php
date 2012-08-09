@@ -23,7 +23,7 @@ class AccountsController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow(array('login', 'forgotten_password', 'register', 'activate'));
+		$this->Auth->allow(array('login', 'forgotten_password', 'register', 'activate', 'setTimezone', 'setLocale'));
 	}
 
     public function __construct($request = null, $response = null) {
@@ -71,32 +71,69 @@ class AccountsController extends AppController {
                 $event = new CakeEvent('Controller.Accounts.afterLogin', $this, array('user_id'=>$this->Auth->user('user_id')) );
                 $this->getEventManager()->dispatch($event);
 
+
+                $this->Session->write('timezone', $this->Auth->user('timezone'));
+                $this->Session->write('locale', $this->Auth->user('locale'));
+
+                if ($this->RequestHandler->isAjax()) {
+                    return $this->success(1);
+                }
 				return $this->redirect($this->Auth->redirect());
 			} else {
-				$this->Session->setFlash(__('Username or password is incorrect'), 'default', array(), 'auth');
+                if ($this->RequestHandler->isAjax()) {
+                    return $this->error(1);
+                }
+				$this->Session->setFlash(__('Email or password is incorrect'), 'default', array(), 'auth');
 			}
 	    }
 	}
 
 	public function logout() {
-
         $userId = $this->Auth->user('user_id');
 
         $event = new CakeEvent('Controller.Accounts.beforeLogout', $this, array('user_id'=>$userId) );
         $this->getEventManager()->dispatch($event);
 
 		$this->Auth->logout();
+        /*$this->Session->delete('locale');
+        $this->Session->delete('timezone');*/
 
         $event = new CakeEvent('Controller.Accounts.afterLogout', $this, array('user_id'=>$userId) );
         $this->getEventManager()->dispatch($event);
 
 
-		if (!$this->RequestHandler->isAjax()) {
-			return $this->redirect($this->Auth->redirect());
-		} else {
-			return true;
-		}
+		if ($this->RequestHandler->isAjax()) {
+            return $this->success(1);
+        }
+		return $this->redirect($this->Auth->redirect());
+
 	}
+
+    public function setTimezone($timezone) {
+        $this->Session->write('timezone', $timezone);
+
+        if($this->Auth->user()) {
+            $this->User->create();
+            $this->User->id = $this->Auth->user('user_id');
+            if(!$this->User->save(array('timezone'=>$timezone))) {
+                return $this->error(1);
+            }
+        }
+        return $this->success(1);
+    }
+
+    public function setLocale($locale) {
+        $this->Session->write('locale', $locale);
+
+        if($this->Auth->user()) {
+            $this->User->create();
+            $this->User->id = $this->Auth->user('user_id');
+            if(!$this->User->save(array('locale'=>$locale))) {
+                return $this->error(1);
+            }
+        }
+        return $this->success(1);
+    }
 	
 	public function register() {
 		$this->SignMeUp->register();

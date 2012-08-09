@@ -32,7 +32,7 @@ class RequestsController extends AppController {
 				if($this->RequestHandler->isAjax()) {
 					return $this->success(1, array('subject_id'=>this));
 				}
-				$this->Session->setFlash('Request saved, you can browse and manage it through the control panel');
+				$this->Session->setFlash(__('Request saved, you can browse and manage it through the control panel'));
 				$this->redirect(array('action'=>'index'));
 			} else if($this->RequestHandler->isAjax()) {
 				return $this->error(1, array('validation_errros'=>$this->Subject->validationErrors));
@@ -45,8 +45,7 @@ class RequestsController extends AppController {
         $subjectCategories = $scObj->getAllCategoriesOptions();
         $this->set('subjectCategories', $subjectCategories);
 
-        Configure::load('language');
-        $this->set('language',Configure::read('language'));
+        $this->set('language',Configure::read('Config.languages'));
 	}
 
 
@@ -71,14 +70,14 @@ class RequestsController extends AppController {
 		//Get subject data, students_amount
 		$subjectData = $this->Subject->findBySubjectId( $requestSubjectId );
 		if(!$subjectData || $subjectData['Subject']['is_enable']==SUBJECT_IS_ENABLE_FALSE) {
-			$this->Session->setFlash('This subject is no longer available');
+			$this->Session->setFlash(__('This subject is no longer available'));
 			$this->redirect($this->referer());
 		}
 
         //You can offer suggestions only to subject request
 		$subjectData = $subjectData['Subject'];
         if($subjectData['type']!=SUBJECT_TYPE_REQUEST) {
-            $this->Session->setFlash('This lesson cannot be ordered');
+            $this->Session->setFlash(__('This lesson cannot be ordered'));
             $this->redirect($this->referer());
         }
 
@@ -100,7 +99,7 @@ class RequestsController extends AppController {
                     return $this->success(1, array('user_lesson_id'=>$this->UserLesson->id));
                 }
 
-                $this->Session->setFlash('Offer sent, you can browse and manage it through your control panel');
+                $this->Session->setFlash(__('Offer sent, you can browse and manage it through your control panel'));
                 $this->redirect(array('action'=>'index'));
             } else if($this->RequestHandler->isAjax()) {
                 return $this->error(1, array('validation_errros'=>$this->UserLesson->validationErrors));
@@ -121,7 +120,7 @@ class RequestsController extends AppController {
 		//Get student data
 		$studentData = $this->User->findByUserId( $subjectData['user_id'] );
 		if(!$studentData) {
-			$this->Session->setFlash('Internal error');
+			$this->Session->setFlash(__('Internal error'));
 			$this->redirect($this->referer());
 		}
 

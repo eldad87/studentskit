@@ -15,7 +15,7 @@ class Profile extends AppModel {
 				'rule'	=> 'numeric',
 				'required'		=> true,
 				'allowEmpty' 	=> false,
-				'message' => 'This field contain numeric value'
+				'message' => 'This field must be a numeric value'
 			)
 		),
 		'dob' => array(
