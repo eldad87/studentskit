@@ -4,6 +4,7 @@ class TeacherLesson extends AppModel {
 	public $name 		= 'TeacherLesson';
 	public $useTable 	= 'teacher_lessons';
 	public $primaryKey 	= 'teacher_lesson_id';
+    public $actsAs = array('LanguageFilter');
 		public $validate = array(
 		'name'=> array(
 			'between' => array(
@@ -271,7 +272,7 @@ class TeacherLesson extends AppModel {
                 'teacher_user_id'			=> $subjectData['user_id'],
                 'lesson_type'				=> $subjectData['lesson_type'],
                 'language'				    => $subjectData['language'],
-                'datetime'					=> $this->Subject->datetimeToStr($datetime), //Convert timestamp to datetime
+                'datetime'					=> $datetime, //Convert timestamp to datetime
                 'subject_category_id'		=> $subjectData['subject_category_id'],
                 'forum_id'		            => $subjectData['forum_id'],
                 'name'						=> $subjectData['name'],
@@ -285,8 +286,9 @@ class TeacherLesson extends AppModel {
             );
 
             //Set the end of the lesson, video lesson end date is first-watching-time+2 days
-            if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
-                $teacherLessonData['end_datetime'] = $this->Subject->datetimeToStr($datetime, $subjectData['duration_minutes']);
+            if($subjectData['lesson_type']==LESSON_TYPE_LIVE && $datetime) {
+                $teacherLessonData['end_datetime'] = $this->timeExpression($datetime.' + '.$subjectData['duration_minutes'].' minutes' ,false);
+                    //$this->Subject->datetimeToStr($datetime, $subjectData['duration_minutes']);
             }
 
             //The teacher must be the subject owner
@@ -403,14 +405,18 @@ class TeacherLesson extends AppModel {
             $month = date('m');
         }
 
-		$startDate = $year.'-'.($month ? $month : 1).'-1';
-		$endDate = $year.'-'.($month ? $month : 12).'-1';
-		
-		
+		$startDate = $year.'-'.($month ? $month : 1).'-1 00:00:00';
+		$endDate = $year.'-'.($month ? $month : 12).'-1 23:59:59';
+
+
+        //Convert the client time to server time
+        $startDate = $this->toServerTime($startDate);
+        $endDate = $this->toServerTime($endDate);
+
 		$conditions = array('teacher_user_id'=>$teacherUserId, $this->alias.'.lesson_type'=>LESSON_TYPE_LIVE,
                             'OR'=>array(
-                                'datetime BETWEEN ? AND ?' => array($startDate, $this->getDataSource()->expression('date_add(\''.$endDate.'\',interval 1 month)')),
-                                'end_datetime BETWEEN ? AND ?' => array($startDate, $this->getDataSource()->expression('date_add(\''.$endDate.'\',interval 1 month)'))
+                                'datetime BETWEEN ? AND ?' => array($startDate, $this->timeExpression($endDate.' + 1 month')),
+                                'end_datetime BETWEEN ? AND ?' => array($startDate, $this->timeExpression($endDate.' + 1 month'))
 
                             ),
 							'is_deleted'=>0 );
@@ -425,7 +431,7 @@ class TeacherLesson extends AppModel {
 		}
 		
 		$conditions['OR'] = array(
-			array('end_datetime < NOW()', 'end_datetime IS NOT NULL' ),
+			array('end_datetime <'=>$this->timeExpression('now', false), 'end_datetime IS NOT NULL' ),
 			'is_deleted'=>1
 		);
 		
@@ -441,7 +447,7 @@ class TeacherLesson extends AppModel {
 		$this->Subject;
 		$conditions = array( 'teacher_user_id'=>$teacherUserId, 'is_deleted'=>0,
                 'OR'=>array(
-                    array('end_datetime > NOW()'),
+                    array('end_datetime >'=>$this->timeExpression('now', false)),
                     array('end_datetime IS NULL')
 
                 )
@@ -462,7 +468,7 @@ class TeacherLesson extends AppModel {
 	}
 	
 	/*public function getPendingProposedLessons($teacherUserId, $subectId=null, $limit=null, $page=1) {
-		$conditions = array( 'teacher_user_id'=>$teacherUserId, 'datetime > NOW()', 'is_deleted'=>0, 'request_subject_id IS NOT NULL', 'num_of_students'=>0 );
+		$conditions = array( 'teacher_user_id'=>$teacherUserId, 'datetime >'=>$this->timeExpression('now', false), 'is_deleted'=>0, 'request_subject_id IS NOT NULL', 'num_of_students'=>0 );
 		if($subectId) {
 			$conditions['TeacherLesson.subject_id'] = $subectId;
 		}

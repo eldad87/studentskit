@@ -68,6 +68,8 @@ class ForumEventListener implements CakeEventListener {
             $update = array();
             $update['topic_id']     = $topicData['Topic']['id']; //Topic title
             $update['title']        = $topicData['Topic']['title']; //Topic title
+            $update['language']     = $topicData['Topic']['language']; //Topic title
+            $update['content']      = $firstPostData['Post']['content']; //first topic content
             $update['content']      = $firstPostData['Post']['content']; //first topic content
             $update['forum_id']     = $topicData['Topic']['forum_id'];
             $update['forums']       = $topicObj->Forum->getPathHierarchy($topicData['Topic']['forum_id']);

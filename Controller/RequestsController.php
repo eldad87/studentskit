@@ -13,6 +13,7 @@ class RequestsController extends AppController {
 	}
 	
 	public function index() {
+        $this->Subject->setLanguages($this->Session->read('languages_of_records'));
 	 	$newSubjects = $this->Subject->getNewest(false, SUBJECT_TYPE_REQUEST);
 		$this->set('newSubjects', $newSubjects);
 	}
@@ -39,13 +40,15 @@ class RequestsController extends AppController {
 			}
 		}
 
-        //Get subejct categories
+        //Get subject categories
         App::Import('Model', 'SubjectCategory');
         $scObj = new SubjectCategory();
         $subjectCategories = $scObj->getAllCategoriesOptions();
         $this->set('subjectCategories', $subjectCategories);
 
-        $this->set('language',Configure::read('Config.languages'));
+        App::import('I18n', 'Languages');
+        $lang = new Languages();
+        $this->set('languages', $lang->getLanguageList());
 	}
 
 
@@ -90,6 +93,7 @@ class RequestsController extends AppController {
             if(isSet($this->request->query['datetime']) && !empty($this->request->query['datetime'])) {
                 $datetime = $this->request->data['UserLesson']['datetime'];
                 $datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
+                $datetime = $this->UserLesson->timeExpression($datetime, false);
             }
 			unset($this->request->data['UserLesson']['datetime']);
 

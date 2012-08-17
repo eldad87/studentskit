@@ -23,3 +23,15 @@ foreach($aboutToStartLessons AS $aboutToStartLesson) {
 	echo '<br /><br /><br />';
 }
 ?>
+
+<h3>Latest topics</h3>
+<?php
+//TODO: use element, this is also used in Teacher/index.ctp
+foreach($latestUpdatedTopics AS $topic) {
+    echo 'date: '.$topic['Topic']['modified'],'<br />';
+    echo 'title: '.$topic['Topic']['title'],'<br />';
+    echo 'content: '.$topic['Topic']['LastPost']['content'],'<br />';
+    echo 'User: '.$topic['Topic']['LastUser']['username'],'<br />';
+    echo 'Image: '.$topic['Topic']['LastUser']['image'],'<br /><br />';
+}
+?>

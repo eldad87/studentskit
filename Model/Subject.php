@@ -19,6 +19,7 @@ class Subject extends AppModel {
 	public $name = 'Subject';
 	public $useTable = 'subjects';
 	public $primaryKey = 'subject_id';
+    public $actsAs = array('LanguageFilter');
 	public $validate = array(
 		'name'=> array(
 			'between' => array(
@@ -41,7 +42,7 @@ class Subject extends AppModel {
             'inList' => array(
                 'required'	=> 'create',
                 'allowEmpty'=> false,
-                'rule'    	=> array('inList', array('en', 'he', 'pl', 'fr')), //'he'=>'he', 'en'=>'en', 'fr'=>'fr', 'pl'=>'pl'
+                'rule'    	=> array('inList', array('en','he')),
                 'message' 	=> 'Please select a language',
                 'last'      =>true
             )
@@ -169,7 +170,7 @@ class Subject extends AppModel {
         }
 
         if(isSet($this->data['Subject']['subject_category_id'])) {
-            //Add forum to subject
+            //bind subject to a forum
             App::import('Model', 'SubjectCategory');
             $scObj = new SubjectCategory();
             $scData = $scObj->findBySubjectCategoryId($this->data['Subject']['subject_category_id']);
@@ -177,6 +178,8 @@ class Subject extends AppModel {
                 $this->data['Subject']['forum_id'] = $scData['SubjectCategory']['forum_id'];
             }
         }
+
+        return true;
 	}
 
     public static function calcFullGroupStudentPriceIfNeeded(&$data, $existingRecord) {
@@ -261,16 +264,15 @@ class Subject extends AppModel {
             $update['is_public']                = (boolean) $subjectData['is_public'];
             $update['last_modified']            = $subjectData['modified'] ? $subjectData['modified'] : $subjectData['created'];
 
-            if($subjectData['subject_category_id']) {
+            if($subjectData['subject_category_id'] && !empty($subjectData['subject_category_id'])) {
+                var_dump($subjectData['subject_category_id']);
                 App::import('Model', 'SubjectCategory');
                 $scObj = new SubjectCategory();
                 $update['categories']   = $scObj->getPathHierarchy($subjectData['subject_category_id'], true);
                 $update['category_id']  = $subjectData['subject_category_id'];
             } else {
-                $update['categories']   = null;
-                $update['category_id']  = null;
+                unset($update['categories'], $update['category_id']);
             }
-
 
             App::import('Vendor', 'Solr');
             $SolrObj = new Solr($subjectData['type']);
@@ -468,11 +470,8 @@ class Subject extends AppModel {
 			$scObj = new SubjectCategory();
 			$category = $scObj->findBySubjectCategoryId($categoryId);
 			
-			if($category) {
-				$conditions['category BETWEEN ? AND ?'] = array(
-					$category['SubjectCategory']['left'],
-					$category['SubjectCategory']['right']
-				);
+			if($category && !empty($category['path'])) {
+                $conditions['subject_category_id'] = explode(',', $category['path']);
 			}
 		}
         $conditions['is_enable'] = SUBJECT_IS_ENABLE_TRUE;
@@ -536,7 +535,8 @@ class Subject extends AppModel {
 		return $this->find('all', array('conditions'=>$conditions, 
 										'order'=>'created', 
 										'limit'=>$limit,
-										'page'=>$page));
+										'page'=>$page
+        ));
 	}
 	
 	private function bindStudentOnLessonRequest() {
@@ -560,7 +560,7 @@ class Subject extends AppModel {
 		return $this->save();
 	}
 	
-	public function datetimeToStr( $datetime, $addMinutes=null ) {
+	/*public function datetimeToStr( $datetime, $addMinutes=null ) {
         if($addMinutes) {
             if(!is_numeric($datetime)) {
                 $datetime = strtotime($datetime);
@@ -574,7 +574,7 @@ class Subject extends AppModel {
 
 
 		return $datetime;
-	}
+	}*/
 
 
     public function getFileSystem($subjectId) {

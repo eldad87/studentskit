@@ -182,7 +182,7 @@ CakeLog::config('error', array(
 
 
 //define('DEFAULT_LANGUAGE', 'eng');
-Configure::write('Config.languages', array('eng'=>'English', 'heb'=>'Hebrew'));
+//Configure::write('Config.languages', array('eng'=>'English', 'heb'=>'Hebrew'));
 
 CakePlugin::loadAll(array(
         'Utils',

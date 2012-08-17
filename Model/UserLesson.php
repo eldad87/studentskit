@@ -19,6 +19,7 @@ class UserLesson extends AppModel {
 	public $name = 'UserLesson';
 	public $useTable = 'user_lessons';
 	public $primaryKey = 'user_lesson_id';
+    public $actsAs = array('LanguageFilter', 'Time');
 	public $belongsTo = array(
 					'Teacher' => array(
 						'className' => 'User',
@@ -358,7 +359,7 @@ class UserLesson extends AppModel {
 			'stage'						=> ($subjectData['type']==SUBJECT_TYPE_OFFER ? USER_LESSON_PENDING_TEACHER_APPROVAL : USER_LESSON_PENDING_STUDENT_APPROVAL),
 			'subject_category_id'		=> $subjectData['subject_category_id'],
 			'forum_id'		            => $subjectData['forum_id'],
-			'datetime'					=> $datetime ? $this->Subject->datetimeToStr($datetime) : null,
+			'datetime'					=> $datetime ? $datetime : null,
 			'lesson_type'				=> $subjectData['lesson_type'],
 			'language'				    => $subjectData['language'],
 			'name'						=> $subjectData['name'],
@@ -379,7 +380,8 @@ class UserLesson extends AppModel {
 
         //Set the end of the lesson, video lesson end date is first-watching-time+2 days
         if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
-            $userLesson['end_datetime'] = $this->Subject->datetimeToStr($datetime, $subjectData['duration_minutes']);
+            $userLesson['end_datetime'] = $this->timeExpression($datetime.' + '.$subjectData['duration_minutes'].' minutes' ,false);
+                    //$this->Subject->datetimeToStr($datetime, $subjectData['duration_minutes']);
         }
         $userLesson = am($userLesson, $extra);
 
@@ -873,13 +875,17 @@ class UserLesson extends AppModel {
             $month = date('m');
         }
 
-		$startDate = $year.'-'.($month ? $month : 1).'-1';
-		$endDate = $year.'-'.($month ? $month : 12).'-1';
+		$startDate = $year.'-'.($month ? $month : 1).'-1 00:00:00';
+		$endDate = $year.'-'.($month ? $month : 12).'-1 23:59:59';
+
+        //Convert the client time to server time
+        $startDate = $this->toServerTime($startDate);
+        $endDate = $this->toServerTime($endDate);
 
 		$conditions = array('student_user_id'=>$studentUserId, $this->alias.'.lesson_type'=>LESSON_TYPE_LIVE,
 							'OR'=>array(
-                                    'datetime BETWEEN ? AND ?' => array($startDate, $this->getDataSource()->expression('date_add(\''.$endDate.'\',interval 1 month)')),
-                                    'end_datetime BETWEEN ? AND ?' => array($startDate, $this->getDataSource()->expression('date_add(\''.$endDate.'\',interval 1 month)'))
+                                    'datetime BETWEEN ? AND ?' => array($startDate, $this->timeExpression($endDate.' + 1 month')),
+                                    'end_datetime BETWEEN ? AND ?' => array($startDate, $this->timeExpression($endDate.' + 1 month'))
 
                                 )
                             );
@@ -899,7 +905,7 @@ class UserLesson extends AppModel {
 	public function getArchive($studentUserId, $limit=null, $page=1) {
 
 	    $conditions = array('UserLesson.student_user_id'=>$studentUserId,
-						'OR'=>array(array('UserLesson.end_datetime<NOW()', 'UserLesson.end_datetime IS NOT NULL'),
+						'OR'=>array(array('UserLesson.end_datetime <'=>$this->timeExpression('now', false), 'UserLesson.end_datetime IS NOT NULL'),
 									'stage'=>array(	USER_LESSON_DENIED_BY_TEACHER, USER_LESSON_DENIED_BY_STUDENT,
 													USER_LESSON_CANCELED_BY_TEACHER, USER_LESSON_CANCELED_BY_STUDENT,
 													USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING, USER_LESSON_PENDING_STUDENT_RATING,
@@ -963,6 +969,45 @@ class UserLesson extends AppModel {
 		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT));
 	}
 
+
+    /**
+     *
+     * Get rating for a given teacher - by his studnets
+     * @param unknown_type $userId
+     * @param unknown_type $limit
+     * @param unknown_type $page
+     */
+    public function getTeachertReviews( $teacherUserId, $limit=12, $page=1 ) {
+        App::import('Model', 'UserLesson');
+        $ulObj = new UserLesson();
+        $conditions = array('UserLesson.teacher_user_id'=>$teacherUserId, 'stage'=>array(USER_LESSON_PENDING_TEACHER_RATING, USER_LESSON_DONE));
+
+        return $ulObj->find('all', array(	'conditions'=>$conditions,
+            'fields'=>array('student_user_id', 'rating_by_student', 'comment_by_student', 'student_image', 'datetime'),
+            'limit'=>$limit,
+            'page'=>$page));
+
+    }
+
+    /**
+     *
+     * Get rating for a given student - by his teachers
+     * @param unknown_type $userId
+     * @param unknown_type $limit
+     * @param unknown_type $page
+     */
+    public function getStudentReviews( $studentUserId, $limit=12, $page=1 ) {
+        App::import('Model', 'UserLesson');
+        $ulObj = new UserLesson();
+        $conditions = array('teacher_user_id'=>$studentUserId, 'stage'=>array(USER_LESSON_PENDING_STUDENT_RATING, USER_LESSON_DONE));
+
+        return $ulObj->find('all', array(	'conditions'=>$conditions,
+            'fields'=>array('teacher_user_id', 'rating_by_teacher', 'comment_by_teacher', 'image', 'datetime'),
+            'limit'=>$limit,
+            'page'=>$page));
+
+    }
+
 	public function waitingTeacherReview($teacehrUserId, $limit=null, $page=1) {
         $this->Subject;
         //Teacher cannot rate video lesson student.
@@ -984,18 +1029,17 @@ class UserLesson extends AppModel {
 				$conditions['UserLesson.stage'] = $stage;
 			}
 			if($time) {
-                //$conditions[] = 'UserLesson.end_datetime'.$time.'NOW()';
                 if($time=='>') { //Future lessons
                     $conditions['AND'][] = array(
                         'OR'=>array(
-                            array('UserLesson.end_datetime > NOW()'),
+                            array($this->alias.'.end_datetime >'=>$this->timeExpression('now', false)),
                             array('UserLesson.end_datetime IS NULL')
                             )
                     );
 
                 } else { //Past lessons
                     $conditions['AND'][] = array(
-                        array('UserLesson.end_datetime'.$time.'NOW()'),
+                        array('UserLesson.end_datetime'.$time=>$this->timeExpression('now', false)),
                         array('UserLesson.end_datetime IS NOT NULL')
                     );
 
@@ -1004,8 +1048,7 @@ class UserLesson extends AppModel {
 			}
 		}
 		
-		
-		//DboSource::expression('');
+
 		return $this->find($find, array('conditions'=>$conditions, 
 										'order'=>'datetime',
 										'limit'=>( $limit ? $limit : null),
@@ -1090,7 +1133,7 @@ class UserLesson extends AppModel {
                     $isFreeVideo = true;
 
                     //Make UserLesson request
-                    $this->lessonRequest($subjectId, $userId, time());
+                    $this->lessonRequest($subjectId, $userId, $this->UserLesson->toClientTime('now'));
                     $this->cacheQueries = false;
                     $userLessonData = $this->findByUserLessonId($this->id);
 
@@ -1129,8 +1172,8 @@ class UserLesson extends AppModel {
 
          $this->saveAssociated(
                 array(
-                    'UserLesson'=>array('user_lesson_id'=>$userLessonId, 'datetime'=>$this->getDataSource()->expression('NOW()'), 'end_datetime'=>$this->getDataSource()->expression('date_add(NOW(),interval '.LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC.' SECOND)')),
-                    'TeacherLesson'=>array('teacher_lesson_id'=>$teacherLessonId, 'datetime'=>$this->getDataSource()->expression('NOW()'), 'end_datetime'=>$this->getDataSource()->expression('date_add(NOW(),interval '.LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC.' SECOND)'))
+                    'UserLesson'=>array('user_lesson_id'=>$userLessonId, 'datetime'=>$this->timeExpression('now'), 'end_datetime'=>$this->timeExpression('now + '.LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC.' seconds')),
+                    'TeacherLesson'=>array('teacher_lesson_id'=>$teacherLessonId, 'datetime'=>$this->timeExpression('now'), 'end_datetime'=>$this->timeExpression('now + '.LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC.' seconds'))
                 )
         );
     }
@@ -1201,7 +1244,7 @@ class UserLesson extends AppModel {
             if(!$tlData['1_on_1_price']) { //Free lesson
 
                 //Make UserLesson request
-                $this->lessonRequest($tlData['subject_id'], $userId, time());
+                $this->lessonRequest($tlData['subject_id'], $userId, $this->UserLesson->toClientTime('now'));
                 $this->cacheQueries = false;
                 $userLessonData = $this->findByUserLessonId($this->id);
 

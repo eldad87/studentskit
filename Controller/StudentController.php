@@ -12,11 +12,16 @@ class StudentController extends AppController {
 		//Get lessons that about to start
 		$upcommingLessons= $this->UserLesson->getUpcomming($this->Auth->user('user_id'), 2, 1);
 					
-		//TODO: get board messages
-		
+		//Get student latest forum messages
+        app::import('Model', 'Forum.Post');
+        $postObj = new Post();
+        $postObj->setLanguages($this->Session->read('languages_of_records'));
+        $latestUpdatedTopics = $postObj->getGroupedLatestUpdatedTopicsByUser($this->Auth->user('user_id'), 3);
+
 		//TODO: get lesson suggestions
 					
 		$this->Set('upcommingLessons', $upcommingLessons);
+		$this->Set('latestUpdatedTopics', $latestUpdatedTopics);
 	}
 	
 	public function lessons($limit=5, $page=1) {
@@ -136,7 +141,7 @@ class StudentController extends AppController {
 	
 	public function myReviews() {
 		//Get students comments for that teacher
-		$studentReviews = $this->User->getStudentReviews( $this->Auth->user('user_id'), 10 );
+		$studentReviews = $this->UserLesson->getStudentReviews( $this->Auth->user('user_id'), 10 );
 		$this->Set('studentReviews', $studentReviews);
 	}
 }

@@ -48,19 +48,30 @@ class AppController extends Controller {
         App::uses('L10n', 'I18n');
         $localize = new L10n();
 
-        if($this->Session->read('locale')) {
-            //Set user chose of language
-            $locale = $this->Session->read('locale');
-            Configure::write('Config.language', $locale);
-            setlocale(LC_ALL, $locale .'UTF8', $locale .'UTF-8', $locale, 'eng.UTF8', 'eng.UTF-8', 'eng', 'en_US');
+        $language /*= $locale */= null;
+        if($this->Session->read('language')) {
+            $language = $this->Session->read('language');
+            $locale = $localize->map($this->Session->read('language'));
+            //$language = $this->Session->read('language');
+            Configure::write('Config.language', $language);
         } else {
             //Get language from browser
             $locale = $localize->get();
+
+            $language = $localize->catalog($locale);
+            $language = $localize->map($language['localeFallback']);
+        }
+
+        if($this->Session->read('timezone')) {
+            Configure::write('Config.timezone', $this->Session->read('timezone'));
         }
 
         //Set language direction
-        $localeLang = $localize->catalog($locale);
-        Configure::write('Config.languageDirection', isSet($localeLang['direction']) ? $localeLang['direction'] : 'ltr');
+        //setlocale(LC_ALL, $locale .'UTF8', $locale['locale'] .'UTF-8', $locale['locale'], 'eng.UTF8', 'eng.UTF-8', 'eng', 'en_US');
+
+
+        $cataqlog = $localize->catalog($language);
+        Configure::write('Config.languageDirection', isSet($cataqlog['direction']) ? $cataqlog['direction'] : 'ltr');
     }
 	
 	protected function error( $code, $data=array() ) {

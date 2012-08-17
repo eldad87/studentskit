@@ -67,6 +67,7 @@
 
         <field name="content" type="text_general" indexed="true" stored="true" multiValued="true"/>
         <dynamicField name="*_t"  type="text_general" indexed="true"  stored="false"/>
+        <field name="language"  type="string" indexed="true" stored="true" />
 
         <!-- <field name="keywords" type="text_general" indexed="true" stored="true" multiValued="true" /> -->
         <field name="forums" type="string" indexed="true" stored="true" multiValued="true" />

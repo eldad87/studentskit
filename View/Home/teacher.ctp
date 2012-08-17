@@ -23,3 +23,11 @@ if($teacherReviews) {
 	}
 }
 ?>
+<h3>Latest topics</h3>
+    <?php
+    foreach($latestPosts AS $post) {
+        echo 'date: '.$post['Post']['modified'],'<br />';
+        echo 'title: '.$post['Topic']['title'],'<br />';
+        echo 'content: '.$post['Post']['content'],'<br /><br />';
+    }
+    ?>

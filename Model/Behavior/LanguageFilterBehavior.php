@@ -17,16 +17,22 @@ class LanguageFilterBehavior extends ModelBehavior {
 
         $this->settings[$model->alias] = array_merge($settings, $config);
 
-        if(!$model->schema($this->getSettings($model, 'language_field', false))) {
-            throw new Exception(sprintf(__('Model %s does no have a language field (%s)'), $model->name, $this->getSettings($model, 'language_field'. false)));
+        $associateModel = $this->getAssociateModelByLanguageField($model);
+        if(!$associateModel['model']->schema($associateModel['language_field'])) {
+            throw new Exception(sprintf(__('Model %s does no have a language field (%s)'), $associateModel['model']->name, $associateModel['language_field']));
         }
 
     }
 
     public function setLanguages(Model $model, $languages) {
+        if(!$languages) {
+            return false;
+        }
+
         if(!is_array($languages)) {
             $languages = array($languages);
         }
+
         $this->settings[$model->alias]['languages'] = $languages;
     }
 
@@ -38,7 +44,9 @@ class LanguageFilterBehavior extends ModelBehavior {
 
 
         //['Model']['language'] = array('he','en');
-        $query['conditions'][$this->getSettings($model, 'language_field', false)] = $languages;
+        $associateModel = $this->getAssociateModelByLanguageField($model);
+        $query['conditions'][$associateModel['model']->alias.'.'.$associateModel['language_field']] = $languages;
+        //$query['conditions'][$this->getSettings($model, 'language_field', false)] = $languages;
 
         //Save last query
         $this->settings[$model->alias]['query'] = $query;
@@ -69,7 +77,7 @@ class LanguageFilterBehavior extends ModelBehavior {
 
 
 
-
+        $associateModel = $this->getAssociateModelByLanguageField($model);
 
 
         //Check if there is any limit.
@@ -84,9 +92,13 @@ class LanguageFilterBehavior extends ModelBehavior {
 
             } else if(isSet($query['page']) && !empty($query['page'])) {
 
-                //Calculate how many pages already been passed
-                //unset($query['conditions']['is_enable']);
 
+                //If this si an associate model - count disable association, therefore, lets override it.
+                if($associateModel['model']->name!==$model->name) {
+                    $model->recursive = 2;
+                }
+
+                //Calculate how many pages already been passed
                 /**
                  * 45 (original languages) - 25 (other languages)
                  *
@@ -124,9 +136,12 @@ class LanguageFilterBehavior extends ModelBehavior {
         }
 
         //Remove the default languages from query
-        unset($query['conditions'][$this->getSettings($model, 'language_field', false)]);
+        unset($query['conditions'][$associateModel['model']->alias.'.'.$associateModel['language_field']]);
+        //unset($query['conditions'][$this->getSettings($model, 'language_field', false)]);
+
         //Add remove results with the current languages
-        $query['conditions'][] = array('NOT'=>array($this->getSettings($model, 'language_field', false)=>$languages));
+        $query['conditions'][] = array('NOT'=>array($associateModel['model']->alias.'.'.$associateModel['language_field']=>$languages));
+        //$query['conditions'][] = array('NOT'=>array($this->getSettings($model, 'language_field', false)=>$languages));
 
 
         //Find other languages
@@ -157,5 +172,18 @@ class LanguageFilterBehavior extends ModelBehavior {
         return false;
     }
 
+    private function getAssociateModelByLanguageField($model) {
+        $langField = $this->getSettings($model, 'language_field', false);
+        $langFieldArr = explode('.', $langField);
+        if(count($langFieldArr)>1) {
+            if($langFieldArr[0]!=$model->name) {
+                return array('model'=>($model->{$langFieldArr[0]}), 'language_field'=>$langFieldArr[1]);
+            }
+
+            $langField = $langFieldArr[1];
+        }
+
+        return array('model'=>$model, 'language_field'=>$langField);
+    }
 }
 ?>

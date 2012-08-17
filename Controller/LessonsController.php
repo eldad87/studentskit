@@ -121,6 +121,8 @@ class LessonsController extends AppController {
 
                 //If its the teacher, send invitations in the system
                 if($tlData['lesson_type']==LESSON_TYPE_LIVE) {
+                    //TODO: check if lesson is overdue/started
+
                     //Email users
                     $this->emailUsers($this->request->data['emails'], $tlData['name'], $this->request->data['message'], 'TeacherLesson', $this->request->data['teacher_lesson_id']);
 
@@ -197,7 +199,7 @@ class LessonsController extends AppController {
         foreach($users AS $user) {
             $user = $user['User'];
             unset($emailAsKeys[$user['email']]); //Remove user from emailing list
-            $this->UserLesson->lessonRequest($subjectId, $user['user_id'], time(), true); //Send invitation
+            $this->UserLesson->lessonRequest($subjectId, $user['user_id'], $this->UserLesson->toClientTime('now'), true); //Send invitation
         }
         return array_flip($emailAsKeys);
     }

@@ -15,6 +15,7 @@ class this extends AppHelper
     
     public function __contruct()
     {
+        $View = new View();
         $this->Html = new HtmlHelper($View);
         $this->Session = new SessionHelper($View);        
         $this->Form = new FormHelper($View);        

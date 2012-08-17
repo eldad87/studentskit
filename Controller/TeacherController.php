@@ -14,9 +14,14 @@ class TeacherController extends AppController {
 	public function index() {
 		$aboutToStartLessons = $this->TeacherLesson->getUpcomming($this->Auth->user('user_id'). null, 2, 1);
 
-		//TODO: get board messages
+        //Get student latest forum messages
+        app::import('Model', 'Forum.Post');
+        $postObj = new Post();
+        $postObj->setLanguages($this->Session->read('languages_of_records'));
+        $latestUpdatedTopics = $postObj->getGroupedLatestUpdatedTopicsByUser($this->Auth->user('user_id'), 3);
 					
 		$this->Set('aboutToStartLessons', $aboutToStartLessons);
+        $this->Set('latestUpdatedTopics', $latestUpdatedTopics);
 	}
 	
 	public function subjects($limit=5, $page=1) {
@@ -33,29 +38,41 @@ class TeacherController extends AppController {
             }
         }
 
+
+
+        //Not posted yet
         if (!empty($this->request->data)) {
             App::import('Model', 'Subject');
             $this->request->data['Subject']['user_id'] = $this->Auth->user('user_id');
             $this->request->data['Subject']['type'] = SUBJECT_TYPE_OFFER;
-            //$this->Subject->set($this->request->data);
+            $this->Subject->set($this->request->data);
 
             if($this->Subject->save($this->request->data)) {
                 $this->Session->setFlash(__('Subject saved'));
                 $this->redirect(array('action'=>'subjects'));
             }
-            //var_dump($this->Subject->validationErrors);
+
+        //Edit - load default data
+        } else if($subjectId) {
+            //Default subject data
+            if (empty($this->request->data)) {
+                $this->request->data = $this->Subject->findBySubjectId($subjectId);
+
+            }
+        //New "add" form, set default language
+        } else {
+            $this->request->data['Subject']['language'] = Configure::read('Config.language');
         }
 
-		if($subjectId) {
-        //Default subject data
-			if (empty($this->request->data)) {
-				$this->request->data = $this->Subject->findBySubjectId($subjectId);
-			}
-			$this->set('subjectId', $subjectId);
 
-			$this->set('fileSystem', $this->Subject->getFileSystem($subjectId));
-			$this->set('tests', $this->Subject->getTests($subjectId));
-		}
+        //Set additional subject info
+        if($subjectId) {
+            $this->set('subjectId', $subjectId);
+            $this->set('fileSystem', $this->Subject->getFileSystem($subjectId));
+            $this->set('tests', $this->Subject->getTests($subjectId));
+        }
+
+
 
 
 
@@ -74,7 +91,9 @@ class TeacherController extends AppController {
 			$this->set('groupPrice', $groupPrice);
 		}
 
-        $this->set('language',Configure::read('Config.languages'));
+        App::import('I18n', 'Languages');
+        $lang = new Languages();
+        $this->set('languages', $lang->getLanguageList());
 
 	}
 	
@@ -191,8 +210,10 @@ class TeacherController extends AppController {
 	}
 	
 	public function myReviews() {
+        //Ajax - Home.getTeacherRatingByStudents
+
 		//Get students comments for that teacher
-		$teacherReviews = $this->User->getTeachertReviews( $this->Auth->user('user_id'), 10 );
+		$teacherReviews = $this->UserLesson->getTeachertReviews( $this->Auth->user('user_id'), 10 );
 		$this->Set('teacherReviews', $teacherReviews);
 	}
 

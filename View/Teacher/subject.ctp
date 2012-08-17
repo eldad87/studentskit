@@ -8,7 +8,7 @@ echo $this->Form->hidden('subject_id');
 
 echo $this->Form->input('name');
 echo $this->Form->input('description');
-echo $this->Form->input('language', array('options'=>$language));
+echo $this->Form->input('language', array('options'=>$languages));
 echo '<br />';
 
 echo $this->Form->input('subject_category_id', array('options'=>$subjectCategories));

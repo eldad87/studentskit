@@ -15,13 +15,33 @@ $config['Account.setTimezone.success.1.title'] = __('Success');
 $config['Account.setTimezone.success.1.description'] = __('New timezone set');
 
 $config['Accounts.setTimezone.error.1.title'] = __('Error');
-$config['Accounts.setTimezone.error.1.description'] = __('Cannot set timezone');
-/*-------------------- Accounts.login		--------------------*/
+$config['Accounts.setTimezone.error.1.description'] = __('New language set');
+$config['Accounts.setTimezone.error.2.title'] = __('Error');
+$config['Accounts.setTimezone.error.2.description'] = __('Cannot set timezone');
+/*-------------------- Accounts.setLocale		--------------------*/
 $config['Accounts.setLocale.success.1.title'] = __('Success');
 $config['Accounts.setLocale.success.1.description'] = __('New locale set');
 
 $config['Accounts.setLocale.error.1.title'] = __('Error');
-$config['Accounts.setLocale.error.1.description'] = __('Cannot set locale');
+$config['Accounts.setLocale.error.1.description'] = __('New language set');
+$config['Accounts.setLocale.error.2.title'] = __('Error');
+$config['Accounts.setLocale.error.2.description'] = __('Cannot set locale');
+/*-------------------- Accounts.setLanguage		--------------------*/
+$config['Accounts.setLanguage.success.1.title'] = __('Success');
+$config['Accounts.setLanguage.success.1.description'] = __('New language set');
+
+$config['Accounts.setLanguage.error.1.title'] = __('Error');
+$config['Accounts.setLanguage.error.1.description'] = __('Missing parameter');
+$config['Accounts.setLanguage.error.2.title'] = __('Error');
+$config['Accounts.setLanguage.error.2.description'] = __('Cannot set language');
+/*-------------------- Accounts.setLanguage		--------------------*/
+$config['Accounts.setLanguagesOfRecords.success.1.title'] = __('Success');
+$config['Accounts.setLanguagesOfRecords.success.1.description'] = __('New language set');
+
+$config['Accounts.setLanguagesOfRecords.error.1.title'] = __('Error');
+$config['Accounts.setLanguagesOfRecords.error.1.description'] = __('Missing parameter');
+$config['Accounts.setLanguagesOfRecords.error.2.title'] = __('Error');
+$config['Accounts.setLanguagesOfRecords.error.2.description'] = __('Cannot set language');
 /********************* Accounts - End		******************************************/
 
 

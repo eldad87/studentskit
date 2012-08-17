@@ -72,13 +72,18 @@ class AccountsController extends AppController {
                 $this->getEventManager()->dispatch($event);
 
 
+                //$this->Session->write('locale', $this->Auth->user('locale'));
                 $this->Session->write('timezone', $this->Auth->user('timezone'));
-                $this->Session->write('locale', $this->Auth->user('locale'));
+                $this->Session->write('language', $this->Auth->user('language'));
+                if($lor = json_decode($this->Auth->user('languages_of_records'))) {
+                    $this->Session->write('languages_of_records', $lor);
+                }
 
                 if ($this->RequestHandler->isAjax()) {
                     return $this->success(1);
                 }
-				return $this->redirect($this->Auth->redirect());
+
+                return $this->redirect($this->Auth->redirect());
 			} else {
                 if ($this->RequestHandler->isAjax()) {
                     return $this->error(1);
@@ -109,32 +114,74 @@ class AccountsController extends AppController {
 
 	}
 
-    public function setTimezone($timezone) {
+    public function setTimezone($timezone=null) {
+        if(!$timezone) {
+            return $this->error(1);
+        }
+
         $this->Session->write('timezone', $timezone);
 
         if($this->Auth->user()) {
             $this->User->create();
             $this->User->id = $this->Auth->user('user_id');
             if(!$this->User->save(array('timezone'=>$timezone))) {
-                return $this->error(1);
+                return $this->error(2);
             }
         }
         return $this->success(1);
     }
 
-    public function setLocale($locale) {
+    /*public function setLocale($locale=null) {
+        if(!$locale) {
+            return $this->error(1);
+        }
+
         $this->Session->write('locale', $locale);
 
         if($this->Auth->user()) {
             $this->User->create();
             $this->User->id = $this->Auth->user('user_id');
             if(!$this->User->save(array('locale'=>$locale))) {
-                return $this->error(1);
+                return $this->error(2);
+            }
+        }
+        return $this->success(1);
+    }*/
+    public function setLanguage($language=null) {
+        if(!$language) {
+            return $this->error(1);
+        }
+        $this->Session->write('language', $language);
+
+        if($this->Auth->user()) {
+            $this->User->create();
+            $this->User->id = $this->Auth->user('user_id');
+            if(!$this->User->save(array('language'=>$language))) {
+                return $this->error(2);
             }
         }
         return $this->success(1);
     }
-	
+    public function setLanguagesOfRecords($languages=null) {
+        if(!$languages) {
+            return $this->error(1);
+        }
+
+        $languages = explode(',', $languages);
+        $this->Session->write('languages_of_records', $languages);
+
+        if($this->Auth->user()) {
+            $this->User->create();
+            $this->User->id = $this->Auth->user('user_id');
+            if($languages = json_encode($languages)) {
+                if(!$this->User->save(array('languages_of_records'=>$languages))) {
+                    return $this->error(2);
+                }
+            }
+        }
+        return $this->success(1);
+    }
+
 	public function register() {
 		$this->SignMeUp->register();
 	}

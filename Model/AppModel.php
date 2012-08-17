@@ -31,6 +31,8 @@ App::uses('Model', 'Model');
  * @package       app.Model
  */
 class AppModel extends Model {
+    public $actsAs = array('Time');
+
     /*public function invalidate($field, $value=true) {
         if (!is_array($this->validationErrors)) {
             $this->validationErrors = array();

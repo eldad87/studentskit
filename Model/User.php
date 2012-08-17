@@ -22,25 +22,25 @@ class User extends AppModel {
 			)
 		),
 		'email' => array(
-			'isUnique' => array(
-				'rule'    		=> 'isUnique',
-				'message' 		=> 'This email has already been taken.',
-				'required'		=> true,
-				'on'			=> 'create',
-			),
 			'email' => array(
 				'rule'		=> 'email',
 				'message'	=> 'Enter a valid email',
-			)
-		),
-		'username' => array(
-			'isUnique' => array(
+			),
+            'isUnique' => array(
 				'rule'    		=> 'isUnique',
 				'message' 		=> 'This email has already been taken.',
 				'required'		=> true,
 				'on'			=> 'create',
 			),
 		),
+		/*'username' => array(
+			'isUnique' => array(
+				'rule'    		=> 'isUnique',
+				'message' 		=> 'This email has already been taken.',
+				'required'		=> true,
+				'on'			=> 'create',
+			),
+		),*/
 		
 		/*'password'=>array(
 			'minLengh' => array(
@@ -107,48 +107,13 @@ class User extends AppModel {
         $this->virtualFields['id'] = sprintf('%s.user_id', $this->alias); //Forum suppoer
     }
 
-    public function beforeSave($options) {
-        parent::beforeSave($options=array());
+    /*public function beforeSave($options) {
+        parent::beforeSave($options);
 
-        //Detect user geo location using google API
-    }
+        //TODO: Detect user geo location using google API
 
-	/**
-	 * 
-	 * Get rating for a given teacher - by his studnets
-	 * @param unknown_type $userId
-	 * @param unknown_type $limit
-	 * @param unknown_type $page
-	 */
-	public function getTeachertReviews( $teacherUserId, $limit=12, $page=1 ) {
-		App::import('Model', 'UserLesson');
-		$ulObj = new UserLesson();
-		$conditions = array('UserLesson.teacher_user_id'=>$teacherUserId, 'stage'=>array(USER_LESSON_PENDING_TEACHER_RATING, USER_LESSON_DONE));
-		
-		return $ulObj->find('all', array(	'conditions'=>$conditions,
-											'fields'=>array('student_user_id', 'rating_by_student', 'comment_by_student', 'student_image', 'datetime'),
-											'limit'=>$limit,
-											'page'=>$page));
-		
-	}
-	/**
-	 * 
-	 * Get rating for a given student - by his teachers
-	 * @param unknown_type $userId
-	 * @param unknown_type $limit
-	 * @param unknown_type $page
-	 */
-	public function getStudentReviews( $studentUserId, $limit=12, $page=1 ) {
-		App::import('Model', 'UserLesson');
-		$ulObj = new UserLesson();
-		$conditions = array('teacher_user_id'=>$studentUserId, 'stage'=>array(USER_LESSON_PENDING_STUDENT_RATING, USER_LESSON_DONE));
-		
-		return $ulObj->find('all', array(	'conditions'=>$conditions,
-											'fields'=>array('teacher_user_id', 'rating_by_teacher', 'comment_by_teacher', 'image', 'datetime'),
-											'limit'=>$limit,
-											'page'=>$page));
-		
-	}
+        return true;
+    }*/
 	
 	public function setRating($userId, $userType, $rating) {
 		$update = array(

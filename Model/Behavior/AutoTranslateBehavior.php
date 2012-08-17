@@ -5,17 +5,7 @@
  */
 App::import('Behavior', 'Translate');
 class AutoTranslateBehavior extends TranslateBehavior {
-    private $userLang = DEFAULT_LANGUAGE;
 
-    public function beforeSave(Model $model, $options = array()) {
-        /*//Set lang to default -
-        if(Configure::read('Config.language')) {
-            $this->userLang = Configure::read('Config.language');
-        }
-        Configure::write('Config.language', DEFAULT_LANGUAGE);*/
-
-        parent::beforeSave($model, $options);
-    }
     public function afterSave(Model $model, $created) {
         parent::afterSave($model, $created);
 
@@ -24,12 +14,14 @@ class AutoTranslateBehavior extends TranslateBehavior {
         $translations = array();
 
         //Save translation if any
-        foreach(Configure::read('Config.languages') AS $locale=>$lang) {
-            $realLocale = str_replace('_', '-', $locale); //Convert en_us -> en-us
-            //Go over each translation field, and check if exists in the translation name, I.e "title"->"title_en_us"
+
+        App::import('I18n', 'Languages');
+        $lang = new Languages();
+        foreach( $lang->getLanguageList() AS $locale=>$lang) {
+            //Go over each translation field, and check if exists in the translation name, I.e "title"->"title_eng"
             foreach($translatedFields AS $field) {
                 if(isSet($model->data[$model->alias][$field.'_'.$locale]) && !empty($model->data[$model->alias][$field.'_'.$locale])) {
-                    $translations[$realLocale][$field] = $model->data[$model->alias][$field.'_'.$locale];
+                    $translations[$locale][$field] = $model->data[$model->alias][$field.'_'.$locale];
                 }
             }
         }

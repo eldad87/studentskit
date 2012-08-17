@@ -19,11 +19,95 @@ class HomeController extends AppController {
 	
 	public function index() {
 		//Get about to start messages
+        $this->Subject->setLanguages($this->Session->read('languages_of_records'));
 		$newSubjects = $this->Subject->getNewest(false);
-		$this->set('newSubjects', $newSubjects);
 
-        //TODO: get board last messages
+        app::import('Model', 'Forum.Topic');
+        $topicObj = new Topic();
+        $topicObj->setLanguages($this->Session->read('languages_of_records'));
+        $latestTopics = $topicObj->getLatest(5);
+
+		$this->set('newSubjects', $newSubjects);
+		$this->set('latestTopics', $latestTopics);
 	}
+
+    public function testFind() {
+        //pr($this->UserLesson->getAssociated()); die;
+        Configure::write('Config.timezone', 'Asia/Tokyo');
+        //Configure::write('Config.timezone', 'Asia/Jerusalem');
+       /* $allLiveLessons = $this->User->getLiveLessonsByDate( array(1,2,3,4,5), false, 2012, 9);
+        pr($allLiveLessons);*/
+        $this->User->recursive = 2;
+        pr($this->User->find('all'));
+
+    }
+    public function testSave() {
+        Configure::write('Config.timezone', 'Asia/Tokyo');
+        //$this->UserLesson->saveAll( array('name'=>'uname', 'Subject'=>array('name'=>'sname', 'user_id'=>4), 'TeacherLesson'=>'tname'),array('validate'=>false));
+        $this->UserLesson->saveAll( array('name'=>'uname', 'description'=>'aa', 'language'=>'en',
+                                    'Subject'=>array('name'=>'sname', 'description'=>1, 'user_id'=>4, 'language'=>'en'),
+                                    'TeacherLesson'=>array(array('name'=>'tname1'), array('name'=>'tname2'))),array('validate'=>false));
+    }
+
+    public function testTime() {
+        //$this->UserLesson->find();
+        App::uses('CakeTime', 'Utility');
+
+        $userTimezone = 'Asia/Tokyo'; //Asia/Jerusalem
+        $serverTime = date('Y-m-d H:i:s');
+
+
+        Configure::write('Config.timezone', 'Asia/Jerusalem');
+
+
+        pr($serverTime);
+        pr($this->UserLesson->toServerTime('now'));
+        pr($this->UserLesson->toClientTime('now'));
+        pr($this->UserLesson->timeExpression('now', false));
+
+die;
+        $startDate = '2012-03-01 01:00:00';
+        $serverStartDate = $this->UserLesson->toServerTime($startDate);
+
+        pr($startDate);
+        pr($serverStartDate );
+        die;
+
+        pr( date('Y-m-d H:i:s') );
+        pr( CakeTime::format('Y-m-d H:i:s', CakeTime::fromString('now + 60 seconds')) );
+        pr( CakeTime::format('Y-m-d H:i:s', CakeTime::fromString('now')) );
+        pr( date('Y-m-d H:i:s', CakeTime::fromString(date('Y-m-d H:i:s').' + 1 day')) );
+        pr( date('Y-m-d H:i:s', CakeTime::fromString('2012-02 + 1 day')) );
+        pr( date('Y-m-d H:i:s', CakeTime::fromString('now')) );
+
+        //From server to user
+        /*$userTimeTS = CakeTime::fromString($serverTime, $userTimezone); //Timestamp
+
+
+
+        //From user to server
+        $serverTime2 = CakeTime::toServer(date('Y-m-d H:i:s', $userTimeTS) , $userTimezone);
+
+
+        pr($serverTime);
+        pr(date('Y-m-d H:i:s', $userTimeTS));
+        pr($serverTime2);*/
+
+
+        /*$userTime = '2012-08-16 15:40:38';
+        $serverTime2 = CakeTime::toServer($userTime , $userTimezone);
+        pr($userTime);
+        pr($serverTime2);*/
+        die;
+    }
+
+    /*public function testForumMessages() {
+        app::import('Model', 'Forum.Topic');
+        $topicObj = new Topic();
+        $topicObj->Post->setLanguages($this->Session->read('languages_of_records'));
+        pr($topicObj->Post->getGroupedLatestByUser(4, 2));
+        //die;
+    }*/
 
     public function testAddCategory() {
         App::import('Model', 'SubjectCategory');
@@ -200,12 +284,14 @@ $id = $scObj->id;
 
 
         $this->Subject; //For loading the const
-        $searchTerms = !empty($this->request->query['search_terms'])    ? $this->request->query['search_terms'] : '*';
+        $searchTerms = !empty($this->request->query['search_terms'])        ? $this->request->query['search_terms']             : '*';
 
-        $categoryId  = (isSet($this->request->query['category_id'])     ? $this->request->query['category_id']	: 0);
-        $limit       = (isSet($this->request->query['limit']) 			? $this->request->query['limit']		: 6);
-        $page        = (isSet($this->request->query['page']) 			? $this->request->query['page']		    : 1);
-        $language    = (isSet($this->request->query['language']) 	    ? $this->request->query['language'] 	: null);
+        $categoryId  = (isSet($this->request->query['category_id'])         ? $this->request->query['category_id']	            : 0);
+        $limit       = (isSet($this->request->query['limit']) 			    ? $this->request->query['limit']		            : 6);
+        $page        = (isSet($this->request->query['page']) 			    ? $this->request->query['page']		                : 1);
+        $language    = (isSet($this->request->query['languages_of_records'])? $this->request->query['languages_of_records'] 	:
+                        ($this->Session->read('languagesOfRecords')         ? $this->Session->read('languagesOfRecords')        : null));
+
         $lessonType = array();
         if(isSet($this->request->query['lesson_type_video'])) {
             $lessonType[]  = LESSON_TYPE_VIDEO;
@@ -223,8 +309,8 @@ $id = $scObj->id;
         if(!is_null($categoryId)) {
             $query['fq']['category_id'] = $categoryId;
         }
-        if($language) {
-            $query['fq']['language'] = $language;
+        if($language && (is_array($language) || $language!='all')) {
+            $query['fq']['language'] = '('.implode(' OR ',$language).')';
         }
         if($lessonType) {
             $query['fq']['lesson_type'] = '('.implode(' OR ',$lessonType).')';
@@ -253,6 +339,7 @@ $id = $scObj->id;
 		$subjectRatingByStudents = $this->Subject->getRatingByStudents( $subjectId, 2 );
 		
 		//Get teacher other subjects
+        $this->Subject->setLanguages($this->Session->read('languages_of_records'));
 		$teacherOtherSubjects = $this->Subject->getOffersByTeacher( $subjectData['user_id'], false, null, 1, 6, null, $subjectId );
 
 		//Get teacher data
@@ -266,11 +353,17 @@ $id = $scObj->id;
 		}
 
 
-		//Get other teacher's subjects same as this one, TODO: check user lang
+		//Get other teacher's subjects same as this one
 		if(!empty($subjectData['category_id'])) {
+            if(!$lor = $this->Session->read('languagesOfRecords')) {
+                $lor = array();
+            }
+            if(!in_array($subjectData['language'],$lor)) {
+                $lor[] = $subjectData['language'];
+            }
             $query = array(
                 'search'=>$subjectData['name'],
-                'fq'=>array('is_public'=>SUBJECT_IS_PUBLIC_TRUE, 'category_id'=>$subjectData['category_id'], 'language'=>$subjectData['language']),
+                'fq'=>array('is_public'=>SUBJECT_IS_PUBLIC_TRUE, 'category_id'=>$subjectData['category_id'], 'language'=>$lor),
                 'page'=>1,
                 'limit'=>6
             );
@@ -281,6 +374,8 @@ $id = $scObj->id;
 			$otherTeacherForThisSubject = $this->Subject->getbyCatalog( $subjectData['catalog_id'], $subjectId, 6 );
 			$this->set('otherTeacherForThisSubject', $otherTeacherForThisSubject);
 		}*/
+
+        //TODO: video lesson - check if there is a request pending/approved
 		
 		$this->set('subjectData', 				$subjectData);
 		$this->set('subjectRatingByStudents', 	$subjectRatingByStudents);
@@ -372,23 +467,35 @@ $id = $scObj->id;
 		}
 		
 		//Get teacher other subjects
+        $this->Subject->setLanguages($this->Session->read('languages_of_records'));
 		$teacherSubjects = $this->Subject->getOffersByTeacher( $teacherUserId, false, null, 1, 6 );
 
-		
+
 		//Get students comments for that teacher
-		$teacherReviews = $this->User->getTeachertReviews( $teacherUserId, 2 );
-		 
-		//TODO: get board messages
+        $this->UserLesson->setLanguages($this->Session->read('languages_of_records'));
+		$teacherReviews = $this->UserLesson->getTeachertReviews( $teacherUserId, 2 );
+
+		//get forum latest posts
+        app::import('Model', 'Forum.Post');
+        $postObj = new Post();
+        $postObj->setLanguages($this->Session->read('languages_of_records'));
+        $latestPosts = $postObj->getLatestByUser($teacherUserId, 2);
+
 		 
 		$this->set('teacherUserData', 	$teacherData['User']);
 		$this->set('teacherSubjects', 	$teacherSubjects);
 		$this->set('teacherReviews', 	$teacherReviews);
+		$this->set('latestPosts', 	    $latestPosts);
 	}
 	public function getTeacherRatingByStudents($teacherUserId, $limit=2, $page=1) {
-		$subjectRatingByStudents = $this->User->getTeachertReviews( $teacherUserId, $limit, $page );
+        if($this->Auth->user('user_id')!=$teacherUserId) {
+            $this->UserLesson->setLanguages($this->Session->read('languages_of_records'));
+            $subjectRatingByStudents = $this->UserLesson->getTeachertReviews( $teacherUserId, $limit, $page );
+        }
 		return $this->success(1, array('rating'=>$subjectRatingByStudents));
 	}
 	public function getTeacherSubjects($teacherUserId, $limit=6, $page=1) {
+        $this->Subject->setLanguages($this->Session->read('languages_of_records'));
 		$teacherOtherSubjects = $this->Subject->getOffersByTeacher( $teacherUserId, false, null, $page, $limit );
 		return $this->success(1, array('subjects'=>$teacherOtherSubjects));
 	}
@@ -481,7 +588,9 @@ $id = $scObj->id;
             if(isSet($this->request->query['datetime']) && !empty($this->request->query['datetime'])) {
                 $datetime = $this->request->query['datetime'];
                 $datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
+                $datetime = $this->UserLesson->timeExpression($datetime, false);
             }
+
 			if(!$this->UserLesson->lessonRequest($subjectId, $this->Auth->user('user_id'), $datetime)) {
                 $this->Session->setFlash(__('Cannot order lesson'));
                 $this->redirect($this->referer());

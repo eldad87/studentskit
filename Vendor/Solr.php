@@ -121,6 +121,7 @@ class Solr {
      * @return array|bool
      */
     public function query( $query, $fields=array(), $start=0, $rows=50 ) {
+        $query['search'] = utf8_decode($query['search']); //otherwise we weren't able to search in Hebrew
 
         //Build query like q=title:superman^$boost subject:superman^$boost
         //Build query like q=name:river naviga miles^5 description:river naviga miles^1
@@ -181,6 +182,7 @@ class Solr {
             }
             //pr($query_response->getRequestUrl()); die;
             $response = $query_response->getResponse();
+
         } catch (Exception $e) {
             CakeLog::write('solr', 'options: '.var_export($this->client->getOptions(),true).', Message: '.$e->getMessage());
             return false;

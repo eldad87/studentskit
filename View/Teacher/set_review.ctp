@@ -3,6 +3,7 @@
 <h3>Set Feedback</h3>
 <?php 
 	echo 'Lesson Name: ',$setReview['UserLesson']['name'],'<br />';
+    echo 'Language: ',$setReview['UserLesson']['language'],'<br />'; //Ask user to set review in the same language as the lesson
 	echo 'Date: ',$setReview['UserLesson']['datetime'],'<br />';
 	echo 'teacher Name: ',$setReview['Student']['first_name'],' ',$setReview['Student']['last_name'],'<br />';
 	echo $this->Html->link('Back', array('action'=>'awaitingReview'));
