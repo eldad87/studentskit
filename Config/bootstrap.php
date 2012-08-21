@@ -190,4 +190,7 @@ CakePlugin::loadAll(array(
         'Forum'
     )
 );
+
+Configure::write('template_languages', array('heb'=>'Hebrew', 'eng'=>'English'));
+
 App::build(array('Event' => array('%s'.'Event'.DS)), App::REGISTER);

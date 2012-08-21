@@ -91,9 +91,9 @@ class TeacherController extends AppController {
 			$this->set('groupPrice', $groupPrice);
 		}
 
-        App::import('I18n', 'Languages');
+        App::uses('Languages', 'Utils.Lib');
         $lang = new Languages();
-        $this->set('languages', $lang->getLanguageList());
+        $this->set('languages', $$lang->lists('locale'));
 
 	}
 	

@@ -29,7 +29,23 @@ class HomeController extends AppController {
 
 		$this->set('newSubjects', $newSubjects);
 		$this->set('latestTopics', $latestTopics);
+
+        /*
+       App::uses('Languages', 'Utils.Lib');
+       $lang = new Languages();
+       $this->set('languages', $lang->lists('locale'));
+
+       App::uses('Timezone', 'Lib');
+       $tz = new Timezone();
+       $this->set('timezones', $tz->getList());
+        */
 	}
+
+
+    public function testListTimezones() {
+        App::uses('Locale', 'Utility');
+        pr(Locale::listTimezones());
+    }
 
     public function testFind() {
         //pr($this->UserLesson->getAssociated()); die;

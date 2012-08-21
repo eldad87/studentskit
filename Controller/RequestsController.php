@@ -46,9 +46,9 @@ class RequestsController extends AppController {
         $subjectCategories = $scObj->getAllCategoriesOptions();
         $this->set('subjectCategories', $subjectCategories);
 
-        App::import('I18n', 'Languages');
+        App::uses('Languages', 'Utils.Lib');
         $lang = new Languages();
-        $this->set('languages', $lang->getLanguageList());
+        $this->set('languages', $$lang->lists('locale'));
 	}
 
 
