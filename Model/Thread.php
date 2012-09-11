@@ -32,7 +32,7 @@ class Thread extends AppModel {
 			$set['entity_id'] 	= $entityId;
 		}
 		
-		$this->create();
+		$this->create(false);
 		$this->set($set);
 		if(!$this->save()) {
 			return false;

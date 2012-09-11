@@ -98,12 +98,12 @@ class TeacherLesson extends AppModel {
 					'User' => array(
 						'className'	=> 'User',
 						'foreignKey'=>'teacher_user_id',
-						'fields'	=>array('first_name', 'last_name', 'image')
+						'fields'	=>array('first_name', 'last_name', 'image', 'teacher_paypal_id')
 					),
 					'Subject' => array(
 						'className'	=> 'Subject',
 						'foreignKey'=>'subject_id',
-						'fields'	=>array('avarage_rating', 'image', 'type' )
+						'fields'	=>array('avarage_rating', 'image', 'type', 'is_enable' )
 					)
 				);
 
@@ -174,7 +174,7 @@ class TeacherLesson extends AppModel {
 	public function fullGroupTotalPriceCheck( $price ) {
 		if(!isSet($this->data['TeacherLesson']['max_students'])) {
 			$this->invalidate('max_students', ___('Please enter a valid max students'));
-			return false;
+			//return false;
 		} else  {
 			if(	isSet($this->data['TeacherLesson']['full_group_total_price']) && !empty($this->data['TeacherLesson']['full_group_total_price']) && 
 				$this->data['TeacherLesson']['max_students'] && $this->data['TeacherLesson']['1_on_1_price']) {
@@ -195,7 +195,7 @@ class TeacherLesson extends AppModel {
 	public function maxStudentsCheck( $maxStudents ) {
 		if($maxStudents['max_students']>1 && (!isSet($this->data['TeacherLesson']['full_group_total_price']) || !$this->data['TeacherLesson']['full_group_total_price'])) {
 			$this->invalidate('full_group_total_price', __('Please enter a valid group price or set Max students to 1'));
-			return false;
+			//return false;
 		}
 		return true;
 	}
@@ -204,7 +204,8 @@ class TeacherLesson extends AppModel {
         parent::beforeValidate($options);
 
         App::import('Model', 'Subject');
-        Subject::calcFullGroupStudentPriceIfNeeded($this->data['UserLesson'], ($this->id || !empty($this->data['Subject'][$this->primaryKey])) );
+        $exists = $this->exists(!empty($this->data['TeacherLesson'][$this->primaryKey]) ? $this->data['TeacherLesson'][$this->primaryKey] : null);
+        Subject::calcFullGroupStudentPriceIfNeeded($this->data['UserLesson'], $exists );
         Subject::extraValidation($this);
 
 
@@ -322,7 +323,7 @@ class TeacherLesson extends AppModel {
 		if ($event->isStopped()) {
 			return false;
 		}
-		$this->create();
+		$this->create(false);
 		$this->set($teacherLessonData);
 		if(!$this->save()) {
 			return false;
@@ -336,7 +337,7 @@ class TeacherLesson extends AppModel {
 	}
 	
 	
-	public function cancel( $teacherLessonsId, $canceledBy='teacher',$teacherUserId=null ) {
+	public function cancel( $teacherLessonsId/*, $studentUserId=null*/ ) {
 		//Find the TeacherLesson
 		$this->recursive = -1;
 		$teacherLessonsData = $this->findByTeacherLessonId($teacherLessonsId);
@@ -345,49 +346,62 @@ class TeacherLesson extends AppModel {
 		}
 		$teacherLessonsData = $teacherLessonsData['TeacherLesson'];
 		
-		if(!is_null($teacherUserId)) {
+		/*if(!is_null($teacherUserId)) {
 			//Check if that's the right teacher
 			if($teacherLessonsData['teacher_user_id']!=$teacherUserId) {
 				return false;
 			}
-		}
+		}*/
 				
 		if($teacherLessonsData['is_deleted']) {
 			//Already deleted
 			return true;
 		}
 		
-		
-		//TODO: move to event handler
+
 		//Get all user lessons that are about to cancel
 		App::import('Model', 'Subject');
 		App::import('Model', 'UserLesson');
 		$userLessonObj = new UserLesson();
-		$userLessonData = $userLessonObj->find('all', array('conditions'=>array('UserLesson.teacher_lesson_id'=>$teacherLessonsId, 
-																				'UserLesson.stage'=>array( USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_ACCEPTED))));
-		
-		$event = new CakeEvent('Model.TeacherLesson.beforeCancel', $this, array('teacher_lesson'=>$teacherLessonsData,'user_lesson'=>$userLessonData));
+		$userLessonsData = $userLessonObj->find('all', array('conditions'=>array('UserLesson.teacher_lesson_id'=>$teacherLessonsId,
+																				'UserLesson.stage'=>array( USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_PENDING_STUDENT_APPROVAL,
+                                                                                    USER_LESSON_RESCHEDULED_BY_TEACHER, USER_LESSON_RESCHEDULED_BY_STUDENT,
+                                                                                    USER_LESSON_ACCEPTED))));
+
+        /*if($studentUserId && $userLessonsData) {
+            return false; //Student cant' cancel this lesson if there are existing requests
+        }*/
+
+		$event = new CakeEvent('Model.TeacherLesson.beforeCancel', $this, array('teacher_lesson'=>$teacherLessonsData,'user_lesson'=>$userLessonsData));
 		$this->getEventManager()->dispatch($event);
 		if ($event->isStopped()) {
 			return false;
 		}
-		
+
+
+
+        //Delete the teacher lesson
+        $this->id = $teacherLessonsId;
+        $this->set(array('is_deleted'=>1));
+        $this->save();
+
 		
 		//Update all users that are going to take place in that lesson
 		App::import('Model', 'UserLesson');
 		$userLessonObj = new UserLesson();
-		$userLessonObj->updateAll(	array('UserLesson.stage'=>USER_LESSON_DENIED_BY_TEACHER),
-									array('UserLesson.stage'=>array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_ACCEPTED), 'UserLesson.teacher_lesson_id'=>$teacherLessonsId));
+
+        foreach($userLessonsData AS $userLessonData) {
+            $userLessonObj->cancelRequest($userLessonData['UserLesson']['user_lesson_id'], $teacherLessonsData['teacher_user_id']);
+        }
+		/*$userLessonObj->updateAll(	array('UserLesson.stage'=>USER_LESSON_DENIED_BY_TEACHER),
+									array('UserLesson.stage'=>array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER, USER_LESSON_RESCHEDULED_BY_STUDENT, USER_LESSON_ACCEPTED), 'UserLesson.teacher_lesson_id'=>$teacherLessonsId));*/
 										 
 		
-		//Delete the teacher lesson
-		$this->id = $teacherLessonsId;
-		$this->set(array('is_deleted'=>1));
-		$this->save();
+
 		//$this->delete($teacherLessonsId);						 
 										 
 		
-		$event = new CakeEvent('Model.TeacherLesson.afterCancel', $this, array('teacher_lesson'=>$teacherLessonsData,'user_lesson'=>$userLessonData));
+		$event = new CakeEvent('Model.TeacherLesson.afterCancel', $this, array('teacher_lesson'=>$teacherLessonsData,'user_lessons'=>$userLessonsData));
 		$this->getEventManager()->dispatch($event);
 		
 		

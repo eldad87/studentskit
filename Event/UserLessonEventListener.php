@@ -5,10 +5,14 @@ App::uses('CakeEventManager', 'Event');
  */
 class UserLessonEventListener implements CakeEventListener {
     private $notification;
+    private $adaptivePayment;
 
     public function UserLessonEventListener() {
         App::import('Model', 'Notification');
+        App::import('Model', 'AdaptivePayment');
+
         $this->notification = New Notification();
+        $this->adaptivePayment = new AdaptivePayment();
     }
 
 
@@ -17,31 +21,140 @@ class UserLessonEventListener implements CakeEventListener {
             'Model.UserLesson.afterLessonRequest'       => 'afterLessonRequest',
             'Model.UserLesson.afterJoinRequest'         => 'afterJoinRequest',
             'Model.UserLesson.afterReProposeRequest'    => 'afterReProposeRequest',
-            'Model.UserLesson.afterCancelRequest'       => 'afterCancelRequest',
+            'Model.UserLesson.afterCancelRequest'       => 'afterCancelRequest',    //Cancel payment preapproval
             'Model.UserLesson.afterAccept'              => 'afterAccept',
-            'Model.UserLesson.beforeAccept'             => 'beforeAccept',
+            'Model.UserLesson.beforeAccept'             => 'beforeAccept',          //Make sure preapproval amount is OK
             'Model.UserLesson.afterRate'                => 'afterRate',
+
+            //'Model.TeacherLesson.afterCancel'           => 'afterCancelTL',         //Cancel all preapproval's for this lesson
+            'Model.AdaptivePayment.afterPaymentUpdate'  => 'afterPaymentUpdate',         //Update payment status
+            'Model.UserLesson.beforeLessonRequest'      => 'beforeLessonRequest',   //Cannot use on paid lessons
+            'Model.UserLesson.beforeJoinRequest'        => 'beforeJoinRequest',     //Cannot use on paid lessons
+            'Model.UserLesson.beforeReProposeRequest'   => 'beforeReProposeRequest',//Make sure preapproval amount is OK
         );
     }
 
-    public function afterRate(CakeEvent $event) {
-        $toUserId = $messageType = null;
-        $byUserId = $event->data['by_user_id'];
 
-        if($event->data['user_lesson']['teacher_user_id']==$byUserId) {
-            $toUserId = $event->data['user_lesson']['student_user_id'];
-            $messageType = 'teacher.rate.student';
-        } else {
-            $toUserId = $event->data['user_lesson']['teacher_user_id'];
-            $messageType = 'student.rate.teacher';
+    /**
+     * Change the stage of the UL according to the payment data
+     * @param CakeEvent $event
+     */
+    public function afterPaymentUpdate(CakeEvent $event) {
+        //$event->data = array('user_lesson_id'=>$ipnData['user_lesson_id'], 'is_approved'=>($ipnData['approved']=='true' ? 1 : 0), 'status'=>$ipnData['status'], 'max_amount'=>$ipnData['max_total_amount_of_all_payments'], 'paid_amount'=>$paid, 'is_used'=>( $paid ? 1 : 0 ));
+        $paymentStatus = $this->adaptivePayment->getStatus($event->data['current']['user_lesson_id']);
+        if(!$paymentStatus) {
+            return false;
         }
 
-        return $this->notification->addNotification(    $toUserId, //To user id
-                                                        array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
+        //Check if we need to convert the UserLesson
+        if($event->data['current']['status']=='ACTIVE' && $event->data['current']['is_approved'] ) {
+
+            App::import('Model', 'PendingUserLesson');
+            $pulObj = new PendingUserLesson();
+            if($pulObj->findByUserLessonId($event->data['current']['user_lesson_id'])) {
+                $pulObj->convert($event->data['current']['user_lesson_id']);
+            }
+        } else if($event->data['current']['status']=='CANCELED') {
+
+
+            if($event->data['old']['status']=='ACTIVE' && $event->data['old']['is_approved'] ) {
+                App::import('Model', 'UserLesson');
+                $ulObj = new UserLesson();
+                $ulData = $ulObj->findByUserLessonId($event->data['current']['user_lesson_id']);
+                if($ulData) {
+                    $ulObj->cancelRequest($event->data['current']['user_lesson_id'], $ulData['UserLesson']['student_user_id']);
+                }
+            } else {
+                App::import('Model', 'PendingUserLesson');
+                $pulObj = new PendingUserLesson();
+                $pulObj->cancel($event->data['current']['user_lesson_id']);
+            }
+
+        }
+
+        return true;
     }
+    public function beforeLessonRequest(CakeEvent $event) {
+        //$event->data = array('user_lesson'=>$userLesson, 'by_user_id'=>$userId)
+        //Make sure it was done by the student
+        if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id']) {
+            //$this->adaptivePayment->
+            if(!$this->adaptivePayment->isValidApproval($event->data['user_lesson']['user_lesson_id'], $event->data['user_lesson']['1_on_1_price'], $event->data['user_lesson']['datetime'])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    public function beforeJoinRequest(CakeEvent $event) {
+        //$event->data = array('teacher_lesson'=>$teacherLessonData, 'user_lesson'=>$userLesson, 'by_user_id'=>( $teacherUserId ? $teacherUserId : $studentUserId))
+
+        //Make sure it was done by the student
+        if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id']) {
+            if(!$this->adaptivePayment->isValidApproval($event->data['user_lesson']['user_lesson_id'], $event->data['user_lesson']['1_on_1_price'], $event->data['user_lesson']['datetime'])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    public function beforeReProposeRequest(CakeEvent $event) {
+        //$event->data = array('user_lesson'=>$userLessonData, 'update'=>$data, 'by_user_id'=>$byUserId)
+
+        //Make sure it was done by the student
+        if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id']) {
+            //Make sure preapproval is OK
+            $maxAmount = (isSet($event->data['user_lesson']['update']['1_on_1_price']) ? $event->data['user_lesson']['update']['1_on_1_price'] : null );
+            $datetime = (isSet($event->data['user_lesson']['update']['datetime']) ? $event->data['user_lesson']['update']['datetime'] : null );
+            return $this->adaptivePayment->isValidApproval($event->data['user_lesson']['user_lesson_id'], $maxAmount, $datetime);
+        }
+
+        return true;
+    }
+
+    /**
+     * Cancel preapproval's
+     * @param CakeEvent $event
+     * @return bool
+     */
+    /*public function afterCancelTL(CakeEvent $event) {
+        //$event->data = array('teacher_lesson'=>$teacherLessonsData,'user_lessons'=>$userLessonData)
+        return $this->adaptivePayment->cancelTeacherLessonApprovals($event->data['teacher_lesson']['teacher_lesson_id']);
+    }*/
+
+
+
+
     public function afterCancelRequest(CakeEvent $event) {
         $toUserId = $messageType = null;
         $byUserId = $event->data['by_user_id'];
+
+        //cancel preApproval payment
+        if(!$this->adaptivePayment->cancelApproval($event->data['user_lesson']['user_lesson_id'])) {
+            $event->subject()->log('Cannot cancel UserLesson '.$event->data['user_lesson']['user_lesson_id'], 'paypal_error');
+        }
+
+        //If the student that initiated the TeacherLesson canceled his participation, cancel all other invitations/booking requests
+        /*if($event->data['user_lesson']['teacher_lesson_id']) {
+            App::import('Model', 'TeacherLesson');
+            $teacherLessonObj = new TeacherLesson();
+
+
+            $teacherLessonData = $teacherLessonObj->findByTeacherLessonId($event->data['user_lesson']['teacher_lesson_id']);
+            if($teacherLessonData['TeacherLesson']['student_user_id']==$byUserId) {
+                //1. check if this is the only student - with no invitation/booking requests - then cancel the lesson
+                $userLessonsData = $event->subject()->find('all', array('conditions'=>array('UserLesson.teacher_lesson_id'=>$event->data['user_lesson']['teacher_lesson_id'],
+                    'UserLesson.stage'=>array( USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER, USER_LESSON_RESCHEDULED_BY_STUDENT, USER_LESSON_ACCEPTED))));
+                if(!$userLessonsData) {
+                    //2. if not only student, continue
+                    if(!$teacherLessonObj->cancel($event->data['user_lesson']['teacher_lesson_id'], 'student', $byUserId)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }*/
 
         if($event->data['user_lesson']['teacher_user_id']==$byUserId) {
             $toUserId = $event->data['user_lesson']['student_user_id'];
@@ -64,6 +177,9 @@ class UserLessonEventListener implements CakeEventListener {
                     case USER_LESSON_PENDING_TEACHER_APPROVAL:
                         $messageType = 'teacher.booking.request.decline';
                         break;
+                    case USER_LESSON_ACCEPTED:
+                        $messageType = 'teacher.lesson.canceled';
+                        break;
                 }
             } else {
                 //Made on subject request
@@ -83,6 +199,10 @@ class UserLessonEventListener implements CakeEventListener {
                     case USER_LESSON_RESCHEDULED_BY_STUDENT:
                         $messageType = 'teacher.subject.request.offer.canceledstudent';
                         break;
+                    case USER_LESSON_ACCEPTED:
+                        $messageType = 'teacher.subject.request.lesson.canceled';
+                        break;
+
                 }
             }
         } else {
@@ -105,6 +225,9 @@ class UserLessonEventListener implements CakeEventListener {
                     case USER_LESSON_PENDING_STUDENT_APPROVAL:
                         $messageType = 'student.invitation.decline';
                         break;
+                    case USER_LESSON_ACCEPTED:
+                        $messageType = 'student.lesson.canceled';
+                        break;
                 }
             } else {
                 //Made on subject request
@@ -123,6 +246,9 @@ class UserLessonEventListener implements CakeEventListener {
                         //Teacher rescheduled his first invitation
                         $messageType = 'student.subject.request.offer.decline.teacher';
                         break;
+                    case USER_LESSON_ACCEPTED:
+                        $messageType = 'student.subject.request.lesson.canceled';
+                        break;
                 }
             }
         }
@@ -130,7 +256,35 @@ class UserLessonEventListener implements CakeEventListener {
         return $this->notification->addNotification(    $toUserId, //To user id
                                                         array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
     }
+
+    public function afterRate(CakeEvent $event) {
+        $toUserId = $messageType = null;
+        $byUserId = $event->data['by_user_id'];
+
+        if($event->data['user_lesson']['teacher_user_id']==$byUserId) {
+            $toUserId = $event->data['user_lesson']['student_user_id'];
+            $messageType = 'teacher.rate.student';
+        } else {
+            $toUserId = $event->data['user_lesson']['teacher_user_id'];
+            $messageType = 'student.rate.teacher';
+        }
+
+        return $this->notification->addNotification(    $toUserId, //To user id
+            array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
+    }
+
     public function beforeAccept(CakeEvent $event) {
+        //$event->data = array('user_lesson'=>$userLessonData, 'by_user_id'=>$byUserId);
+        //Make sure it was done by the student
+        if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id']) {
+            //Make sure preapproval is OK
+            $maxAmount = (isSet($event->data['user_lesson']['update']['1_on_1_price']) ? $event->data['user_lesson']['update']['1_on_1_price'] : null );
+            $datetime = (isSet($event->data['user_lesson']['update']['datetime']) ? $event->data['user_lesson']['update']['datetime'] : null );
+            if(!$this->adaptivePayment->isValidApproval($event->data['user_lesson']['user_lesson_id'], $maxAmount, $datetime)) {
+                return false;
+            }
+        }
+
         App::import('Model', 'TeacherLesson');
         $tlObj = new TeacherLesson();
 

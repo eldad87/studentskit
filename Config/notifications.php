@@ -8,6 +8,9 @@ $config['notification.teacher.invitation.canceled'] = '%s canceled you\'r invita
 $config['notification.teacher.invitation.rescheduled'] = '%s rescheduled you\'r invitation "%s" to %s';
 
 
+//Cancel his student participation
+$config['notification.teacher.lesson.canceled'] = '%s canceled you\'r participation in "%s" on %s';
+
 //Send subject offer
 $config['notification.teacher.subject.request.offer.sent'] = '%s propose himself for "%s" on %s';
 //Cancel his subject offer
@@ -17,6 +20,9 @@ $config['notification.teacher.subject.request.offer.canceledstudent'] = '%s decl
 $config['notification.teacher.subject.request.offer.rescheduled'] = '%s rescheduled his proposal for "%s" to %s';
 $config['notification.teacher.subject.request.offer.rescheduledstudent'] = '%s rescheduled you\'r proposal for "%s" to %s';
 $config['notification.teacher.subject.request.offer.accept.student'] = '%s accepted you\'r proposal for "%s" to %s';
+
+//Canceled his student participation
+$config['notification.teacher.subject.request.lesson.canceled'] = '%s canceled you\'r participation in "%s" on %s';
 
 //Accept booking request
 $config['notification.teacher.booking.request.accepted'] = '%s accepted you\'r request for "%s" on %s';
@@ -39,6 +45,12 @@ $config['notification.student.invitation.decline'] = '%s decline you\'r invitati
 //Reschedule his invitation
 $config['notification.student.invitation.rescheduled'] = '%s rescheduled you\'r invitation for "%s" on %s';
 
+//Cancel his student participation
+$config['notification.student.lesson.canceled'] = '%s canceled his participation in "%s" on %s';
+
+//Reschedule his participation
+$config['notification.student.invitation.rescheduled'] = '%s canceled his participation in "%s" on %s';
+
 
 //Accept subject offer
 $config['notification.student.subject.request.offer.accepted'] = '%s accepted you\'r proposal for "%s" on %s';
@@ -48,6 +60,10 @@ $config['notification.student.subject.request.offer.decline'] = '%s declined his
 //Reschedule his subject offer
 $config['notification.student.subject.request.offer.rescheduled.teacher'] = '%s rescheduled you\'r proposal for "%s" to %s';
 $config['notification.student.subject.request.offer.rescheduled'] = '%s rescheduled his proposal for "%s" to %s';
+
+//Canceled his student participation
+$config['notification.student.subject.request.lesson.canceled'] = '%s canceled his participation in "%s" on %s';
+
 
 //Order a lesson
 $config['notification.student.booking.request.sent'] = '%s requesting "%s" on %s';

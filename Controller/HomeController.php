@@ -5,18 +5,28 @@
 class HomeController extends AppController {
 	public $name = 'Home';
 	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
-	public $components = array('Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')), 'Security');
+	public $components = array('Utils.FormPreserver'=>array('directPost'=>true,'actions'=>array('submitOrder')), 'Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')), 'Security');
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 
 
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacher', 'subject', 'order',
-							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons'/*,
+							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession'/*,
                             'test'*/);
 		$this->Auth->deny('submitOrder');
 	}
-	
+
+        public function testRoute() {
+        $orderURL = array('controller'=>'Order', 'action'=>'init', 'negotiate', 1, '?'=>array('returnURL'=>urlencode(Router::url(null, true))));
+        pr(Router::url($orderURL, true));
+        pr($orderURL); die;
+    }
+
+    public function cleanSession() {
+        $this->Session->destroy();
+    }
+
 	public function index() {
 		//Get about to start messages
         $this->Subject->setLanguages($this->Session->read('languages_of_records'));
@@ -39,81 +49,93 @@ class HomeController extends AppController {
        $tz = new Timezone();
        $this->set('timezones', $tz->getList());
         */
-	}
-
-
-    public function testListTimezones() {
-        App::uses('Locale', 'Utility');
-        pr(Locale::listTimezones());
     }
 
-    public function testFind() {
-        //pr($this->UserLesson->getAssociated()); die;
-        Configure::write('Config.timezone', 'Asia/Tokyo');
-        //Configure::write('Config.timezone', 'Asia/Jerusalem');
-       /* $allLiveLessons = $this->User->getLiveLessonsByDate( array(1,2,3,4,5), false, 2012, 9);
-        pr($allLiveLessons);*/
-        $this->User->recursive = 2;
-        pr($this->User->find('all'));
-
-    }
-    public function testSave() {
-        Configure::write('Config.timezone', 'Asia/Tokyo');
-        //$this->UserLesson->saveAll( array('name'=>'uname', 'Subject'=>array('name'=>'sname', 'user_id'=>4), 'TeacherLesson'=>'tname'),array('validate'=>false));
-        $this->UserLesson->saveAll( array('name'=>'uname', 'description'=>'aa', 'language'=>'en',
-                                    'Subject'=>array('name'=>'sname', 'description'=>1, 'user_id'=>4, 'language'=>'en'),
-                                    'TeacherLesson'=>array(array('name'=>'tname1'), array('name'=>'tname2'))),array('validate'=>false));
+    /*public function testCalcGroupPrice() {
+        $currentStudents = 7;
+        pr($this->Subject->calcGroupPrice(2, 20, 10, $currentStudents));
+        pr($this->Subject->calcGroupPrice(2, 20, 10, $currentStudents)*$currentStudents);
+        die;
     }
 
-    public function testTime() {
-        //$this->UserLesson->find();
-        App::uses('CakeTime', 'Utility');
-
-        $userTimezone = 'Asia/Tokyo'; //Asia/Jerusalem
-        $serverTime = date('Y-m-d H:i:s');
-
-
-        Configure::write('Config.timezone', 'Asia/Jerusalem');
+    public function testPreapprovalRequest() {
+        $userLessonId   = 8;
+        $customerId     = 1;
+        $amount         = 10;
+        $cancelUrl = Router::url(array('controller'=>'Home', 'action'=>'cancelUserLesson', $userLessonId), true);
+        $returnUrl = Router::url(array('controller'=>'Home', 'action'=>'orderApproval', $userLessonId), true);
 
 
-        pr($serverTime);
-        pr($this->UserLesson->toServerTime('now'));
-        pr($this->UserLesson->toClientTime('now'));
-        pr($this->UserLesson->timeExpression('now', false));
-
-die;
-        $startDate = '2012-03-01 01:00:00';
-        $serverStartDate = $this->UserLesson->toServerTime($startDate);
-
-        pr($startDate);
-        pr($serverStartDate );
+        app::import('Model', 'AdaptivePayment');
+        $ap = new AdaptivePayment();
+        $url = $ap->getPreApprovalURL($userLessonId, $cancelUrl, $returnUrl, $this->request->clientIp());
+        pr($url);
         die;
 
-        pr( date('Y-m-d H:i:s') );
-        pr( CakeTime::format('Y-m-d H:i:s', CakeTime::fromString('now + 60 seconds')) );
-        pr( CakeTime::format('Y-m-d H:i:s', CakeTime::fromString('now')) );
-        pr( date('Y-m-d H:i:s', CakeTime::fromString(date('Y-m-d H:i:s').' + 1 day')) );
-        pr( date('Y-m-d H:i:s', CakeTime::fromString('2012-02 + 1 day')) );
-        pr( date('Y-m-d H:i:s', CakeTime::fromString('now')) );
-
-        //From server to user
-        /*$userTimeTS = CakeTime::fromString($serverTime, $userTimezone); //Timestamp
+        App::import('Vendor', 'AdaptivePayments'.DS.'AdaptivePayments');
+        $ap = new AdaptivePayments();
 
 
 
-        //From user to server
-        $serverTime2 = CakeTime::toServer(date('Y-m-d H:i:s', $userTimeTS) , $userTimezone);
+
+        $response = $ap->preapproval( $amount, $customerId, $this->request->clientIp(), $cancelUrl, $returnUrl );
+        pr($response);
+        pr($response->responseEnvelope->ack);
+        pr($response->preapprovalKey);
+        pr('https://www.sandbox.paypal.com/webscr&cmd=_ap-preapproval&preapprovalkey='.$response->preapprovalKey);
+        pr(Router::url(array('controller'=>'Home', 'action'=>'testPaymentDetails', $response->preapprovalKey), true));
+        die;
+    }
+
+    public function testPaymentDetails( $preapprovalKey ) {
+        App::import('Vendor', 'AdaptivePayments'.DS.'AdaptivePayments');
+        $ap = new AdaptivePayments();
+        $response = $ap->preapprovalDetails($preapprovalKey);
+        pr($response);
+        die;
+    }
+    public function testConfirmPreapproval( $preapprovalKey ) {
+        App::import('Vendor', 'AdaptivePayments'.DS.'AdaptivePayments');
+        $ap = new AdaptivePayments();
+        $response = $ap->confirmPreapproval($preapprovalKey);
+        pr($response);
+        die;
+    }*/
+    /*public function testCancelPreapproval( $preapprovalKey ) {
+        App::import('Vendor', 'AdaptivePayments'.DS.'AdaptivePayments');
+        $ap = new AdaptivePayments();
+        $response = $ap->cancelPreapproval($preapprovalKey);
+        pr($response);
+        pr($response->responseEnvelope->ack);
+        die;
+    }*/
+
+    public function testPay( $preapprovalKey ) {
+        App::import('Vendor', 'AdaptivePayments'.DS.'AdaptivePayments');
+        $ap = new AdaptivePayments();
+
+        $userLessonId   = time();
+        $cancelUrl = Router::url(array('controller'=>'Home', 'action'=>'cancelUserLesson', $userLessonId), true);
+        $returnUrl = Router::url(array('controller'=>'Home', 'action'=>'orderApproval', $userLessonId), true);
+
+        $receivers = array();
+        $receivers[] = array(
+            'email'         =>'seller_1345633766_biz@gmail.com',
+            'amount'        =>1,
+            'paymentType'   =>'DIGITALGOODS',
+            'primary'       =>true,
+        );
+        $receivers[] = array(
+            'email'         =>'caller_1345633979_biz@gmail.com',
+            'amount'        =>0.5,
+            'paymentType'   =>'DIGITALGOODS',
+            'primary'       =>false,
+        );
 
 
-        pr($serverTime);
-        pr(date('Y-m-d H:i:s', $userTimeTS));
-        pr($serverTime2);*/
-
-
-        /*$userTime = '2012-08-16 15:40:38';
-        $serverTime2 = CakeTime::toServer($userTime , $userTimezone);
-        pr($userTime);
-        pr($serverTime2);*/
+        $response = $ap->pay( $receivers, $userLessonId, $preapprovalKey, $cancelUrl, $returnUrl );
+        pr($response);
+        pr($response->paymentExecStatus);
         die;
     }
 
@@ -125,12 +147,12 @@ die;
         //die;
     }*/
 
-    public function testAddCategory() {
+    /*public function testAddCategory() {
         App::import('Model', 'SubjectCategory');
         $scObj = new SubjectCategory();
 
 
-       /* $scObj->create();
+       $scObj->create();
         $scObj->set(array('name'=>'Spirituality', 'description'=>'about spirituality'));
         $scObj->save();
         $id = $scObj->id;
@@ -142,7 +164,7 @@ die;
         $scObj->save(array('name'=>'רוחניות', 'description'=>'אודות רוחניות'));
 
         $scObj->locale = 'he_he';
-        pr($scObj->find('all'));*/
+        pr($scObj->find('all'));
 
         /*$scObj->create();
         $scObj->set(array('name'=>'Spirituality', 'description'=>'about spirituality'));
@@ -197,11 +219,8 @@ $id = $scObj->id;
 
         $scObj->create();
         $scObj->set(array('name'=>'NoSQL', 'description'=>'NoSQL', 'parent_subject_category_id'=>$id2));
-        $scObj->save();*/
-
-
-
-    }
+        $scObj->save();
+    }*/
     /*public function test() {
         App::import('Model', 'Notification');
         $notificationObj = new Notification();
@@ -392,18 +411,76 @@ $id = $scObj->id;
 		}*/
 
         //TODO: video lesson - check if there is a request pending/approved
-		
+
+
+
+        $this->set('showOrderButton', true);
+
+
+        //Video lesson, show order button if no request already made
+        //else show play button
+        if($subjectData['lesson_type']=='video') {
+            $this->set('showVideoPlayButton', false);
+
+            $canWatchVideo = $this->UserLesson->getVideoLessonStatus($subjectId, $this->Auth->user('user_id'), false);
+            if(!$canWatchVideo) {
+                $this->redirect('/');
+            }
+
+            if($canWatchVideo['payment_needed']) {
+                $this->set('showOrderButton', true);
+                $this->set('showVideoPlayButton', false);
+            } else if($canWatchVideo['pending_teacher_approval']) {
+                //TODO: Show message on the page "pending for teacher approval, please come back later"
+                $this->set('showOrderButton', false);
+                $this->set('showVideoPlayButton', false);
+            } else if($canWatchVideo['pending_user_approval']) {
+                //TODO: Show message on the page "pending for your approval, click <a>here</a> to review it in your panel"
+                $this->set('showOrderButton', false);
+                $this->set('showVideoPlayButton', false); //TODO: onclick - open approval popup (dialog)
+            } else if($canWatchVideo['show_video']) {
+                $this->set('showOrderButton', false);
+                $this->set('showVideoPlayButton', true);
+            }
+        }
+
+        //showOrderButton
+        //showVideoPlayButton
 		$this->set('subjectData', 				$subjectData);
 		$this->set('subjectRatingByStudents', 	$subjectRatingByStudents);
 		$this->set('teacherOtherSubjects', 		$teacherOtherSubjects);
 		$this->set('teacherUserData', 			$teacherData['User']);
 	}
 
+   /* public function canWatchVideo($subjectId) {
+        $canWatchVideo = $this->UserLesson->getVideoLessonStatus($subjectId, $this->Auth->user('user_id'), true);
+        if(!$canWatchVideo) {
+            return $this->error(1);
+        }
+
+        if($canWatchVideo['payment_needed']) {
+            return $this->success(1, array('url'=>Router::url(array('controller'=>'Home', 'action'=>'order', $subjectId), true)));
+        } else if($canWatchVideo['pending_teacher_approval']) {
+            return $this->success(2);
+        } else if($canWatchVideo['pending_user_approval']) {
+            //TODO: if payment approval is set, then auto approve it and show the video
+            return $this->success(3, array('url'=>Router::url(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'invitations', $canWatchVideo['user_lesson_id']), true)));
+        } else if($canWatchVideo['show_video']) {
+            return $this->success(4, array('url'=>Router::url(array('controller'=>'Lessons', 'action'=>'video', $subjectId), true)));
+        }
+
+        return $this->error(2);
+    }*/
+
+    //Only for join to live lessons
     public function teacherLesson($teacherLessonId) {
         $this->TeacherLesson->recursive = -1;
         $teacherLessonData = $this->TeacherLesson->findByTeacherLessonId($teacherLessonId);
-        if(!$teacherLessonData) {
-            $this->redirect($this->referer('/'));
+        if(!$teacherLessonData || !$teacherLessonData['Subject']['is_enable']) {
+            $this->redirect('/');
+        } else if ($teacherLessonData['lesson_type']!='live' || $teacherLessonData['TeacherLesson']['is_deleted']) {
+            //redirect to subject page
+            $this->redirect($this->referer(array('controller'=>'Home', 'action'=>'teacherSubject', $teacherLessonData['subject_id'])));
         }
         $teacherLessonData = $teacherLessonData['TeacherLesson'];
 
@@ -421,8 +498,10 @@ $id = $scObj->id;
         } else if($liveRequestStatus['payment_needed']) {
             $this->set('showPayment', true);
         } else if($liveRequestStatus['pending_teacher_approval']) {
+            //TODO: Show message on the page "pending for teacher approval, please come back later"
             $this->set('showPendingTeacherApproval', true);
         } else if($liveRequestStatus['pending_user_approval']) {
+            //TODO: Show message on the page "pending for your approval, click <a>here</a> to review it in your panel"
             $this->set('showPendingUserApproval', true);
         } else {
             $this->set('showLessonPage', true);
@@ -431,24 +510,6 @@ $id = $scObj->id;
         $this->set('teacherLessonData', $teacherLessonData);
     }
 
-    public function canWatchVideo($subjectId) {
-        $canWatchVideo = $this->UserLesson->getVideoLessonStatus($subjectId, $this->Auth->user('user_id'), false);
-        if(!$canWatchVideo) {
-            return $this->error(1);
-        }
-
-        if($canWatchVideo['payment_needed']) {
-            return $this->success(1, array('url'=>Router::url(array('controller'=>'Home', 'action'=>'order', $subjectId), true)));
-        } else if($canWatchVideo['pending_teacher_approval']) {
-            return $this->success(2);
-        } else if($canWatchVideo['pending_user_approval']) {
-            return $this->success(3, array('url'=>Router::url(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'invitations', $canWatchVideo['user_lesson_id']), true)));
-        } else if($canWatchVideo['show_video']) {
-            return $this->success(4, array('url'=>Router::url(array('controller'=>'Lessons', 'action'=>'video', $subjectId), true)));
-        }
-
-        return $this->error(2);
-    }
 	public function getOtherTeachersForSubject($subjectId, $limit=6, $page=1) {
 		$subjectData = $this->Subject->findBySubjectId( $subjectId );
 		if(!$subjectData) {
@@ -523,11 +584,7 @@ $id = $scObj->id;
 		//TODO: get board messages
 	}
 
-
-
-
-
-	public function	order($subjectId, $year=null, $month=null) {
+	/*public function	order($subjectId, $year=null, $month=null) {
         //TODO: video - there is no need to show calendar
 
 		//Get subject data, students_amount, raters_amount, avarage_rating
@@ -579,16 +636,16 @@ $id = $scObj->id;
 		$this->set('teacherUserData',		$teacherData['User']);
 		$this->set('aalr', 					$aalr);
 
-	}
+	}*/
 	public function getUserLessons($userId, $year, $month=null) {
 		$allLessons = $this->User->getLiveLessonsByDate( $userId, false, $year, $month);
 		return $this->success(1, array('lessons'=>$allLessons));
 	}
 
-	public function submitOrder($requestType, $subjectId) {
+    /*public function submitOrder($requestType, $subjectId) {
 		App::import('Model', 'Subject');
 		App::import('Model', 'UserLesson');
-		
+
 		
 		//TODO: add more params, max_students, price, public
 		if(strtolower($requestType)=='join') {
@@ -601,8 +658,13 @@ $id = $scObj->id;
 
 			//Create timestamp TODO: check user timezone
             $datetime = null;
-            if(isSet($this->request->query['datetime']) && !empty($this->request->query['datetime'])) {
-                $datetime = $this->request->query['datetime'];
+            if(isSet($this->data['UserLesson']['datetime']) && !empty($this->data['UserLesson']['datetime'])) {
+                $datetime = $this->data['UserLesson']['datetime'];
+            } else if(isSet($this->data['datetime']) && !empty($this->data['datetime'])) {
+                $datetime = $this->data['datetime'];
+            }
+
+            if($datetime) {
                 $datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
                 $datetime = $this->UserLesson->timeExpression($datetime, false);
             }
@@ -612,5 +674,82 @@ $id = $scObj->id;
                 $this->redirect($this->referer());
             }
 		}
+    }*/
+
+
+    /*public function testListTimezones() {
+        App::uses('Locale', 'Utility');
+        pr(Locale::listTimezones());
+    }*/
+
+    /*public function testFind() {
+        //pr($this->UserLesson->getAssociated()); die;
+        Configure::write('Config.timezone', 'Asia/Tokyo');
+        //Configure::write('Config.timezone', 'Asia/Jerusalem');
+        //$allLiveLessons = $this->User->getLiveLessonsByDate( array(1,2,3,4,5), false, 2012, 9);
+        //pr($allLiveLessons);
+        $this->User->recursive = 2;
+        pr($this->User->find('all'));
+
     }
+    public function testSave() {
+        Configure::write('Config.timezone', 'Asia/Tokyo');
+        //$this->UserLesson->saveAll( array('name'=>'uname', 'Subject'=>array('name'=>'sname', 'user_id'=>4), 'TeacherLesson'=>'tname'),array('validate'=>false));
+        $this->UserLesson->saveAll( array('name'=>'uname', 'description'=>'aa', 'language'=>'en',
+            'Subject'=>array('name'=>'sname', 'description'=>1, 'user_id'=>4, 'language'=>'en'),
+            'TeacherLesson'=>array(array('name'=>'tname1'), array('name'=>'tname2'))),array('validate'=>false));
+    }*/
+
+    public function testTime() {
+        //$this->UserLesson->find();
+        App::uses('CakeTime', 'Utility');
+
+        $userTimezone = 'Asia/Tokyo'; //Asia/Jerusalem
+        $serverTime = date('Y-m-d H:i:s');
+
+
+        Configure::write('Config.timezone', 'Asia/Jerusalem');
+
+
+        pr($serverTime);
+        pr($this->UserLesson->toServerTime('now'));
+        pr($this->UserLesson->toClientTime('now'));
+        pr($this->UserLesson->timeExpression('now', false));
+
+        die;
+        $startDate = '2012-03-01 01:00:00';
+        $serverStartDate = $this->UserLesson->toServerTime($startDate);
+
+        pr($startDate);
+        pr($serverStartDate );
+        die;
+
+        pr( date('Y-m-d H:i:s') );
+        pr( CakeTime::format('Y-m-d H:i:s', CakeTime::fromString('now + 60 seconds')) );
+        pr( CakeTime::format('Y-m-d H:i:s', CakeTime::fromString('now')) );
+        pr( date('Y-m-d H:i:s', CakeTime::fromString(date('Y-m-d H:i:s').' + 1 day')) );
+        pr( date('Y-m-d H:i:s', CakeTime::fromString('2012-02 + 1 day')) );
+        pr( date('Y-m-d H:i:s', CakeTime::fromString('now')) );
+
+        //From server to user
+        /*$userTimeTS = CakeTime::fromString($serverTime, $userTimezone); //Timestamp
+
+
+
+        //From user to server
+        $serverTime2 = CakeTime::toServer(date('Y-m-d H:i:s', $userTimeTS) , $userTimezone);
+
+
+        pr($serverTime);
+        pr(date('Y-m-d H:i:s', $userTimeTS));
+        pr($serverTime2);*/
+
+
+        /*$userTime = '2012-08-16 15:40:38';
+        $serverTime2 = CakeTime::toServer($userTime , $userTimezone);
+        pr($userTime);
+        pr($serverTime2);*/
+        die;
+    }
+
 }

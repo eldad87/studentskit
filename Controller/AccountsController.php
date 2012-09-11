@@ -122,7 +122,7 @@ class AccountsController extends AppController {
         $this->Session->write('timezone', $timezone);
 
         if($this->Auth->user()) {
-            $this->User->create();
+            $this->User->create(false);
             $this->User->id = $this->Auth->user('user_id');
             if(!$this->User->save(array('timezone'=>$timezone))) {
                 return $this->error(2);
@@ -154,7 +154,7 @@ class AccountsController extends AppController {
         $this->Session->write('language', $language);
 
         if($this->Auth->user()) {
-            $this->User->create();
+            $this->User->create(false);
             $this->User->id = $this->Auth->user('user_id');
             if(!$this->User->save(array('language'=>$language))) {
                 return $this->error(2);
@@ -171,7 +171,7 @@ class AccountsController extends AppController {
         $this->Session->write('languages_of_records', $languages);
 
         if($this->Auth->user()) {
-            $this->User->create();
+            $this->User->create(false);
             $this->User->id = $this->Auth->user('user_id');
             if($languages = json_encode($languages)) {
                 if(!$this->User->save(array('languages_of_records'=>$languages))) {

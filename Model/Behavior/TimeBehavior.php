@@ -83,7 +83,9 @@ class TimeBehavior extends ModelBehavior {
         return $results;
     }
     private function _convert(Model $model, $result, $action) {
-        if(isSet($result[$model->alias])) {
+        if(!is_array($result)) {
+            return $result;
+        } else if(isSet($result[$model->alias])) {
             /*
             $model->alias = 'Profile'
             $result = [Profile] => array(
@@ -110,7 +112,6 @@ class TimeBehavior extends ModelBehavior {
                 continue;
             }
 
-            //TODO: check created, updated, modified - they will wummunmed by the system
             //$time = $modelData[$datetimeFiled];
             if($action=='toClient') {
                 //Convert server to user datetime

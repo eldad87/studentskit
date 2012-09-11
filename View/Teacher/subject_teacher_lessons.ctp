@@ -13,7 +13,7 @@ if($nextLessons) {
 		echo 'Students: '		,$nextLesson['num_of_students']				,'<br />';
 		echo 'Join requests: '	,$nextLesson['num_of_pending_join_requests'],'<br />';
 		echo 'Invitations: '	,$nextLesson['num_of_pending_invitations']	,'<br />';
-		echo $this->Html->link('Cancel Lesson', array('controller'=>'teacher', 'action'=>'cacnelTeacherLesson', $nextLesson['teacher_lesson_id'])),'<br />';
+		echo $this->Html->link('Cancel Lesson', array('controller'=>'teacher', 'action'=>'cancelTeacherLesson', $nextLesson['teacher_lesson_id'])),'<br />';
 		echo $this->Html->link('Manage Lesson', array('controller'=>'teacher', 'action'=>'manageTeacherLesson', $nextLesson['teacher_lesson_id'])),'<br /><br />';
 	}
 } else {

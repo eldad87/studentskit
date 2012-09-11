@@ -16,7 +16,7 @@ class Notification extends AppModel {
                 unset($message['params'][$key]);
             }
         }
-        $this->create();
+        $this->create(false);
         $this->set(array(
                 'user_id'       =>$userId,
                 'message'       =>$this->formatMessage($userId, $message['message_enum'], $message['params']),

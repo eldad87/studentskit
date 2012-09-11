@@ -23,30 +23,31 @@ class LessonsController extends AppController {
      * Live lesson page
      */
     public function index($teacherLessonId) {
-        $videoRequestStatus = $this->UserLesson->getLiveLessonStatus($teacherLessonId, $this->Auth->user('user_id'));
-        if(!$videoRequestStatus) {
+        $liveRequestStatus = $this->UserLesson->getLiveLessonStatus($teacherLessonId, $this->Auth->user('user_id'));
+        if(!$liveRequestStatus) {
             $this->Session->setFlash(__('Invalid request'));
             $this->redirect('/');
         }
 
         //Check if overdue
-        if($videoRequestStatus['overdue']) {
+        if($liveRequestStatus['overdue']) {
             $this->Session->setFlash(__('The lesson you\'re trying to enter is overdue'));
-            return $this->error(2, array('url'=>array('controller'=>'Home', 'action'=>'teacherSubject', $videoRequestStatus['subject_id'])));
+            return $this->error(2, array('url'=>array('controller'=>'Home', 'action'=>'teacherSubject', $liveRequestStatus['subject_id'])));
 
-        } else if($videoRequestStatus['in_process'] || $videoRequestStatus['about_to_start']) {
-            $this->set('is_teacher', $videoRequestStatus['is_teacher']);
+        } else if($liveRequestStatus['in_process'] || $liveRequestStatus['about_to_start']) {
+            $this->set('is_teacher', $liveRequestStatus['is_teacher']);
 
-            if($videoRequestStatus['is_teacher']) {
+            if($liveRequestStatus['is_teacher']) {
                 //Enter lesson - its the teacher
                 $this->set('meeting', $this->TeacherLesson->getLiveLessonMeeting($teacherLessonId));
-            } else if($videoRequestStatus['pending_teacher_approval'] || $videoRequestStatus['pending_user_approval'] || $videoRequestStatus['payment_needed']) {
+            } else if($liveRequestStatus['pending_teacher_approval'] || $liveRequestStatus['pending_user_approval'] || $liveRequestStatus['payment_needed']) {
                 //User need to pay/approve/wait for approval
-                $this->redirect(array('controller'=>'Home', 'action'=>'teacherLesson', $videoRequestStatus['teacher_lesson_id']));
+                $this->redirect(array('controller'=>'Home', 'action'=>'teacherLesson', $liveRequestStatus['teacher_lesson_id']));
             } else {
                 //Enter lesson
                 $this->set('meeting', $this->TeacherLesson->getLiveLessonMeeting($teacherLessonId));
             }
+
 
         }
 
@@ -71,6 +72,7 @@ class LessonsController extends AppController {
         }
 
         if(!$canWatchData['show_video']) {
+            /* no need for flash messages, teacherSubject page will show them anyway
             if($canWatchData['pending_teacher_approval']) {
                 $this->Session->setFlash(__('This video is waiting the teacher\'s approval'));
             } else if($canWatchData['pending_user_approval']) {
@@ -79,7 +81,7 @@ class LessonsController extends AppController {
             } else if($canWatchData['payment_needed']) {
                 $this->Session->setFlash(__('This video is a premium video, please pay for it first'));
 
-            }
+            }*/
 
             $this->redirect(array('controller'=>'Home', 'action'=>'teacherSubject', $subjectId));
         }
@@ -159,11 +161,10 @@ class LessonsController extends AppController {
         $message .= "\n\n".'In order to view the invitation, click here:';
         switch($type) {
             case 'TeacherLesson':
-
-                $message .= Router::url(array('controller'=>'Home', 'action'=>'teacherLesson', $id), true);
+                $message .= Router::url(array('controller'=>'Home', 'action'=>'teacherLesson', $id), true); //Live lesson
                 break;
             case 'Subject':
-                $message .= Router::url(array('controller'=>'Home', 'action'=>'teacherSubject', $id), true);
+                $message .= Router::url(array('controller'=>'Home', 'action'=>'teacherSubject', $id), true); //Video lesson
                 break;
         }
 

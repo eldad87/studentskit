@@ -122,8 +122,8 @@ foreach($lessonInvitations AS $lessonInvitation) {
 	echo 'Price for student: ',$lessonInvitation['UserLesson']['full_group_student_price'],'<br />';
 	echo 'Price for full group: ',$lessonInvitation['UserLesson']['full_group_total_price'],'<br />';
 	echo '<br />';
-	
-	echo 'Booking: ',($lessonInvitation['UserLesson']['stage']==USER_LESSON_PENDING_TEACHER_APPROVAL ? 'Yes' : 'No'),'<br />';
+
+	echo 'Booking: ',( in_array($lessonInvitation['UserLesson']['stage'], array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT)) ? 'Yes' : 'No'),'<br />';
 	echo 'Message: ',$lessonInvitation['UserLesson']['teacher_user_id'],'-',$lessonInvitation['UserLesson']['student_user_id'],'-',$lessonInvitation['UserLesson']['user_lesson_id'],'<br />';
 	
 	echo '<br />';

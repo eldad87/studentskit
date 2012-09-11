@@ -157,11 +157,13 @@ $config['Teacher.lessonsInvitations.success.1.description'] = __('Lesson invitat
 $config['Teacher.lessonsProposed.success.1.title'] = __('Success');
 $config['Teacher.lessonsProposed.success.1.description'] = __('proposed lessons');
 
-/*-------------------- Teacher.cacnelTeacherLesson	--------------------*/
-$config['Teacher.cacnelTeacherLesson.success.1.title'] = __('Success');
-$config['Teacher.cacnelTeacherLesson.success.1.description'] = __('Lesson canceled');
-$config['Teacher.cacnelTeacherLesson.error.1.title'] = __('Success');
-$config['Teacher.cacnelTeacherLesson.error.1.description'] = __('Cannot cancel lesson');
+/*-------------------- Teacher.cancelTeacherLesson	--------------------*/
+$config['Teacher.cancelTeacherLesson.success.1.title'] = __('Success');
+$config['Teacher.cancelTeacherLesson.success.1.description'] = __('Lesson canceled');
+$config['Teacher.cancelTeacherLesson.error.1.title'] = __('Success');
+$config['Teacher.cancelTeacherLesson.error.1.description'] = __('Cannot cancel lesson');
+$config['Teacher.cancelTeacherLesson.error.2.title'] = __('Success');
+$config['Teacher.cancelTeacherLesson.error.2.description'] = __('Cannot cancel lesson');
 /*-------------------- Teacher.createTeacherLesson	--------------------*/
 $config['Teacher.createTeacherLesson.success.1.title'] = __('Success');
 $config['Teacher.createTeacherLesson.success.1.description'] = __('Lesson created');

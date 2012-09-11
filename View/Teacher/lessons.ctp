@@ -24,7 +24,7 @@ foreach($upcommingLessons AS $upcommingLesson) {
 	echo 'Message: ',$upcommingLesson['TeacherLesson']['teacher_user_id'],'-',$upcommingLesson['TeacherLesson']['student_user_id'],'-',$upcommingLesson['TeacherLesson']['teacher_lesson_id'],'<br />';
 	
 	echo '<br />';
-	echo $this->Html->link('Cancel', array('controller'=>'Teacher','action'=>'cacnelTeacherLesson', $upcommingLesson['TeacherLesson']['teacher_lesson_id'])),'<br />';
+	echo $this->Html->link('Cancel', array('controller'=>'Teacher','action'=>'cancelTeacherLesson', $upcommingLesson['TeacherLesson']['teacher_lesson_id'])),'<br />';
 	echo $this->Html->link('Manage', array('controller'=>'Teacher','action'=>'manageTeacherLesson', $upcommingLesson['TeacherLesson']['teacher_lesson_id']));
 	
 	
@@ -104,8 +104,8 @@ foreach($lessonInvitations AS $lessonInvitation) {
 	echo 'Price for student: ',$lessonInvitation['UserLesson']['full_group_student_price'],'<br />';
 	echo 'Price for full group: ',$lessonInvitation['UserLesson']['full_group_total_price'],'<br />';
 	echo '<br />';
-	
-	echo 'Booking: ',($lessonInvitation['UserLesson']['stage']==USER_LESSON_PENDING_TEACHER_APPROVAL ? 'Yes' : 'No'),'<br />';
+
+	echo 'Booking: ',(in_array($lessonInvitation['UserLesson']['stage'], array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT)) ? 'Yes' : 'No'),'<br />';
 	echo 'Message: ',$lessonInvitation['UserLesson']['teacher_user_id'],'-',$lessonInvitation['UserLesson']['student_user_id'],'-',$lessonInvitation['UserLesson']['user_lesson_id'],'<br />';
 	
 	echo '<br />';

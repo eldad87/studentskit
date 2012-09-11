@@ -2,7 +2,7 @@
 	name: <?php echo $subjectData['name']; ?>
 </div>
 <?php
-echo $this->Form->create('UserLesson', array('url'=>array('controller'=>'Home', 'action'=>'submitOrder', 'new', $subjectData['subject_id']), 'type'=>'get'));
+echo $this->Form->create('UserLesson', array('url'=>array('controller'=>'Home', 'action'=>'submitOrder', 'new', $subjectData['subject_id']), 'type'=>'post'));
 //echo $this->Form->input('lesson_type', array('options'=>array(LESSON_TYPE_1ON1=>'One on On', LESSON_TYPE_GROUP=>'Group teaching')));
 if($isLiveLesson) {
     echo $this->Form->input('datetime', array('type'=>'datetime'));

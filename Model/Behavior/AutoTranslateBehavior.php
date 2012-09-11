@@ -14,7 +14,7 @@ class AutoTranslateBehavior extends TranslateBehavior {
     public function afterFind( Model $model, $results, $primary) {
         $results =  parent::afterFind($model, $results, $primary);
         $locale = $this->_getLocale($model);
-        if(!$results || !$locale || !$this->findWithTranslations[$model->alias]) {
+        if(!$results || !$locale || !isSet($this->findWithTranslations[$model->alias]) || !$this->findWithTranslations[$model->alias]) {
             return $results;
         }
         unset($this->findWithTranslations[$model->alias]);
@@ -68,7 +68,7 @@ class AutoTranslateBehavior extends TranslateBehavior {
         //Save translations
         foreach($translations AS $localeISO6393=>$translationData) {
             $model->locale = $localeISO6393;
-            $model->create();
+            $model->create(false);
             $model->id = $id;
             $model->save($translationData);
         }

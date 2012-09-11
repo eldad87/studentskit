@@ -113,10 +113,10 @@ class Subject extends AppModel {
 	);
 
 
-	public function fullGroupTotalPriceCheck( $price) {
+	public function fullGroupTotalPriceCheck( $price ) {
 		if(!isSet($this->data['Subject']['max_students'])) {
 			$this->invalidate('max_students', __('Please enter a valid max students'));
-			return false;
+			//return false;
 		} else  {
 			if(	isSet($this->data['Subject']['full_group_total_price']) && !empty($this->data['Subject']['full_group_total_price']) &&
 				isSet($this->data['Subject']['max_students']) && $this->data['Subject']['max_students'] &&
@@ -138,7 +138,7 @@ class Subject extends AppModel {
 	public function maxStudentsCheck( $maxStudents ) {
 		if($maxStudents['max_students']>1 && (!isSet($this->data['Subject']['full_group_total_price']) || !$this->data['Subject']['full_group_total_price'])) {
 			$this->invalidate('full_group_total_price', __('Please enter a valid group price or set Max students to 1'));
-			return false;
+			//return false;
 		}
 		return true;
 	}
@@ -146,7 +146,9 @@ class Subject extends AppModel {
     public function beforeValidate($options=array()) {
         parent::beforeValidate($options);
         App::import('Model', 'Subject');
-        $this->calcFullGroupStudentPriceIfNeeded($this->data['Subject'], ($this->id || !empty($this->data['Subject'][$this->primaryKey])) );
+
+        $exists = $this->exists(!empty($this->data['TeacherLesson'][$this->primaryKey]) ? $this->data['Subject'][$this->primaryKey] : null);
+        $this->calcFullGroupStudentPriceIfNeeded($this->data['Subject'], $exists );
         $this->extraValidation($this);
     }
 
@@ -283,7 +285,7 @@ class Subject extends AppModel {
 	
 	public static function calcGroupPrice( $onOnOnePrice, $totalGroupPrice, $maxStudents, $currentStudents ) {
 
-		return round(($onOnOnePrice+(($totalGroupPrice-$onOnOnePrice)/($maxStudents-1))*($currentStudents-1))/$currentStudents);
+		return ($onOnOnePrice+(($totalGroupPrice-$onOnOnePrice)/($maxStudents-1))*($currentStudents-1))/$currentStudents;
 	}
 
     public function searchSuggestions($query, $subjectType) {

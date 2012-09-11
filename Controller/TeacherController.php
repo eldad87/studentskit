@@ -152,12 +152,17 @@ class TeacherController extends AppController {
 	}*/
 
 
-	public function cacnelTeacherLesson( $teacherLessonId ) {
-		if($this->TeacherLesson->cancel($teacherLessonId, 'teacher', $this->Auth->user('user_id'))) {
+	public function cancelTeacherLesson( $teacherLessonId ) {
+        $tlData = $this->TeacherLesson->findByTeacherLessonId($teacherLessonId);
+        if(!$tlData || $tlData['TeacherLesson']['teacher_user_id']!=$this->Auth->user('user_id')) {
+            return $this->error(1, array('teacher_lesson_id'=>$teacherLessonId));
+        }
+
+		if($this->TeacherLesson->cancel($teacherLessonId/*, 'teacher', $this->Auth->user('user_id')*/)) {
 			return $this->success(1, array('teacher_lesson_id'=>$teacherLessonId));
 		}
 		
-		return $this->error(1, array('teacher_lesson_id'=>$teacherLessonId));
+		return $this->error(2, array('teacher_lesson_id'=>$teacherLessonId));
 	}
 	
 	

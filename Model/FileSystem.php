@@ -41,7 +41,7 @@ class FileSystem extends AppModel {
 			}
 		}
 		
-		$this->create();
+		$this->create(false);
 		$this->set(array(
 			'entity_type'=>$entityType,
 			'entity_id'=>$entityId,
@@ -58,7 +58,7 @@ class FileSystem extends AppModel {
 				return false;
 			}
 		}
-		$this->create();
+		$this->create(false);
 		$this->id = $fileSystemId;
 		$this->set(array('name'=>$name));
 		return $this->save();
