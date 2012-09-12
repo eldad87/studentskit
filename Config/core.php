@@ -192,6 +192,11 @@ Configure::write('Security.salt', 'DYaG9330qyJfIFfs2guVo4ubWwvnsR2G02ga9ami');
 Configure::write('Security.cipherSeed', '718593046574535542496649687641');
 
 /**
+ * A random 64-chars-string used to encrypt/decrypt strings.
+ */
+Configure::write('Security.key', 'JdC!eI!b-"UB/~O=?V@j!>=%DNNBRoYp2S_|<51PZFshI{H3q&Kv@vehVM5CdG]a');
+
+/**
  * Apply timestamps with the last modified time to static assets (js, css, images).
  * Will append a querystring parameter containing the time the file was modified. This is
  * useful for invalidating browser caches.

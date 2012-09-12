@@ -33,6 +33,25 @@ App::uses('Model', 'Model');
 class AppModel extends Model {
     public $actsAs = array('Time');
 
+    public function resetRelationshipFields() {
+        foreach($this->associations() AS $relationName) {
+            if(isSet($this->$relationName) && is_array($this->$relationName) && $this->$relationName) {
+
+                //Unbind all models
+                //$this->unbindModel( array($relationName=>array(array_keys($this->$relationName))) );
+
+
+                //remove fields limitation
+                $relations = $this->$relationName;
+                foreach($relations AS $modelName=>$relationData) {
+                    unset($relations[$modelName]['fields']);
+                }
+
+                $this->bindModel(array($relationName=>$relations));
+            }
+        }
+    }
+
     /*public function invalidate($field, $value=true) {
         if (!is_array($this->validationErrors)) {
             $this->validationErrors = array();

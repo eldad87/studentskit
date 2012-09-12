@@ -5,7 +5,7 @@
 class StudentController extends AppController {
 	public $name = 'Student';
 	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson', 'AdaptivePayment');
-	public $components = array('Utils.FormPreserver'=>array('directPost'=>true), 'Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),/* 'Security'*/);
+	public $components = array('Utils.FormPreserver'=>array('directPost'=>true), 'Session', 'RequestHandler', 'Security', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),/* 'Security'*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 
 	public function index() {
@@ -78,11 +78,12 @@ class StudentController extends AppController {
 	public function acceptUserLesson( $userLessonId ) {
         //TODO: force POST
 
-        $userLessonData = $this->UserLesson->findByUserLessonIdAndStudentUserId($userLessonId, $this->Auth->user('user_id'));
+        $userLessonData = $this->UserLesson->findByUserLessonId($userLessonId);
+
         //if done by the student - Check if preapproval is OK
         if($userLessonData['UserLesson']['student_user_id']==$this->Auth->user('user_id')) {
-            $maxAmount = (isSet($this->request->data['UserLesson']['1_on_1_price']) ? $this->request->data['UserLesson']['1_on_1_price'] : null );
-            $datetime = (isSet($this->request->data['UserLesson']['datetime']) ? $this->request->data['UserLesson']['datetime'] : null );
+            $maxAmount = (isSet($userLessonData['UserLesson']['1_on_1_price']) ? $userLessonData['UserLesson']['1_on_1_price'] : null );
+            $datetime = (isSet($userLessonData['UserLesson']['datetime']) ? $userLessonData['UserLesson']['datetime'] : null );
             if(!$this->AdaptivePayment->isValidApproval($userLessonId, $maxAmount, $datetime)) {
                 if(isSet($this->params['ext'])) {
 
@@ -102,37 +103,62 @@ class StudentController extends AppController {
     public function reProposeRequest($userLessonId) {
         //TODO: force POST
 
-        $userLessonData = $this->UserLesson->findByUserLessonIdAndStudentUserId($userLessonId, $this->Auth->user('user_id'));
+        /*//Restore only if referrer is "status" from order
+        $referrer = Router::parse($this->referer(null, true));
+        if(strtolower($referrer['controller'])=='order' && strtolower($referrer['action'])=='status') {
+            //Fore restore - when users return from paypal their request will apply now
+            $isRestoredData = $this->FormPreserver->restore();
+        }*/
+
+        $userLessonData = $this->UserLesson->findByUserLessonId($userLessonId);
         if (empty($this->request->data)) {
             $this->request->data = $userLessonData;
         } else {
+
+            $maxAmount = (isSet($this->request->data['UserLesson']['1_on_1_price']) ? $this->request->data['UserLesson']['1_on_1_price'] : null );
+            $datetime = (isSet($this->request->data['UserLesson']['datetime']) ? $this->request->data['UserLesson']['datetime'] : null );
+
             //if done by the student - Check if preapproval is OK
-            if($userLessonData['UserLesson']['student_user_id']==$this->Auth->user('user_id')) {
-                $maxAmount = (isSet($this->request->data['UserLesson']['1_on_1_price']) ? $this->request->data['UserLesson']['1_on_1_price'] : null );
-                $datetime = (isSet($this->request->data['UserLesson']['datetime']) ? $this->request->data['UserLesson']['datetime'] : null );
+            if($userLessonData['UserLesson']['student_user_id']==$this->Auth->user('user_id') && ($maxAmount || $datetime)) {
+
+                if($datetime) {
+                    $datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
+                    $datetime = $this->UserLesson->timeExpression($datetime, false);
+                    $this->request->data['UserLesson']['datetime'] = $datetime;
+                }
+
                 if(!$this->AdaptivePayment->isValidApproval($userLessonId, $maxAmount, $datetime)) {
-                    if(isSet($this->params['ext'])) {
+                    /*if($isRestoredData) {
+                        $this->request->data = $userLessonData; //so we won't redirect him if he comes back from the shopping cart manually in the middle of the process.
+                    } else {*/
 
-                        //Redirect to order
-                        return $this->error(1, array('orderURL'=>array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId, '?'=>array('returnURL'=>urlencode(Router::url(null, true))))));
-                    }
-                    $this->FormPreserver->preserve($this->data);
-                    $this->redirect(array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId));
+                        //Create negotiation parameters
+                        $params = Security::rijndael(json_encode($this->request->data['UserLesson']), Configure::read('Security.key'), 'encrypt');
+
+
+                        if(isSet($this->params['ext'])) {
+
+                            //Redirect to order
+                            return $this->error(1, array('orderURL'=>array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId, '?'=>array('negotiate'=>$params))));
+                        }
+                        //$this->FormPreserver->preserve($this->data);
+                        $this->redirect(array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId, '?'=>array('negotiate'=>$params)));
+                    //}
                 }
             }
 
-            if($this->UserLesson->reProposeRequest($userLessonId, $this->Auth->user('user_id'), $this->request->data['UserLesson'])) {
+            if(!$this->UserLesson->reProposeRequest($userLessonId, $this->Auth->user('user_id'), $this->request->data['UserLesson'])) {
                 if(isSet($this->params['ext'])) {
-                    return $this->success(1, array('user_lesson_id'=>$userLessonId));
+                    return $this->error(1, array('validation_errors'=>$this->UserLesson->validationErrors));
                 }
-
-                $this->Session->setFlash(__('Re-Propose sent'));
-                $this->redirect($this->referer());
-            } else if(isSet($this->params['ext'])) {
-                return $this->error(1, array('validation_errors'=>$this->UserLesson->validationErrors));
+                $this->Session->setFlash(__('Error, cannot Re-Propose'));
             }
-            $this->Session->setFlash(__('Error, cannot Re-Propose'));
-            $this->redirect($this->referer());
+
+            if(isSet($this->params['ext'])) {
+                return $this->success(1, array('user_lesson_id'=>$userLessonId));
+            }
+
+            $this->Session->setFlash(__('Re-Propose sent'));
         }
 
         //Group pricing
