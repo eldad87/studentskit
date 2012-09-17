@@ -5,7 +5,7 @@ App::import('Model', 'AppModel');
 class PendingUserLesson extends AppModel {
 	public $name = 'PendingUserLesson';
 	public $useTable = 'pending_user_lessons';
-	public $primaryKey = 'user_lesson_id';
+	public $primaryKey = 'pending_user_lesson_id';
 
 	public $belongsTo = array(
 					'Teacher' => array(
@@ -44,7 +44,9 @@ class PendingUserLesson extends AppModel {
         }
         $this->create(false);
         //$this->id = $this->getUnusedUserLessonId();
-        return $this->save( array('user_lesson_id'=>$this->getUnusedUserLessonId(), 'status'=>'ACTIVE', 'action'=>'join', 'teacher_lesson_id'=>$teacherLessonId, 'student_user_id'=>$studentUserId, 'teacher_user_id'=>$teacherUserId, 'user_lesson_id'=>$userLessonId, '1_on_1_price'=>$tlData['TeacherLesson']['1_on_1_price']) );
+        return $this->save( array(/*'user_lesson_id'=>$this->getUnusedUserLessonId(),*/ 'status'=>'ACTIVE', 'action'=>'join',
+                                    'teacher_lesson_id'=>$teacherLessonId, 'student_user_id'=>$studentUserId, 'teacher_user_id'=>$teacherUserId, 'user_lesson_id'=>$userLessonId,
+                                    '1_on_1_price'=>$tlData['TeacherLesson']['1_on_1_price'], 'subject_id'=>$tlData['TeacherLesson']['subject_id']) );
     }
 
     //$userId must be the student - he is the one that need to pay
@@ -57,78 +59,119 @@ class PendingUserLesson extends AppModel {
 
         $this->create(false);
         //$this->id = $this->getUnusedUserLessonId();
-        $this->set(array('user_lesson_id'=>$this->getUnusedUserLessonId(), 'status'=>'ACTIVE', 'action'=>'order', 'subject_id'=>$subjectId, 'student_user_id'=>$userId, 'datetime'=>$datetime, 'reverse_stage'=>$reverseStage, '1_on_1_price'=>$sData['Subject']['1_on_1_price'], 'extra'=>json_encode($extra)));
+        $this->set(array(/*'user_lesson_id'=>$this->getUnusedUserLessonId(),*/ 'status'=>'ACTIVE', 'action'=>'order',
+                            'subject_id'=>$subjectId, 'student_user_id'=>$userId, 'datetime'=>$datetime, 'reverse_stage'=>$reverseStage,
+                            '1_on_1_price'=>$sData['Subject']['1_on_1_price'], 'extra'=>json_encode($extra)));
         $this->set($extra);
         return $this->save();
     }
 
     //$userId must be the student - he is the one that need to pay
     public function reProposeRequest($userLessonId, $byUserId, array $data=array()) {
-        if(!$this->UserLesson->findByUserLessonIdAndStudentUserId($userLessonId, $byUserId)) {
+        if(!$userLessonData = $this->UserLesson->findByUserLessonIdAndStudentUserId($userLessonId, $byUserId)) {
             return false;
         }
 
-        $this->set(array('user_lesson_id'=>$userLessonId, 'status'=>'ACTIVE', 'action'=>'negotiate', 'student_user_id'=>$byUserId, 'extra'=>json_encode($data)));
+
+
+        $this->set(array('user_lesson_id'=>$userLessonId, 'status'=>'ACTIVE', 'action'=>'negotiate', 'student_user_id'=>$byUserId,
+                            '1_on_1_price'=>$userLessonData['UserLesson']['1_on_1_price'], //'teacher_lesson_id'=>$userLessonData['UserLesson']['teacher_lesson_id'], There is no TeahcerLessonId in re-propose (can't affect join requests)
+                            'subject_id'=>$userLessonData['UserLesson']['subject_id'], 'extra'=>json_encode($data)));
         $this->set($data);
         return $this->save();
     }
 
     public function acceptRequest( $userLessonId, $byUserId ) {
-        if(!$this->UserLesson->findByUserLessonIdAndStudentUserId($userLessonId, $byUserId)) {
+        if(!$userLessonData = $this->UserLesson->findByUserLessonIdAndStudentUserId($userLessonId, $byUserId)) {
             return false;
         }
-        $this->set(array('user_lesson_id'=>$userLessonId, 'status'=>'ACTIVE', 'action'=>'accept', 'student_user_id'=>$byUserId));
+        $this->set(array('user_lesson_id'=>$userLessonId, 'status'=>'ACTIVE', 'action'=>'accept', 'student_user_id'=>$byUserId,
+                            '1_on_1_price'=>$userLessonData['UserLesson']['1_on_1_price'], 'subject_id'=>$userLessonData['UserLesson']['subject_id'],
+                            'teacher_lesson_id'=>$userLessonData['UserLesson']['teacher_lesson_id']));
         return $this->save();
     }
 
-    public function convert($userLessonId) {
+    public function execute($pendingUserLessonId) {
         $this->create(false);
-        $userLessonData = $this->findByUserLessonId($userLessonId);
-        if(!$userLessonData || $userLessonData['PendingUserLesson']['status']!='ACTIVE') {
+        $pendingUserLessonData = $this->findByPendingUserLessonId($pendingUserLessonId);
+        if(!$pendingUserLessonData || $pendingUserLessonData['PendingUserLesson']['status']!='ACTIVE') {
             return false;
         }
-        $userLessonData = $userLessonData['PendingUserLesson'];
-        $userLessonData = $this->fixNumeric($userLessonData);
+        $pendingUserLessonData = $pendingUserLessonData['PendingUserLesson'];
+        $pendingUserLessonData = $this->fixNumeric($pendingUserLessonData);
 
         App::import('Model', 'UserLesson');
         $ulObj = new UserLesson();
 
         $res = false;
-        switch($userLessonData['action']) {
+        switch($pendingUserLessonData['action']) {
             case 'join':
                 //joinRequest( $teacherLessonId, $studentUserId=null, $teacherUserId=null, $userLessonId=null ) {
 
-                $res = $ulObj->joinRequest( $userLessonData['teacher_lesson_id'], $userLessonData['student_user_id'], $userLessonData['teacher_user_id'], $userLessonId);
+                $res = $ulObj->joinRequest( $pendingUserLessonData['teacher_lesson_id'], $pendingUserLessonData['student_user_id'], $pendingUserLessonData['teacher_user_id']/*, $userLessonId*/);
                 break;
 
             case 'order':
-                $userLessonData['extra'] = json_decode($userLessonData['extra'], true);
-                $userLessonData['extra'] = $this->fixNumeric($userLessonData['extra']);
-                $userLessonData['extra']['user_lesson_id'] = $userLessonId;
+                $pendingUserLessonData['extra'] = $this->fixNumeric(json_decode($pendingUserLessonData['extra'], true));
+                //$pendingUserLessonData['extra'] = $this->fixNumeric($pendingUserLessonData['extra']);
+                //$userLessonData['extra']['user_lesson_id'] = $userLessonId;
 
                 //lessonRequest( $subjectId, $userId, $datetime=null, $reverseStage=false, $extra=array() ) {
-                $res = $ulObj->lessonRequest( $userLessonData['subject_id'], $userLessonData['student_user_id'], $userLessonData['datetime'],
-                                            $userLessonData['reverse_stage'],  $userLessonData['extra']);
+                $res = $ulObj->lessonRequest( $pendingUserLessonData['subject_id'], $pendingUserLessonData['student_user_id'], $pendingUserLessonData['datetime'],
+                                            $pendingUserLessonData['reverse_stage'],  $pendingUserLessonData['extra']);
                 break;
 
             case 'negotiate':
-                $userLessonData['extra'] = json_decode($userLessonData['extra'], true);
-                $userLessonData['extra'] = $this->fixNumeric($userLessonData['extra']);
-                $res = $ulObj->reProposeRequest($userLessonId, $userLessonData['student_user_id'], $userLessonData['extra']);
+                $pendingUserLessonData['extra'] = json_decode($pendingUserLessonData['extra'], true);
+                $pendingUserLessonData['extra'] = $this->fixNumeric($pendingUserLessonData['extra']);
+                $res = $ulObj->reProposeRequest($pendingUserLessonData['user_lesson_id'], $pendingUserLessonData['student_user_id'], $pendingUserLessonData['extra']);
                 break;
             case 'accept':
-                $res = $ulObj->acceptRequest($userLessonId, $userLessonData['student_user_id']);
+                $res = $ulObj->acceptRequest($pendingUserLessonData['user_lesson_id'], $pendingUserLessonData['student_user_id']);
                 break;
 
         }
 
 
         if($res) {
-            return $this->delete($userLessonId);
+            $this->executed($pendingUserLessonId);
+
+            if($pendingUserLessonData['action']=='join' || $pendingUserLessonData['action']=='order') {
+                $this->bindUserLessonId($pendingUserLessonId, $ulObj->id);
+            }
+            return $ulObj->id;
         }
         $this->validationErrors = $ulObj->validationErrors;
 
         return false;
+    }
+
+    /*private function cancelDuplications($pendingUserLessonData, $status) {
+        $conditions = array();
+        if($pendingUserLessonData['user_lesson_id']) {
+            $conditions['user_lesson_id'] = $pendingUserLessonData['user_lesson_id'];
+        } else if($pendingUserLessonData['teacher_user_id']) {
+            $conditions['teacher_user_id'] = $pendingUserLessonData['teacher_user_id'];
+        } else if($pendingUserLessonData['subject_id']) {
+            $conditions['subject_id'] = $pendingUserLessonData['subject_id'];
+        }
+
+        if($conditions) {
+            $conditions['student_user_id'] = $pendingUserLessonData['student_user_id'];
+            $conditions['status'] = $status;
+            $cancelPending = $this->find('all', array('conditions'=>$conditions, 'fields'=>array('status', $this->primaryKey)));
+            if($cancelPending) {
+                foreach($cancelPending AS $cp) {
+                    $this->cancel($cp[$this->name][$this->primaryKey]);
+                }
+            }
+        }
+    }*/
+
+    private function bindUserLessonId($pendingUserLessonId, $userLessonId) {
+        $this->create(false);
+        $this->id = $pendingUserLessonId;
+        return $this->save(array('user_lesson_id'=>$userLessonId));
     }
 
     private function fixNumeric($extra) {
@@ -148,13 +191,17 @@ class PendingUserLesson extends AppModel {
         return $extra;
     }
 
-    public function cancel($userLessonId) {
-        $this->id = $userLessonId;
+    public function cancel($pendingUserLessonId) {
+        $this->id = $pendingUserLessonId;
         return $this->save(array('status'=>'CANCELED'));
+    }
+    private function executed($pendingUserLessonId) {
+        $this->id = $pendingUserLessonId;
+        return $this->save(array('status'=>'EXECUTED'));
     }
 
 
-    public function getUnusedUserLessonId() {
+    /*public function getUnusedUserLessonId() {
         App::import('Model', 'UserLesson');
         $ulObj = new UserLesson();
 
@@ -167,7 +214,6 @@ class PendingUserLesson extends AppModel {
         $userLessonId = $ulObj->id;
         $ulObj->delete($ulObj->id);
         return $userLessonId;
-    }
-
+    }*/
 }
 ?>

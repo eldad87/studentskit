@@ -41,33 +41,65 @@ class UserLessonEventListener implements CakeEventListener {
      */
     public function afterPaymentUpdate(CakeEvent $event) {
         //$event->data = array('user_lesson_id'=>$ipnData['user_lesson_id'], 'is_approved'=>($ipnData['approved']=='true' ? 1 : 0), 'status'=>$ipnData['status'], 'max_amount'=>$ipnData['max_total_amount_of_all_payments'], 'paid_amount'=>$paid, 'is_used'=>( $paid ? 1 : 0 ));
-        $paymentStatus = $this->adaptivePayment->getStatus($event->data['current']['user_lesson_id']);
+        $paymentStatus = $this->adaptivePayment->getStatus($event->data['current']['pending_user_lesson_id'], null, $event->data['old']['preapproval_key']);
         if(!$paymentStatus) {
             return false;
         }
 
-        //Check if we need to convert the UserLesson
-        if($event->data['current']['status']=='ACTIVE' && $event->data['current']['is_approved'] ) {
 
+
+        //Check if we need to convert the UserLesson
+        if($event->data['current']['status']=='ACTIVE' && $event->data['current']['is_approved']) {
+
+
+            //Execute PreApproval
             App::import('Model', 'PendingUserLesson');
             $pulObj = new PendingUserLesson();
-            if($pulObj->findByUserLessonId($event->data['current']['user_lesson_id'])) {
-                $pulObj->convert($event->data['current']['user_lesson_id']);
+            $userLessonId = $pulObj->execute($event->data['current']['pending_user_lesson_id']);
+            if(!$userLessonId) {
+                //Cannot convert
+                return false;
             }
-        } else if($event->data['current']['status']=='CANCELED') {
+
+            //Update adaptivePayments, make sure the pending_user_lesson_id is no longer in use
+            //$event->subject()->updateAll(array('pending_user_lesson_id'=>null), array('adaptive_payment_id'=>$paymentStatus['adaptive_payment_id']));
 
 
-            if($event->data['old']['status']=='ACTIVE' && $event->data['old']['is_approved'] ) {
-                App::import('Model', 'UserLesson');
-                $ulObj = new UserLesson();
-                $ulData = $ulObj->findByUserLessonId($event->data['current']['user_lesson_id']);
-                if($ulData) {
-                    $ulObj->cancelRequest($event->data['current']['user_lesson_id'], $ulData['UserLesson']['student_user_id']);
+
+            //Check if there is an existing ACTIVE/IN_PROCESS approval for the user_lesson_id
+            if($event->data['old']['user_lesson_id']) {
+                $activePP = $event->subject()->find('first', array('conditions'=>array('AdaptivePayment.user_lesson_id'=>$event->data['old']['user_lesson_id'], 'status'=>array('IN_PROCESS', 'ACTIVE'),
+                                                                                        'NOT'=>array('preapproval_key'=>$event->data['old']['preapproval_key']))));
+                if($activePP) {
+                    //Cancel the old ACTIVE preapproval
+                    $event->subject()->cancelApproval($event->data['old']['user_lesson_id'], $activePP[$event->subject()->name]['preapproval_key']);
                 }
-            } else {
+            }
+
+            if($paymentStatus['user_lesson_id']) {
+                return true;
+            }
+
+            //Bind payment to UserLesson
+            return $event->subject()->bindToUserLessonId($paymentStatus['adaptive_payment_id'], $userLessonId);
+
+        } else if($event->data['current']['status']=='CANCELED') {
+            if($event->data['old']['pending_user_lesson_id']) {
                 App::import('Model', 'PendingUserLesson');
                 $pulObj = new PendingUserLesson();
-                $pulObj->cancel($event->data['current']['user_lesson_id']);
+                $pulObj->cancel($event->data['old']['pending_user_lesson_id']);
+            }
+
+            if($event->data['old']['status']=='ACTIVE' && $event->data['old']['is_approved'] && $event->data['old']['user_lesson_id'] ) {
+
+                //Check if there are no other ACTIVE preApprovals
+                if(!$event->subject()->findByUserLessonIdAndStatus($event->data['old']['user_lesson_id'], 'ACTIVE')) {
+                    //There are no other ACTIVE preapproval, cancel UserLesson
+                    App::import('Model', 'UserLesson');
+                    $ulObj = new UserLesson();
+                    $ulData = $ulObj->findByUserLessonId($event->data['current']['user_lesson_id']);
+                    $ulObj->cancelRequest($event->data['old']['user_lesson_id'], $ulData['UserLesson']['student_user_id']);
+                }
             }
 
         }
@@ -133,6 +165,12 @@ class UserLessonEventListener implements CakeEventListener {
         if(!$this->adaptivePayment->cancelApproval($event->data['user_lesson']['user_lesson_id'])) {
             $event->subject()->log('Cannot cancel UserLesson '.$event->data['user_lesson']['user_lesson_id'], 'paypal_error');
         }
+
+        //Delete all PendingUserLessons
+        App::import('Model', 'PendingUserLesson');
+        $pulObj = new PendingUserLesson();
+        $pulObj->deleteAll(array('user_lesson_id'=>$event->data['user_lesson']['user_lesson_id']));
+
 
         //If the student that initiated the TeacherLesson canceled his participation, cancel all other invitations/booking requests
         /*if($event->data['user_lesson']['teacher_lesson_id']) {
