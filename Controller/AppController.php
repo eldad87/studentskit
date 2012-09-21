@@ -62,6 +62,7 @@ class AppController extends Controller {
             $language = $localize->map($language['localeFallback']);
         }
 
+        //pr(($this->Session->read('timezone'))); die;
         if($this->Session->read('timezone')) {
             Configure::write('Config.timezone', $this->Session->read('timezone'));
         }

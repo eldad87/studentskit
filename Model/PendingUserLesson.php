@@ -6,7 +6,7 @@ class PendingUserLesson extends AppModel {
 	public $name = 'PendingUserLesson';
 	public $useTable = 'pending_user_lessons';
 	public $primaryKey = 'pending_user_lesson_id';
-
+    public $actsAs = array('Time');
 	public $belongsTo = array(
 					'Teacher' => array(
 						'className' => 'User',
@@ -44,7 +44,7 @@ class PendingUserLesson extends AppModel {
         }
         $this->create(false);
         //$this->id = $this->getUnusedUserLessonId();
-        return $this->save( array(/*'user_lesson_id'=>$this->getUnusedUserLessonId(),*/ 'status'=>'ACTIVE', 'action'=>'join',
+        return $this->save( array(  'user_lesson_id'=>$this->getUnusedUserLessonId(), 'status'=>'ACTIVE', 'action'=>'join',
                                     'teacher_lesson_id'=>$teacherLessonId, 'student_user_id'=>$studentUserId, 'teacher_user_id'=>$teacherUserId, 'user_lesson_id'=>$userLessonId,
                                     '1_on_1_price'=>$tlData['TeacherLesson']['1_on_1_price'], 'subject_id'=>$tlData['TeacherLesson']['subject_id']) );
     }
@@ -59,7 +59,7 @@ class PendingUserLesson extends AppModel {
 
         $this->create(false);
         //$this->id = $this->getUnusedUserLessonId();
-        $this->set(array(/*'user_lesson_id'=>$this->getUnusedUserLessonId(),*/ 'status'=>'ACTIVE', 'action'=>'order',
+        $this->set(array(   'user_lesson_id'=>$this->getUnusedUserLessonId(), 'status'=>'ACTIVE', 'action'=>'order',
                             'subject_id'=>$subjectId, 'student_user_id'=>$userId, 'datetime'=>$datetime, 'reverse_stage'=>$reverseStage,
                             '1_on_1_price'=>$sData['Subject']['1_on_1_price'], 'extra'=>json_encode($extra)));
         $this->set($extra);
@@ -106,17 +106,12 @@ class PendingUserLesson extends AppModel {
         $res = false;
         switch($pendingUserLessonData['action']) {
             case 'join':
-                //joinRequest( $teacherLessonId, $studentUserId=null, $teacherUserId=null, $userLessonId=null ) {
-
-                $res = $ulObj->joinRequest( $pendingUserLessonData['teacher_lesson_id'], $pendingUserLessonData['student_user_id'], $pendingUserLessonData['teacher_user_id']/*, $userLessonId*/);
+                $res = $ulObj->joinRequest( $pendingUserLessonData['teacher_lesson_id'], $pendingUserLessonData['student_user_id'], $pendingUserLessonData['teacher_user_id'], $pendingUserLessonData['user_lesson_id']);
                 break;
 
             case 'order':
                 $pendingUserLessonData['extra'] = $this->fixNumeric(json_decode($pendingUserLessonData['extra'], true));
-                //$pendingUserLessonData['extra'] = $this->fixNumeric($pendingUserLessonData['extra']);
-                //$userLessonData['extra']['user_lesson_id'] = $userLessonId;
-
-                //lessonRequest( $subjectId, $userId, $datetime=null, $reverseStage=false, $extra=array() ) {
+                $pendingUserLessonData['extra']['user_lesson_id'] = $pendingUserLessonData['user_lesson_id'];
                 $res = $ulObj->lessonRequest( $pendingUserLessonData['subject_id'], $pendingUserLessonData['student_user_id'], $pendingUserLessonData['datetime'],
                                             $pendingUserLessonData['reverse_stage'],  $pendingUserLessonData['extra']);
                 break;
@@ -126,19 +121,20 @@ class PendingUserLesson extends AppModel {
                 $pendingUserLessonData['extra'] = $this->fixNumeric($pendingUserLessonData['extra']);
                 $res = $ulObj->reProposeRequest($pendingUserLessonData['user_lesson_id'], $pendingUserLessonData['student_user_id'], $pendingUserLessonData['extra']);
                 break;
+
             case 'accept':
                 $res = $ulObj->acceptRequest($pendingUserLessonData['user_lesson_id'], $pendingUserLessonData['student_user_id']);
                 break;
-
         }
+
 
 
         if($res) {
             $this->executed($pendingUserLessonId);
 
-            if($pendingUserLessonData['action']=='join' || $pendingUserLessonData['action']=='order') {
+            /*if($pendingUserLessonData['action']=='join' || $pendingUserLessonData['action']=='order') {
                 $this->bindUserLessonId($pendingUserLessonId, $ulObj->id);
-            }
+            }*/
             return $ulObj->id;
         }
         $this->validationErrors = $ulObj->validationErrors;
@@ -168,11 +164,11 @@ class PendingUserLesson extends AppModel {
         }
     }*/
 
-    private function bindUserLessonId($pendingUserLessonId, $userLessonId) {
+    /*private function bindUserLessonId($pendingUserLessonId, $userLessonId) {
         $this->create(false);
         $this->id = $pendingUserLessonId;
         return $this->save(array('user_lesson_id'=>$userLessonId));
-    }
+    }*/
 
     private function fixNumeric($extra) {
         $intFields = array('subject_id', 'teacher_lesson_id', 'user_lesson_id', 'student_user_id', 'teacher_user_id', 'max_students', 'duration_minutes');
@@ -201,7 +197,7 @@ class PendingUserLesson extends AppModel {
     }
 
 
-    /*public function getUnusedUserLessonId() {
+    public function getUnusedUserLessonId() {
         App::import('Model', 'UserLesson');
         $ulObj = new UserLesson();
 
@@ -214,6 +210,6 @@ class PendingUserLesson extends AppModel {
         $userLessonId = $ulObj->id;
         $ulObj->delete($ulObj->id);
         return $userLessonId;
-    }*/
+    }
 }
 ?>

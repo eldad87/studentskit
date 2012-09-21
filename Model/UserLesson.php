@@ -167,7 +167,11 @@ class UserLesson extends AppModel {
         }
     }
     public function isFutureDatetime($datetime) {
-        return strtotime($datetime['datetime'])>=time();
+        return $this->validateTimeBeforeChange($datetime['datetime'], 'now');
+    }
+    //Make sure date time is 1 hour or more from now
+    public function isFuture1HourDatetime($datetime) {
+        return $this->validateTimeBeforeChange($datetime['datetime'], 'now +1 hour');
     }
     public function validateSubjectId($subjectID){
         $subjectID = $subjectID['subject_id'];
@@ -268,39 +272,77 @@ class UserLesson extends AppModel {
         Subject::calcFullGroupStudentPriceIfNeeded($this->data['UserLesson'], $exists);
         Subject::extraValidation($this);
 
+        $lessonType = false;
 
-        if(isSet($this->data['UserLesson']['subject_id']) || !empty($this->data['UserLesson']['subject_id'])) {
+        /*
+         * Make sure the actions are made on future lessons
+         *
+         * 1. Order/Join request are new records, therefore they must have datetime in-order to pass validation
+         * 2. Make sure datetime is not set (I.e. by negotiation)
+         * 3. State exists - this action must be made by lessonRequest/joinRequest/reProposeRequest/acceptRequest/cancelRequest
+         * 4. This check must apply only on user actions and not by daemon/rating
+         *
+         * 5. There is no need to limit this check to LIVE lessons only. the reason is that VIDEO lessons get datetime only on the first watch
+        */
+        $datetimeErrorMessage = __('Please set a future datetime');
+        if( $exists && // (1) Record exists
+            (!isSet($this->data['UserLesson']['datetime']) && empty($this->data['UserLesson']['datetime'])) && // (2) No datetime
+            isSet($this->data['UserLesson']['stage']) && !empty($this->data['UserLesson']['stage']) && // (3) State exists
+            in_array($this->data['UserLesson']['stage'], array( USER_LESSON_RESCHEDULED_BY_STUDENT, USER_LESSON_RESCHEDULED_BY_TEACHER, // (4) Negotiate
+                                                                USER_LESSON_ACCEPTED, //(4) Accept
+                                                                USER_LESSON_CANCELED_BY_TEACHER, USER_LESSON_DENIED_BY_TEACHER, //(4) Cancel
+                                                                USER_LESSON_CANCELED_BY_STUDENT, USER_LESSON_DENIED_BY_STUDENT))) {
+
+
+                //Find record
+                $this->recursive = -1;
+                $userLessonData = $this->findByUserLessonId($this->id ? $this->id : $this->data['UserLesson'][$this->primaryKey]);
+                $lessonType = $userLessonData['UserLesson']['lesson_type'];
+
+
+                // (5)
+                $this->data['UserLesson']['datetime'] = $userLessonData['UserLesson']['datetime'];
+                $datetimeErrorMessage = __('You cannot operate on a lesson that already started');
+        }
+
+
+
+        //Get the lessonType from the subject
+        if(!$lessonType && isSet($this->data['UserLesson']['subject_id']) && !empty($this->data['UserLesson']['subject_id'])) {
             $subjectData = $this->Subject->findBySubjectId($this->data['UserLesson']['subject_id']);
             if(!$subjectData) {
                 return false;
             }
-            $subjectData = $subjectData['Subject'];
 
+            $lessonType = $subjectData['Subject']['lesson_type'];
+        }
 
-            if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
-                //Make sure that datetime is not blank for live lessons and that its a future datetime + 1 hour from now
-                $this->validator()->add('datetime', 'datetime', array(
-                    'required'	=> 'create',
-                    'allowEmpty'=> false,
-                    'rule'    	=> array('datetime', 'ymd'),
-                    'message' 	=> 'Invalid datetime format'
-                ))->add('datetime', 'future_datetime', array(
-                    'required'	=> 'create',
-                    'allowEmpty'=> false,
-                    'rule'    	=> 'isFutureDatetime',
-                    'message' 	=> __('Please set a future datetime')
-                ));
+        if($lessonType==LESSON_TYPE_LIVE) {
+            //Make sure that datetime is not blank for live lessons and that its a future datetime + 1 hour from now
+            $this->validator()->add('datetime', 'datetime', array(
+                'required'	=> 'create',
+                'allowEmpty'=> false,
+                'rule'    	=> array('datetime', 'ymd'),
+                'message' 	=> 'Invalid datetime format'
+            ))->add('datetime', 'future_datetime', array(
+                'required'	=> 'create',
+                'allowEmpty'=> false,
+                'rule'    	=> 'isFutureDatetime',
+                'message' 	=> $datetimeErrorMessage
+            ));
 
-            } else if($subjectData['lesson_type']==LESSON_TYPE_VIDEO) {
+        } else if($lessonType==LESSON_TYPE_VIDEO) {
 
-                //Allow datetime to be blank, or be set to now || any future datetime
-                $this->validator()->add('datetime', 'datetime', array(
-                    'allowEmpty'=> true,
-                    'rule'    	=> array('datetime', 'ymd'),
-                    'message' 	=> __('Invalid datetime format')
-                ));
-            }
-
+            //Allow datetime to be blank, or be set to now || any future datetime
+            $this->validator()->add('datetime', 'datetime', array(
+                'allowEmpty'=> true,
+                'rule'    	=> array('datetime', 'ymd'),
+                'message' 	=> __('Invalid datetime format')
+            ))->add('datetime', 'future_datetime', array(
+                'allowEmpty'=> true,
+                'rule'    	=> 'isFutureDatetime',
+                'message' 	=> $datetimeErrorMessage
+            ));
         }
     }
 
@@ -336,7 +378,7 @@ class UserLesson extends AppModel {
 	 * @param unknown_type $reverseStage - Reverse the stages, in use for teacher invite students, or on SUBJECT_TYPE_REQUEST - sending requests to students
 	 */
 	public function lessonRequest( $subjectId, $userId, $datetime=null, $reverseStage=false, $extra=array() ) {
-		//Find the teacher subjcet
+		//Find the teacher subject
 		App::import('Model', 'Subject');
 		$subjectObj = new Subject();
 		
@@ -351,6 +393,7 @@ class UserLesson extends AppModel {
         if($subjectData['type']!=SUBJECT_TYPE_OFFER) {
             return false;
         }
+
 
 		//Prepare the user lesson generic data
 		$userLesson = array(
@@ -382,6 +425,9 @@ class UserLesson extends AppModel {
 
         //Set the end of the lesson, video lesson end date is first-watching-time+2 days
         if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
+            if(is_object($datetime)) {
+                $datetime = $datetime->value;
+            }
             $userLesson['end_datetime'] = $this->timeExpression($datetime.' + '.$subjectData['duration_minutes'].' minutes' ,false);
                     //$this->Subject->datetimeToStr($datetime, $subjectData['duration_minutes']);
         }
@@ -430,6 +476,7 @@ class UserLesson extends AppModel {
 		}
 		$teacherLessonData = $teacherLessonData['TeacherLesson'];
 
+
         App::import('Model', 'Subject');
 		//users can't join video lessons, only to live lessons
 		if($teacherLessonData['lesson_type']==LESSON_TYPE_VIDEO) {
@@ -471,7 +518,7 @@ class UserLesson extends AppModel {
 					}
 
 
-                    //TODO: check if opposite exists + check if negotiate paramaters are identical
+                    //TODO: check if opposite exists + check if negotiate paramaters are identical, check datetime 1 hour before lesson starts
 					//return $this->acceptRequest($userLessonData['user_lesson_id'], ($teacherUserId ? $teacherUserId : $studentUserId));
 			}
 			//return false;
@@ -536,7 +583,11 @@ class UserLesson extends AppModel {
 		
 		return true;
 	}
-	
+
+    private function validateTimeBeforeChange($userDatetime, $beforeTime='now') {
+        return $this->toServerTime($userDatetime)>=$this->timeExpression($beforeTime, false);
+    }
+
 	public function cancelRequest( $userLessonId, $byUserId ) {
 		//Find user lesson
 		$userLessonData = $this->findByUserLessonId($userLessonId);
@@ -556,13 +607,7 @@ class UserLesson extends AppModel {
                                                                 USER_LESSON_ACCEPTED))) {
             return false;
         }
-		/*if( $userLessonData['stage']!=USER_LESSON_PENDING_STUDENT_APPROVAL &&
-			$userLessonData['stage']!=USER_LESSON_PENDING_TEACHER_APPROVAL && 
-			$userLessonData['stage']!=USER_LESSON_ACCEPTED ) {
-			return false;
-		}*/
-		
-		
+
 		$event = new CakeEvent('Model.UserLesson.beforeCancelRequest', $this, array('user_lesson'=>$userLessonData, 'by_user_id'=>$byUserId));
 		$this->getEventManager()->dispatch($event);
 		if ($event->isStopped()) {
@@ -605,6 +650,13 @@ class UserLesson extends AppModel {
 			break;
 		}
 
+        //Update the user lesson
+        $this->id = $userLessonId;
+        $this->set($data);
+        if(!$this->save()) {
+            return false;
+        }
+
 		if($userLessonData['teacher_lesson_id']) {
             App::import('Model', 'TeacherLesson');
             $teacherLessonObj = new TeacherLesson();
@@ -615,10 +667,7 @@ class UserLesson extends AppModel {
 			$teacherLessonObj->save();
 		}
 		
-		//Update the user lesson
-        $this->id = $userLessonId;
-        $this->set($data);
-        $this->save();
+
 		//$this->updateAll($data, array('user_lesson_id'=>$userLessonId));
 		
 
@@ -644,6 +693,7 @@ class UserLesson extends AppModel {
 			return false;
 		}
 
+        //Generate teacherLesson if needed
 		$event = new CakeEvent('Model.UserLesson.beforeAccept', $this, array('user_lesson'=>$userLessonData, 'by_user_id'=>$byUserId));
 		$this->getEventManager()->dispatch($event);
 		if ($event->isStopped()) {
@@ -658,8 +708,6 @@ class UserLesson extends AppModel {
         }
 
 		$this->updateAll($updateUserLesson, array('UserLesson.user_lesson_id'=>$userLessonId));
-		
-		
 
 		$event = new CakeEvent('Model.UserLesson.afterAccept', $this, array('user_lesson'=>$userLessonData, 'data'=>$updateUserLesson, 'by_user_id'=>$byUserId));
 		$this->getEventManager()->dispatch($event);
@@ -733,7 +781,7 @@ class UserLesson extends AppModel {
         return true;
     }
 
-	//TODO: cretae a daemon
+	//TODO: create a daemon
 	//if stage=USER_LESSON_ACCEPTED and datetime+duration<now then set stage=USER_LESSON_PENDING_RATING
 	//Update teacher teacher_total_teaching_minutes, teacher_students_amount, teacher_total_lessons
 	//Update subject students_amount, total_lessons
@@ -1107,7 +1155,7 @@ class UserLesson extends AppModel {
                         $this->setVideoStartEndDatetime($userLessonData['user_lesson_id'], $userLessonData['teacher_lesson_id']);
                     }
 
-                    //We need to check UserLesson beacuse the subject price may changed until now
+                    //We need to check UserLesson because the subject price may changed until now
                     if(!$userLessonData['1_on_1_price']) {
                         $isFreeVideo = true;
                     }
@@ -1183,8 +1231,8 @@ class UserLesson extends AppModel {
 
          $this->saveAssociated(
                 array(
-                    'UserLesson'=>array('user_lesson_id'=>$userLessonId, 'datetime'=>$this->timeExpression('now'), 'end_datetime'=>$this->timeExpression('now + '.LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC.' seconds')),
-                    'TeacherLesson'=>array('teacher_lesson_id'=>$teacherLessonId, 'datetime'=>$this->timeExpression('now'), 'end_datetime'=>$this->timeExpression('now + '.LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC.' seconds'))
+                    'UserLesson'=>array('user_lesson_id'=>$userLessonId, 'datetime'=>$this->timeExpression('now', true), 'end_datetime'=>$this->timeExpression('now + '.LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC.' seconds', true)),
+                    'TeacherLesson'=>array('teacher_lesson_id'=>$teacherLessonId, 'datetime'=>$this->timeExpression('now', true), 'end_datetime'=>$this->timeExpression('now + '.LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC.' seconds', true))
                 )
         );
     }

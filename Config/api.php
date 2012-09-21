@@ -128,11 +128,11 @@ $config['Student.lessonsInvitations.success.1.description'] = __('Lesson invitat
 /*-------------------- Student.SubjectRequests	--------------------*/
 $config['Student.subjectRequests.success.1.title'] = __('Success');
 $config['Student.subjectRequests.success.1.description'] = __('Subject requests');
-/*-------------------- Student.cacnelUserLesson	--------------------*/
-$config['Student.cacnelUserLesson.success.1.title'] = __('Success');
-$config['Student.cacnelUserLesson.success.1.description'] = __('Lesson canceled');
-$config['Student.cacnelUserLesson.error.1.title'] = __('Success');
-$config['Student.cacnelUserLesson.error.1.description'] = __('Cannot cancel lesson');
+/*-------------------- Student.cancelUserLesson	--------------------*/
+$config['Student.cancelUserLesson.success.1.title'] = __('Success');
+$config['Student.cancelUserLesson.success.1.description'] = __('Lesson canceled');
+$config['Student.cancelUserLesson.error.1.title'] = __('Success');
+$config['Student.cancelUserLesson.error.1.description'] = __('Cannot cancel lesson');
 /*-------------------- Student.acceptUserLesson	--------------------*/
 $config['Student.acceptUserLesson.success.1.title'] = __('Success');
 $config['Student.acceptUserLesson.success.1.description'] = __('Lesson accepted');

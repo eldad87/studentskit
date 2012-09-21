@@ -155,14 +155,14 @@ class TeacherController extends AppController {
 	public function cancelTeacherLesson( $teacherLessonId ) {
         $tlData = $this->TeacherLesson->findByTeacherLessonId($teacherLessonId);
         if(!$tlData || $tlData['TeacherLesson']['teacher_user_id']!=$this->Auth->user('user_id')) {
-            return $this->error(1, array('teacher_lesson_id'=>$teacherLessonId));
+            return $this->error(1, array('results'=>array('teacher_lesson_id'=>$teacherLessonId, 'validation_errors'=>$this->TeacherLesson->validationErrors)));
         }
 
 		if($this->TeacherLesson->cancel($teacherLessonId/*, 'teacher', $this->Auth->user('user_id')*/)) {
-			return $this->success(1, array('teacher_lesson_id'=>$teacherLessonId));
+			return $this->success(1, array('results'=>array('teacher_lesson_id'=>$teacherLessonId)));
 		}
-		
-		return $this->error(2, array('teacher_lesson_id'=>$teacherLessonId));
+
+        return $this->error(2, array('results'=>array('teacher_lesson_id'=>$teacherLessonId, 'validation_errors'=>$this->TeacherLesson->validationErrors)));
 	}
 	
 	
@@ -171,7 +171,7 @@ class TeacherController extends AppController {
 			if($this->TeacherLesson->add(array('type'=>'subject','id'=>$subjectId), $this->request->data['TeacherLesson']['datetime'], $this->request->data['TeacherLesson']['is_public'], $this->Auth->user('user_id') )) {
 				return $this->success(1, array('subject_id'=>$subjectId));
 			}
-			return $this->error(1, array('subject_id'=>$subjectId, 'validation_errors'=>$this->TeacherLesson->validationErrors));
+			return $this->error(1, array('results'=>array('subject_id'=>$subjectId, 'validation_errors'=>$this->TeacherLesson->validationErrors)));
 		}
 		//Remove this after testing + view "create_teacher_lessons.ctp"
 		//return $this->error(2, array('subject_id'=>$subjectId));

@@ -54,7 +54,7 @@ class AdaptivePayment extends AppModel {
         //Generate unique ID and append it to the URLS
         //$adaptivePaymentId = $this->getUnusedUserLessonId();
 
-        $approvalValidThru = date('Y-m-d', time()+YEAR);
+        $approvalValidThru = date('Y-m-d\Z', CakeTime::toUnix('now +1 year', 'UTC' )); //date('Y-m-d', time()+YEAR);
         $response = $this->adaptivePayments->preapproval( $pendingUserLessonData['1_on_1_price'], $pendingUserLessonData['student_user_id'], $clientIP, $cancelUrl, $returnUrl, $approvalValidThru, $ipnNotificationUrl );
         if(strtolower($response->responseEnvelope->ack)!='success') {
             return false;
@@ -83,82 +83,6 @@ class AdaptivePayment extends AppModel {
         }
 
         return $this->paymentUrl.$response->preapprovalKey;
-    }
-
-    private function cancelDuplications($pendingUserLessonData, $status) {
-        $cancelConditions = array();
-        if($pendingUserLessonData['user_lesson_id']) {
-            $cancelConditions['AdaptivePayment.user_lesson_id'] = $pendingUserLessonData['user_lesson_id'];
-        } else if($pendingUserLessonData['teacher_lesson_id']) {
-            $cancelConditions['AdaptivePayment.teacher_lesson_id'] = $pendingUserLessonData['teacher_lesson_id'];
-        } else if($pendingUserLessonData['subject_id']) {
-            $cancelConditions['AdaptivePayment.subject_id'] = $pendingUserLessonData['subject_id'];
-        }
-
-        if($cancelConditions) {
-            $cancelConditions['status'] = $status;
-            $cancelConditions['AdaptivePayment.student_user_id'] = $pendingUserLessonData['student_user_id'];
-            $cancelCandidates = $this->find('all', array('conditions'=>$cancelConditions));
-
-            if($cancelCandidates) {
-                foreach($cancelCandidates AS $cancelCandidate) {
-                    $this->cancelApproval(null, $cancelCandidate[$this->name]['preapproval_key']);
-                }
-            }
-        }
-
-        return true;
-    }
-
-    public function getStatus( $pendingUserLessonId, $status=null, $preapprovalKey=null ) {
-        $this->recursive = -1;
-        if($status) {
-            $apData = $this->findByPendingUserLessonIdAndStatus($pendingUserLessonId, $status);
-        } else if($preapprovalKey) {
-            $apData = $this->findByPendingUserLessonIdAndPreapprovalKey($pendingUserLessonId, $preapprovalKey);
-        } else {
-            $apData = $this->findByPendingUserLessonId($pendingUserLessonId);
-            //$apData = $this->findByUserLessonId($userLessonId);
-        }
-        if(!$apData) {
-            return false;
-        }
-
-        return $apData['AdaptivePayment'];
-    }
-
-    public function isValidApproval($userLessonId, $amount=null, $datetime=null) {
-        //User ask for a FREE lesson
-        if(!is_null($amount) && !$amount) {
-            return true;
-        }
-
-        $data = $this->findByUserLessonIdAndStatus($userLessonId, 'ACTIVE');
-        if(!$data) {
-            return false;
-        }
-
-        $data = $data['AdaptivePayment'];
-
-        if(!$data['is_approved']) {
-            return false;
-        }
-        //Already used
-        if($data['is_used']) {
-            return false;
-        }
-
-        //Check approved amount
-        if($amount && $data['max_amount']<$amount) {
-            return false;
-        }
-
-        //Check approved date
-        if($datetime && $datetime>$data['valid_thru']) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -269,23 +193,6 @@ class AdaptivePayment extends AppModel {
         return true;
     }
 
-    private function preapprovalDetails( $preapprovalKey ) {
-
-        $response = $this->adaptivePayments->preapprovalDetails($preapprovalKey);
-        if(strtolower($response->responseEnvelope->ack)!='success') {
-            return false;
-        }
-
-        unset($response->responseEnvelope);
-
-        $return = array();
-        foreach($response AS $key=>$val) {
-            $return[Inflector::underscore($key)] = $val;
-        }
-
-        return $return;
-    }
-
     public function refundTeacherLesson( $teacherLessonId ) {
         $this->UserLesson->TeacherLesson->recursive = -1;
         $aps = $this->find('all', array('conditions'=>array('teacher_lesson_id'=>$teacherLessonId, 'status'=>array('paid'))));
@@ -297,13 +204,13 @@ class AdaptivePayment extends AppModel {
             $this->refund($ap['AdaptivePayment']['user_lesson_id']);
         }
     }
-    ////////////////////
 
     //testConfirmPreapproval
     public function refund($userLessonId) {
         //TODO
     }
-    //////////////////
+
+
     public function paymentUpdate($ipnData) {
         /**
         approved Whether the preapproval request was approved. Possible values are:
@@ -350,19 +257,13 @@ class AdaptivePayment extends AppModel {
         }
 
 
+
         App::import('Model', 'UserLesson');
         $ulObj = new UserLesson(); //Bind events
         $event = new CakeEvent('Model.AdaptivePayment.afterPaymentUpdate', $this, array('current'=>$saveData, 'old'=>$apData) );
         $this->getEventManager()->dispatch($event);
 
         return true;
-    }
-
-    public function bindToUserLessonId($adaptivePaymentId, $userLessonId) {
-        $this->create(false);
-        $this->id = $adaptivePaymentId;
-        $this->set(array('user_lesson_id'=>$userLessonId));
-        return $this->save();
     }
 
     public function updateUsingPreapprovalDetails($pendingUserLessonId, $action) {
@@ -372,6 +273,81 @@ class AdaptivePayment extends AppModel {
         $details['action'] = $action;
         $details['pending_user_lesson_id'] = $pendingUserLessonId;
         return $this->paymentUpdate($details);
+    }
+
+    public function getStatus( $pendingUserLessonId, $status=null, $preapprovalKey=null ) {
+        $this->recursive = -1;
+        if($status) {
+            $apData = $this->findByPendingUserLessonIdAndStatus($pendingUserLessonId, $status);
+        } else if($preapprovalKey) {
+            $apData = $this->findByPendingUserLessonIdAndPreapprovalKey($pendingUserLessonId, $preapprovalKey);
+        } else {
+            $apData = $this->findByPendingUserLessonId($pendingUserLessonId);
+            //$apData = $this->findByUserLessonId($userLessonId);
+        }
+        if(!$apData) {
+            return false;
+        }
+
+        return $apData['AdaptivePayment'];
+    }
+
+    public function isValidApproval($userLessonId, $amount=null, $datetime=null) {
+        //User ask for a FREE lesson
+        if(!is_null($amount) && !$amount) {
+            return true;
+        }
+
+        $data = $this->findByUserLessonIdAndStatus($userLessonId, 'ACTIVE');
+        if(!$data) {
+            return false;
+        }
+
+        $data = $data['AdaptivePayment'];
+
+        if(!$data['is_approved']) {
+            return false;
+        }
+        //Already used
+        if($data['is_used']) {
+            return false;
+        }
+
+        //Check approved amount
+        if($amount && $data['max_amount']<$amount) {
+            return false;
+        }
+
+        //Check approved date
+        if($datetime && $datetime>$data['valid_thru']) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    public function bindToUserLessonId($adaptivePaymentId, $userLessonId) {
+        $this->create(false);
+        $this->id = $adaptivePaymentId;
+        $this->set(array('user_lesson_id'=>$userLessonId));
+        return $this->save();
+    }
+
+    private function preapprovalDetails( $preapprovalKey ) {
+        $response = $this->adaptivePayments->preapprovalDetails($preapprovalKey);
+        if(strtolower($response->responseEnvelope->ack)!='success') {
+            return false;
+        }
+
+        unset($response->responseEnvelope);
+
+        $return = array();
+        foreach($response AS $key=>$val) {
+            $return[Inflector::underscore($key)] = $val;
+        }
+
+        return $return;
     }
 
     private function setStatus( $userLessonId=null, $preapprovalKey=null, $status=null ) {
@@ -437,6 +413,31 @@ class AdaptivePayment extends AppModel {
 
 
         return $receivers;
+    }
+
+    private function cancelDuplications($pendingUserLessonData, $status) {
+        $cancelConditions = array();
+        if($pendingUserLessonData['user_lesson_id']) {
+            $cancelConditions['AdaptivePayment.user_lesson_id'] = $pendingUserLessonData['user_lesson_id'];
+        } else if($pendingUserLessonData['teacher_lesson_id']) {
+            $cancelConditions['AdaptivePayment.teacher_lesson_id'] = $pendingUserLessonData['teacher_lesson_id'];
+        } else if($pendingUserLessonData['subject_id']) {
+            $cancelConditions['AdaptivePayment.subject_id'] = $pendingUserLessonData['subject_id'];
+        }
+
+        if($cancelConditions) {
+            $cancelConditions['status'] = $status;
+            $cancelConditions['AdaptivePayment.student_user_id'] = $pendingUserLessonData['student_user_id'];
+            $cancelCandidates = $this->find('all', array('conditions'=>$cancelConditions));
+
+            if($cancelCandidates) {
+                foreach($cancelCandidates AS $cancelCandidate) {
+                    $this->cancelApproval(null, $cancelCandidate[$this->name]['preapproval_key']);
+                }
+            }
+        }
+
+        return true;
     }
 }
 ?>

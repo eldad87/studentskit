@@ -91,9 +91,9 @@ class TeacherLesson extends AppModel {
 				'rule'    	=> 'fullGroupTotalPriceCheck',
 				'message' 	=> 'You must set group price'
 			)
-		),
+		)
 	);
-	
+
 	public $belongsTo 	= array(
 					'User' => array(
 						'className'	=> 'User',
@@ -108,7 +108,7 @@ class TeacherLesson extends AppModel {
 				);
 
     public function isFutureDatetime($datetime) {
-        return strtotime($datetime['datetime'])>=time();
+        return $this->toServerTime($datetime['datetime'])>=$this->timeExpression('now', false);
     }
     public function validateSubjectId($subjectID){
         $subjectID = $subjectID['subject_id'];
@@ -209,38 +209,75 @@ class TeacherLesson extends AppModel {
         Subject::extraValidation($this);
 
 
-        if(isSet($this->data['TeacherLesson']['subject_id']) || !empty($this->data['TeacherLesson']['subject_id'])) {
+        $lessonType = false;
+        /*
+         * THIS CODE IS WORKING (not QAed) - it comment out because a teacher should be able to cancel his lesson anytime (without any limitation).
+         *
+        //If teacher ask to cancel a TeacherLesson, allow him to do it 1 hour before the lesson starts only if the lessons have no students
+        if($exists && isSet($this->data['TeacherLesson']['is_deleted']) && $this->data['TeacherLesson']['is_deleted']==1) { //Ask to cancel
+            //Find record
+            $this->recursive = -1;
+            $teacherLessonData = $this->findByTeacherLessonId($this->data['TeacherLesson'][$this->primaryKey]);
+            $lessonType = $teacherLessonData['TeacherLesson']['lesson_type'];
+
+            if($lessonType==LESSON_TYPE_LIVE && $teacherLessonData['num_of_students']>0) { //Live lesson with students
+                //Set datetime so it will get checked
+                $this->data['TeacherLesson']['datetime'] = $teacherLessonData['TeacherLesson']['datetime'];
+            }
+        }*/
+
+        if(!$lessonType && isSet($this->data['TeacherLesson']['subject_id']) || !empty($this->data['TeacherLesson']['subject_id'])) {
             $subjectData = $this->Subject->findBySubjectId($this->data['TeacherLesson']['subject_id']);
             if(!$subjectData) {
                 return false;
             }
-            $subjectData = $subjectData['Subject'];
-
-
-            if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
-                //Make sure that datetime is not blank for live lessons and that its a future datetime + 1 hour from now
-                $this->validator()->add('datetime', 'datetime', array(
-                    'required'	=> 'create',
-                    'allowEmpty'=> false,
-                    'rule'    	=> array('datetime', 'ymd'),
-                    'message' 	=> 'Invalid datetime format'
-                ))->add('datetime', 'future_datetime', array(
-                    'required'	=> 'create',
-                    'allowEmpty'=> false,
-                    'rule'    	=> 'isFutureDatetime',
-                    'message' 	=> __('Please set a future datetime')
-                ));
-
-            } else if($subjectData['lesson_type']==LESSON_TYPE_VIDEO) {
-
-                //Allow datetime to be blank, or be set to now || any future datetime
-                $this->validator()->add('datetime', 'datetime', array(
-                    'allowEmpty'=> true,
-                    'rule'    	=> array('datetime', 'ymd'),
-                    'message' 	=> __('Invalid datetime format')
-                ));
-            }
+            $lessonType = $subjectData['Subject']['lesson_type'];
         }
+
+        //Teacher ask to cancel his lesson
+        //5There is no need to limit this check to LIVE lessons only. the reason is that VIDEO lessons get datetime only on the first watch
+        $datetimeErrorMessage = __('Please set a future datetime');
+        if($exists &&
+            isSet($this->data['TeacherLesson']['is_deleted']) && $this->data['TeacherLesson']['is_deleted']==1 &&
+            (!isSet($this->data['TeacherLesson']['datetime']) || empty($this->data['TeacherLesson']['datetime']))) { //There is no datetime set
+
+            $this->recursive = -1;
+            $teacherLessonsData = $this->findByTeacherLessonId($this->id ? $this->id : $this->data['TeacherLesson'][$this->primaryKey]);
+            $lessonType = $teacherLessonsData['TeacherLesson']['lesson_type'];
+            $this->data['TeacherLesson']['datetime'] = $teacherLessonsData['TeacherLesson']['datetime'];
+            $datetimeErrorMessage = __('You cannot cancel a lesson that already started');
+
+        }
+
+
+        if($lessonType==LESSON_TYPE_LIVE) {
+            //Make sure that datetime is not blank for live lessons and that its a future datetime + 1 hour from now
+            $this->validator()->add('datetime', 'datetime', array(
+                'required'	=> 'create',
+                'allowEmpty'=> false,
+                'rule'    	=> array('datetime', 'ymd'),
+                'message' 	=> 'Invalid datetime format'
+            ))->add('datetime', 'future_datetime', array(
+                'required'	=> 'create',
+                'allowEmpty'=> false,
+                'rule'    	=> 'isFutureDatetime',
+                'message' 	=> $datetimeErrorMessage
+            ));
+
+        } else if($lessonType==LESSON_TYPE_VIDEO) {
+
+            //Allow datetime to be blank, or be set to now || any future datetime
+            $this->validator()->add('datetime', 'datetime', array(
+                'allowEmpty'=> true,
+                'rule'    	=> array('datetime', 'ymd'),
+                'message' 	=> __('Invalid datetime format')
+            ))->add('datetime', 'future_datetime', array(
+                'allowEmpty'=> true,
+                'rule'    	=> 'isFutureDatetime',
+                'message' 	=> $datetimeErrorMessage
+            ));
+        }
+
     }
 
 
@@ -288,6 +325,9 @@ class TeacherLesson extends AppModel {
 
             //Set the end of the lesson, video lesson end date is first-watching-time+2 days
             if($subjectData['lesson_type']==LESSON_TYPE_LIVE && $datetime) {
+                if(is_object($datetime)) {
+                    $datetime = $datetime->value;
+                }
                 $teacherLessonData['end_datetime'] = $this->timeExpression($datetime.' + '.$subjectData['duration_minutes'].' minutes' ,false);
                     //$this->Subject->datetimeToStr($datetime, $subjectData['duration_minutes']);
             }
@@ -357,16 +397,15 @@ class TeacherLesson extends AppModel {
 			//Already deleted
 			return true;
 		}
-		
 
 		//Get all user lessons that are about to cancel
 		App::import('Model', 'Subject');
 		App::import('Model', 'UserLesson');
 		$userLessonObj = new UserLesson();
-		$userLessonsData = $userLessonObj->find('all', array('conditions'=>array('UserLesson.teacher_lesson_id'=>$teacherLessonsId,
-																				'UserLesson.stage'=>array( USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_PENDING_STUDENT_APPROVAL,
-                                                                                    USER_LESSON_RESCHEDULED_BY_TEACHER, USER_LESSON_RESCHEDULED_BY_STUDENT,
-                                                                                    USER_LESSON_ACCEPTED))));
+		$userLessonsData = $userLessonObj->find('all', array('conditions'=>array(   'UserLesson.teacher_lesson_id'=>$teacherLessonsId,
+																				    'UserLesson.stage'=>array(  USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_PENDING_STUDENT_APPROVAL,
+                                                                                                                USER_LESSON_RESCHEDULED_BY_TEACHER, USER_LESSON_RESCHEDULED_BY_STUDENT,
+                                                                                                                USER_LESSON_ACCEPTED))));
 
         /*if($studentUserId && $userLessonsData) {
             return false; //Student cant' cancel this lesson if there are existing requests
@@ -383,7 +422,9 @@ class TeacherLesson extends AppModel {
         //Delete the teacher lesson
         $this->id = $teacherLessonsId;
         $this->set(array('is_deleted'=>1));
-        $this->save();
+        if(!$this->save()) {
+            return false;
+        }
 
 		
 		//Update all users that are going to take place in that lesson

@@ -37,11 +37,10 @@ class TimeBehavior extends ModelBehavior {
         }
         return $model->getDataSource()->expression('\''.$datetime.'\'');
     }
-    public function toClientTime(Model $model, $serverDatetime) {
-        return date('Y-m-d H:i:s',CakeTime::toUnix($serverDatetime, Configure::read('Config.timezone')));
+    public function toClientTime(Model $model, $serverDatetime, $format='Y-m-d H:i:s', $tz=null) {
+        return date($format, CakeTime::toUnix($serverDatetime, ($tz ? $tz : Configure::read('Config.timezone')) ));
     }
     public function toServerTime(Model $model, $userDatetime) {
-       //CakeTime::fromString($serverTime, $userTimezone);
         return CakeTime::toServer($userDatetime, Configure::read('Config.timezone'), 'Y-m-d H:i:s');
     }
 
@@ -108,7 +107,7 @@ class TimeBehavior extends ModelBehavior {
         foreach($this->settings[$model->alias] AS $datetimeFiled) {
             //Field does not exists in result
             if(!isSet($modelData[$datetimeFiled]) || empty($modelData[$datetimeFiled]) ||
-                (is_object($modelData[$datetimeFiled]) && isset($modelData[$datetimeFiled]->type) )) {
+                (is_object($modelData[$datetimeFiled]) && isset($modelData[$datetimeFiled]->type) )) { //DB expression
                 continue;
             }
 

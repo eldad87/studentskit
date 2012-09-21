@@ -67,12 +67,12 @@ class StudentController extends AppController {
 		return $this->success(1, array('subjectRequests'=>$subjectRequests));
 	}
 	
-	public function cacnelUserLesson( $userLessonId ) {
+	public function cancelUserLesson( $userLessonId ) {
 		if(!$this->UserLesson->cancelRequest( $userLessonId, $this->Auth->user('user_id') )) {
-			return $this->error(1, array('user_lesson_id'=>$userLessonId));
+			return $this->error(1, array('results'=>array('user_lesson_id'=>$userLessonId, 'validation_errors'=>$this->UserLesson->validationErrors)));
 		}
 		
-		return $this->success(1, array('user_lesson_id'=>$userLessonId));
+		return $this->success(1, array('results'=>array('user_lesson_id'=>$userLessonId)));
 	}
 	
 	public function acceptUserLesson( $userLessonId ) {
@@ -88,16 +88,16 @@ class StudentController extends AppController {
                 if(isSet($this->params['ext'])) {
 
                     //Redirect to order
-                    return $this->error(1, array('orderURL'=>array('controller'=>'Order', 'action'=>'init', 'accept', $userLessonId, '?'=>array('returnURL'=>urlencode(Router::url(null, true))))));
+                    return $this->error(1,  array('results'=>array('user_lesson_id'=>$userLessonId, 'orderURL'=>array('controller'=>'Order', 'action'=>'init', 'accept', $userLessonId, '?'=>array('returnURL'=>urlencode(Router::url(null, true)))))));
                 }
                 $this->redirect(array('controller'=>'Order', 'action'=>'init', 'accept', $userLessonId));
             }
         }
 
 		if(!$this->UserLesson->acceptRequest( $userLessonId, $this->Auth->user('user_id') )) {
-			return $this->error(1, array('user_lesson_id'=>$userLessonId));
+            return $this->error(1, array('results'=>array('user_lesson_id'=>$userLessonId, 'validation_errors'=>$this->UserLesson->validationErrors)));
 		}
-		return $this->success(1, array('user_lesson_id'=>$userLessonId));
+		return $this->success(1, array('results'=>array('user_lesson_id'=>$userLessonId)));
 	}
 
     public function reProposeRequest($userLessonId) {
@@ -139,7 +139,7 @@ class StudentController extends AppController {
                         if(isSet($this->params['ext'])) {
 
                             //Redirect to order
-                            return $this->error(1, array('orderURL'=>array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId, '?'=>array('negotiate'=>$params))));
+                            return $this->error(1,  array('results'=>array('user_lesson_id'=>$userLessonId, 'orderURL'=>array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId, '?'=>array('negotiate'=>$params)))));
                         }
                         //$this->FormPreserver->preserve($this->data);
                         $this->redirect(array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId, '?'=>array('negotiate'=>$params)));
@@ -149,13 +149,13 @@ class StudentController extends AppController {
 
             if(!$this->UserLesson->reProposeRequest($userLessonId, $this->Auth->user('user_id'), $this->request->data['UserLesson'])) {
                 if(isSet($this->params['ext'])) {
-                    return $this->error(1, array('validation_errors'=>$this->UserLesson->validationErrors));
+                    return $this->error(1, array('results'=>array('validation_errors'=>$this->UserLesson->validationErrors)));
                 }
                 $this->Session->setFlash(__('Error, cannot Re-Propose'));
             }
 
             if(isSet($this->params['ext'])) {
-                return $this->success(1, array('user_lesson_id'=>$userLessonId));
+                return $this->success(1, array('results'=>array('user_lesson_id'=>$userLessonId)));
             }
 
             $this->Session->setFlash(__('Re-Propose sent'));

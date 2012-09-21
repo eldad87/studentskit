@@ -16,7 +16,7 @@ class LoginEventListener implements CakeEventListener {
         app::import('Model', 'User');
         $userObj = new User();
         $userObj->id = $event->data['user_id'];
-        $userObj->set(array('lastLogin'=>$userObj->getDataSource()->expression('currentLogin'), 'currentLogin'=>$userObj->timeExpression('now')));
+        $userObj->set(array('lastLogin'=>$userObj->getDataSource()->expression('currentLogin'), 'currentLogin'=>$userObj->timeExpression('now', true)));
 
         return $userObj->save();
     }

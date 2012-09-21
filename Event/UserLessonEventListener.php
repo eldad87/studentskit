@@ -42,7 +42,7 @@ class UserLessonEventListener implements CakeEventListener {
     public function afterPaymentUpdate(CakeEvent $event) {
         //$event->data = array('user_lesson_id'=>$ipnData['user_lesson_id'], 'is_approved'=>($ipnData['approved']=='true' ? 1 : 0), 'status'=>$ipnData['status'], 'max_amount'=>$ipnData['max_total_amount_of_all_payments'], 'paid_amount'=>$paid, 'is_used'=>( $paid ? 1 : 0 ));
         $paymentStatus = $this->adaptivePayment->getStatus($event->data['current']['pending_user_lesson_id'], null, $event->data['old']['preapproval_key']);
-        if(!$paymentStatus) {
+            if(!$paymentStatus) {
             return false;
         }
 
@@ -51,13 +51,14 @@ class UserLessonEventListener implements CakeEventListener {
         //Check if we need to convert the UserLesson
         if($event->data['current']['status']=='ACTIVE' && $event->data['current']['is_approved']) {
 
-
             //Execute PreApproval
             App::import('Model', 'PendingUserLesson');
             $pulObj = new PendingUserLesson();
             $userLessonId = $pulObj->execute($event->data['current']['pending_user_lesson_id']);
             if(!$userLessonId) {
-                //Cannot convert
+                //Cannot convert, cancel approval
+                $this->adaptivePayment->cancelApproval($event->data['old']['user_lesson_id'], $event->data['old']['preapproval_key']);
+
                 return false;
             }
 
@@ -109,7 +110,8 @@ class UserLessonEventListener implements CakeEventListener {
     public function beforeLessonRequest(CakeEvent $event) {
         //$event->data = array('user_lesson'=>$userLesson, 'by_user_id'=>$userId)
         //Make sure it was done by the student
-        if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id']) {
+        if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id']&& $event->data['user_lesson']['1_on_1_price']>0) {
+
             //$this->adaptivePayment->
             if(!$this->adaptivePayment->isValidApproval($event->data['user_lesson']['user_lesson_id'], $event->data['user_lesson']['1_on_1_price'], $event->data['user_lesson']['datetime'])) {
                 return false;
@@ -122,7 +124,9 @@ class UserLessonEventListener implements CakeEventListener {
         //$event->data = array('teacher_lesson'=>$teacherLessonData, 'user_lesson'=>$userLesson, 'by_user_id'=>( $teacherUserId ? $teacherUserId : $studentUserId))
 
         //Make sure it was done by the student
-        if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id']) {
+        if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id'] && $event->data['user_lesson']['1_on_1_price']>0) {
+
+
             if(!$this->adaptivePayment->isValidApproval($event->data['user_lesson']['user_lesson_id'], $event->data['user_lesson']['1_on_1_price'], $event->data['user_lesson']['datetime'])) {
                 return false;
             }
@@ -169,7 +173,7 @@ class UserLessonEventListener implements CakeEventListener {
         //Delete all PendingUserLessons
         App::import('Model', 'PendingUserLesson');
         $pulObj = new PendingUserLesson();
-        $pulObj->deleteAll(array('user_lesson_id'=>$event->data['user_lesson']['user_lesson_id']));
+        $pulObj->deleteAll(array('PendingUserLesson.user_lesson_id'=>$event->data['user_lesson']['user_lesson_id']));
 
 
         //If the student that initiated the TeacherLesson canceled his participation, cancel all other invitations/booking requests
@@ -336,15 +340,13 @@ class UserLessonEventListener implements CakeEventListener {
                 return false;
             }
 
-
             $event->result['teacher_lesson_id'] = $tlObj->id;
         } else {
             $counter = $event->subject()->getAcceptLessonCounter($event->data['user_lesson']['stage']);
             //Update the num_of_pending_invitations counter
-            $this->TeacherLesson->id = $event->data['user_lesson']['teacher_lesson_id'];
-
-            $this->TeacherLesson->set(array($counter=>$tlObj->getDataSource()->expression($counter.'-1'), 'num_of_students'=>$tlObj->getDataSource()->expression('num_of_students+1')));
-            if(!$this->TeacherLesson->save()) {
+            $tlObj->id = $event->data['user_lesson']['teacher_lesson_id'];
+            $tlObj->set(array($counter=>$tlObj->getDataSource()->expression($counter.'-1'), 'num_of_students'=>$tlObj->getDataSource()->expression('num_of_students+1')));
+            if(!$tlObj->save()) {
                 return false;
             }
 

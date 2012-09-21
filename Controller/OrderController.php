@@ -75,7 +75,7 @@ class OrderController extends AppController {
             break;
 
             case 'order':
-                if($actionData['Subject']['teacher_user_id']==$this->Auth->user('user_id')) {
+                if($actionData['Subject']['user_id']==$this->Auth->user('user_id')) {
                     //teachers can't order their own lessons
                     $this->redirect($this->getOrderData('redirect'));
                 }
@@ -251,9 +251,9 @@ class OrderController extends AppController {
         //Make sure this is the student of the lesson
 
         $orderData['datetime'] = isSet($orderData['datetime']) ? $orderData['datetime'] : null;
-//        $this->clearSession();
-        $this->Session->delete('order.viewedSummary');
+//        $this->Session->delete('order.viewedSummary');
 
+        //TODO: make sure the user is not the teacher
 
         /**
          * Create PENDING-UserLesson if price>0 (not free).
@@ -406,31 +406,32 @@ class OrderController extends AppController {
     public function testIPN() {
         $data = array (
             'max_number_of_payments' => 'null',
-            'starting_date' => '2012-09-17T00:00:20.000-07:00',
+            'starting_date' => '2012-09-19T00:00:32.000Z',
             'pin_type' => 'NOT_REQUIRED',
             'currency_code' => 'USD',
-            'sender_email' => '',
-            'verify_sign' => 'AFcWxV21C7fd0v3bYYYRCpSSRl31AGnLxnWHBSjAlKAhDruasCHo6HYB',
+            'sender_email' => 'buyer2_1347221285_per@gmail.com',
+            'verify_sign' => 'AFcWxV21C7fd0v3bYYYRCpSSRl31AjkRePNRsiK91rWqIY5JEh9.4Htn',
             'test_ipn' => '1',
             'date_of_month' => '0',
             'current_number_of_payments' => '0',
-            'preapproval_key' => 'PA-7B6838947V932035S',
-            'ending_date' => '2013-09-17T23:59:20.000-07:00',
-            'approved' => 'false',
+            'preapproval_key' => 'PA-6AA06383DR343784Y',
+            'ending_date' => '2013-09-19T23:59:32.000Z',
+            'approved' => 'true',
             'transaction_type' => 'Adaptive Payment PREAPPROVAL',
             'day_of_week' => 'NO_DAY_SPECIFIED',
-            'status' => 'CANCELED',
+            'status' => 'ACTIVE',
             'current_total_amount_of_all_payments' => '0.00',
             'current_period_attempts' => '0',
             'charset' => 'windows-1252',
             'payment_period' => '0',
             'notify_version' => 'UNVERSIONED',
-            'max_total_amount_of_all_payments' => '13.00',
-            'action' => 'negotiate',
-            'pending_user_lesson_id' => '27',
+            'max_total_amount_of_all_payments' => '10.00',
+            'action' => 'order',
+            'pending_user_lesson_id' => '53',
         );
-        $data['action'] = 'negotiate';
-        $data['pending_user_lesson_id'] = 27;
+
+        /*$data['action'] = 'order';
+        $data['pending_user_lesson_id'] = 51;*/
 
         $this->AdaptivePayment->paymentUpdate($data);
     }
