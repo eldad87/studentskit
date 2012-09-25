@@ -21,9 +21,14 @@ class LessonsController extends AppController {
 
     /**
      * Live lesson page
+     *
+     * If lesson overdue - kick users away
+     * in process - enter authorized users only
+     * about to start - check if users need to do something in order to enter, if not - show counter. when get to 0 - refresh the page (client).
      */
     public function index($teacherLessonId) {
         $liveRequestStatus = $this->UserLesson->getLiveLessonStatus($teacherLessonId, $this->Auth->user('user_id'));
+
         if(!$liveRequestStatus) {
             $this->Session->setFlash(__('Invalid request'));
             $this->redirect('/');
@@ -32,25 +37,56 @@ class LessonsController extends AppController {
         //Check if overdue
         if($liveRequestStatus['overdue']) {
             $this->Session->setFlash(__('The lesson you\'re trying to enter is overdue'));
-            return $this->error(2, array('url'=>array('controller'=>'Home', 'action'=>'teacherSubject', $liveRequestStatus['subject_id'])));
+            $this->redirect(array('controller'=>'Home', 'action'=>'teacherSubject', $liveRequestStatus['subject_id']));
 
-        } else if($liveRequestStatus['in_process'] || $liveRequestStatus['about_to_start']) {
-            $this->set('is_teacher', $liveRequestStatus['is_teacher']);
+        } else { //if($liveRequestStatus['in_process'] || $liveRequestStatus['about_to_start']) {
 
-            if($liveRequestStatus['is_teacher']) {
-                //Enter lesson - its the teacher
+            if($liveRequestStatus['in_process']) {
+                $enterLesson = false;
+
+                if($liveRequestStatus['is_teacher']) {
+                    $enterLesson = true; //Lesson in process + it's the teacher
+
+                } else if($liveRequestStatus['approved']) {
+                    $enterLesson = true; //Lesson in process + user is authorized (paid if needed)
+
+                    if($liveRequestStatus['payment_needed']) {
+                        //Check payment - if did not pass, the user canceled his approval.
+                        App::import('Model', 'AdaptivePayment');
+                        $apObj = new AdaptivePayment();
+                        $enterLesson = $apObj->isPaid($liveRequestStatus['user_lesson_id']);
+                    }
+                }
+
+                if(!$enterLesson) {
+                    $this->Session->setFlash(__('You cannot participant in this lesson'));
+                    $this->redirect(array('controller'=>'Home', 'action'=>'teacherSubject', $liveRequestStatus['subject_id']));
+                }
+
+                //TODO: generate token
                 $this->set('meeting', $this->TeacherLesson->getLiveLessonMeeting($teacherLessonId));
-            } else if($liveRequestStatus['pending_teacher_approval'] || $liveRequestStatus['pending_user_approval'] || $liveRequestStatus['payment_needed']) {
-                //User need to pay/approve/wait for approval
-                $this->redirect(array('controller'=>'Home', 'action'=>'teacherLesson', $liveRequestStatus['teacher_lesson_id']));
-            } else {
-                //Enter lesson
-                $this->set('meeting', $this->TeacherLesson->getLiveLessonMeeting($teacherLessonId));
+                $this->set('fileSystem', $this->TeacherLesson->getFileSystem($teacherLessonId));
+
+            } else if( $liveRequestStatus['about_to_start'] ) {
+
+                if($liveRequestStatus['pending_teacher_approval']) {
+                    $this->Session->setFlash(__('Please wait for the teacher\'s approval first.'));
+                    $this->redirect(array('controller'=>'Home', 'action'=>'teacherLesson', $liveRequestStatus['teacher_lesson_id']));
+
+                } else if($liveRequestStatus['pending_user_approval']) {
+                    $this->Session->setFlash(__('Please approve the lesson first'));
+                    $this->redirect(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'invitations', $liveRequestStatus['user_lesson_id']));
+                } else if($liveRequestStatus['approved']) {
+                    //Show countdown
+                } else {
+                    $this->Session->setFlash(__('Please order the lesson first'));
+                    $this->redirect(array('controller'=>'Home', 'action'=>'teacherLesson', $liveRequestStatus['teacher_lesson_id']));
+                }
             }
 
-
+            $this->set('datetime', $liveRequestStatus['datetime']);
+            $this->set('is_teacher', $liveRequestStatus['is_teacher']);
         }
-
     }
 
 
@@ -63,40 +99,59 @@ class LessonsController extends AppController {
      *      if the user paid for it - show video
      *      else show "payment" button and 10 sec preview
      */
+
     public function video($subjectId) {
 
         $canWatchData = $this->UserLesson->getVideoLessonStatus($subjectId, $this->Auth->user('user_id'), true);
+
         if(!$canWatchData) {
             $this->Session->setFlash(__('Invalid request'));
             $this->redirect('/');
         }
 
-        if(!$canWatchData['show_video']) {
-            /* no need for flash messages, teacherSubject page will show them anyway
-            if($canWatchData['pending_teacher_approval']) {
-                $this->Session->setFlash(__('This video is waiting the teacher\'s approval'));
-            } else if($canWatchData['pending_user_approval']) {
-                $this->Session->setFlash(__('This video require your approval'));
-                $this->redirect(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'invitations', $canWatchData['user_lesson_id']));
-            } else if($canWatchData['payment_needed']) {
-                $this->Session->setFlash(__('This video is a premium video, please pay for it first'));
-
-            }*/
-
+        if(!$canWatchData['approved']) {
+            $this->Session->setFlash(__('You cannot watch the video at the moment'));
             $this->redirect(array('controller'=>'Home', 'action'=>'teacherSubject', $subjectId));
+        }
+
+        if($canWatchData['payment_needed'] && !$canWatchData['is_teacher']) {
+            App::import('Model', 'AdaptivePayment');
+            $apObj = new AdaptivePayment();
+
+            //Check if user paid
+            if(!$apObj->isPaid($canWatchData['user_lesson_id'])) {
+                $returnUrl = Router::url(null, true);
+                $apObj->pay($canWatchData['teacher_lesson_id'], $returnUrl, $returnUrl);
+
+                //Pay for lesson
+                if(!$apObj->isPaid($canWatchData['user_lesson_id'])) {
+                    $this->log(var_export($canWatchData, true), 'payment_failed');
+                    $this->Session->setFlash(__('Payment error, please contact us'));
+                    $this->redirect(array('controller'=>'Home', 'action'=>'teacherSubject', $subjectId));
+                }
+            }
+        }
+
+        if(empty($canWatchData['datetime']) && empty($canWatchData['end_datetime'])) {
+            //First watch - set start/end time
+            $this->UserLesson->setVideoStartEndDatetime($canWatchData['user_lesson_id']);
         }
 
 
         $this->set('subjectUrl', $this->TeacherLesson->getVideoUrl($subjectId));
-        $this->set('showAds', ($canWatchData['has_ended'] || $canWatchData['is_free']) );
+        $this->set('showAds', ((!empty($canWatchData['end_datetime']) &&
+                                $this->TeacherLesson->toServerTime($canWatchData['end_datetime'])<=$this->TeacherLesson->timeExpression( 'now', false )) ||
+                                !$canWatchData['payment_needed']) );
         $this->set('fileSystem', $this->TeacherLesson->getFileSystem($canWatchData['teacher_lesson_id']));
 		$this->set('tests', $this->TeacherLesson->getTests($canWatchData['teacher_lesson_id']));
     }
 
     public function invite() {
+        //$this->request->data['teacher_lesson_id'] = 21;
         $this->request->data['subject_id'] = 1;
         $this->request->data['emails'] = 'sivaneshokol@gmail.com';
         $this->request->data['message'] = 'My message';
+        $this->Subject; //init const
 
         if (!empty($this->request->data)) {
             if((!isSet($this->request->data['teacher_lesson_id']) && !isSet($this->request->data['subject_id']) ) ||
@@ -123,7 +178,10 @@ class LessonsController extends AppController {
 
                 //If its the teacher, send invitations in the system
                 if($tlData['lesson_type']==LESSON_TYPE_LIVE) {
-                    //TODO: check if lesson is overdue/started
+                    //check if lesson is overdue/started
+                    if(!$this->TeacherLesson->isFuture1HourDatetime($tlData['datetime'])) {
+                        return $this->error(3);
+                    }
 
                     //Email users
                     $this->emailUsers($this->request->data['emails'], $tlData['name'], $this->request->data['message'], 'TeacherLesson', $this->request->data['teacher_lesson_id']);
@@ -141,7 +199,7 @@ class LessonsController extends AppController {
                 $this->Subject->recursive = -1;
                 $subjectData = $this->Subject->findBySubjectId($this->request->data['subject_id']);
                 if(!$subjectData) {
-                    return $this->error(3);
+                    return $this->error(4);
                 }
                 $subjectData = $subjectData['Subject'];
 
@@ -189,6 +247,7 @@ class LessonsController extends AppController {
         foreach($users AS $user) {
             $user = $user['User'];
             unset($emailAsKeys[$user['email']]); //Remove user from emailing list
+
             $this->UserLesson->joinRequest($teacherLessonId, $user['user_id'], $tlData['TeacherLesson']['teacher_user_id']); //Send invitation
         }
         return array_flip($emailAsKeys);

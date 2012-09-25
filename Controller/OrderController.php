@@ -105,6 +105,9 @@ class OrderController extends AppController {
         if($datetime) {
             $this->Session->write('order.datetime', $datetime);
         }
+
+        $this->checkIfCanOrder($actionData);
+
         $this->redirect(array('controller'=>'Order', 'action'=>( ($datetime || $actionData['Subject']['lesson_type']=='video') ? 'summary' : 'calendar')));
     }
 
@@ -182,6 +185,8 @@ class OrderController extends AppController {
             $this->redirect($this->getOrderData('redirect'));
         }
 
+        $this->checkIfCanOrder($actionData);
+
         $viewParameters = array();
         $viewParameters['name']         = $actionData['Subject']['name'];
         $viewParameters['description']  = $actionData['Subject']['description'];
@@ -192,16 +197,12 @@ class OrderController extends AppController {
             $viewParameters['max_students']  = $actionData['Subject']['max_students'];
         }
 
-        //check if $viewParameters['datetime'] is in the future for live lessons
-        if($viewParameters['lesson_type']=='live' && $this->UserLesson->toServerTime($viewParameters['datetime'])>$viewParameters['datetime']) {
-            $this->Session->setFlash(__('Datetime error'));
-            $this->redirect($this->getOrderData('redirect'));
-        }
+
+
 
         //Generate a list of summary parameters
         switch($this->getOrderData('action')) {
             case 'order':
-
                 if($actionData['Subject']['max_students']>1) {
                     $viewParameters['full_group_student_price'] = $actionData['Subject']['full_group_student_price'];
                     $viewParameters['full_group_total_price']   = $actionData['Subject']['full_group_total_price'];
@@ -248,10 +249,13 @@ class OrderController extends AppController {
             $this->redirect($this->getOrderData('redirect'));
         }
         $orderData = $this->getOrderData();
+
+        $this->checkIfCanOrder($this->getActionData());
+
         //Make sure this is the student of the lesson
 
         $orderData['datetime'] = isSet($orderData['datetime']) ? $orderData['datetime'] : null;
-//        $this->Session->delete('order.viewedSummary');
+        $this->Session->delete('order.viewedSummary');
 
         //TODO: make sure the user is not the teacher
 
@@ -318,7 +322,7 @@ class OrderController extends AppController {
 
 
         if($pendingUserLessonId) {
-            //Lesson that cost money need to go through paypal
+            //Lesson that cost money need to go through PayPal
             $this->paymentPreapproval($pendingUserLessonId);
         }
 
@@ -406,16 +410,16 @@ class OrderController extends AppController {
     public function testIPN() {
         $data = array (
             'max_number_of_payments' => 'null',
-            'starting_date' => '2012-09-19T00:00:32.000Z',
+            'starting_date' => '2012-09-25T00:00:17.000Z',
             'pin_type' => 'NOT_REQUIRED',
             'currency_code' => 'USD',
             'sender_email' => 'buyer2_1347221285_per@gmail.com',
-            'verify_sign' => 'AFcWxV21C7fd0v3bYYYRCpSSRl31AjkRePNRsiK91rWqIY5JEh9.4Htn',
+            'verify_sign' => 'AFcWxV21C7fd0v3bYYYRCpSSRl31ANp8lu09eLWZdtnleA17qClG.YWq',
             'test_ipn' => '1',
             'date_of_month' => '0',
             'current_number_of_payments' => '0',
-            'preapproval_key' => 'PA-6AA06383DR343784Y',
-            'ending_date' => '2013-09-19T23:59:32.000Z',
+            'preapproval_key' => 'PA-03W145521G912144D',
+            'ending_date' => '2013-09-25T23:59:17.000Z',
             'approved' => 'true',
             'transaction_type' => 'Adaptive Payment PREAPPROVAL',
             'day_of_week' => 'NO_DAY_SPECIFIED',
@@ -427,7 +431,7 @@ class OrderController extends AppController {
             'notify_version' => 'UNVERSIONED',
             'max_total_amount_of_all_payments' => '10.00',
             'action' => 'order',
-            'pending_user_lesson_id' => '53',
+            'pending_user_lesson_id' => '5',
         );
 
         /*$data['action'] = 'order';
@@ -464,6 +468,74 @@ class OrderController extends AppController {
         return $this->Session->read('order'.$parameter);
     }
 
+    private function checkIfCanOrder($actionData) {
+
+        if(!$this->Auth->user('user_id')) {
+            return false;
+        }
+
+        //Check if there are existing requests
+        if($actionData['Subject']['lesson_type']=='live') {
+            //Check if datetime is in the future
+            if(!$this->UserLesson->isFutureDatetime($this->getOrderData('datetime'))) {
+                $this->clearSession();
+                $this->Session->setFlash(__('Datetime error'));
+                $this->redirect($this->getOrderData('redirect'));
+            }
+
+            //Join request
+            if(isSet($actionData['TeacherLesson'])) {
+                $liveRequestStatus = $this->UserLesson->getLiveLessonStatus($actionData['TeacherLesson']['teacher_lesson_id'], $this->Auth->user('user_id'));
+
+                if($liveRequestStatus['approved']) {
+                    $this->Session->setFlash(__('You already ordered that lesson lesson'));
+                    $this->redirect($this->getOrderData('redirect'));
+
+                }
+                //No need to check those - after accept - all pending request will get canceled
+                /*else if($liveRequestStatus['pending_user_approval']) {
+                    $this->Session->setFlash(__('The teacher already invited you, you can approve, decline or negotiate your participation in the control panel'));
+                    $this->redirect($this->getOrderData('redirect'));
+
+                } else if($liveRequestStatus['pending_teacher_approval']) {
+                    $this->Session->setFlash(__('You already ordered that lesson and its waiting for the teacher\'s approval'));
+                    $this->redirect($this->getOrderData('redirect'));
+                }*/
+            }
+
+
+        } else if($actionData['Subject']['lesson_type']=='video') {
+            $canWatchData = $this->UserLesson->getVideoLessonStatus($actionData['Subject']['subject_id'], $this->Auth->user('user_id'), false);
+
+            if($canWatchData['approved']) {
+                //User shouldn't pay for a lesson that he did not watched yet/watch time didn't over
+                if(empty($canWatchData['datetime']) || $this->UserLesson->isFutureDatetime($canWatchData['end_datetime'])) {
+
+
+                    $this->Session->setFlash(__('You already ordered that video lesson'));
+                    $this->redirect($this->getOrderData('redirect'));
+
+                } else if(/*$actionData['Subject']['1_on_1_price']*/$this->getOrderData('price')>0) {
+                    //show indication to user that this will remove ads for 2 days
+                    $this->Session->setFlash( sprintf(__('You already ordered that video lesson, by continue ordering - it will remove the advertisements for %d days'), (LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC/DAY)) );
+                } else {
+                    $this->Session->setFlash(__('You already ordered that free video lesson')); //user doesn't need to order free lesson again.
+                    $this->redirect($this->getOrderData('redirect'));
+                }
+
+            }
+            //No need to check those - after accept - all pending request will get canceled
+            /*else if($canWatchData['pending_user_approval']) {
+                $this->Session->setFlash(__('The teacher in the video already invited you, you can approve, decline or negotiate your participation in the control panel'));
+                $this->redirect($this->getOrderData('redirect'));
+
+            } else if($canWatchData['pending_teacher_approval']) {
+                $this->Session->setFlash(__('You already ordered that video lesson and its waiting for the teacher\'s approval'));
+                $this->redirect($this->getOrderData('redirect'));
+            }*/
+        }
+    }
+
     private function clearSession() {
         $r = $this->Session->read('order.redirect');
         $this->Session->delete('order');
@@ -481,6 +553,7 @@ class OrderController extends AppController {
         switch($action) {
             //TeacherLesson
             case 'join':
+                $this->TeacherLesson->resetRelationshipFields();
                 $data = $this->TeacherLesson->findByTeacherLessonId($id);
                 if(!$data ||
                     $data['TeacherLesson']['lesson_type']=='video' || $data['TeacherLesson']['is_deleted'] ||
@@ -495,7 +568,7 @@ class OrderController extends AppController {
             //UserLesson
             case 'accept':
             case 'negotiate':
-            $this->UserLesson->resetRelationshipFields();
+                $this->UserLesson->resetRelationshipFields();
                 $data = $this->UserLesson->findByUserLessonId($id);
                 if(!$data ||
                     $data['UserLesson']['lesson_type']=='video' || $data['TeacherLesson']['is_deleted'] ||
@@ -509,6 +582,7 @@ class OrderController extends AppController {
             //Subject
             case 'order': //Regular order from the site
                 $this->Subject->recursive = -1;
+                $this->Subject->resetRelationshipFields();
                 $data = $this->Subject->findBySubjectId($id);
                 if(!$data || $data['Subject']['is_enable']==SUBJECT_IS_ENABLE_FALSE) {
 

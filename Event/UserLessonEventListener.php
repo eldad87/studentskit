@@ -134,6 +134,7 @@ class UserLessonEventListener implements CakeEventListener {
 
         return true;
     }
+
     public function beforeReProposeRequest(CakeEvent $event) {
         //$event->data = array('user_lesson'=>$userLessonData, 'update'=>$data, 'by_user_id'=>$byUserId)
 
@@ -357,6 +358,7 @@ class UserLessonEventListener implements CakeEventListener {
         $toUserId = $messageType = null;
         $byUserId = $event->data['by_user_id'];
 
+
         if($event->data['user_lesson']['teacher_user_id']==$byUserId) {
             $toUserId = $event->data['user_lesson']['student_user_id'];
             if(empty($event->data['user_lesson']['request_subject_id'])) {
@@ -540,6 +542,20 @@ class UserLessonEventListener implements CakeEventListener {
     }
 
     public function afterJoinRequest(CakeEvent $event) {
+        /*//Cancel OTHER existing requests
+        $event->subject()->recursive = -1;
+        $userLessonsData = $event->subject()->find('first', array('conditions'=>array(	'UserLesson.student_user_id'=>$event->data['user_lesson']['student_user_id'],
+                                                                                        'UserLesson.teacher_lesson_id'=>$event->data['user_lesson']['teacher_lesson_id'],
+                                                                                        'UserLesson.stage'=>array(  USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT,
+                                                                                                                    USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER)),
+        ));
+
+        if($userLessonsData) {
+            foreach($userLessonsData AS $userLessonData) {
+                $event->subject()->cancelRequest($userLessonData['UserLesson']['user_lesson_id'], $event->data['by_user_id']);
+            }
+        }*/
+
         return $this->afterLessonRequest($event);
     }
     public function afterLessonRequest(CakeEvent $event) {

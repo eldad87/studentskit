@@ -91,10 +91,11 @@ class AdaptivePayment extends AppModel {
      * @param $teacherLessonId
      * @return bool
      */
-    public function pay( $teacherLessonId ) {
+    public function pay( $teacherLessonId , $cancelUrl, $returnUrl) {
+        //TODO - check all approval first - users may canceled their approval from PayPal
         $this->UserLesson->TeacherLesson->recursive = -1;
         $tlData = $this->UserLesson->TeacherLesson->findByTeacherLessonId($teacherLessonId);
-        if(!$tlData || $tlData['is_deleted'] || !$tlData['1_on_1_price']) {
+        if(!$tlData || $tlData['TeacherLesson']['is_deleted'] || !$tlData['TeacherLesson']['1_on_1_price']) {
             return false;
         }
 
@@ -114,7 +115,7 @@ class AdaptivePayment extends AppModel {
 
         foreach($aps AS $ap) {
             $ap = $ap['AdaptivePayment'];
-            $response = $this->adaptivePayments->pay( $receivers, $ap['user_lesson_id'], $ap['preapproval_key'] );
+            $response = $this->adaptivePayments->pay( $receivers, $ap['user_lesson_id'], $ap['preapproval_key'], $cancelUrl, $returnUrl );
 
 
             if(strtolower($response->paymentExecStatus)=='completed') {
@@ -123,6 +124,7 @@ class AdaptivePayment extends AppModel {
                 $this->set('paid_amount', $receivers[0]['amount']);
                 $this->save();
             } else {
+                $this->log(var_export($response, true), 'adaptive_payment_error');
                 $this->setStatus($ap['user_lesson_id'], $ap['preapproval_key'], 'ERROR');
             }
         }
@@ -292,6 +294,11 @@ class AdaptivePayment extends AppModel {
         return $apData['AdaptivePayment'];
     }
 
+    public function isPaid($userLessonId) {
+        $this->cacheQueries = false;
+        return $this->findByUserLessonIdAndIsUsed($userLessonId, 1) ? true : false;
+    }
+
     public function isValidApproval($userLessonId, $amount=null, $datetime=null) {
         //User ask for a FREE lesson
         if(!is_null($amount) && !$amount) {
@@ -383,11 +390,13 @@ class AdaptivePayment extends AppModel {
     }
 
     private function generatePaymentRecivers($teacherLessonId) {
+        $this->UserLesson->TeacherLesson->resetRelationshipFields();
+        $this->UserLesson->TeacherLesson->recursive = 1;
         $tlData = $this->UserLesson->TeacherLesson->findByTeacherLessonId($teacherLessonId);
         $teacher = $tlData['User'];
         $tlData = $tlData['TeacherLesson'];
 
-        //If its a video lesson or only 1 student can be in this lesson, the user need to pay the full price
+        //If its a video lesson or only 1    student can be in this lesson, the user need to pay the full price
         if($tlData['lesson_type']=='video' || $tlData['max_students']==1 || $tlData['num_of_students']==1) {
             $price = $tlData['1_on_1_price'];
         } else {
@@ -395,6 +404,9 @@ class AdaptivePayment extends AppModel {
         }
 
 
+        if(!$teacher['teacher_paypal_id']) {
+            return false;
+        }
 
         $receivers = array();
         $receivers[] = array(

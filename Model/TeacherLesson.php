@@ -108,8 +108,22 @@ class TeacherLesson extends AppModel {
 				);
 
     public function isFutureDatetime($datetime) {
-        return $this->toServerTime($datetime['datetime'])>=$this->timeExpression('now', false);
+        if(isSet($datetime['datetime']) && is_array($datetime)) {
+            $datetime = $datetime['datetime'];
+        }
+
+        return $this->toServerTime($datetime)>=$this->timeExpression( 'now', false);
+
     }
+    //Make sure date time is 1 hour or more from now
+    public function isFuture1HourDatetime($datetime) {
+        if(isSet($datetime['datetime']) && is_array($datetime)) {
+            $datetime = $datetime['datetime'];
+        }
+
+        return $this->toServerTime($datetime)>=$this->timeExpression( 'now +1 hour', false);
+    }
+
     public function validateSubjectId($subjectID){
         $subjectID = $subjectID['subject_id'];
 
@@ -212,19 +226,19 @@ class TeacherLesson extends AppModel {
         $lessonType = false;
         /*
          * THIS CODE IS WORKING (not QAed) - it comment out because a teacher should be able to cancel his lesson anytime (without any limitation).
-         *
+         */
         //If teacher ask to cancel a TeacherLesson, allow him to do it 1 hour before the lesson starts only if the lessons have no students
         if($exists && isSet($this->data['TeacherLesson']['is_deleted']) && $this->data['TeacherLesson']['is_deleted']==1) { //Ask to cancel
             //Find record
             $this->recursive = -1;
-            $teacherLessonData = $this->findByTeacherLessonId($this->data['TeacherLesson'][$this->primaryKey]);
+            $teacherLessonData = $this->findByTeacherLessonId(isSet($this->data['TeacherLesson'][$this->primaryKey]) ? $this->data['TeacherLesson'][$this->primaryKey] : $this->id);
             $lessonType = $teacherLessonData['TeacherLesson']['lesson_type'];
 
             if($lessonType==LESSON_TYPE_LIVE && $teacherLessonData['num_of_students']>0) { //Live lesson with students
                 //Set datetime so it will get checked
                 $this->data['TeacherLesson']['datetime'] = $teacherLessonData['TeacherLesson']['datetime'];
             }
-        }*/
+        }
 
         if(!$lessonType && isSet($this->data['TeacherLesson']['subject_id']) || !empty($this->data['TeacherLesson']['subject_id'])) {
             $subjectData = $this->Subject->findBySubjectId($this->data['TeacherLesson']['subject_id']);
@@ -235,8 +249,7 @@ class TeacherLesson extends AppModel {
         }
 
         //Teacher ask to cancel his lesson
-        //5There is no need to limit this check to LIVE lessons only. the reason is that VIDEO lessons get datetime only on the first watch
-        $datetimeErrorMessage = __('Please set a future datetime');
+        //There is no need to limit this check to LIVE lessons only. the reason is that VIDEO lessons get datetime only on the first watch
         if($exists &&
             isSet($this->data['TeacherLesson']['is_deleted']) && $this->data['TeacherLesson']['is_deleted']==1 &&
             (!isSet($this->data['TeacherLesson']['datetime']) || empty($this->data['TeacherLesson']['datetime']))) { //There is no datetime set
@@ -245,26 +258,27 @@ class TeacherLesson extends AppModel {
             $teacherLessonsData = $this->findByTeacherLessonId($this->id ? $this->id : $this->data['TeacherLesson'][$this->primaryKey]);
             $lessonType = $teacherLessonsData['TeacherLesson']['lesson_type'];
             $this->data['TeacherLesson']['datetime'] = $teacherLessonsData['TeacherLesson']['datetime'];
-            $datetimeErrorMessage = __('You cannot cancel a lesson that already started');
-
         }
 
 
         if($lessonType==LESSON_TYPE_LIVE) {
+            $datetimeErrorMessage = $exists ? __('You cannot operate on a lesson that already started or will start in less then 1 hour') : __('Please set a 1-hour future datetime');
+
             //Make sure that datetime is not blank for live lessons and that its a future datetime + 1 hour from now
             $this->validator()->add('datetime', 'datetime', array(
                 'required'	=> 'create',
                 'allowEmpty'=> false,
                 'rule'    	=> array('datetime', 'ymd'),
                 'message' 	=> 'Invalid datetime format'
-            ))->add('datetime', 'future_datetime', array(
+            ))->add('datetime', 'future_hour_datetime', array(
                 'required'	=> 'create',
                 'allowEmpty'=> false,
-                'rule'    	=> 'isFutureDatetime',
+                'rule'    	=> 'isFuture1HourDatetime',
                 'message' 	=> $datetimeErrorMessage
             ));
 
         } else if($lessonType==LESSON_TYPE_VIDEO) {
+            $datetimeErrorMessage = $exists ? __('You cannot operate on a lesson that already started') :__('Please set a future datetime');
 
             //Allow datetime to be blank, or be set to now || any future datetime
             $this->validator()->add('datetime', 'datetime', array(
@@ -553,17 +567,16 @@ class TeacherLesson extends AppModel {
         return $testObj->getTests('lesson', $teacherLessonId);;
     }
 
-    public static function getLessonTiming($datetime, $duration) {
-        $return = array('overdue'=>false, 'about_to_start'=>false);
+    public function getLessonTiming($datetime, $duration) {
         //Check the time status of the lesson
-        if(($datetime+$duration*MIN)<time()) { //duetime > now = overdue
-            $return['overdue'] = true;
-        } if($datetime<time()) { //start time < now = not yer started
-            $return['about_to_start'] = true;
+        if($this->toServerTime($datetime)>$this->timeExpression( 'now', false)) {
+            return 'about_to_start';
+        }  else if( $this->timeExpression($this->toServerTime($datetime).' + '.$duration.' minute')>$this->timeExpression( 'now', false)) { //Lesson already started
+            return 'in_process';
         } else {
-            $return['in_process'] = true;
+            return 'overdue';
         }
     }
-	
+
 }
 ?>

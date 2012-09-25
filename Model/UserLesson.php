@@ -167,11 +167,19 @@ class UserLesson extends AppModel {
         }
     }
     public function isFutureDatetime($datetime) {
-        return $this->validateTimeBeforeChange($datetime['datetime'], 'now');
+        if(isSet($datetime['datetime']) && is_array($datetime)) {
+            $datetime = $datetime['datetime'];
+        }
+
+        return $this->toServerTime($datetime)>=$this->timeExpression( 'now', false );
     }
     //Make sure date time is 1 hour or more from now
     public function isFuture1HourDatetime($datetime) {
-        return $this->validateTimeBeforeChange($datetime['datetime'], 'now +1 hour');
+        if(isSet($datetime['datetime']) && is_array($datetime)) {
+            $datetime = $datetime['datetime'];
+        }
+
+        return $this->toServerTime($datetime)>=$this->timeExpression( 'now +1 hour', false );
     }
     public function validateSubjectId($subjectID){
         $subjectID = $subjectID['subject_id'];
@@ -275,7 +283,7 @@ class UserLesson extends AppModel {
         $lessonType = false;
 
         /*
-         * Make sure the actions are made on future lessons
+         * Make sure the actions are made on future lessons and a least 1 hour before lesson starts (negotiate can change the datetime)
          *
          * 1. Order/Join request are new records, therefore they must have datetime in-order to pass validation
          * 2. Make sure datetime is not set (I.e. by negotiation)
@@ -284,7 +292,7 @@ class UserLesson extends AppModel {
          *
          * 5. There is no need to limit this check to LIVE lessons only. the reason is that VIDEO lessons get datetime only on the first watch
         */
-        $datetimeErrorMessage = __('Please set a future datetime');
+
         if( $exists && // (1) Record exists
             (!isSet($this->data['UserLesson']['datetime']) && empty($this->data['UserLesson']['datetime'])) && // (2) No datetime
             isSet($this->data['UserLesson']['stage']) && !empty($this->data['UserLesson']['stage']) && // (3) State exists
@@ -302,7 +310,6 @@ class UserLesson extends AppModel {
 
                 // (5)
                 $this->data['UserLesson']['datetime'] = $userLessonData['UserLesson']['datetime'];
-                $datetimeErrorMessage = __('You cannot operate on a lesson that already started');
         }
 
 
@@ -317,21 +324,26 @@ class UserLesson extends AppModel {
             $lessonType = $subjectData['Subject']['lesson_type'];
         }
 
+
+
         if($lessonType==LESSON_TYPE_LIVE) {
+            $datetimeErrorMessage = $exists ? __('You cannot operate on a lesson that already started or will start in less then 1 hour') : __('Please set a 1-hour future datetime');
+
             //Make sure that datetime is not blank for live lessons and that its a future datetime + 1 hour from now
             $this->validator()->add('datetime', 'datetime', array(
                 'required'	=> 'create',
                 'allowEmpty'=> false,
                 'rule'    	=> array('datetime', 'ymd'),
                 'message' 	=> 'Invalid datetime format'
-            ))->add('datetime', 'future_datetime', array(
+            ))->add('datetime', 'future_hour_datetime', array(
                 'required'	=> 'create',
                 'allowEmpty'=> false,
-                'rule'    	=> 'isFutureDatetime',
+                'rule'    	=> 'isFuture1HourDatetime',
                 'message' 	=> $datetimeErrorMessage
             ));
 
         } else if($lessonType==LESSON_TYPE_VIDEO) {
+            $datetimeErrorMessage = $exists ? __('You cannot operate on a lesson that already started') :__('Please set a future datetime');
 
             //Allow datetime to be blank, or be set to now || any future datetime
             $this->validator()->add('datetime', 'datetime', array(
@@ -381,7 +393,7 @@ class UserLesson extends AppModel {
 		//Find the teacher subject
 		App::import('Model', 'Subject');
 		$subjectObj = new Subject();
-		
+
 		$subjectObj->recursive = -1;
 		$subjectData = $subjectObj->findBySubjectId($subjectId);
 		if( !$subjectData ) {
@@ -423,14 +435,26 @@ class UserLesson extends AppModel {
            $userId = ($userId==$userLesson['teacher_user_id']) ? $userLesson['student_user_id'] : $userLesson['teacher_user_id'];
         }
 
-        //Set the end of the lesson, video lesson end date is first-watching-time+2 days
+
         if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
+            //Set the end of the lesson, video lesson end date is first-watching-time+2 days
             if(is_object($datetime)) {
                 $datetime = $datetime->value;
             }
             $userLesson['end_datetime'] = $this->timeExpression($datetime.' + '.$subjectData['duration_minutes'].' minutes' ,false);
-                    //$this->Subject->datetimeToStr($datetime, $subjectData['duration_minutes']);
+
+        } else if($subjectData['lesson_type']==LESSON_TYPE_VIDEO) {
+            //Make sure users doesn't order the same video when not needed
+            $canWatchData = $this->getVideoLessonStatus($userLesson['subject_id'], $userLesson['student_user_id'], false);
+            if($canWatchData['approved']) {
+
+                if(empty($canWatchData['datetime']) || $this->isFutureDatetime($canWatchData['end_datetime']) || //User shouldn't pay for a lesson that he did not watched yet/watch time didn't over
+                    $subjectData['1_on_1_price']==0) { //user doesn't need to order free lesson again.
+                    return false;
+                }
+            }
         }
+
         $userLesson = am($userLesson, $extra);
 
 		$event = new CakeEvent('Model.UserLesson.beforeLessonRequest', $this, array('user_lesson'=>$userLesson, 'by_user_id'=>$userId) );
@@ -499,30 +523,18 @@ class UserLesson extends AppModel {
 			}
 			$stage = USER_LESSON_PENDING_STUDENT_APPROVAL;
 		}
-		
-		
-		//Check if join request already exists or if the user is in that lesson already
-		$userLessonData = $this->find('first', array('conditions'=>array(	'UserLesson.student_user_id'=>$studentUserId, 'UserLesson.teacher_lesson_id'=>$teacherLessonId, 
-																			'UserLesson.stage'=>array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER, USER_LESSON_RESCHEDULED_BY_STUDENT, USER_LESSON_ACCEPTED)),
-																		));
-		if($userLessonData) {
-			$userLessonData = $userLessonData['UserLesson'];
-			switch ($userLessonData['stage']) {
-				case USER_LESSON_ACCEPTED:
-					return true;
-					
-				default:
-					if($stage==$userLessonData['stage']) {
-						//Request already exists by that user
-						return true;
-					}
 
+        //Make sure the lesson will start < 1 hour in the future - will check in validation
 
-                    //TODO: check if opposite exists + check if negotiate paramaters are identical, check datetime 1 hour before lesson starts
-					//return $this->acceptRequest($userLessonData['user_lesson_id'], ($teacherUserId ? $teacherUserId : $studentUserId));
-			}
-			//return false;
-		}
+        //make sure user is not in the lesson already
+        $this->recursive = -1;
+        $userLessonData = $this->find('first', array('conditions'=>array(	'UserLesson.student_user_id'=>$studentUserId,
+                                                                            'UserLesson.teacher_lesson_id'=>$teacherLessonData['teacher_lesson_id'],
+                                                                            'UserLesson.stage'=>array(USER_LESSON_ACCEPTED)),
+                                                                        ));
+        if($userLessonData) {
+            return false;
+        }
 
 
 
@@ -708,6 +720,33 @@ class UserLesson extends AppModel {
         }
 
 		$this->updateAll($updateUserLesson, array('UserLesson.user_lesson_id'=>$userLessonId));
+
+
+        //Cancel other pending request
+        $cancelPendingUserLessonsData = null;
+        if(isSet($userLessonData['teacher_lesson_id']) && $userLessonData['lesson_type']=='live') {
+            $this->recursive = -1;
+            $cancelPendingUserLessonsData = $this->find('all', array('conditions'=>array(	'UserLesson.student_user_id'    =>$userLessonData['student_user_id'],
+                                                                                            'UserLesson.teacher_lesson_id'  =>$userLessonData['teacher_lesson_id'],
+                                                                                            'UserLesson.stage'=>array(      USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT,
+                                                                                                                            USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER)),
+            ));
+
+
+        } else if($userLessonData['lesson_type']=='video') {
+            $this->recursive = -1;
+            $cancelPendingUserLessonsData = $this->find('all', array('conditions'=>array(	'UserLesson.student_user_id'=>$userLessonData['student_user_id'],
+                                                                                            'UserLesson.subject_id'     =>$userLessonData['subject_id'],
+                                                                                            'UserLesson.stage'=>array(  USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT,
+                                                                                                                        USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER)),
+            ));
+        }
+        if($cancelPendingUserLessonsData) {
+            foreach($cancelPendingUserLessonsData AS $data) {
+                $this->cancelRequest($data['UserLesson']['user_lesson_id'], $byUserId);
+            }
+        }
+
 
 		$event = new CakeEvent('Model.UserLesson.afterAccept', $this, array('user_lesson'=>$userLessonData, 'data'=>$updateUserLesson, 'by_user_id'=>$byUserId));
 		$this->getEventManager()->dispatch($event);
@@ -1020,7 +1059,7 @@ class UserLesson extends AppModel {
 	public function  getWaitingForTeacherApproval($teacherUserId, $subjectId=null, $limit=null, $page=1) {
 		$this->unbindModel(array('belongsTo'=>array('Teacher', 'TeacherLesson')));
 		
-		$conditions = array('UserLesson.teacher_user_id'=>$teacherUserId, 'UserLesson.teacher_lesson_id IS NULL');
+		$conditions = array('UserLesson.teacher_user_id'=>$teacherUserId/*, 'UserLesson.teacher_lesson_id IS NULL'*/);
 		if($subjectId) {
 			$conditions['UserLesson.subject_id'] = $teacherUserId;
 		}
@@ -1105,7 +1144,6 @@ class UserLesson extends AppModel {
 
 			}
 		}
-		
 
 		return $this->find($find, array('conditions'=>$conditions, 
 										'order'=>'datetime',
@@ -1114,7 +1152,7 @@ class UserLesson extends AppModel {
 					));
 	}
 
-    public function getVideoLessonStatus($subjectId, $userId, $updateNullEndDatetime=true) {
+    public function getVideoLessonStatus($subjectId, $userId/*, $updateNullEndDatetime=true*/) {
         //Get subject
         $this->Subject->recursive = -1;
         $subjectData = $this->Subject->findBySubjectId($subjectId);
@@ -1126,9 +1164,92 @@ class UserLesson extends AppModel {
         //Get user lesson data
         $this->recursive = -1;
         $this->cacheQueries = false;
-        $userLessonsData = $this->find('all', array('conditions'=>array('subject_id'=>$subjectId, 'student_user_id'=>$userId), 'order'=>'user_lesson_id DESC')); //Order is so the user can buy the lesson again to avoid ads
+        $userLessonsData = $this->find('all', array('conditions'=>array('subject_id'=>$subjectId, 'OR'=>array(  array('student_user_id'=>$userId),
+                                                                                                                array('teacher_user_id'=>$userId))),
+                                                    'order'=>'user_lesson_id DESC')); //Order is so the user can buy the lesson again to avoid ads
 
-        //Check if there is existing request
+
+        $return =  array(
+            'pending_teacher_approval'  =>false,
+            'pending_user_approval'     =>false,
+            'approved'                  =>false,
+            'payment_needed'            =>($subjectData['1_on_1_price']>0),
+
+            'is_teacher'                =>($userId==$subjectData['user_id']),
+            'teacher_lesson_id'         =>false,
+            'subject_id'                =>$subjectId,
+            'user_lesson_id'            =>false,
+            'datetime'                  =>false,
+            'end_datetime'              =>false,
+        );
+
+        if(!$userLessonsData) {
+            return $return;
+        }
+
+        /**
+         * 1. Arrange the UserLesson by their stage (accept|pending teacher|pending user)
+         * 2. The newest records will prioritize.
+         */
+        $tmpRes = array();
+        foreach($userLessonsData AS $userLessonData) {
+            $userLessonData = $userLessonData['UserLesson'];
+
+
+            //1.
+            if(in_array($userLessonData['stage'], array(USER_LESSON_ACCEPTED,
+                                                        USER_LESSON_PENDING_RATING,
+                                                        USER_LESSON_PENDING_TEACHER_RATING,
+                                                        USER_LESSON_PENDING_STUDENT_RATING,
+                                                        USER_LESSON_DONE))) {
+
+
+                $key = 'approved';
+
+            } else if(in_array($userLessonData['stage'], array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER))) {
+                $key = 'pending_user_approval';
+
+            } else if(in_array($userLessonData['stage'], array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT))) {
+                $key = 'pending_teacher_approval';
+
+            } else {
+                continue;
+            }
+
+            //2. Prioritize - The current UserLesson is newer, so skip
+            if( isSet($tmpRes[$key]) &&
+                (empty($tmpRes[$key]['datetime']) || (!empty($userLessonData['datetime']) && $tmpRes[$key]['datetime']>=$userLessonData['datetime']) ) ) {
+                continue;
+            }
+
+            $tmpRes[$key]['teacher_lesson_id']= $userLessonData['teacher_lesson_id'];
+            $tmpRes[$key]['user_lesson_id']   = $userLessonData['user_lesson_id'];
+            $tmpRes[$key]['datetime']         = $userLessonData['datetime'];
+            $tmpRes[$key]['end_datetime']     = $userLessonData['end_datetime'];
+            $tmpRes[$key]['payment_needed']   = ($userLessonData['1_on_1_price']>0);
+            $tmpRes[$key]['is_teacher']       = ($userId==$userLessonData['teacher_user_id']);
+        }
+
+
+        if($tmpRes) {
+            if(isSet($tmpRes['approved'])) {
+                $return['approved'] = true;
+                $return = am($return, $tmpRes['approved']);
+
+            } else if(isSet($tmpRes['pending_user_approval'])) {
+                $return['pending_user_approval'] = true;
+                $return = am($return, $tmpRes['pending_user_approval']);
+
+            } else if(isSet($tmpRes['pending_teacher_approval'])) {
+                $return['pending_teacher_approval'] = true;
+                $return = am($return, $tmpRes['pending_teacher_approval']);
+            }
+        }
+
+        return $return;
+
+
+        /*//Check if there is existing request
         $isFreeVideo = $hasEnded = $teacherLessonId = $userLessonId = $approved = $waitingTeacherApproval = $waitingStudentApproval = false;
 
 
@@ -1192,7 +1313,7 @@ class UserLesson extends AppModel {
                     $isFreeVideo = true;
 
                     //Make UserLesson request
-                    $this->lessonRequest($subjectId, $userId, $this->UserLesson->toClientTime('now'));
+                    $this->lessonRequest($subjectId, $userId, $this->toClientTime('now'));
                     $this->cacheQueries = false;
                     $userLessonData = $this->findByUserLessonId($this->id);
 
@@ -1223,26 +1344,32 @@ class UserLesson extends AppModel {
             'teacher_lesson_id'         =>$teacherLessonId,
             'has_ended'                 =>$hasEnded,
             'is_free'                   =>$isFreeVideo
-        );
+        );*/
     }
-    private function setVideoStartEndDatetime($userLessonId, $teacherLessonId) {
+    public function setVideoStartEndDatetime($userLessonId) {
+        $this->recursive = -1;
+        $ulData = $this->findByUserLessonId($userLessonId);
+        if(!$ulData || !$ulData['UserLesson']['teacher_lesson_id']) {
+            return false;
+        }
+
         //Update this UserLesson with end_datetime
         $this->create(false);
 
          $this->saveAssociated(
                 array(
                     'UserLesson'=>array('user_lesson_id'=>$userLessonId, 'datetime'=>$this->timeExpression('now', true), 'end_datetime'=>$this->timeExpression('now + '.LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC.' seconds', true)),
-                    'TeacherLesson'=>array('teacher_lesson_id'=>$teacherLessonId, 'datetime'=>$this->timeExpression('now', true), 'end_datetime'=>$this->timeExpression('now + '.LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC.' seconds', true))
+                    'TeacherLesson'=>array('teacher_lesson_id'=>$ulData['UserLesson']['teacher_lesson_id'], 'datetime'=>$this->timeExpression('now', true), 'end_datetime'=>$this->timeExpression('now + '.LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC.' seconds', true))
                 )
         );
     }
 
     public function getLiveLessonStatus($teacherLessonId, $userId) {
-
         //Find teacher lesson
+        $this->Subject; //Init const
         $this->TeacherLesson->recursive = -1;
         $tlData = $this->TeacherLesson->find('first', array('teacher_lesson_id'=>$teacherLessonId));
-        if(!$tlData || $tlData['TeacherLesson']['lesson_type']!=LESSON_TYPE_LIVE) {
+        if(!$tlData || $tlData['TeacherLesson']['is_deleted'] || $tlData['TeacherLesson']['lesson_type']!=LESSON_TYPE_LIVE) {
             return false;
         }
         $tlData = $tlData['TeacherLesson'];
@@ -1255,12 +1382,14 @@ class UserLesson extends AppModel {
 
             'pending_teacher_approval'  =>false,
             'pending_user_approval'     =>false,
-            'payment_needed'            =>false,
+            'approved'                  =>false,
+            'payment_needed'            =>($tlData['1_on_1_price']>0),
 
             'is_teacher'                =>($userId==$tlData['teacher_user_id']),
             'teacher_lesson_id'         =>$teacherLessonId,
             'subject_id'                =>$tlData['subject_id'],
             'user_lesson_id'            =>false,
+            'datetime'                  =>$tlData['datetime'],
         );
 
 
@@ -1269,59 +1398,65 @@ class UserLesson extends AppModel {
         $timing = $this->TeacherLesson->getLessonTiming($tlData['datetime'], $tlData['duration_minutes']);
         $return[$timing] = true;
 
-        //Check if this user is register for this lesson or no
+        //Check if this user is register for this lesson or not
         $this->recursive = -1;
         $this->cacheQueries = false;
         $userLessonsData = $this->find('all', array('conditions'=>array('teacher_lesson_id'=>$teacherLessonId, 'student_user_id'=>$userId)));
-        if($userLessonsData) {
-            foreach($userLessonsData AS $userLessonData) {
-                $userLessonData = $userLessonData['UserLesson'];
-                if(in_array($userLessonData['stage'], array(USER_LESSON_ACCEPTED,
-                                                            USER_LESSON_PENDING_RATING,
-                                                            USER_LESSON_PENDING_TEACHER_RATING,
-                                                            USER_LESSON_PENDING_STUDENT_RATING,
-                                                            USER_LESSON_DONE))) {
 
-                    $return['approved'] = true;
-                    break;
-                } else if(in_array($userLessonData['stage'], array(USER_LESSON_PENDING_TEACHER_APPROVAL))) {
-                    $return['pending_teacher_approval'] = true;
-                    $return['user_lesson_id'] = $userLessonData['user_lesson_id'];
-                    break;
-                } else if(in_array($userLessonData['stage'], array(USER_LESSON_PENDING_STUDENT_APPROVAL))) {
-                    $return['pending_user_approval'] = true;
-                    $return['user_lesson_id'] = $userLessonData['user_lesson_id'];
-                    break;
-                }
+        if(!$userLessonsData) {
+            return $return;
+        }
+
+        //Check if there more then 1 valid request
+        if(count($userLessonsData)>1) {
+            $this->log(var_export($userLessonsData, true), 'multi_user_lesson');
+        }
+
+        foreach($userLessonsData AS $userLessonData) {
+            $userLessonData = $userLessonData['UserLesson'];
+            if(in_array($userLessonData['stage'], array(USER_LESSON_ACCEPTED,
+                                                        USER_LESSON_PENDING_RATING,
+                                                        USER_LESSON_PENDING_TEACHER_RATING,
+                                                        USER_LESSON_PENDING_STUDENT_RATING,
+                                                        USER_LESSON_DONE))) {
+
+                $return['approved'] = true;
+                $return['user_lesson_id'] = $userLessonData['user_lesson_id'];
+
+            } else if(in_array($userLessonData['stage'], array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT))) {
+                $return['pending_teacher_approval'] = true;
+                $return['user_lesson_id'] = $userLessonData['user_lesson_id'];
+
+            } else if(in_array($userLessonData['stage'], array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER))) {
+                $return['pending_user_approval'] = true;
+                $return['user_lesson_id'] = $userLessonData['user_lesson_id'];
+
             }
         }
 
 
-        if(!$return['approved'] && !$return['pending_user_approval'] && !$return['pending_teacher_approval'] && !$return['is_teacher']) {
-            //There is no UserLesson and this is not the teacher
 
-            if(!$tlData['1_on_1_price']) { //Free lesson
+        /*if(!$return['approved'] && !$return['pending_user_approval'] && !$return['pending_teacher_approval'] && !$return['is_teacher'] && !$return['payment_needed'] && $return['about_to_start']) {
+            //There is no UserLesson and this is not the teacher, free lesson and the lesson did not started yet
 
-                //Make UserLesson request
-                $this->lessonRequest($tlData['subject_id'], $userId, $this->UserLesson->toClientTime('now'));
-                $this->cacheQueries = false;
-                $userLessonData = $this->findByUserLessonId($this->id);
+            //Make UserLesson request
+            $this->lessonRequest($tlData['subject_id'], $userId, $this->toClientTime('now'));
+            $this->cacheQueries = false;
+            $userLessonData = $this->findByUserLessonId($this->id);
 
-                //Check if the new lesson request is not auto-approved
-                if(in_array($userLessonData['UserLesson']['stage'], array( USER_LESSON_ACCEPTED,
-                                                                            USER_LESSON_PENDING_RATING,
-                                                                            USER_LESSON_PENDING_TEACHER_RATING,
-                                                                            USER_LESSON_PENDING_STUDENT_RATING,
-                                                                            USER_LESSON_DONE))) {
-                    $return['approved'] = true;
-                } else {
-                    //Lesson is waiting for teacher approval
-                    $return['pending_teacher_approval'] = true;
-                }
+            //Check if the new lesson request is not auto-approved
+            if(in_array($userLessonData['UserLesson']['stage'], array( USER_LESSON_ACCEPTED,
+                                                                        USER_LESSON_PENDING_RATING,
+                                                                        USER_LESSON_PENDING_TEACHER_RATING,
+                                                                        USER_LESSON_PENDING_STUDENT_RATING,
+                                                                        USER_LESSON_DONE))) {
+                $return['approved'] = true;
             } else {
-                $return['payment_needed'] = true;
+                //Lesson is waiting for teacher approval
+                $return['pending_teacher_approval'] = true;
             }
-        }
+
+        }*/
 
 
         return $return;

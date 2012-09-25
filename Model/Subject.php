@@ -491,6 +491,7 @@ class Subject extends AppModel {
         if($limit) {
             $allConditions['limit'] = $limit;
         }
+
 		return $this->find('all', $allConditions);
 	}
     public function getOffersByStudent($userId, $limit=12, $page=1) {

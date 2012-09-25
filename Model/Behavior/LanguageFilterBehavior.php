@@ -93,7 +93,7 @@ class LanguageFilterBehavior extends ModelBehavior {
             } else if(isSet($query['page']) && !empty($query['page'])) {
 
 
-                //If this si an associate model - count disable association, therefore, lets override it.
+                //If this is an associate model - count disable association, therefore, lets override it.
                 if($associateModel['model']->name!==$model->name) {
                     $model->recursive = 2;
                 }
@@ -139,12 +139,16 @@ class LanguageFilterBehavior extends ModelBehavior {
         unset($query['conditions'][$associateModel['model']->alias.'.'.$associateModel['language_field']]);
         //unset($query['conditions'][$this->getSettings($model, 'language_field', false)]);
 
-        //Add remove results with the current languages
+        //Remove results with the current languages
         $query['conditions'][] = array('NOT'=>array($associateModel['model']->alias.'.'.$associateModel['language_field']=>$languages));
+
         //$query['conditions'][] = array('NOT'=>array($this->getSettings($model, 'language_field', false)=>$languages));
 
+        //Find other languages - PHP bug - isSet(query['order'][0]) return false even if the key exists
+        if(isSet($query['order']) && is_array($query['order']) && array_key_exists(0, $query['order']) && !$query['order'][0]) {
+            unset($query['order'][0]);
+        }
 
-        //Find other languages
         $additionalResults = $model->find($findQueryType, $query);
 
         //Append the additional results
