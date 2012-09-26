@@ -533,6 +533,7 @@ class UserLesson extends AppModel {
                                                                             'UserLesson.stage'=>array(USER_LESSON_ACCEPTED)),
                                                                         ));
         if($userLessonData) {
+            //User already in lesson
             return false;
         }
 
