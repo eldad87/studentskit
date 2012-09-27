@@ -92,11 +92,10 @@ class AdaptivePayment extends AppModel {
      * @return bool
      */
     public function pay( $teacherLessonId , $cancelUrl, $returnUrl) {
-        //TODO - check all approval first - users may canceled their approval from PayPal
         $this->UserLesson->TeacherLesson->recursive = -1;
         $tlData = $this->UserLesson->TeacherLesson->findByTeacherLessonId($teacherLessonId);
         if(!$tlData || $tlData['TeacherLesson']['is_deleted'] || !$tlData['TeacherLesson']['1_on_1_price']) {
-            return false;
+            return PAYMENT_STATUS_ERROR;
         }
 
 
@@ -107,29 +106,50 @@ class AdaptivePayment extends AppModel {
                                                                                         USER_LESSON_PENDING_STUDENT_RATING, USER_LESSON_DONE),
                                                             'is_approved'=>'1', 'status'=>'ACTIVE', 'is_used'=>0)));
         if(!$aps) {
-            return false;
+            //There are no users in lesson
+            return PAYMENT_STATUS_DONE;
         }
+
+        //TODO - check all approval first - users may canceled their approval from PayPal during this process
 
         //Calc how much each student need to pay
         $receivers = $this->generatePaymentRecivers($teacherLessonId);
 
+        $successPayments = 0;
         foreach($aps AS $ap) {
             $ap = $ap['AdaptivePayment'];
             $response = $this->adaptivePayments->pay( $receivers, $ap['user_lesson_id'], $ap['preapproval_key'], $cancelUrl, $returnUrl );
 
 
+            $status = PAYMENT_STATUS_DONE;
             if(strtolower($response->paymentExecStatus)=='completed') {
                 $this->id = $ap['adaptive_payment_id'];
                 $this->set('is_used', 1);
                 $this->set('paid_amount', $receivers[0]['amount']);
                 $this->save();
+                $successPayments++;
+
             } else {
                 $this->log(var_export($response, true), 'adaptive_payment_error');
                 $this->setStatus($ap['user_lesson_id'], $ap['preapproval_key'], 'ERROR');
+                $status = PAYMENT_STATUS_ERROR;
             }
+
+            $event = new CakeEvent('Model.AdaptivePayment.AfterUserLessonPaid', $this, array('user_lesson_id'=>$ap['user_lesson_id'], 'teacher_lesson_id'=>$teacherLessonId, 'status'=>$status) );
+            $this->getEventManager()->dispatch($event);
         }
 
-        return true;
+        $paymentNeeded = count($aps);
+
+        if($successPayments==$paymentNeeded) {
+            return PAYMENT_STATUS_DONE; //All payments was successful
+        } else if(!$successPayments) {
+            return PAYMENT_STATUS_ERROR; //No successful payments
+        } else {
+            return PAYMENT_STATUS_PARTIAL; //Partical payments
+        }
+
+        //return true;
     }
 
 

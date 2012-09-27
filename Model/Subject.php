@@ -497,13 +497,13 @@ class Subject extends AppModel {
     public function getOffersByStudent($userId, $limit=12, $page=1) {
         $this->bindStudentOnLessonRequest();
         return $this->find('all', array('conditions'=>array(
-            'Subject.user_id'=>$userId,
-            'type'=>SUBJECT_TYPE_REQUEST,
-            'is_enable'=>SUBJECT_IS_PUBLIC_TRUE
-        ),
-            'limit'=>$limit,
-            'page'=>$page
-        ));
+                                                        'Subject.user_id'=>$userId,
+                                                        'type'=>SUBJECT_TYPE_REQUEST,
+                                                        'is_enable'=>SUBJECT_IS_PUBLIC_TRUE
+                                                        ),
+                                            'limit'=>$limit,
+                                            'page'=>$page
+                                        ));
     }
 	
 	public function disable($subjectId) {

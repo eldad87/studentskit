@@ -358,6 +358,17 @@ class UserLesson extends AppModel {
         }
     }
 
+    public function beforeSave($options = array()) {
+        parent::beforeSave($options);
+        $this->TeacherLesson; //Init const
+        if( (isSet($this->data['UserLesson']['1_on_1_price']) && $this->data['UserLesson']['1_on_1_price']>0) ||
+            (isSet($this->data['UserLesson']['full_group_total_price']) && $this->data['UserLesson']['full_group_total_price']>0)) {
+            $this->data['UserLesson']['payment_status'] = PAYMENT_STATUS_PENDING;
+        }
+
+        $this->data['UserLesson']['version'] = String::uuid();
+    }
+
     /**
      * Use to offer a teacher offer-subject against student request-subject
      * @param $teacherOfferSubjectId
@@ -691,14 +702,19 @@ class UserLesson extends AppModel {
 		return true;
 	}
 	
-	public function acceptRequest( $userLessonId, $byUserId ) {
+	public function acceptRequest( $userLessonId, $byUserId, $version=null ) {
 		//Find user lesson
 		$userLessonData = $this->findByUserLessonId($userLessonId);
 		if( !$userLessonData ) {
 			return false;
 		}
 		$userLessonData = $userLessonData['UserLesson'];
-		
+
+        //Check version
+        if($version && $version!=$userLessonData['version']) {
+            $this->invalidate('version', __('Invalid version'));
+            return false;
+        }
 		
 		//Check if $byUserId can accept this request
 		if(!(($userLessonData['student_user_id']==$byUserId && ($userLessonData['stage']==USER_LESSON_PENDING_STUDENT_APPROVAL || $userLessonData['stage']==USER_LESSON_RESCHEDULED_BY_TEACHER)) ||
@@ -761,7 +777,7 @@ class UserLesson extends AppModel {
     }
 
 
-    public function reProposeRequest($userLessonId, $byUserId, array $data=array()) {
+    public function reProposeRequest($userLessonId, $byUserId, array $data=array(), $version=null) {
         if(!$data) {
             //Nothing to change
             return true;
@@ -774,6 +790,12 @@ class UserLesson extends AppModel {
             return false;
         }
         $userLessonData = $userLessonData['UserLesson'];
+
+        //Check version
+        if($version && $version!=$userLessonData['version']) {
+            $this->invalidate('version', __('Invalid version'));
+            return false;
+        }
 
         if(!empty($userLessonData['teacher_lesson_id'])) {
             //Only MEW lessons that not been approved yet can be re-propose
@@ -1003,11 +1025,15 @@ class UserLesson extends AppModel {
 	public function getArchive($studentUserId, $limit=null, $page=1) {
 
 	    $conditions = array('UserLesson.student_user_id'=>$studentUserId,
-						'OR'=>array(array('UserLesson.end_datetime <'=>$this->timeExpression('now', false), 'UserLesson.end_datetime IS NOT NULL'),
-									'stage'=>array(	USER_LESSON_DENIED_BY_TEACHER, USER_LESSON_DENIED_BY_STUDENT,
-													USER_LESSON_CANCELED_BY_TEACHER, USER_LESSON_CANCELED_BY_STUDENT,
-													USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING, USER_LESSON_PENDING_STUDENT_RATING,
-													USER_LESSON_DONE)));
+						'OR'=>array(
+                                array('UserLesson.end_datetime <'=>$this->timeExpression('now', false), 'UserLesson.end_datetime IS NOT NULL'),
+                                array('stage'=>array(	USER_LESSON_DENIED_BY_TEACHER, USER_LESSON_DENIED_BY_STUDENT,
+													    USER_LESSON_CANCELED_BY_TEACHER, USER_LESSON_CANCELED_BY_STUDENT,
+													    USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING, USER_LESSON_PENDING_STUDENT_RATING,
+													    USER_LESSON_DONE)),
+                                array('UserLesson.datetime <'=>$this->timeExpression('now +1 hour', false), 'UserLesson.datetime IS NOT NULL',
+                                        'stage'=>USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT, USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER )
+                        ));
         //TODO: use  $this->getLessons
 	    return $this->find('all', array('conditions'=>$conditions,
 										'order'=>'datetime',
@@ -1019,11 +1045,11 @@ class UserLesson extends AppModel {
 	}
 
     public function getBooking($studentUserId, $limit=null, $page=1) {
-        return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), '>', $limit, $page, array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT));
+        return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), '>', $limit, $page, array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT), 'datetime', 'now +1 hour');
     }
 	public function getInvitations($studentUserId, $limit=null, $page=1) {
 		$this->Subject;
-		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER));
+		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId), '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER), 'datetime', 'now +1 hour');
 	}
 	
 	/*public function withTeacherReview($studentUserId, $limit=null, $page=1) {
@@ -1041,7 +1067,7 @@ class UserLesson extends AppModel {
 		if($subjectId) {
 			$conditions['UserLesson.subject_id'] = $teacherUserId;
 		}
-		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER));
+		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER), 'datetime', 'now +1 hour');
 	}
 
     /*//Get lessons that waiting for student to approval and
@@ -1064,7 +1090,7 @@ class UserLesson extends AppModel {
 		if($subjectId) {
 			$conditions['UserLesson.subject_id'] = $teacherUserId;
 		}
-		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT));
+		return $this->getLessons($conditions, '>', $limit, $page, array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT), 'datetime', 'now +1 hour');
 	}
 
 
@@ -1111,8 +1137,8 @@ class UserLesson extends AppModel {
         //Teacher cannot rate video lesson student.
 		return $this->getLessons(array('UserLesson.teacher_user_id'=>$teacehrUserId, 'lesson_type'=>LESSON_TYPE_LIVE), null, $limit, $page, array(USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING));
 	}
-	
-	public function getLessons($conditions, $time='>', $limit=null, $page=1, $stage=array()) {
+
+	public function getLessons($conditions, $time='>', $limit=null, $page=1, $stage=array(), $datetimeField='end_datetime', $timeExpression='now') {
 		
 		$find = 'all';
 		App::import('Model', 'Subject');
@@ -1130,15 +1156,15 @@ class UserLesson extends AppModel {
                 if($time=='>') { //Future lessons
                     $conditions['AND'][] = array(
                         'OR'=>array(
-                            array($this->alias.'.end_datetime >'=>$this->timeExpression('now', false)),
-                            array('UserLesson.end_datetime IS NULL')
+                            array($this->alias.'.'.$datetimeField.' >'=>$this->timeExpression($timeExpression, false)),
+                            array('UserLesson.'.$datetimeField.' IS NULL')
                             )
                     );
 
                 } else { //Past lessons
                     $conditions['AND'][] = array(
-                        array('UserLesson.end_datetime'.$time=>$this->timeExpression('now', false)),
-                        array('UserLesson.end_datetime IS NOT NULL')
+                        array('UserLesson.'.$datetimeField.$time=>$this->timeExpression($timeExpression, false)),
+                        array('UserLesson.'.$datetimeField.' IS NOT NULL')
                     );
 
                 }

@@ -121,7 +121,8 @@ class LessonsController extends AppController {
             //Check if user paid
             if(!$apObj->isPaid($canWatchData['user_lesson_id'])) {
                 $returnUrl = Router::url(null, true);
-                $apObj->pay($canWatchData['teacher_lesson_id'], $returnUrl, $returnUrl);
+
+                $this->TeacherLesson->pay($canWatchData['teacher_lesson_id'], $returnUrl, $returnUrl);
 
                 //Pay for lesson
                 if(!$apObj->isPaid($canWatchData['user_lesson_id'])) {
@@ -147,8 +148,8 @@ class LessonsController extends AppController {
     }
 
     public function invite() {
-        //$this->request->data['teacher_lesson_id'] = 21;
-        $this->request->data['subject_id'] = 1;
+        $this->request->data['teacher_lesson_id'] = 37;
+        //$this->request->data['subject_id'] = 1;
         $this->request->data['emails'] = 'sivaneshokol@gmail.com';
         $this->request->data['message'] = 'My message';
         $this->Subject; //init const

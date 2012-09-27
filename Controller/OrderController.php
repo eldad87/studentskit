@@ -165,6 +165,11 @@ class OrderController extends AppController {
         $groupLessons = array();
         foreach($allLiveLessons AS $lesson) {
             if($lesson['type']=='TeacherLesson' && isSet($lesson['max_students']) && $lesson['max_students']>1 &&  $lesson['max_students']>$lesson['num_of_students']) {
+                //Make sure group lessons are 1 hour away - otherwise users can't join it
+                if(!$this->TeacherLesson->isFuture1HourDatetime($lesson['datetime'])) {
+                    continue;
+                }
+
                 $groupLessons[] = $lesson;
             }
         }
@@ -290,7 +295,6 @@ class OrderController extends AppController {
                 $success = $this->UserLesson->lessonRequest($orderData['id'], $this->Auth->user('user_id'), $orderData['datetime']);
                 $userLessonId = $this->UserLesson->id;
             }
-
             if(!$success) {
                 $this->Session->setFlash(__('Cannot order lesson'));
                 $this->redirect($this->getOrderData('redirect'));

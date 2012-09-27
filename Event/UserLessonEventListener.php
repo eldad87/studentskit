@@ -26,14 +26,22 @@ class UserLessonEventListener implements CakeEventListener {
             'Model.UserLesson.beforeAccept'             => 'beforeAccept',          //Make sure preapproval amount is OK
             'Model.UserLesson.afterRate'                => 'afterRate',
 
-            //'Model.TeacherLesson.afterCancel'           => 'afterCancelTL',         //Cancel all preapproval's for this lesson
-            'Model.AdaptivePayment.afterPaymentUpdate'  => 'afterPaymentUpdate',         //Update payment status
+            //'Model.TeacherLesson.afterCancel'           => 'afterCancelTL',       //Cancel all preapproval's for this lesson
+            'Model.AdaptivePayment.afterPaymentUpdate'  => 'afterPaymentUpdate',    //Update payment status
             'Model.UserLesson.beforeLessonRequest'      => 'beforeLessonRequest',   //Cannot use on paid lessons
             'Model.UserLesson.beforeJoinRequest'        => 'beforeJoinRequest',     //Cannot use on paid lessons
             'Model.UserLesson.beforeReProposeRequest'   => 'beforeReProposeRequest',//Make sure preapproval amount is OK
+            'Model.AdaptivePayment.AfterUserLessonPaid' =>  'afterPaid'
         );
     }
 
+    public function afterPaid(CakeEvent $event) {
+        App::import('Model', 'UserLesson');
+        $ulObj = new UserLesson();
+        $ulObj->id = $event->data['user_lesson_id'];
+        $ulObj->set(array('payment_status'=>$event->data['status']));
+        return $ulObj->save();
+    }
 
     /**
      * Change the stage of the UL according to the payment data

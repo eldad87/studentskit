@@ -1,10 +1,17 @@
 <?php
 App::uses('CakeEvent', 'Event');
+
+define('PAYMENT_STATUS_NO_NEED', 0);
+define('PAYMENT_STATUS_PENDING', 1);
+define('PAYMENT_STATUS_DONE', 2);
+define('PAYMENT_STATUS_PARTIAL', 3);
+define('PAYMENT_STATUS_ERROR', 4);
+
 class TeacherLesson extends AppModel {
 	public $name 		= 'TeacherLesson';
 	public $useTable 	= 'teacher_lessons';
 	public $primaryKey 	= 'teacher_lesson_id';
-    public $actsAs = array('LanguageFilter');
+    public $actsAs = array('LanguageFilter', 'Time', 'Lock');
 		public $validate = array(
 		'name'=> array(
 			'between' => array(
@@ -294,6 +301,14 @@ class TeacherLesson extends AppModel {
 
     }
 
+    public function beforeSave($options = array()) {
+        parent::beforeSave($options);
+
+        if( (isSet($this->data['TeacherLesson']['1_on_1_price']) && $this->data['TeacherLesson']['1_on_1_price']>0) ||
+            (isSet($this->data['TeacherLesson']['full_group_total_price']) && $this->data['TeacherLesson']['full_group_total_price']>0)) {
+            $this->data['TeacherLesson']['payment_status'] = PAYMENT_STATUS_PENDING;
+        }
+    }
 
 
 
@@ -512,7 +527,7 @@ class TeacherLesson extends AppModel {
 		));
 	}
 	
-	public function getUpcomming($teacherUserId, $subectId=null, $limit=null, $page=1) {
+	public function getUpcomming($teacherUserId, $subjectId=null, $limit=null, $page=1) {
 		$this->Subject;
 		$conditions = array( 'teacher_user_id'=>$teacherUserId, 'is_deleted'=>0,
                 'OR'=>array(
@@ -525,8 +540,8 @@ class TeacherLesson extends AppModel {
 
 
 
-		if($subectId) {
-			$conditions['TeacherLesson.subject_id'] = $subectId;
+		if($subjectId) {
+			$conditions['TeacherLesson.subject_id'] = $subjectId;
 		}
 		
 		return $this->find('all', array(
@@ -548,6 +563,31 @@ class TeacherLesson extends AppModel {
 			'limit'=>$limit
 		));
 	} */
+
+    public function pay($teacherLessonId, $cancelURL, $returnURL) {
+        App::import('Model', 'AdaptivePayment');
+        $apObj = new AdaptivePayment();
+        $payStatus = $apObj->pay($teacherLessonId, $cancelURL, $returnURL);
+
+        /*//Set status
+        $paymentStatus = null;
+        if($payResults===true) {
+            $paymentStatus = PAYMENT_STATUS_DONE;
+        } else if($payResults===fase) {
+            $paymentStatus = PAYMENT_STATUS_ERROR;
+        } else if ($payResults===1) {
+            $paymentStatus = PAYMENT_STATUS_PARTIAL;
+        }*/
+
+        $this->create(false);
+        $this->id = $teacherLessonId;
+        $this->set(array('payment_status'=>$payStatus));
+        if(!$this->save()) {
+            return false;
+        }
+        return $payStatus;
+    }
+
     public function getLiveLessonMeeting($teacherLessonId) {
         return 'wfg-213';
     }
