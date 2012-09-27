@@ -590,7 +590,15 @@ class UserLessonEventListener implements CakeEventListener {
                 App::import('Model', 'AutoApproveLessonRequest');
                 $aalsObj = new AutoApproveLessonRequest();
 
-                if($aalsObj->isAutoApprove($event->data['user_lesson']['teacher_user_id'], $event->data['user_lesson']['lesson_type'], $event->data['user_lesson']['datetime'])) {
+                $autoApprove = $aalsObj->isAutoApprove($event->data['user_lesson']['teacher_user_id'], $event->data['user_lesson']['lesson_type'], $event->data['user_lesson']['datetime']);
+                if(!$autoApprove && $event->data['user_lesson']['lesson_type']==LESSON_TYPE_VIDEO) {
+                    //Check if this video approved already and this is the 2nd purchase
+                    $videoStatus = $event->subject()->getVideoLessonStatus($event->data['user_lesson']['subject_id'], $event->data['user_lesson']['student_user_id']);
+                    $autoApprove = $videoStatus['approved'];
+                    $event->subject()->log(var_export($autoApprove, true), '2ndApprove');
+                }
+
+                if($autoApprove) {
                     CakeEventManager::instance()->detach($this, 'Model.UserLesson.afterAccept');
                     if($event->subject()->acceptRequest($event->subject()->id, $event->data['user_lesson']['teacher_user_id'])) {
                         //Send a confirmation - that his request been auto-approved
