@@ -42,7 +42,7 @@ class Subject extends AppModel {
             'inList' => array(
                 'required'	=> 'create',
                 'allowEmpty'=> false,
-                'rule'    	=> array('inList', array('en','he')),
+                'rule'    	=> array('inList', array('eng','heb')),
                 'message' 	=> 'Please select a language',
                 'last'      =>true
             )

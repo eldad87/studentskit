@@ -6,13 +6,24 @@ App::uses('CakeEventManager', 'Event');
 class UserLessonEventListener implements CakeEventListener {
     private $notification;
     private $adaptivePayment;
+    private $disableNotificationsForEvents = array();
+    private static $m_pInstance;
 
-    public function UserLessonEventListener() {
+    private function __construct() {
+    //public function UserLessonEventListener() {
         App::import('Model', 'Notification');
         App::import('Model', 'AdaptivePayment');
 
         $this->notification = New Notification();
         $this->adaptivePayment = new AdaptivePayment();
+    }
+
+    public static function &getInstance() {
+        if (!self::$m_pInstance) {
+            self::$m_pInstance = new self();
+        }
+
+        return self::$m_pInstance;
     }
 
 
@@ -50,7 +61,7 @@ class UserLessonEventListener implements CakeEventListener {
     public function afterPaymentUpdate(CakeEvent $event) {
         //$event->data = array('user_lesson_id'=>$ipnData['user_lesson_id'], 'is_approved'=>($ipnData['approved']=='true' ? 1 : 0), 'status'=>$ipnData['status'], 'max_amount'=>$ipnData['max_total_amount_of_all_payments'], 'paid_amount'=>$paid, 'is_used'=>( $paid ? 1 : 0 ));
         $paymentStatus = $this->adaptivePayment->getStatus($event->data['current']['pending_user_lesson_id'], null, $event->data['old']['preapproval_key']);
-            if(!$paymentStatus) {
+        if(!$paymentStatus) {
             return false;
         }
 
@@ -175,8 +186,10 @@ class UserLessonEventListener implements CakeEventListener {
         $byUserId = $event->data['by_user_id'];
 
         //cancel preApproval payment
-        if(!$this->adaptivePayment->cancelApproval($event->data['user_lesson']['user_lesson_id'])) {
-            $event->subject()->log('Cannot cancel UserLesson '.$event->data['user_lesson']['user_lesson_id'], 'paypal_error');
+        if( !isSet($event->data['user_lesson']['1_on_1_price']) || $event->data['user_lesson']['1_on_1_price']>0) {
+            if(!$this->adaptivePayment->cancelApproval($event->data['user_lesson']['user_lesson_id'])) {
+                $event->subject()->log('Cannot cancel UserLesson '.$event->data['user_lesson']['user_lesson_id'], 'paypal_error');
+            }
         }
 
         //Delete all PendingUserLessons
@@ -206,6 +219,11 @@ class UserLessonEventListener implements CakeEventListener {
                 return true;
             }
         }*/
+
+        if(!$this->getNotificationStatus('Model.UserLesson.afterCancelRequest')) {
+            //No notifications needed
+            return true;
+        }
 
         if($event->data['user_lesson']['teacher_user_id']==$byUserId) {
             $toUserId = $event->data['user_lesson']['student_user_id'];
@@ -363,6 +381,11 @@ class UserLessonEventListener implements CakeEventListener {
         }
     }
     public function afterAccept(CakeEvent $event) {
+        if(!$this->getNotificationStatus('Model.UserLesson.afterAccept')) {
+            //No notifications needed
+            return true;
+        }
+
         $toUserId = $messageType = null;
         $byUserId = $event->data['by_user_id'];
 
@@ -599,7 +622,8 @@ class UserLessonEventListener implements CakeEventListener {
                 }
 
                 if($autoApprove) {
-                    CakeEventManager::instance()->detach($this, 'Model.UserLesson.afterAccept');
+                    $this->setNotificationStatus('Model.UserLesson.afterAccept', false);
+                    //CakeEventManager::instance()->detach($this, 'Model.UserLesson.afterAccept');
                     if($event->subject()->acceptRequest($event->subject()->id, $event->data['user_lesson']['teacher_user_id'])) {
                         //Send a confirmation - that his request been auto-approved
                         $this->notification->addNotification(   $event->data['user_lesson']['student_user_id'], //To user id
@@ -609,7 +633,8 @@ class UserLessonEventListener implements CakeEventListener {
 
                         $toUserId = $messageType = null;
                     }
-                    CakeEventManager::instance()->attach($this, 'Model.UserLesson.afterAccept');
+                    //CakeEventManager::instance()->attach($this, 'Model.UserLesson.afterAccept');
+                    $this->setNotificationStatus('Model.UserLesson.afterAccept', true);
                 }
             }
         } else {
@@ -628,6 +653,16 @@ class UserLessonEventListener implements CakeEventListener {
         }
 
 
+        return true;
+    }
+
+    public function setNotificationStatus($event, $status) {
+        $this->disableNotificationsForEvents[$event] = $status;
+    }
+    private function getNotificationStatus($event) {
+        if(isSet($this->disableNotificationsForEvents[$event])) {
+            return $this->disableNotificationsForEvents[$event];
+        }
         return true;
     }
 }

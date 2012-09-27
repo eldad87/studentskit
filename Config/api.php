@@ -136,8 +136,8 @@ $config['Student.cancelUserLesson.error.1.description'] = __('Cannot cancel less
 /*-------------------- Student.acceptUserLesson	--------------------*/
 $config['Student.acceptUserLesson.success.1.title'] = __('Success');
 $config['Student.acceptUserLesson.success.1.description'] = __('Lesson accepted');
-$config['Student.acceptUserLesson.error.1.title'] = __('Success');
-$config['Student.acceptUserLesson.error.1.description'] = __('Cannot accpet lesson');
+$config['Student.acceptUserLesson.error.1.title'] = __('Error');
+$config['Student.acceptUserLesson.error.1.description'] = __('Cannot accept lesson');
 /********************* Student - End		******************************************/
 
 /********************* Teacher - Start		******************************************/

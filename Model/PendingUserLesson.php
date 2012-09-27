@@ -178,9 +178,13 @@ class PendingUserLesson extends AppModel {
             if(is_array($val)) {
                 $extra[$key] = $this->fixNumeric($val);
             } else if(in_array($key, $intFields)) {
-                $extra[$key] = intval($val);
+                if(!is_null($val)) {
+                    $extra[$key] = intval($val);
+                }
             } else if(in_array($key, $floatFields)) {
-                $extra[$key] = floatval($val);
+                if(!is_null($val)) {
+                    $extra[$key] = floatval($val);
+                }
             }
         }
 

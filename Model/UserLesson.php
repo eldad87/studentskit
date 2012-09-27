@@ -161,7 +161,7 @@ class UserLesson extends AppModel {
         if(!$eventListenterAttached) {
             //Connect the event manager of this model
             App::import( 'Event', 'UserLessonEventListener');
-            $ulel = new UserLessonEventListener();
+            $ulel =& UserLessonEventListener::getInstance();
             CakeEventManager::instance()->attach($ulel);
             $eventListenterAttached = true;
         }
@@ -452,7 +452,8 @@ class UserLesson extends AppModel {
             if(is_object($datetime)) {
                 $datetime = $datetime->value;
             }
-            $userLesson['end_datetime'] = $this->timeExpression($datetime.' + '.$subjectData['duration_minutes'].' minutes' ,false);
+            //$userLesson['end_datetime'] = $this->timeExpression($datetime.' + '.$subjectData['duration_minutes'].' minutes' ,false);
+            $userLesson['end_datetime'] = $this->getDataSource()->expression('DATE_ADD(`datetime`, INTERVAL `duration_minutes` MINUTE)');
 
         } else if($subjectData['lesson_type']==LESSON_TYPE_VIDEO) {
             //Make sure users doesn't order the same video when not needed
@@ -501,11 +502,11 @@ class UserLesson extends AppModel {
 		//TODO: don't allow to send invitations if subject_type=request and the user did not approved his invitation yet
 		
 		//Find the teacher lesson
-		App::import('Model', 'TeacherLesson');
-		$teacherLessonObj = new TeacherLesson();
+		/*App::import('Model', 'TeacherLesson');
+		$teacherLessonObj = new TeacherLesson();*/
 		
-		$teacherLessonObj->recursive = -1;
-		$teacherLessonData = $teacherLessonObj->findByTeacherLessonId($teacherLessonId);
+		$this->TeacherLesson->recursive = -1;
+		$teacherLessonData = $this->TeacherLesson->findByTeacherLessonId($teacherLessonId);
 		if( !$teacherLessonData ) {
 			return false;
 		}
@@ -572,7 +573,9 @@ class UserLesson extends AppModel {
 			'full_group_student_price'	=> $teacherLessonData['full_group_student_price'],
 			'full_group_total_price'	=> $teacherLessonData['full_group_total_price']
 		);
-
+        if($userLessonId) {
+            $userLesson['user_lesson_id'] = $userLessonId; //data that used in event
+        }
 
 
 		$event = new CakeEvent('Model.UserLesson.beforeJoinRequest', $this, array('teacher_lesson'=>$teacherLessonData, 'user_lesson'=>$userLesson, 'by_user_id'=>( $teacherUserId ? $teacherUserId : $studentUserId), 'user_lesson_id'=>$userLessonId));
@@ -595,9 +598,9 @@ class UserLesson extends AppModel {
 		
 		//Update the num_of_pending_invitations/num_of_pending_join_requests counter
 		$counterDBField = ($teacherUserId ? 'num_of_pending_invitations' : 'num_of_pending_join_requests');
-		$teacherLessonObj->id = $teacherLessonData['teacher_lesson_id'];
-		$teacherLessonObj->set(array($counterDBField=>$this->getDataSource()->expression($counterDBField.'+1')));
-		$teacherLessonObj->save();
+        $this->TeacherLesson->id = $teacherLessonData['teacher_lesson_id'];
+        $this->TeacherLesson->set(array($counterDBField=>$this->getDataSource()->expression($counterDBField.'+1')));
+        $this->TeacherLesson->save();
 		
 		
 		
@@ -715,7 +718,7 @@ class UserLesson extends AppModel {
             $this->invalidate('version', __('Invalid version'));
             return false;
         }
-		
+
 		//Check if $byUserId can accept this request
 		if(!(($userLessonData['student_user_id']==$byUserId && ($userLessonData['stage']==USER_LESSON_PENDING_STUDENT_APPROVAL || $userLessonData['stage']==USER_LESSON_RESCHEDULED_BY_TEACHER)) ||
 			($userLessonData['teacher_user_id']==$byUserId && ($userLessonData['stage']==USER_LESSON_PENDING_TEACHER_APPROVAL || $userLessonData['stage']==USER_LESSON_RESCHEDULED_BY_STUDENT)))) {
@@ -759,9 +762,12 @@ class UserLesson extends AppModel {
             ));
         }
         if($cancelPendingUserLessonsData) {
+            $ulel =& UserLessonEventListener::getInstance();
+            $ulel->setNotificationStatus('Model.UserLesson.afterCancelRequest', false);
             foreach($cancelPendingUserLessonsData AS $data) {
                 $this->cancelRequest($data['UserLesson']['user_lesson_id'], $byUserId);
             }
+            $ulel->setNotificationStatus('Model.UserLesson.afterCancelRequest', true);
         }
 
 

@@ -23,7 +23,7 @@ class TeacherController extends AppController {
 		$this->Set('aboutToStartLessons', $aboutToStartLessons);
         $this->Set('latestUpdatedTopics', $latestUpdatedTopics);
 	}
-	
+
 	public function subjects($limit=5, $page=1) {
 		$subjects = $this->Subject->getOffersByTeacher($this->Auth->user('user_id'), true, null, $page, $limit);
 		$this->Set('teacherImage', $this->Auth->user('image'));
@@ -93,7 +93,7 @@ class TeacherController extends AppController {
 
         App::uses('Languages', 'Utils.Lib');
         $lang = new Languages();
-        $this->set('languages', $$lang->lists('locale'));
+        $this->set('languages', $lang->lists('locale'));
 
 	}
 	
@@ -168,7 +168,7 @@ class TeacherController extends AppController {
 	
 	public function createTeacherLesson($subjectId) {
 		if (!empty($this->request->data)) {
-			if($this->TeacherLesson->add(array('type'=>'subject','id'=>$subjectId), $this->request->data['TeacherLesson']['datetime'], $this->request->data['TeacherLesson']['is_public'], $this->Auth->user('user_id') )) {
+			if($this->TeacherLesson->add(array('type'=>'subject','id'=>$subjectId), $this->request->data['TeacherLesson']['datetime'], $this->request->data['TeacherLesson']['is_public'], array('teacher_user_id'=>$this->Auth->user('user_id')) )) {
 				return $this->success(1, array('subject_id'=>$subjectId));
 			}
 			return $this->error(1, array('results'=>array('subject_id'=>$subjectId, 'validation_errors'=>$this->TeacherLesson->validationErrors)));

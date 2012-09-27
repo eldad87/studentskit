@@ -357,17 +357,21 @@ class TeacherLesson extends AppModel {
                 if(is_object($datetime)) {
                     $datetime = $datetime->value;
                 }
-                $teacherLessonData['end_datetime'] = $this->timeExpression($datetime.' + '.$subjectData['duration_minutes'].' minutes' ,false);
-                    //$this->Subject->datetimeToStr($datetime, $subjectData['duration_minutes']);
+                $teacherLessonData['end_datetime'] = $this->getDataSource()->expression('DATE_ADD(`datetime`, INTERVAL `duration_minutes` MINUTE)');
             }
 
             //The teacher must be the subject owner
-            unset($extra['teacher_user_id']);
+            if(isSet($extra['teacher_user_id'])) {
+                if($subjectData['user_id']!=$extra['teacher_user_id']) {
+                    return false;
+                }
+            }
             $teacherLessonData = am($teacherLessonData, $extra);
 
+            /* Teacher can create lessons from his panel - this field will be null
             if(!isSet($teacherLessonData['student_user_id'])) {
                 return false;
-            }
+            }*/
 
         } else if($source['type']=='user_lesson') {
             App::import('Model', 'UserLesson');
@@ -508,18 +512,18 @@ class TeacherLesson extends AppModel {
 		return $this->find('all', array('conditions'=>$conditions));
 	}
 	
-	public function getArchive($teacherUserId, $subectId=null, $limit=null, $page=1) {
+	public function getArchive($teacherUserId, $subjectId=null, $limit=null, $page=1) {
 		$conditions = array( 'teacher_user_id'=>$teacherUserId );
-		if($subectId) {
-			$conditions['TeacherLesson.subject_id'] = $subectId;
+		if($subjectId) {
+			$conditions['TeacherLesson.subject_id'] = $subjectId;
 		}
 		
 		$conditions['OR'] = array(
 			array('end_datetime <'=>$this->timeExpression('now', false), 'end_datetime IS NOT NULL' ),
 			'is_deleted'=>1
 		);
-		
-//		pr($conditions);
+
+        $this->recursive = -1;
 		return $this->find('all', array(
 			'conditions'=>$conditions,
 			'page'=>$page,
