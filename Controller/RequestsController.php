@@ -48,7 +48,7 @@ class RequestsController extends AppController {
 
         App::uses('Languages', 'Utils.Lib');
         $lang = new Languages();
-        $this->set('languages', $$lang->lists('locale'));
+        $this->set('languages', $lang->lists('locale'));
 	}
 
 

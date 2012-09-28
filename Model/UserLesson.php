@@ -815,7 +815,11 @@ class UserLesson extends AppModel {
         }
 
         //Remove unauthorized fields
-        $allowedFields = array('datetime', 'duration_minutes', '1_on_1_price', 'max_students', 'full_group_total_price');
+        $allowedFields = array('datetime', '1_on_1_price', 'max_students', 'full_group_total_price');
+        if($userLessonData['lesson_type']==LESSON_TYPE_LIVE) {
+            //Only live lesson can change the duration of the lesson, video lesson get duration form the main video
+            $allowedFields[] = 'duration_minutes';
+        }
         foreach($data AS $field=>$value) {
             if(!in_array($field, $allowedFields)) {
                 unset($data['field']);
