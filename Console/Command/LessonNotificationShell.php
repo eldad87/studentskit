@@ -33,6 +33,7 @@ class LessonNotificationShell extends AppShell {
 
             $i=1;
             foreach($pendingTeacherLessons AS $pendingTeacherLesson) {
+                $teacherUserData = $pendingTeacherLesson['User'];
                 $pendingTeacherLesson = $pendingTeacherLesson['TeacherLesson'];
                 $this->out($i.'. Notifications needed ('.$pendingTeacherLesson['num_of_students'].') for: '.'('.$pendingTeacherLesson['teacher_lesson_id'].') '.$pendingTeacherLesson['name']);
 
@@ -41,6 +42,9 @@ class LessonNotificationShell extends AppShell {
                     $this->out('Cannot lock');
                     continue;
                 }
+
+                //Email teacher
+                $this->emailTeacher($pendingTeacherLesson, $teacherUserData);
 
                 //Find UserLessons
                 $userLessonCandidates = $this->getUserLessonCandidates($pendingTeacherLesson['teacher_lesson_id'], $settings['before_notification_status']);
@@ -60,6 +64,7 @@ class LessonNotificationShell extends AppShell {
                     $userLessonCandidates = $this->getUserLessonCandidates($pendingTeacherLesson['teacher_lesson_id'], $settings['before_notification_status']);
                 }
 
+
                 //Mark that all email sent for that lesson/notification
                 $this->setTeacherLessonStatus($pendingTeacherLesson['teacher_lesson_id'], $settings['after_notification_status']);
 
@@ -75,7 +80,13 @@ class LessonNotificationShell extends AppShell {
         $this->out('Affected rows: '.$this->UserLesson->getAffectedRows());
     }
 
+    private function emailTeacher($lessonData, $teacherData) {
+        $this->out('Email Teacher');
+        pr($lessonData);
+        pr($teacherData);
+    }
     private function emailUser($lessonData, $userLessonId, $userId, $email, $firstName, $lastName) {
+        $this->out('Email User');
         $this->out('User Lesson Id: '.$userLessonId);
         $this->out('User ID: '.$userId);
         $this->out('Email: '.$email);
@@ -116,20 +127,24 @@ class LessonNotificationShell extends AppShell {
 
     private function getTeacherLessonCandidates($notificationStatus, $endTime) {
         $this->Subject; // init const
-        $this->TeacherLesson->recursive = -1;
+        //$this->TeacherLesson->recursive = -1;
         $this->TeacherLesson->cacheQueries = false;
+        $this->TeacherLesson->unbindAll(array('belongsTo'=>array('User')));
+        $this->TeacherLesson->resetRelationshipFields();
+        $this->TeacherLesson->recursive = 1;
         $conditions = array(
-            'lesson_type'           =>LESSON_TYPE_LIVE,                                         // Only live lesson
-            'datetime >='           =>$this->TeacherLesson->timeExpression('now', false),       // Start in 1 hour from now
-            'datetime <='           =>$this->TeacherLesson->timeExpression($endTime, false),    // Start in 1 hour from now
+            'TeacherLesson.lesson_type'           =>LESSON_TYPE_LIVE,                                         // Only live lesson
+            'TeacherLesson.datetime >='           =>$this->TeacherLesson->timeExpression('now', false),       // Start in 1 hour from now
+            'TeacherLesson.datetime <='           =>$this->TeacherLesson->timeExpression($endTime, false),    // Start in 1 hour from now
             'NOT'=>array(
-                'payment_status'        =>array(PAYMENT_STATUS_PENDING, PAYMENT_STATUS_ERROR),  // Sending emails only after payment processed
+                'TeacherLesson.payment_status'    =>array(PAYMENT_STATUS_PENDING, PAYMENT_STATUS_ERROR),      // Sending emails only after payment processed
                 ),
-            'notification_status'   =>$notificationStatus,                                      // Need to send emails
+            'TeacherLesson.notification_status'   =>$notificationStatus,                                      // Need to send emails
         );
         $conditions = $this->TeacherLesson->getUnlockedRecordsFindConditions($conditions);
         return $this->TeacherLesson->find('all', array( 'conditions'=>$conditions,
-                                                        'fields'=>array('teacher_lesson_id', 'num_of_students', 'name'),
+                                                        'fields'=>array('TeacherLesson.teacher_lesson_id', 'TeacherLesson.num_of_students', 'TeacherLesson.name',
+                                                                        'User.email', 'User.first_name', 'User.last_name', 'User.email' ),
                                                         'limit'=>10));
     }
     private function getUserLessonCandidates($teacherLessonId, $notificationStatus) {
@@ -137,17 +152,18 @@ class LessonNotificationShell extends AppShell {
         $this->UserLesson->cacheQueries = false;
         $this->UserLesson->unbindAll(array('belongsTo'=>array('Student')));
         $this->UserLesson->resetRelationshipFields();
+        $this->UserLesson->recursive = 1;
         $conditions = array(
             'teacher_lesson_id'     =>$teacherLessonId,
             'stage'                 =>USER_LESSON_ACCEPTED,
             'NOT'=>array(
-                'payment_status'        =>array(PAYMENT_STATUS_PENDING, PAYMENT_STATUS_ERROR),  // Sending emails only after payment processed
+                'payment_status'     =>array(PAYMENT_STATUS_PENDING, PAYMENT_STATUS_ERROR),  // Sending emails only after payment processed
             ),
-            'notification_status'   =>$notificationStatus,                                          // Need to send emails
+            'notification_status'   =>$notificationStatus,                                   // Need to send emails
         );
         //$conditions = $this->TeacherLesson->getUnlockedRecordsFindConditions($conditions);
         return $this->UserLesson->find('all', array( 'conditions'=>$conditions,
-                                                        'fields'=>array('user_lesson_id', 'student_user_id', 'Student.email', 'Student.first_name', 'Student.last_name', 'Student.email'),
+                                                        'fields'=>array('UserLesson.user_lesson_id', 'UserLesson.student_user_id', 'Student.email', 'Student.first_name', 'Student.last_name'),
                                                         'limit'=>10));
     }
 }
