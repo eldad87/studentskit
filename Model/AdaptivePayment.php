@@ -437,7 +437,7 @@ class AdaptivePayment extends AppModel {
         );
         $receivers[] = array(
             'email'         =>$this->siteOwnerId,
-            'amount'        =>1, //TODO: the fee should be 1USD (convert rates)
+            'amount'        =>($price<1 ? $price : 1),
             'paymentType'   =>'DIGITALGOODS',
             'primary'       =>false,
         );

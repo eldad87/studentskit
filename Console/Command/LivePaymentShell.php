@@ -23,8 +23,9 @@ class LivePaymentShell extends AppShell {
         //Check if payment needed
         $this->out('Finding next pending payment...');
         $paymentNeeded = $this->TeacherLesson->find('first', array('conditions'=>$conditions));
+        $i=1;
         while($paymentNeeded) {
-            $this->out('Payment needed for: '.$paymentNeeded['TeacherLesson']['name'].' ('.$paymentNeeded['TeacherLesson']['teacher_lesson_id'].')');
+            $this->out( $i++.'. Payment needed for: '.'('.$paymentNeeded['TeacherLesson']['teacher_lesson_id'].') '.$paymentNeeded['TeacherLesson']['name']);
             //Lock record
             if(!$this->TeacherLesson->lock($paymentNeeded['TeacherLesson']['teacher_lesson_id'], 0)) {
                 $this->out('Cannot lock! continue');
