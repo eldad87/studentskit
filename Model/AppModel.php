@@ -52,6 +52,25 @@ class AppModel extends Model {
         }
     }
 
+    public function unbindAll($exclude=array()) {
+        foreach($this->associations() AS $relationName) {
+            if(isSet($this->$relationName) && is_array($this->$relationName) && $this->$relationName) {
+
+                //Unbind all models
+                //$this->unbindModel( array($relationName=>array(array_keys($this->$relationName))) );
+
+
+                //remove fields limitation
+                foreach($this->$relationName AS $modelName=>$relationData) {
+                    if(isSet($exclude[$relationName]) && in_array($modelName,$exclude[$relationName])) {
+                        continue;
+                    }
+                    $this->unbindModel(array($relationName=>array($modelName)));
+                }
+            }
+        }
+    }
+
     /*public function invalidate($field, $value=true) {
         if (!is_array($this->validationErrors)) {
             $this->validationErrors = array();

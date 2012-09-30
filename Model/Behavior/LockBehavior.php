@@ -64,9 +64,8 @@ class LockBehavior extends ModelBehavior {
             //Check end locking time
             if($endLocking>=date('Y-m-d H:i:s')) {
                 $model->getDataSource()->rollback();
-
                 --$lockTimeOut;
-                if(!$lockTimeOut) {
+                if($lockTimeOut<=0) {
                     return false;
                 }
                 sleep(1);

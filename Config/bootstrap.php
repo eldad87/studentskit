@@ -187,7 +187,8 @@ CakeLog::config('error', array(
 CakePlugin::loadAll(array(
         'Utils',
         'SignMeUp',
-        'Forum'
+        'Forum',
+        'DebugKit'
     )
 );
 
