@@ -9,11 +9,12 @@ class HomeController extends AppController {
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 
 
+
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacher', 'subject', 'order',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession'/*,
-                            'test'*/);
+                            'test'*/, 'testLocking', 'updateRatingStage');
 		$this->Auth->deny('submitOrder');
 	}
 
@@ -27,7 +28,55 @@ class HomeController extends AppController {
         $this->Session->destroy();
     }
 
+    public function testLocking() {
+        $this->Subject;
+        $this->TeacherLesson;
+        echo
+
+
+
+        $returnUrl = Router::url(array('controller'=>'Home'), true);
+
+        $conditions = array(
+            $this->TeacherLesson->alias.'.lesson_type'      =>LESSON_TYPE_LIVE,
+            $this->TeacherLesson->alias.'.payment_status'   =>PAYMENT_STATUS_PENDING,
+            $this->TeacherLesson->alias.'.datetime <'       => $this->TeacherLesson->timeExpression('now +1 hour', false));
+
+        $this->TeacherLesson->recursive = -1;
+        $conditions = $this->TeacherLesson->getUnlockedRecordsFindConditions($conditions);
+        $paymentNeeded = $this->TeacherLesson->find('first', array('conditions'=>$conditions));
+
+        while($paymentNeeded) {
+            //Lock record
+            if(!$this->TeacherLesson->lock($paymentNeeded['TeacherLesson']['teacher_lesson_id'])) {
+                continue;
+            }
+
+            //Pay
+            $this->TeacherLesson->pay($paymentNeeded['TeacherLesson']['teacher_lesson_id'], $returnUrl, $returnUrl);
+
+            //Release lock
+            $this->TeacherLesson->unlock($paymentNeeded['TeacherLesson']['teacher_lesson_id']);
+
+            //Find the next payment
+            $paymentNeeded = $this->TeacherLesson->find('first', array('conditions'=>$conditions));
+        }
+    }
+
+    public function updateRatingStage() {
+        $this->UserLesson->TeacherLesson; // init consts
+        $this->UserLesson->recursive = -1;
+        $this->UserLesson->updateAll(array('stage'=>USER_LESSON_PENDING_RATING), array(
+            'UserLesson.end_datetime < NOW()',
+            'UserLesson.stage'=>USER_LESSON_ACCEPTED,
+            'OR'=>array(array('UserLesson.payment_status'=>PAYMENT_STATUS_DONE),
+                        array('UserLesson.payment_status'=>PAYMENT_STATUS_NO_NEED))
+        ));
+    }
+
+
 	public function index() {
+
 		//Get about to start messages
         $this->Subject->setLanguages($this->Session->read('languages_of_records'));
 		$newSubjects = $this->Subject->getNewest(false);
@@ -39,7 +88,6 @@ class HomeController extends AppController {
 
 		$this->set('newSubjects', $newSubjects);
 		$this->set('latestTopics', $latestTopics);
-
         /*
        App::uses('Languages', 'Utils.Lib');
        $lang = new Languages();

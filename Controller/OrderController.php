@@ -402,7 +402,6 @@ class OrderController extends AppController {
 
         //Validate the request
         if($this->isValidIPN()) {
-            //echo 1; die;
             $this->AdaptivePayment->paymentUpdate($data);
         } else {
             $this->log(var_export($data, true), 'paypal_hack');
@@ -414,16 +413,16 @@ class OrderController extends AppController {
     public function testIPN() {
         $data = array (
             'max_number_of_payments' => 'null',
-            'starting_date' => '2012-09-25T00:00:17.000Z',
+            'starting_date' => '2012-09-27T00:00:15.000Z',
             'pin_type' => 'NOT_REQUIRED',
             'currency_code' => 'USD',
             'sender_email' => 'buyer2_1347221285_per@gmail.com',
-            'verify_sign' => 'AFcWxV21C7fd0v3bYYYRCpSSRl31ANp8lu09eLWZdtnleA17qClG.YWq',
+            'verify_sign' => 'AJ80yD.Z43pQ3jYcyXt6oA-ZB0gEAQeE.vVMpmpO7Juu0vN2lE6yxhWl',
             'test_ipn' => '1',
             'date_of_month' => '0',
             'current_number_of_payments' => '0',
-            'preapproval_key' => 'PA-03W145521G912144D',
-            'ending_date' => '2013-09-25T23:59:17.000Z',
+            'preapproval_key' => 'PA-5V621152JG1461356',
+            'ending_date' => '2013-09-27T23:59:15.000Z',
             'approved' => 'true',
             'transaction_type' => 'Adaptive Payment PREAPPROVAL',
             'day_of_week' => 'NO_DAY_SPECIFIED',
@@ -433,14 +432,13 @@ class OrderController extends AppController {
             'charset' => 'windows-1252',
             'payment_period' => '0',
             'notify_version' => 'UNVERSIONED',
-            'max_total_amount_of_all_payments' => '10.00',
-            'action' => 'order',
-            'pending_user_lesson_id' => '5',
+            'max_total_amount_of_all_payments' => '2.00',
+            'action' => 'join',
+            'pending_user_lesson_id' => '31',
         );
-
         /*$data['action'] = 'order';
         $data['pending_user_lesson_id'] = 51;*/
-
+//echo 1; die;
         $this->AdaptivePayment->paymentUpdate($data);
     }
 
