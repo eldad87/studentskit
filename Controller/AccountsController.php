@@ -54,8 +54,7 @@ class AccountsController extends AppController {
 
             $this->Auth->redirect($redirect);
         }
-
-		if ($this->request->is('post')) {
+		if ($this->request->is('post') || $this->Auth->user()) {
 			if ($this->Auth->login()) {
                 $active = (int) $this->Auth->user('active');
                 if(!$active) {
@@ -94,12 +93,15 @@ class AccountsController extends AppController {
 	}
 
 	public function logout() {
+
         $userId = $this->Auth->user('user_id');
 
         $event = new CakeEvent('Controller.Accounts.beforeLogout', $this, array('user_id'=>$userId) );
         $this->getEventManager()->dispatch($event);
 
 		$this->Auth->logout();
+        $this->Connect->FB->destroySession();
+        $this->Session->delete('FB'); //delete the FB session data
         /*$this->Session->delete('locale');
         $this->Session->delete('timezone');*/
 

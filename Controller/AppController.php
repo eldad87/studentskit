@@ -32,7 +32,14 @@ App::uses('Controller', 'Controller');
  * @link http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-	public $components = array('RequestHandler', 'Session', 'DebugKit.Toolbar');
+	public $components = array('RequestHandler', 'Session', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),
+                                'Facebook.Connect'=>array(  'noAuth'=>false, 'model'=>'User',
+                                                            /*'modelFields'=>array('password'=>'password',
+                                                                                    'email'=>'email',
+                                                                                    'first_name'=>'first_name',
+                                                                                    'last_name'=>'last_name')*/),
+                                'DebugKit.Toolbar');
+    public $helpers = array('Facebook.Facebook');
 	
 	public function beforeFilter() {
         $this->_setLanguage();
@@ -43,6 +50,19 @@ class AppController extends Controller {
 			$this->disableCache();
 		}
 	}
+
+    public function beforeFacebookSave() {
+        $this->Connect->authUser['User']['email']       = $this->Connect->user('email');
+        $this->Connect->authUser['User']['first_name']  = $this->Connect->user('first_name');
+        $this->Connect->authUser['User']['last_name']   = $this->Connect->user('last_name');
+        $this->Connect->authUser['User']['active']      = 1;
+        $this->Connect->authUser['User']['password2']   = $this->Connect->authUser['User']['password'];
+        return true;
+    }
+
+    /*public function afterFacebookLogin() {
+        //$this->redirect($this->Auth->loginAction);
+    }*/
 
     private function _setLanguage() {
         App::uses('L10n', 'I18n');

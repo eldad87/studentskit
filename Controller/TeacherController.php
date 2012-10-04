@@ -86,7 +86,7 @@ class TeacherController extends AppController {
 		if(	isSet($this->data['Subject']['1_on_1_price']) && 
 			isSet($this->data['Subject']['full_group_total_price']) && !empty($this->data['Subject']['full_group_total_price']) &&
 			isSet($this->data['Subject']['max_students']) && $this->data['Subject']['max_students']>1) {
-			$groupPrice = $this->Subject->calcGroupPrice(	$this->data['Subject']['1_on_1_price'], $this->data['Subject']['full_group_total_price'], 
+			$groupPrice = $this->Subject->calcStudentFullGroupPrice(	$this->data['Subject']['1_on_1_price'], $this->data['Subject']['full_group_total_price'],
 															$this->data['Subject']['max_students'], $this->data['Subject']['max_students']);
 			$this->set('groupPrice', $groupPrice);
 		}

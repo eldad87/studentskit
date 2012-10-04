@@ -190,7 +190,7 @@ class Subject extends AppModel {
             $data['full_group_total_price'] && !empty($data['full_group_total_price'])) {
 
             App::import('Model', 'Subject');
-            $data['full_group_student_price'] = Subject::calcGroupPrice( $data['1_on_1_price'], $data['full_group_total_price'], $data['max_students'], $data['max_students'] );
+            $data['full_group_student_price'] = Subject::calcStudentFullGroupPrice( $data['1_on_1_price'], $data['full_group_total_price'], $data['max_students'], $data['max_students'] );
         } else {
             unset(	$data['max_students'],
             $data['full_group_total_price'],
@@ -282,9 +282,15 @@ class Subject extends AppModel {
 
         }
     }
-	
-	public static function calcGroupPrice( $onOnOnePrice, $totalGroupPrice, $maxStudents, $currentStudents ) {
 
+    public static function calcStudentPriceAfterDiscount( $onOnOnePrice, $maxStudents, $currentStudents, $maxDiscount ) {
+        if($currentStudents<=1 || $maxStudents<=0) {
+            return $onOnOnePrice;
+        }
+        return ($onOnOnePrice - $maxDiscount*$currentStudents/$maxStudents);
+    }
+	
+	public static function calcStudentFullGroupPrice( $onOnOnePrice, $totalGroupPrice, $maxStudents, $currentStudents ) {
 		return ($onOnOnePrice+(($totalGroupPrice-$onOnOnePrice)/($maxStudents-1))*($currentStudents-1))/$currentStudents;
 	}
 

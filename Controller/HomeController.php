@@ -14,7 +14,7 @@ class HomeController extends AppController {
 		parent::beforeFilter();
 		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacher', 'subject', 'order',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession'/*,
-                            'test'*/, 'testLocking', 'updateRatingStage');
+                            'test', 'testLocking', 'updateRatingStage', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount'*/);
 		$this->Auth->deny('submitOrder');
 	}
 
@@ -28,7 +28,10 @@ class HomeController extends AppController {
         $this->Session->destroy();
     }
 
-    public function testLocking() {
+    /*public function calcStudentPriceAfterDiscount() {
+        pr($this->Subject->calcStudentPriceAfterDiscount(100, 20, 20, 30));
+    }*/
+    /*public function testLocking() {
         $this->Subject;
         $this->TeacherLesson;
         echo
@@ -61,9 +64,9 @@ class HomeController extends AppController {
             //Find the next payment
             $paymentNeeded = $this->TeacherLesson->find('first', array('conditions'=>$conditions));
         }
-    }
+    }*/
 
-    public function updateRatingStage() {
+    /*public function updateRatingStage() {
         $this->UserLesson->TeacherLesson; // init consts
         $this->UserLesson->recursive = -1;
         $this->UserLesson->updateAll(array('stage'=>USER_LESSON_PENDING_RATING), array(
@@ -72,11 +75,10 @@ class HomeController extends AppController {
             'OR'=>array(array('UserLesson.payment_status'=>PAYMENT_STATUS_DONE),
                         array('UserLesson.payment_status'=>PAYMENT_STATUS_NO_NEED))
         ));
-    }
+    }*/
 
 
 	public function index() {
-
 		//Get about to start messages
         $this->Subject->setLanguages($this->Session->read('languages_of_records'));
 		$newSubjects = $this->Subject->getNewest(false);
@@ -99,10 +101,10 @@ class HomeController extends AppController {
         */
     }
 
-    /*public function testCalcGroupPrice() {
+    /*public function testCalcStudentFullGroupPrice() {
         $currentStudents = 7;
-        pr($this->Subject->calcGroupPrice(2, 20, 10, $currentStudents));
-        pr($this->Subject->calcGroupPrice(2, 20, 10, $currentStudents)*$currentStudents);
+        pr($this->Subject->calcStudentFullGroupPrice(2, 20, 10, $currentStudents));
+        pr($this->Subject->calcStudentFullGroupPrice(2, 20, 10, $currentStudents)*$currentStudents);
         die;
     }
 

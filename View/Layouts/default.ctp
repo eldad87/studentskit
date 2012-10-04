@@ -2,7 +2,8 @@
 $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework');
 ?>
 <?php echo $this->Html->docType('xhtml-trans'); ?>
-<html xmlns="http://www.w3.org/1999/xhtml" dir="<?php echo Configure::read('Config.languageDirection'); ?>">
+<!--<html xmlns="http://www.w3.org/1999/xhtml" dir="<?php /*echo Configure::read('Config.languageDirection'); */?>">-->
+<?php echo $this->Facebook->html(); ?>
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<title>
@@ -20,7 +21,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 	?>
 </head>
 <body>
-	<div id="container">
+<div id="container">
 		<div id="top_strip">
 			<div class="container">
 				<div class="localize">
@@ -64,5 +65,6 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		</div>
 	</div>
 	<?php //echo $this->element('sql_dump'); ?>
+    <?php echo $this->Facebook->init(); ?>
 </body>
 </html>

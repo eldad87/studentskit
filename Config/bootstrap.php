@@ -188,6 +188,7 @@ CakePlugin::loadAll(array(
         'Utils',
         'SignMeUp',
         'Forum',
+        'facebook',
         'DebugKit'
     )
 );

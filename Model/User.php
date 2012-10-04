@@ -67,12 +67,12 @@ class User extends AppModel {
 		),
 		
 		'last_name'=>array(
-			'alphaNumeric' => array(
+			/*'alphaNumeric' => array(
 				'rule'		=> 'alphaNumeric',
 				'message'	=> 'Alphabets and numbers only',
 				'required'	=> false,
 				'allowEmpty'=>true
-            ),
+            ),*/
 			'between' => array(
 				'rule'    => array('between', 2, 45),
 				'message' => 'Between %d to %d characters',
