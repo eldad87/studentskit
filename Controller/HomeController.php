@@ -14,7 +14,7 @@ class HomeController extends AppController {
 		parent::beforeFilter();
 		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacher', 'subject', 'order',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession'/*,
-                            'test', 'testLocking', 'updateRatingStage', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount'*/);
+                            'test', 'testLocking', 'updateRatingStage', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount', 'testGeneratePaymentRecivers'*/);
 		$this->Auth->deny('submitOrder');
 	}
 
@@ -27,6 +27,15 @@ class HomeController extends AppController {
     public function cleanSession() {
         $this->Session->destroy();
     }
+
+    /*public function testGeneratePaymentRecivers() {
+        App::import('model', 'AdaptivePayment');
+        $apObj = new AdaptivePayment();
+        //DONT FORGET TO MAKE THIS FUNCTION PUBLIC - generatePaymentRecivers
+        $recivers = $apObj->generatePaymentRecivers(55);
+        pr($recivers);
+        die;
+    }*/
 
     /*public function calcStudentPriceAfterDiscount() {
         pr($this->Subject->calcStudentPriceAfterDiscount(100, 20, 20, 30));
