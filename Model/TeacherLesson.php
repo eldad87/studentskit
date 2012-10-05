@@ -68,20 +68,20 @@ class TeacherLesson extends AppModel {
 			)
 		),
         'max_students'=> array(
-                'range' 		=> array(
-                    'required'	=> 'create',
-                    'allowEmpty'=> true,
-                    'rule'    	=> array('range', 0, 1025),
-                    'message' 	=> 'Lesson must have more then %d or less then %d students'
-                ),
-                'max_students' 	=> array(
-                    'required'	=> 'create',
-                    'allowEmpty'=> true,
-                    'rule'    	=> 'maxStudentsCheck',
-                    'message' 	=> 'You must set group price'
-                )
+            'range' 		=> array(
+                'required'	=> 'create',
+                'allowEmpty'=> true,
+                'rule'    	=> array('range', 0, 1025),
+                'message' 	=> 'Lesson must have more then %d or less then %d students'
             ),
-		'full_group_total_price'=> array(
+            'max_students' 	=> array(
+                'required'	=> 'create',
+                'allowEmpty'=> true,
+                'rule'    	=> 'maxStudentsCheck',
+                'message' 	=> 'You must set group price'
+            )
+        ),
+		/*'full_group_total_price'=> array(
 			'price' => array(
 				'allowEmpty'=> true,
 				'rule'    	=> 'numeric',
@@ -98,7 +98,20 @@ class TeacherLesson extends AppModel {
 				'rule'    	=> 'fullGroupTotalPriceCheck',
 				'message' 	=> 'You must set group price'
 			)
-		)
+		)*/
+        'full_group_student_price'=> array(
+            'price' => array(
+                'allowEmpty'=> true,
+                'rule'    	=> 'numeric',
+                'message' 	=> 'Enter a valid group price'
+            ),
+            'full_group_total_price' 	=> array(
+                //'required'	=> 'create',
+                'allowEmpty'=> true,
+                'rule'    	=> 'fullGroupTotalPriceCheck',
+                'message' 	=> 'You must set a student full group price'
+            )
+        ),
 	);
 
 	public $belongsTo 	= array(
@@ -192,41 +205,34 @@ class TeacherLesson extends AppModel {
     }
 
 	/* Taken from Subject model - start */
-	public function fullGroupTotalPriceCheck( $price ) {
-		if(!isSet($this->data['TeacherLesson']['max_students'])) {
-			$this->invalidate('max_students', ___('Please enter a valid max students'));
-			//return false;
-		} else  {
-			if(	isSet($this->data['TeacherLesson']['full_group_total_price']) && !empty($this->data['TeacherLesson']['full_group_total_price']) && 
-				$this->data['TeacherLesson']['max_students'] && $this->data['TeacherLesson']['1_on_1_price']) {
-				
-				//Check if full_group_total_price is MORE then  max_students*1_on_1_price
-				$maxAllowed = $this->data['TeacherLesson']['max_students']*$this->data['TeacherLesson']['1_on_1_price'];
-				if($this->data['TeacherLesson']['full_group_total_price']>$maxAllowed) {
-					$this->invalidate('max_students', sprintf(__('Group price error, max is %d (max students * 1 on 1 price)'), $maxAllowed));
-
-                    //Check if total group price is LESS then 1 on 1 price (1 on 1 price is NOT 0)
-                } else if($this->data['TeacherLesson']['full_group_total_price']<=$this->data['TeacherLesson']['1_on_1_price']) {
-                    $this->invalidate('full_group_total_price', sprintf(__('Full group price must be more the 1 on 1 price (%d)'), $this->data['TeacherLesson']['1_on_1_price']));
+    public function fullGroupTotalPriceCheck( $price ) {
+        if(!isSet($this->data[$this->name]['max_students']) || empty($this->data[$this->name]['max_students'])) {
+            $this->invalidate('max_students', __('Please enter a valid max students'));
+            //return false;
+        } else  {
+            if(	isSet($this->data[$this->name]['full_group_student_price']) && !empty($this->data[$this->name]['full_group_student_price']) &&
+                isSet($this->data[$this->name]['1_on_1_price']) && $this->data[$this->name]['1_on_1_price']) {
+                if($this->data[$this->name]['full_group_student_price']>$this->data[$this->name]['1_on_1_price']) {
+                    $this->invalidate('full_group_student_price', sprintf(__('Full group student price must be less or equal to 1 on 1 price (%d)'), $this->data[$this->name]['1_on_1_price']) );
                 }
-			}
-		}
-		return true;
-	}
-	public function maxStudentsCheck( $maxStudents ) {
-		if($maxStudents['max_students']>1 && (!isSet($this->data['TeacherLesson']['full_group_total_price']) || !$this->data['TeacherLesson']['full_group_total_price'])) {
-			$this->invalidate('full_group_total_price', __('Please enter a valid group price or set Max students to 1'));
-			//return false;
-		}
-		return true;
-	}
+            }
+        }
+        return true;
+    }
+    public function maxStudentsCheck( $maxStudents ) {
+        if($maxStudents['max_students']>1 && (!isSet($this->data[$this->name]['full_group_student_price']) || !$this->data[$this->name]['full_group_student_price'])) {
+            $this->invalidate('full_group_student_price', __('Please enter a valid full group student price or set Max students to 1'));
+            //return false;
+        }
+        return true;
+    }
 
     public function beforeValidate($options=array()) {
         parent::beforeValidate($options);
 
         App::import('Model', 'Subject');
         $exists = $this->exists(!empty($this->data['TeacherLesson'][$this->primaryKey]) ? $this->data['TeacherLesson'][$this->primaryKey] : null);
-        Subject::calcFullGroupStudentPriceIfNeeded($this->data['UserLesson'], $exists );
+        Subject::calcFullGroupPriceIfNeeded($this->data['UserLesson'], $exists );
         Subject::extraValidation($this);
 
 
@@ -305,7 +311,7 @@ class TeacherLesson extends AppModel {
         parent::beforeSave($options);
 
         if( (isSet($this->data['TeacherLesson']['1_on_1_price']) && $this->data['TeacherLesson']['1_on_1_price']>0) ||
-            (isSet($this->data['TeacherLesson']['full_group_total_price']) && $this->data['TeacherLesson']['full_group_total_price']>0)) {
+            (isSet($this->data['TeacherLesson']['full_group_student_price']) && $this->data['TeacherLesson']['full_group_student_price']>0)) {
             $this->data['TeacherLesson']['payment_status'] = PAYMENT_STATUS_PENDING;
         }
     }

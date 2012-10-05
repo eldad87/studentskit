@@ -172,7 +172,7 @@ class PendingUserLesson extends AppModel {
 
     private function fixNumeric($extra) {
         $intFields = array('subject_id', 'teacher_lesson_id', 'user_lesson_id', 'student_user_id', 'teacher_user_id', 'max_students', 'duration_minutes');
-        $floatFields = array('1_on_1_price', 'full_group_total_price');
+        $floatFields = array('1_on_1_price', 'full_group_total_price', 'full_group_student_price');
 
         foreach($extra AS $key=>$val) {
             if(is_array($val)) {

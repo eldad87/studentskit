@@ -30,9 +30,9 @@ echo $this->Form->input('1_on_1_price');
 
 
 echo $this->Form->input('max_students');
-echo $this->Form->input('full_group_total_price');
+echo $this->Form->input('full_group_student_price');
 if(isSet($groupPrice)) {
-	echo 'Full Group Student Price: ',$groupPrice,'<br />';
+	echo 'Full Group Price: ',$groupPrice,'<br />';
 }
 
 echo $this->Form->submit('Save');

@@ -420,7 +420,8 @@ class AdaptivePayment extends AppModel {
         if($tlData['lesson_type']=='video' || $tlData['max_students']==1 || $tlData['num_of_students']==1) {
             $price = $tlData['1_on_1_price'];
         } else {
-            $price = $this->UserLesson->Subject->calcStudentFullGroupPrice($tlData['1_on_1_price'], $tlData['full_group_total_price'], $tlData['max_students'], $tlData['num_of_students']);
+            //$price = $this->UserLesson->Subject->calcStudentFullGroupPrice($tlData['1_on_1_price'], $tlData['full_group_total_price'], $tlData['max_students'], $tlData['num_of_students']);
+            $price = $this->UserLesson->Subject->calcStudentPriceAfterDiscount( $tlData['1_on_1_price'], $tlData['max_students'], $tlData['num_of_students'], $tlData['full_group_student_price'] );
         }
 
 

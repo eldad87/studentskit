@@ -163,11 +163,14 @@ class StudentController extends AppController {
 
         //Group pricing
         if(	isSet($this->data['UserLesson']['1_on_1_price']) &&
-            isSet($this->data['UserLesson']['full_group_total_price']) && !empty($this->data['UserLesson']['full_group_total_price']) &&
+            isSet($this->data['UserLesson']['full_group_student_price']) && !empty($this->data['UserLesson']['full_group_student_price']) &&
             isSet($this->data['UserLesson']['max_students']) && $this->data['UserLesson']['max_students']>1) {
-            $groupPrice = $this->Subject->calcStudentFullGroupPrice(	$this->data['UserLesson']['1_on_1_price'], $this->data['UserLesson']['full_group_total_price'],
-                $this->data['UserLesson']['max_students'], $this->data['UserLesson']['max_students']);
-            $this->set('groupPrice', $groupPrice);
+                /*$groupPrice = $this->Subject->calcStudentFullGroupPrice(	$this->data['UserLesson']['1_on_1_price'], $this->data['UserLesson']['full_group_total_price'],
+                                                                            $this->data['UserLesson']['max_students'], $this->data['UserLesson']['max_students']);*/
+                $groupPrice = $this->Subject->calcStudentPriceAfterDiscount(	$this->data['UserLesson']['1_on_1_price'],
+                                                                                $this->data['UserLesson']['max_students'], $this->data['UserLesson']['max_students'],
+                                                                                $this->data['UserLesson']['full_group_student_price']);
+                $this->set('groupPrice', $groupPrice);
         }
     }
 	
