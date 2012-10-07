@@ -7,6 +7,9 @@ define('PAYMENT_STATUS_DONE', 2);
 define('PAYMENT_STATUS_PARTIAL', 3);
 define('PAYMENT_STATUS_ERROR', 4);
 
+define('RATING_STATUS_PENDING', 0);
+define('RATING_STATUS_DONE', 1);
+
 class TeacherLesson extends AppModel {
 	public $name 		= 'TeacherLesson';
 	public $useTable 	= 'teacher_lessons';

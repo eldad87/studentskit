@@ -858,12 +858,6 @@ class UserLesson extends AppModel {
 
         return true;
     }
-
-	//TODO: create a daemon
-	//if stage=USER_LESSON_ACCEPTED and datetime+duration<now then set stage=USER_LESSON_PENDING_RATING
-	//Update teacher teacher_total_teaching_minutes, teacher_students_amount, teacher_total_lessons
-	//Update subject students_amount, total_lessons
-	//Update student teacher_total_lessons
 	
 	public function rate( $userLessonId, $byUserId, $rating, $comment ) {
 		//on rate, if teacher - update student amount of raters + avarage rate. if student - update subject && teacher amount of raters + avarage rate
