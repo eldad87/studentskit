@@ -1,0 +1,12 @@
+[submodule "Plugin/CakeUploader"]
+	path = Plugin/CakeUploader
+	url = https://github.com/eldad87/cake-uploader
+[submodule "Plugin/SignMeUp"]
+	path = Plugin/SignMeUp
+	url = https://github.com/eldad87/sign_me_up.git
+[submodule "Plugin/debug_kit"]
+	path = Plugin/debug_kit
+	url = https://github.com/eldad87/debug_kit
+[submodule "Plugin/utils"]
+	path = Plugin/utils
+	url = https://github.com/eldad87/utils.git
