@@ -10,3 +10,6 @@
 [submodule "Plugin/utils"]
 	path = Plugin/utils
 	url = https://github.com/eldad87/utils.git
+[submodule "Plugin/facebook"]
+	path = Plugin/facebook
+	url = https://github.com/eldad87/CakePHP-Facebook-Plugin.git
