@@ -1,5 +1,5 @@
-[submodule "Plugin/CakeUploader"]
-	path = Plugin/CakeUploader
+[submodule "Plugin/Uploader"]
+	path = Plugin/Uploader
 	url = https://github.com/eldad87/cake-uploader
 [submodule "Plugin/SignMeUp"]
 	path = Plugin/SignMeUp
