@@ -44,11 +44,24 @@ $config['Accounts.setLanguagesOfRecords.error.2.title'] = __('Error');
 $config['Accounts.setLanguagesOfRecords.error.2.description'] = __('Cannot set language');
 /********************* Accounts - End		******************************************/
 
+/********************* Notifications - Start		******************************************/
+/*-------------------- Notifications.index		--------------------*/
+$config['Notifications.index.success.1.title'] = __('Success');
+$config['Notifications.index.success.1.description'] = __('List of notifications');
+
+/*-------------------- Notifications.getUnreadNotificationsCount		--------------------*/
+$config['Notifications.getUnreadNotificationsCount.success.1.title'] = __('Success');
+$config['Notifications.getUnreadNotificationsCount.success.1.description'] = __('Count of unread notifications');
+/********************* Notifications - End		******************************************/
 
 /********************* Message - Start		******************************************/
 /*-------------------- Message.index		--------------------*/
 $config['Message.index.success.1.title'] = __('Success');
 $config['Message.index.success.1.description'] = __('List of threads');
+
+/*-------------------- Message.getUnreadThreadCount	--------------------*/
+$config['Message.getUnreadThreadCount.success.1.title'] = __('Success');
+$config['Message.getUnreadThreadCount.success.1.description'] = __('Unread Threads');
 
 /*-------------------- Message.getThread	--------------------*/
 $config['Message.getThread.success.1.title'] = __('Success');

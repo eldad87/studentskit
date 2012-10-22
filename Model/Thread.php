@@ -39,7 +39,7 @@ class Thread extends AppModel {
 		}
 		
 		//We do it in another query so 'modify' will be set.
-		return $this->replayMessage($this->id, $byUser['id'], $msg);
+		return $this->replayMessage($this->id, $byUserId, $msg);
 	}
 	
 	public function replayMessage($threadId, $byUserId, $msg) {
@@ -80,7 +80,7 @@ class Thread extends AppModel {
 		}
 		$threadData = $threadData['Thread'];
 		
-		
+
 		
 		$threadData['messages'] = json_decode($threadData['messages'], true);
 		
@@ -134,6 +134,16 @@ class Thread extends AppModel {
 		
 		return $messages;
 	}
+
+    public function getUnreadCount($userId) {
+        $this->recursive = -1;
+        return $this->find('count', array('conditions'=>array(
+            'OR'=>array(
+                array('by_user_id'=>$userId, 'by_user_unread_messages'=>1),
+                array('to_user_id'=>$userId, 'to_user_unread_messages'=>1),
+            )
+        )));
+    }
 	
 	
 	private function createMessage($byUserId, $message, $timestamp=null) {

@@ -48,6 +48,8 @@ class AppController extends Controller {
 		}
 
         $this->set('loginClient', $this->Session->read('login_client'));
+
+        $this->set('user', $this->Auth->user());
 	}
 
     public function beforeFacebookSave() {
@@ -143,11 +145,16 @@ class AppController extends Controller {
 		if($this->responseType=='array') {
 			return $response;
 		}
+        if ($this->request->is('requested')) {
+            return $response;
+
+        }
 		
 		$this->set('response', array('response'=>$response));
 		$this->set('_serialize', 'response');
-		
-		if(Configure::read('debug')==2 && !isSet($this->params['ext']) && !$this->RequestHandler->isAjax()) {
+
+
+        if(Configure::read('debug')==2 && !isSet($this->params['ext']) && !$this->RequestHandler->isAjax()) {
 			$this->autoLayout = false;
 			$this->autoRender = false;
 			$this->viewPath = 'debug';

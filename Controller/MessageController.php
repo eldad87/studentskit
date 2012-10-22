@@ -9,6 +9,11 @@ class MessageController extends AppController {
 		$threads = $this->Thread->getUserThreadsLastMessage($this->Auth->user('user_id'));
 		return $this->success(1, array('threads'=>$threads));
 	}
+
+    public function getUnreadThreadCount() {
+        $unreadCount = $this->Thread->getUnreadCount($this->Auth->user('user_id'));
+        return $this->success(1, array('unreadCount'=>$unreadCount));
+    }
 	
 	public function findThread() {
 		//TODO: find by subject/lesson id, including from/to
@@ -16,7 +21,8 @@ class MessageController extends AppController {
 	
 	public function getThread($thread) {
 		$thread = $this->Thread->getThread($thread, $this->Auth->user('user_id'));
-		
+        //TODO: make the thread as read.
+
 		if(!$thread) {
 			return $this->error(1);
 		}

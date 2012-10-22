@@ -23,6 +23,7 @@ class Notification extends AppModel {
                 'message_enum'  =>$message['message_enum'],
                 'message_params'=>json_encode($message),
                 'link'          =>json_encode($this->formatLink($userId, $message['message_enum'], $message['params'])),
+                'unread'        =>1
 
             ));
         return $this->save();
@@ -69,12 +70,41 @@ class Notification extends AppModel {
         return sprintf(Configure::read('notification.'.$enum), $userFullName, $params['name'], $params['datetime']);
     }
 
-    public function getUnreadNotifications() {
-
+    public function getUnreadCount($userId) {
+        return $this->find('count', array('conditions'=>array(
+            'user_id'=>$userId,
+            'unread'=>1
+        )));
     }
 
-    public function getNotifications() {
+    public function getNotifications($userId, $limit=7, $page=1, $markAsRead=true) {
+        $this->recursive = -1;
+        $results = $this->find('all', array('conditions'=>array( 'user_id'=>$userId ),
+                                                                'limit'=>$limit,
+                                                                'page'=>$page));
 
+        $return = array();
+        if(!$results) {
+            return $return;
+        }
+
+
+        $markAsReadIds = array();
+        foreach($results AS $result) {
+            $return[] = $result[$this->alias];
+
+            if($markAsRead && $result[$this->alias]['unread']==1) {
+                $markAsReadIds[] = $result[$this->alias][$this->primaryKey];
+            }
+        }
+
+        //Mark notifications as read
+        if($markAsReadIds) {
+            $this->updateAll(array('unread'=>0), array($this->primaryKey=>$markAsReadIds));
+        }
+
+        return $return;
     }
+
 }
 ?>
