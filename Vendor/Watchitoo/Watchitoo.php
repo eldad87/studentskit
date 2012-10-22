@@ -21,17 +21,19 @@ Class Watchitoo extends Component {
         App::import('Model', 'TeacherLesson');
         App::import('Model', 'WatchitooMeeting');
         App::import('Model', 'WatchitooUser');
+        App::import('Model', 'WatchitooSubjectTeacher');
 
         $this->wObj  = new WatchitooService();
         $this->wmObj = new WatchitooMeeting();
         $this->wuObj = new WatchitooUser();
+        $this->wstObj = new WatchitooSubjectTeacher();
         $this->tlObj = new TeacherLesson();
 
     }
 
     public function getMeetingSettings($teacherLessonId, $userId) {
         $tlData = $this->getTLData($teacherLessonId);
-        $wUID = $this->getWatchitooUserId($userId);
+        $wUID = $this->getWatchitooUserId($userId, $tlData['teacher_user_id']==$userId ? $tlData['subject_id'] : null);
         $this->wuObj->User->recursive = -1;
         $userData = $this->wuObj->User->findByUserId($userId);
 
@@ -99,7 +101,7 @@ Class Watchitoo extends Component {
 
         //Get Watchitoo's user_id
         $this->log('Get watchitoo user_id', 'watchitoo');
-        $wUID = $this->getWatchitooUserId($tlData['teacher_user_id']);
+        $wUID = $this->getWatchitooUserId($tlData['teacher_user_id'], $tlData['subject_id']);
         if(!$wUID) {
             $this->log('Cannot create watchitoo user_id', 'watchitoo');
             $this->tlObj->unlock($teacherLessonId);
@@ -117,8 +119,8 @@ Class Watchitoo extends Component {
             return false;
         }
 
-        //TODO: copy Subject's meeting playlist to this one
-
+        //Copy playlist
+        $this->copyPlayList($tlData['subject_id'], $meetingData['data']['meeting_id']);
 
         //Create link meeting_id-teacher_lesson_id
         $this->wmObj->create(false);
@@ -134,21 +136,36 @@ Class Watchitoo extends Component {
         return $meetingData['data']['meeting_id'];
     }
 
-
-    private function getWatchitooUserId($userId) {
-        //TODO: create a WUser per meeting - in order to separate files between meetings
-        $this->wuObj->recursive = -1;
-        $wUserData = $this->wuObj->findByUserId($userId);
-
-        if(!$wUserData) {
-            $this->log('No watchitoo user found, create a new one', 'watchitoo');
-            return $this->createWatchitooUser($userId);
-        }
-
-        return $wUserData['WatchitooUser']['watchitoo_user_id'];
+    private function copyPlayList($subjectId, $meetingId) {
+        //TODO: copy Subject's meeting playlist to this one
+        return true;
     }
 
-    private function createWatchitooUser($userId) {
+    private function getWatchitooUserId($userId, $subjectId=null, $createNewUser=true) {
+        //Student
+        if(is_null($subjectId)) {
+            $this->wuObj->recursive = -1;
+            $wUserData = $this->wuObj->findByUserId($userId);
+            if($wUserData) {
+                $wUserData = $wUserData['WatchitooUser'];
+            }
+        } else { //Subject teacher
+            $this->wstObj->recursive = -1;
+            $wUserData = $this->wstObj->findByUserIdAndSubjectId($userId, $subjectId);
+            if($wUserData) {
+                $wUserData = $wUserData['WatchitooSubjectTeacher'];
+            }
+        }
+
+        if(!$wUserData && $createNewUser) {
+            $this->log('No watchitoo user found, create a new one', 'watchitoo');
+            return $this->createWatchitooUser($userId, $subjectId);
+        }
+
+        return $wUserData['watchitoo_user_id'];
+    }
+
+    private function createWatchitooUser($userId, $subjectId=null) {
         $this->wuObj->User->recursive = -1;
         $userData = $this->wuObj->User->findByUserId($userId);
         if(!$userData) {
@@ -158,19 +175,21 @@ Class Watchitoo extends Component {
         }
 
         //Create user on Watchitoo, email is changes to universito_email - in order to avoid existing users
-        $wUserData = $this->wObj->saveUser(null, 'universito_'.$userData['User']['email'], $this->getUserPassword($userId), $userData['User']['first_name'], $userData['User']['last_name']);
+        $wUserData = $this->wObj->saveUser(null, 'test3_universito_'.($subjectId ? $subjectId.'_' : null).$userData['User']['email'], $this->getUserPassword($userId), $userData['User']['first_name'], $userData['User']['last_name']);
         if(!isSet($wUserData['data']['user_id']) || !$wUserData['data']['user_id']) {
             $this->log('Cannot create watchitoo user', 'watchitoo');
             return false;
         }
 
         //Create link user_id-watchitoo_user_id
-        $this->wuObj->create(false);
-        $this->wuObj->set(array('user_id'=>$userId, 'watchitoo_user_id'=>$wUserData['data']['user_id']));
-        if(!$this->wuObj->save()) {
+        $userObj = is_null($subjectId) ? $this->wuObj : $this->wstObj;
+        $userObj->create(false);
+        $userObj->set(array('user_id'=>$userId, 'watchitoo_user_id'=>$wUserData['data']['user_id'], 'subject_id'=>$subjectId));
+        if(!$userObj->save()) {
             $this->log('Cannot create user_id-watchitoo_user_id link', 'watchitoo');
             return false;
         }
+
 
         return $wUserData['data']['user_id'];
     }
