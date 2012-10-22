@@ -372,6 +372,11 @@ class UserLesson extends AppModel {
             $this->data['UserLesson']['payment_status'] = PAYMENT_STATUS_PENDING;
         }
 
+        $exists = $this->exists(!empty($this->data[$this->name][$this->primaryKey]) ? $this->data[$this->name][$this->primaryKey] : null);
+        if($exists) {
+            unset($this->data[$this->name]['lesson_type']);
+        }
+
         $this->data['UserLesson']['version'] = String::uuid();
     }
 
@@ -442,7 +447,17 @@ class UserLesson extends AppModel {
 			'max_students'				=> intval($subjectData['max_students']),
 			'1_on_1_price'				=> $subjectData['1_on_1_price'],
 			'full_group_student_price'	=> $subjectData['full_group_student_price'],
-			'full_group_total_price'	=> $subjectData['full_group_total_price']
+			'full_group_total_price'	=> $subjectData['full_group_total_price'],
+
+			'image'	                    => $subjectData['image'],
+			'image_source'	            => $subjectData['image_source'],
+			'image_resize'	            => $subjectData['image_resize'],
+			'image_crop_60x60'	        => $subjectData['image_crop_60x60'],
+			'image_crop_72x72'	        => $subjectData['image_crop_72x72'],
+			'image_crop_72x72'	        => $subjectData['image_crop_72x72'],
+			'image_crop_78x78'	        => $subjectData['image_crop_78x78'],
+			'image_crop_149x182'        => $subjectData['image_crop_149x182'],
+			'image_crop_197x197'        => $subjectData['image_crop_197x197'],
 		);
 
 
@@ -577,7 +592,17 @@ class UserLesson extends AppModel {
 			'max_students'				=> $teacherLessonData['max_students'],
 			'1_on_1_price'				=> $teacherLessonData['1_on_1_price'],
 			'full_group_student_price'	=> $teacherLessonData['full_group_student_price'],
-			'full_group_total_price'	=> $teacherLessonData['full_group_total_price']
+			'full_group_total_price'	=> $teacherLessonData['full_group_total_price'],
+
+            'image'	                    => $teacherLessonData['image'],
+            'image_source'	            => $teacherLessonData['image_source'],
+            'image_resize'	            => $teacherLessonData['image_resize'],
+            'image_crop_60x60'	        => $teacherLessonData['image_crop_60x60'],
+            'image_crop_72x72'	        => $teacherLessonData['image_crop_72x72'],
+            'image_crop_72x72'	        => $teacherLessonData['image_crop_72x72'],
+            'image_crop_78x78'	        => $teacherLessonData['image_crop_78x78'],
+            'image_crop_149x182'        => $teacherLessonData['image_crop_149x182'],
+            'image_crop_197x197'        => $teacherLessonData['image_crop_197x197'],
 		);
         if($userLessonId) {
             $userLesson['user_lesson_id'] = $userLessonId; //data that used in event

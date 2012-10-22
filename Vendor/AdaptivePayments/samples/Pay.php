@@ -12,7 +12,7 @@
 		phoneCountry_0 : "Telephone country code",
 		phoneNumber_0 : "Telephone number",
 		phoneExtn_0 : "Telephone extension",
-		pin : "Senderï¿½s personal identification number, which was specified when the sender signed up for a preapproval."
+		pin : "Sender’s personal identification number, which was specified when the sender signed up for a preapproval."
 	}	
 	$(document).ready( function () {
 		jQuery.each(toolTips, function(id, toolTip) {

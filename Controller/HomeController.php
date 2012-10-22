@@ -5,7 +5,9 @@
 class HomeController extends AppController {
 	public $name = 'Home';
 	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
-	public $components = array('Utils.FormPreserver'=>array('directPost'=>true,'actions'=>array('submitOrder')), 'Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')), 'Security');
+	public $components = array('Utils.FormPreserver'=>array('directPost'=>true,'actions'=>array('submitOrder')), 'Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),
+        //'Security',
+                               /* 'Watchitoo'*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 
 
@@ -14,7 +16,8 @@ class HomeController extends AppController {
 		parent::beforeFilter();
 		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacher', 'subject', 'order',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession'/*,
-                            'test', 'testLocking', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount', 'testGeneratePaymentRecivers', 'testUpdateRatingStage'*/);
+                            'test', 'testLocking', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount', 'testGeneratePaymentRecivers',
+                            'testUpdateRatingStage'*/, 'testWatchitoo', 'uploadTest');
 		$this->Auth->deny('submitOrder');
 	}
 
@@ -29,6 +32,64 @@ class HomeController extends AppController {
     }
     private function out($str) {
         pr($str);
+    }
+
+    public function testWatchitoo() {
+       /* App::import('Vendor', 'Watchitoo'.DS.'Watchitoo');
+        $wObj = new Watchitoo();
+        $saveUser = $wObj->saveUser(null, 'eldad88@gmail.com', 'password', 'eldad', 'yamin', 'eldad yamin');
+        //$saveUser = $wObj->saveMeeting(null, 42665, 'title', 'description');
+        var_dump($saveUser);*/
+
+        var_dump($this->Watchitoo->getMeetingId(55));
+    }
+
+    public function uploadTest() {
+        /*$rowId = 1;
+        $modelName = 'Subject';
+        if (!empty($this->request->data)) {
+
+            $imageUploaded = false;
+            App::import('Vendor', 'Uploader.Uploader');
+            $upObj = new Uploader(array('uploadDir'=>'img'.DS.$modelName.DS.$rowId.DS));
+            if($res = $upObj->upload('fileName', array('name'=>$rowId, 'overwrite'=>true))) {
+
+                //Resize file to a standard resolution
+               if($resizePath = $upObj->resize(array('width' => 200,   'height'=>200, 'aspect'=>true, 'mode'=>$upObj::MODE_HEIGHT, 'append'=>'_resize',   'overwrite'=>true))) {
+                    //Use the resized file
+                    $upObj->setDestination($rowId.'_resize', true);
+
+                    //Create thumbnails
+                    $upObj->crop(array('width' => 60,   'height'=>60,   'append'=>'_60x60',    'overwrite'=>true));
+                    $upObj->crop(array('width' => 72,   'height'=>72,   'append'=>'_72x72',    'overwrite'=>true));
+                    $upObj->crop(array('width' => 78,   'height'=>78,   'append'=>'_78x78',    'overwrite'=>true));
+                    $upObj->crop(array('width' => 149,  'height'=>182,  'append'=>'_149x182',  'overwrite'=>true));
+                    $upObj->crop(array('width' => 188,  'height'=>197,  'append'=>'_188x197',  'overwrite'=>true));
+
+                    //Delete the tmp resized image
+                    $upObj->delete($resizePath);
+
+                    $imageUploaded = true;
+                }
+            }
+
+            //TODO:
+            if($imageUploaded) {
+
+            }
+        }*/
+
+        if (!empty($this->request->data)) {
+            App::import('Model', 'Image');
+            $imgObj = new Image();
+            $imgObj->set($this->request->data);
+            $imgObj->save();
+
+        }
+
+        App::import('Model', 'Image');
+        $imgObj = new Image();
+        $imgObj->delete(20);
     }
 
     /*public function testUpdateRatingStage() {
@@ -220,6 +281,7 @@ class HomeController extends AppController {
 
 
 	public function index() {
+
 		//Get about to start messages
         $this->Subject->setLanguages($this->Session->read('languages_of_records'));
 		$newSubjects = $this->Subject->getNewest(false);
@@ -486,7 +548,7 @@ $id = $scObj->id;
 		}
 	}
 
-    //http://studentskit/Home/subjectSuggestions.json?search_terms=for%20the%20d
+    //http://universito.com/Home/subjectSuggestions.json?search_terms=for%20the%20d
     public function subjectSuggestions() {
 
 

@@ -6,4 +6,4 @@ A new password has been generated hopefully by you on the MyDomain.com website. 
 
 We look forward to seeing you!
 Regards,
-StudentsKit.com Staff
+Universito.com Staff

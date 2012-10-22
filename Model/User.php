@@ -1,10 +1,42 @@
 <?php
+define('IMAGE_NONE', 0);
+define('IMAGE_SUBJECT_OWNER', 1);
+define('IMAGE_SUBJECT', 2);
+
 class User extends AppModel {
 	public $name = 'User';
 	public $useTable = 'users';
 	public $primaryKey = 'user_id';
-	public $actsAs = array('SignMeUp.SignMeUp');
+    public $actsAs = array(
+        'SignMeUp.SignMeUp',
+        'Uploader.Attachment' => array(
+            'imageUpload'=>array(
+                'uploadDir'	            => 'img/Image/',
+                'appendNameToUploadDir' => true,
+                'flagColumn'            => array('dbColumn'=>'image', 'value'=>IMAGE_SUBJECT_OWNER), //Flag DB.table.image with value of IMAGE_SUBJECT_OWNER
+                'name'                  => 'formatImageName',
+                'dbColumn'              => 'image_source',
+                'transforms' => array(
+                    array('method'=>'resize','width'=> 200,  'height'=>200,  'append'=>'_resize',   'overwrite'=>true, 'dbColumn'=>'image_resize', 'aspect'=>true, 'mode'=>Uploader::MODE_HEIGHT, 'setAsTransformationSource'=>true),
+                    array('method'=>'crop', 'width' => 60,   'height'=>60,   'append'=>'_60x60',    'overwrite'=>true, 'dbColumn'=>'image_crop_60x60'),
+                    array('method'=>'crop', 'width' => 72,   'height'=>72,   'append'=>'_72x72',    'overwrite'=>true, 'dbColumn'=>'image_crop_72x72'),
+                    array('method'=>'crop', 'width' => 78,   'height'=>78,   'append'=>'_78x78',    'overwrite'=>true, 'dbColumn'=>'image_crop_78x78'),
+                    array('method'=>'crop', 'width' => 149,  'height'=>182,  'append'=>'_149x182',  'overwrite'=>true, 'dbColumn'=>'image_crop_149x182'),
+                    array('method'=>'crop', 'width' => 188,  'height'=>197,  'append'=>'_188x197',  'overwrite'=>true, 'dbColumn'=>'image_crop_197x197'),
+                )
+            )
+        ),
 
+        'Uploader.FileValidation' => array(
+            'imageUpload' => array(
+                'extension'	=> array('gif', 'jpg', 'png', 'jpeg'),
+                'filesize'	=> 1048576,
+                'minWidth'	=> 200,
+                'minHeight'	=> 200,
+                'required'	=> false
+            )
+        )
+    );
 
     public $hasOne = array('Forum.Profile');
     public $hasMany = array('Forum.Access', 'Forum.Moderator');
@@ -81,23 +113,23 @@ class User extends AppModel {
 		'dob' => array(
 			'rule'    		=> array('date', 'dmy'),
 			'message' 		=> 'Enter a valid date.',
-			'allowEmpty' 	=> false,
+			'allowEmpty' 	=> true,
 		),
 		
 		'phone'=>array(
 			'rule'    		=> 'phone',
 			'message' 		=> 'Enter a valid phone.',
-			'allowEmpty' 	=> false,
+			'allowEmpty' 	=> true,
 		),
 		'user_zipcpde'=>array(
 			'rule'    		=> array('postal', null, 'all'),
 			'message' 		=> 'Enter a valid zipcode.',
-			'allowEmpty' 	=> false,
+			'allowEmpty' 	=> true,
 		),
 		'teacher_zipcpde'=>array(
 			'rule'    		=> array('postal', null, 'all'),
 			'message' 		=> 'Enter a valid zipcode.',
-			'allowEmpty' 	=> false,
+			'allowEmpty' 	=> true,
 		),
 	);
 
@@ -114,7 +146,26 @@ class User extends AppModel {
 
         return true;
     }*/
-	
+
+    /*public function afterSave($created) {
+        parent::afterSave($created);
+
+        //check if image was updated
+        if(isSet($this->data['User']['image']) && $this->data['User']['image']) {
+            //update subjects with default user image
+            App::import('Model', 'Subject');
+            $subjectObj = new Subject();
+            $subjectObj->recursive = -1;
+            $subjectObj->updateAll(array('image'=>IMAGE_SUBJECT_OWNER), array('image'=>IMAGE_NONE, 'user_id'=>$this->id));
+
+            //Update teacher lessons with default user image
+            App::import('Model', 'TeacherLesson');
+            $tlObj = new TeacherLesson();
+            $tlObj->recursive = -1;
+            $tlObj->updateAll(array('image'=>IMAGE_SUBJECT_OWNER), array('image'=>IMAGE_NONE, 'teacher_user_id'=>$this->id));
+        }
+    }*/
+
 	public function setRating($userId, $userType, $rating) {
 		$update = array(
 			$userType.'_avarage_rating'	=>'(('.$userType.'_raters_amount*'.$userType.'_avarage_rating)+'.$rating.')/('.$userType.'_raters_amount+1)',

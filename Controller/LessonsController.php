@@ -11,7 +11,14 @@ class LessonsController extends AppController {
 	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
 	public $components = array('Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')), 'Security');
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
+	public $helpers = array('Watchitoo');
 
+    public function __construct($request = null, $response = null) {
+        parent::__construct($request, $response);
+
+        App::import('Vendor', 'Watchitoo'.DS.'Watchitoo');
+        $this->Watchitoo = new Watchitoo();
+    }
 
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -63,9 +70,6 @@ class LessonsController extends AppController {
                     $this->redirect(array('controller'=>'Home', 'action'=>'teacherSubject', $liveRequestStatus['subject_id']));
                 }
 
-                //TODO: generate token
-                $this->set('meeting', $this->TeacherLesson->getLiveLessonMeeting($teacherLessonId));
-                $this->set('fileSystem', $this->TeacherLesson->getFileSystem($teacherLessonId));
 
             } else if( $liveRequestStatus['about_to_start'] ) {
 
@@ -76,12 +80,32 @@ class LessonsController extends AppController {
                 } else if($liveRequestStatus['pending_user_approval']) {
                     $this->Session->setFlash(__('Please approve the lesson first'));
                     $this->redirect(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'invitations', $liveRequestStatus['user_lesson_id']));
+
                 } else if($liveRequestStatus['approved']) {
                     //Show countdown
-                } else {
+                    $enterLesson = false;
+                    if($liveRequestStatus['payment_needed']) {
+                        //Check payment - if did not pass, the user canceled his approval.
+                        App::import('Model', 'AdaptivePayment');
+                        $apObj = new AdaptivePayment();
+                        $enterLesson = $apObj->isPaid($liveRequestStatus['user_lesson_id']);
+                    }
+                } else if($liveRequestStatus['is_teacher']) {
+                    $enterLesson = true;
+                }
+
+                if(!$enterLesson) {
                     $this->Session->setFlash(__('Please order the lesson first'));
                     $this->redirect(array('controller'=>'Home', 'action'=>'teacherLesson', $liveRequestStatus['teacher_lesson_id']));
                 }
+            }
+
+            if($enterLesson) {
+                //TODO: generate token
+                $this->set('meetingId', $this->Watchitoo->getMeetingId($teacherLessonId));
+                $this->set('meetingSettings', $this->Watchitoo->getMeetingSettings($teacherLessonId, $this->Auth->user('user_id')));
+                $this->set('fileSystem', $this->TeacherLesson->getFileSystem($teacherLessonId));
+                $this->set('tests', $this->TeacherLesson->getTests($teacherLessonId));
             }
 
             $this->set('datetime', $liveRequestStatus['datetime']);
@@ -231,7 +255,7 @@ class LessonsController extends AppController {
         $email = new CakeEmail();
 
         foreach($emails AS $toEmail) {
-            $email->from(array('doNotReplay@studentskit.com' => 'Studentskit'));
+            $email->from(array('doNotReplay@universito.com' => 'Universito'));
             $email->subject('Invitation for '.$name);
             $email->to($toEmail);
             $email->send($message);

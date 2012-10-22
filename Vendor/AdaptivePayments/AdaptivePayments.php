@@ -46,10 +46,12 @@ class AdaptivePayments {
      * @param $userLessonId
      */
     public function preapproval( $amount, $customerId, $clientIp, $cancelUrl, $returnUrl, $approvalValidThru=null, $ipnNotificationUrl=null ) {
-        $preapprovalRequest = new PreapprovalRequest($this->getRequestEnvelope(), $cancelUrl, $this->currencyCode, $returnUrl, date('Y-m-d'));
+
+
+        $preapprovalRequest = new PreapprovalRequest($this->getRequestEnvelope(), $cancelUrl, $this->currencyCode, $returnUrl, /*date('Y-m-d'));*/ date('Y-m-d\Z', CakeTime::toUnix('now', 'UTC' )));
 
         if(!$approvalValidThru) {
-            $approvalValidThru = date('Y-m-d', time()+YEAR);
+            $approvalValidThru = /*date('Y-m-d', time()+YEAR);*/ date('Y-m-d\Z', CakeTime::toUnix('now +1 year', 'UTC' ));
         }
 
         $preapprovalRequest->endingDate                     = $approvalValidThru;

@@ -130,6 +130,19 @@ class TeacherLesson extends AppModel {
 					)
 				);
 
+    public function __construct($id = false, $table = null, $ds = null) {
+        parent::__construct($id, $table, $ds);
+        static $eventListenterAttached = false;
+
+        if(!$eventListenterAttached) {
+            //Connect the event manager of this model
+            App::import( 'Event', 'TeacherLessonEventListener');
+            $tlel =& TeacherLessonEventListener::getInstance();
+            CakeEventManager::instance()->attach($tlel);
+            $eventListenterAttached = true;
+        }
+    }
+
     public function isFutureDatetime($datetime) {
         if(isSet($datetime['datetime']) && is_array($datetime)) {
             $datetime = $datetime['datetime'];
@@ -317,6 +330,12 @@ class TeacherLesson extends AppModel {
             (isSet($this->data['TeacherLesson']['full_group_student_price']) && $this->data['TeacherLesson']['full_group_student_price']>0)) {
             $this->data['TeacherLesson']['payment_status'] = PAYMENT_STATUS_PENDING;
         }
+
+        $exists = $this->exists(!empty($this->data[$this->name][$this->primaryKey]) ? $this->data[$this->name][$this->primaryKey] : null);
+        if($exists) {
+            unset($this->data[$this->name]['lesson_type']);
+        }
+
     }
 
 
@@ -359,6 +378,16 @@ class TeacherLesson extends AppModel {
                 '1_on_1_price'				=> $subjectData['1_on_1_price'],
                 'full_group_student_price'	=> $subjectData['full_group_student_price'],
                 'full_group_total_price'	=> $subjectData['full_group_total_price'],
+
+                'image'	                    => $subjectData['image'],
+                'image_source'	            => $subjectData['image_source'],
+                'image_resize'	            => $subjectData['image_resize'],
+                'image_crop_60x60'	        => $subjectData['image_crop_60x60'],
+                'image_crop_72x72'	        => $subjectData['image_crop_72x72'],
+                'image_crop_72x72'	        => $subjectData['image_crop_72x72'],
+                'image_crop_78x78'	        => $subjectData['image_crop_78x78'],
+                'image_crop_149x182'        => $subjectData['image_crop_149x182'],
+                'image_crop_197x197'        => $subjectData['image_crop_197x197'],
             );
 
             //Set the end of the lesson, video lesson end date is first-watching-time+2 days
@@ -411,9 +440,13 @@ class TeacherLesson extends AppModel {
 			return false;
 		}
 
+        $teacherLessonData['teacher_lesson_id'] = $this->id;
 		$event = new CakeEvent('Model.TeacherLesson.afterAdd', $this, array('teacher_lesson'=>$teacherLessonData, 'source'=>$source) );
 		$this->getEventManager()->dispatch($event);
-		
+        if ($event->isStopped()) {
+            $this->delete($this->id);
+            return false;
+        }
 		
 		return $this->id;
 	}
@@ -601,12 +634,12 @@ class TeacherLesson extends AppModel {
         return $payStatus;
     }
 
-    public function getLiveLessonMeeting($teacherLessonId) {
+    /*public function getLiveLessonMeeting($teacherLessonId) {
         return 'wfg-213';
     }
     public function getVideoUrl($teacherLessonId) {
         return 'videoUrl';
-    }
+    }*/
     public function getFileSystem($teacherLessonId) {
         App::import('Model', 'FileSystem');
         $fsObj = new FileSystem();

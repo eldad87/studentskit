@@ -33,7 +33,7 @@ $logger = new PPLoggingManager('PreapprovalDetails');
 			<h3>Preapproval Details</h3>
 			<div id="apidetails">A request to obtain information about an
 				agreement between you and a sender for making payments on the
-				senderï¿½s behalf.</div>
+				sender’s behalf.</div>
 		</div>
 		<div id="request_form">
 			<form method="POST" action="PreapprovalDetailsReceipt.php">

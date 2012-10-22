@@ -15,11 +15,46 @@ define('SUBJECT_IS_PUBLIC_FALSE', 0);
 define('SUBJECT_IS_PUBLIC_TRUE', 1);
 
 App::import('Model', 'AppModel');
+App::import('Model', 'User'); //for IMAGE_SUBJECT
 class Subject extends AppModel {
 	public $name = 'Subject';
 	public $useTable = 'subjects';
 	public $primaryKey = 'subject_id';
-    public $actsAs = array('LanguageFilter');
+    public $actsAs = array(
+        'LanguageFilter',
+        'Uploader.Attachment' => array(
+            'imageUpload'=>array(
+                'uploadDir'	            => 'img/Image/',
+                'appendNameToUploadDir' => true,
+                'flagColumn'            => array('dbColumn'=>'image', 'value'=>IMAGE_SUBJECT), //Flag DB.table.image with value of IMAGE_SUBJECT
+                'name'                  => 'formatImageName',
+                'dbColumn'              => 'image_source',
+                'transforms' => array(
+                    array('method'=>'resize','width'=> 200,  'height'=>200,  'append'=>'_resize',   'overwrite'=>true, 'dbColumn'=>'image_resize', 'aspect'=>true, 'mode'=>Uploader::MODE_HEIGHT, 'setAsTransformationSource'=>true),
+                    array('method'=>'crop', 'width' => 60,   'height'=>60,   'append'=>'_60x60',    'overwrite'=>true, 'dbColumn'=>'image_crop_60x60'),
+                    array('method'=>'crop', 'width' => 72,   'height'=>72,   'append'=>'_72x72',    'overwrite'=>true, 'dbColumn'=>'image_crop_72x72'),
+                    array('method'=>'crop', 'width' => 78,   'height'=>78,   'append'=>'_78x78',    'overwrite'=>true, 'dbColumn'=>'image_crop_78x78'),
+                    array('method'=>'crop', 'width' => 149,  'height'=>182,  'append'=>'_149x182',  'overwrite'=>true, 'dbColumn'=>'image_crop_149x182'),
+                    array('method'=>'crop', 'width' => 188,  'height'=>197,  'append'=>'_188x197',  'overwrite'=>true, 'dbColumn'=>'image_crop_197x197'),
+                )
+            )
+        ),
+
+        'Uploader.FileValidation' => array(
+            'imageUpload' => array(
+                'extension'	=> array('gif', 'jpg', 'png', 'jpeg'),
+                'filesize'	=> 1048576,
+                'minWidth'	=> 200,
+                'minHeight'	=> 200,
+                'required'	=> false
+            )
+        )
+    );
+
+    function formatImageName($name, $field, $file) {
+        return String::uuid();
+    }
+
 	public $validate = array(
 		'name'=> array(
 			'between' => array(
@@ -152,7 +187,7 @@ class Subject extends AppModel {
         parent::beforeValidate($options);
         App::import('Model', 'Subject');
 
-        $exists = $this->exists(!empty($this->data['TeacherLesson'][$this->primaryKey]) ? $this->data['Subject'][$this->primaryKey] : null);
+        $exists = $this->exists(!empty($this->data['Subject'][$this->primaryKey]) ? $this->data['Subject'][$this->primaryKey] : $this->id);
         $this->calcFullGroupPriceIfNeeded($this->data['Subject'], $exists );
         $this->extraValidation($this);
     }
@@ -160,20 +195,46 @@ class Subject extends AppModel {
 	public function beforeSave($options=array()) {
 		parent::beforeSave($options);
 
-        //TODO: save description as array('lang'=>description); and lang
+        $pKey = !empty($this->data[$this->name][$this->primaryKey]) ? $this->data[$this->name][$this->primaryKey] : $this->id;
+        $exists = $this->exists($pKey);
+        if($exists) {
+            unset($this->data[$this->name]['lesson_type']);
+        }
 
-        //New record
-        if( !$this->id && !isSet($this->data['Subject']['subject_id'])) {
-            if(!isSet($this->data['Subject']['image'])) {
-                //Without image - Set user image value
-                App::import('Model', 'User');
-                $userObj = new User();
-                $UserData = $userObj->findByUserId($this->data['Subject']['user_id']);
-                $this->data['Subject']['image'] = $UserData['User']['image'];
-            } else {
-                //Just making sure the right flag is set for subject-image
-                $this->data['Subject']['image'] = IMAGE_SUBJECT;
-            }
+        //Existing subject - having a subject image
+        if( $exists && isSet($this->data['Subject']['image']) && $this->data['Subject']['image']==IMAGE_SUBJECT ) {
+            App::uses('Sanitize', 'Utility');
+            //Update subject teacher lessons
+            App::import('Model', 'TeacherLesson');
+            $tlObj = new TeacherLesson();
+            $tlObj->recursive = -1;
+            $tlObj->updateAll(array('image'             =>IMAGE_SUBJECT,
+                                    'image_source'      =>'\''.Sanitize::escape($this->data['Subject']['image_source'],      $this->useDbConfig).'\'',
+
+                                    'image_resize'      =>'\''.Sanitize::escape($this->data['Subject']['image_resize'],      $this->useDbConfig).'\'',
+                                    'image_crop_60x60'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_60x60'],  $this->useDbConfig).'\'',
+                                    'image_crop_72x72'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_72x72'],  $this->useDbConfig).'\'',
+                                    'image_crop_149x182'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_149x182'],$this->useDbConfig).'\'',
+                                    'image_crop_149x182'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_149x182'],$this->useDbConfig).'\'',
+                                    'image_crop_197x197'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_197x197'],$this->useDbConfig).'\''),
+
+                                array($tlObj->name.'.subject_id'=>$pKey));
+
+            //Update subject user lessons
+            App::import('Model', 'userLesson');
+            $ulObj = new userLesson();
+            $ulObj->recursive = -1;
+            $ulObj->updateAll(array('image'             =>IMAGE_SUBJECT,
+                                    'image_source'      =>'\''.Sanitize::escape($this->data['Subject']['image_source'],      $this->useDbConfig).'\'',
+
+                                    'image_resize'      =>'\''.Sanitize::escape($this->data['Subject']['image_resize'],      $this->useDbConfig).'\'',
+                                    'image_crop_60x60'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_60x60'],  $this->useDbConfig).'\'',
+                                    'image_crop_72x72'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_72x72'],  $this->useDbConfig).'\'',
+                                    'image_crop_149x182'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_149x182'],$this->useDbConfig).'\'',
+                                    'image_crop_149x182'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_149x182'],$this->useDbConfig).'\'',
+                                    'image_crop_197x197'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_197x197'],$this->useDbConfig).'\''),
+
+                                    array($ulObj->name.'.subject_id'=>$pKey));
         }
 
         if(isSet($this->data['Subject']['subject_category_id'])) {

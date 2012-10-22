@@ -6,4 +6,4 @@ In order to get started please click on the following link to activate your acco
 
 We look forward to seeing you!
 Regards,
-StudentsKit.com Staff
+Universito.com Staff

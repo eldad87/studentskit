@@ -5,4 +5,4 @@ Someone (hopefully you) has requested a password reset on your account. In order
 <?php echo $this->Html->link('Reset your password', Router::url(array('action' => 'forgotten_password', 'password_reset' => $user['password_reset']), true)); ?>
 
 Regards,
-StudentsKit.com Staff
+Universito.com Staff

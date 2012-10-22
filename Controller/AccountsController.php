@@ -2,7 +2,9 @@
 class AccountsController extends AppController {
 	public $name = 'Accounts';
 	public $uses = array('User');
-	public $components = array('Session', 'RequestHandler', 'SignMeUp.SignMeUp'=>array(
+	public $components = array('Session',
+                                'Facebook.Connect'=>array(  'noAuth'=>false, 'model'=>'User' ),
+                                'RequestHandler', 'SignMeUp.SignMeUp'=>array(
 																'activation_field'=>false,
 																'useractive_field'=>false,
 																'password_reset_field'=>'password_reset',
@@ -45,6 +47,11 @@ class AccountsController extends AppController {
 	
 	
 	public function login() {
+
+
+        if(!isSet($this->request->query['login_client'])) {
+            $this->request->query['login_client'] = 'default';
+        }
         //Check were we need to redirect the user to
         if(Router::url( $this->here, true )!=$this->referer() && !$this->Auth->loginRedirect) {
             $redirect = $this->Auth->redirect();
@@ -72,6 +79,7 @@ class AccountsController extends AppController {
 
 
                 //$this->Session->write('locale', $this->Auth->user('locale'));
+                $this->Session->write('login_client', $this->request->query['login_client']);
                 $this->Session->write('timezone', $this->Auth->user('timezone'));
                 $this->Session->write('language', $this->Auth->user('language'));
                 if($lor = json_decode($this->Auth->user('languages_of_records'))) {
@@ -100,19 +108,26 @@ class AccountsController extends AppController {
         $this->getEventManager()->dispatch($event);
 
 		$this->Auth->logout();
+
+        /*$cookieName = $this->Connect->FB->getMetadataCookie();
+        var_dump($cookieName); die;
+        if(array_key_exists($cookieName, $_COOKIE)) {
+            unset($_COOKIE[$cookieName]);
+        }*/
         $this->Connect->FB->destroySession();
         $this->Session->delete('FB'); //delete the FB session data
+        //$this->Session->destroy();
         /*$this->Session->delete('locale');
         $this->Session->delete('timezone');*/
 
         $event = new CakeEvent('Controller.Accounts.afterLogout', $this, array('user_id'=>$userId) );
         $this->getEventManager()->dispatch($event);
 
-
 		if ($this->RequestHandler->isAjax()) {
             return $this->success(1);
         }
-		return $this->redirect($this->Auth->redirect());
+
+		return $this->redirect('/');
 
 	}
 

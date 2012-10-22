@@ -10,7 +10,7 @@ echo $this->Form->input('email');
 echo $this->Form->input('phone');
 echo $this->Form->input('address');
 echo $this->Form->input('zipcode');
-echo $this->Form->file('profile');
+echo $this->Form->input('imageUpload', array('type' => 'file'));
 echo $this->Form->submit('Save');
 echo $this->Form->end();
 ?>

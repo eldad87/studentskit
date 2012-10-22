@@ -84,13 +84,17 @@ class RequestsController extends AppController {
             $this->redirect($this->referer());
         }
 
+        if($subjectData['user_id']==$this->Auth->user('user_id')) {
+            $this->Session->setFlash(__('You cannot offer lessons to yourself'));
+            $this->redirect($this->referer());
+        }
 
 
 
 		if (!empty($this->request->data)) {
             //Format datetime
             $datetime = null;
-            if(isSet($this->request->query['datetime']) && !empty($this->request->query['datetime'])) {
+            if(isSet($this->request->data['UserLesson']) && !empty($this->request->data['UserLesson'])) {
                 $datetime = $this->request->data['UserLesson']['datetime'];
                 $datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
                 $datetime = $this->UserLesson->timeExpression($datetime, false);

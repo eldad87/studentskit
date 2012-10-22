@@ -189,9 +189,11 @@ CakePlugin::loadAll(array(
         'SignMeUp',
         'Forum',
         'facebook',
-        'DebugKit'
+        'DebugKit',
+        'Uploader',
     )
 );
+App::import('Vendor', 'Uploader.Uploader');
 
 Configure::write('template_languages', array('heb'=>'Hebrew', 'eng'=>'English'));
 Configure::write('public_domain', 'http://80.230.6.148');

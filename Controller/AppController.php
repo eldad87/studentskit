@@ -32,26 +32,46 @@ App::uses('Controller', 'Controller');
  * @link http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-	public $components = array('RequestHandler', 'Session', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),
-                                'Facebook.Connect'=>array(  'noAuth'=>false, 'model'=>'User',
-                                                            /*'modelFields'=>array('password'=>'password',
-                                                                                    'email'=>'email',
-                                                                                    'first_name'=>'first_name',
-                                                                                    'last_name'=>'last_name')*/),
+	public $components = array('RequestHandler', 'Session',
+                                'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login'), 'authenticate' => array('Form' => array('fields' => array('username' => 'email')))),
                                 'DebugKit.Toolbar');
     public $helpers = array('Facebook.Facebook');
 	
 	public function beforeFilter() {
         $this->_setLanguage();
 
+
 		parent::beforeFilter();
 		if ($this->request->is('ajax')) {
 			$this->autoLayout = false;
 			$this->disableCache();
 		}
+
+        $this->set('loginClient', $this->Session->read('login_client'));
 	}
 
     public function beforeFacebookSave() {
+
+        if($this->Connect->user('locale')) {
+            App::import('core', 'L10m');
+            $l10m = new L10n();
+            $lang = $l10m->catalog(strtolower(str_replace('_', '-', $this->Connect->user('locale'))));
+            if(is_array($lang)) {
+                $lang = $lang['localeFallback'];
+            }
+            $this->Connect->authUser['User']['language']    = $lang;
+        }
+        if($this->Connect->user('timezone')) {
+            $this->Connect->authUser['User']['timezone']    = 'UTC '.$this->Connect->user('timezone');
+        }
+
+        if($this->Connect->user('gender')) {
+            $this->Connect->authUser['User']['gender'] = $this->Connect->user('gender');
+        }
+        if($this->Connect->user('currency')) {
+            $this->Connect->authUser['User']['currency'] = $this->Connect->user('currency');
+        }
+
         $this->Connect->authUser['User']['email']       = $this->Connect->user('email');
         $this->Connect->authUser['User']['first_name']  = $this->Connect->user('first_name');
         $this->Connect->authUser['User']['last_name']   = $this->Connect->user('last_name');

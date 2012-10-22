@@ -9,7 +9,7 @@ echo $this->Form->input('subject_category_id', array('options'=>$subjectCategori
 echo $this->Form->input('language', array('options'=>$languages));
 echo $this->Form->input('lesson_type', array('options'=>array(LESSON_TYPE_LIVE=>'live', LESSON_TYPE_VIDEO=>'video')));
 echo $this->Form->input('duration_minutes');
-
+echo $this->Form->input('imageUpload', array('type' => 'file'));
 //echo $this->Form->input('category_id');
 //echo $this->Form->input('catalog_id');
 ?>

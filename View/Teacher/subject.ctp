@@ -18,6 +18,7 @@ echo $this->Form->input('lesson_type', array('options'=>array(LESSON_TYPE_LIVE=>
 echo $this->Form->input('is_enable', array('options'=>array(1=>'on', 0=>'off')));
 echo $this->Form->input('is_public', array('options'=>array(1=>'on', 0=>'off')));
 echo $this->Form->input('duration_minutes');
+echo $this->Form->input('imageUpload', array('type' => 'file'));
 
 //echo $this->Form->input('category_id');
 //echo $this->Form->input('catalog_id');
