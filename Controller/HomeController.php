@@ -35,13 +35,14 @@ class HomeController extends AppController {
     }
 
     public function testWatchitoo() {
-       /* App::import('Vendor', 'Watchitoo'.DS.'Watchitoo');
+       App::import('Vendor', 'Watchitoo'.DS.'Watchitoo');
         $wObj = new Watchitoo();
-        $saveUser = $wObj->saveUser(null, 'eldad88@gmail.com', 'password', 'eldad', 'yamin', 'eldad yamin');
-        //$saveUser = $wObj->saveMeeting(null, 42665, 'title', 'description');
-        var_dump($saveUser);*/
-
-        var_dump($this->Watchitoo->getMeetingId(55));
+        echo '<pre>';
+        var_dump($wObj->getMeetingId(63));
+        var_dump($wObj->getMeetingSettings(63, 6)); //student
+        //var_dump($wObj->getMeetingSettings(63, 4)); //teacher
+        echo '</pre>';
+        //$saveUser = $wObj->saveUser(null, 'eldad88@gmail.com', 'password', 'eldad', 'yamin', 'eldad yamin');
     }
 
     public function uploadTest() {
