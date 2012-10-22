@@ -11,18 +11,22 @@ class User extends AppModel {
         'SignMeUp.SignMeUp',
         'Uploader.Attachment' => array(
             'imageUpload'=>array(
-                'uploadDir'	            => 'img/Image/',
+                'uploadDir'	            => 'img/users/',
                 'appendNameToUploadDir' => true,
                 'flagColumn'            => array('dbColumn'=>'image', 'value'=>IMAGE_SUBJECT_OWNER), //Flag DB.table.image with value of IMAGE_SUBJECT_OWNER
                 'name'                  => 'formatImageName',
                 'dbColumn'              => 'image_source',
                 'transforms' => array(
-                    array('method'=>'resize','width'=> 200,  'height'=>200,  'append'=>'_resize',   'overwrite'=>true, 'dbColumn'=>'image_resize', 'aspect'=>true, 'mode'=>Uploader::MODE_HEIGHT, 'setAsTransformationSource'=>true),
+                    array('method'=>'resize','width'=> 200,  'height'=>210,  'append'=>'_resize',   'overwrite'=>true, 'dbColumn'=>'image_resize', 'aspect'=>true, 'mode'=>Uploader::MODE_HEIGHT, 'setAsTransformationSource'=>true),
+                    array('method'=>'crop', 'width' => 38,   'height'=>38,   'append'=>'_38x38',    'overwrite'=>true, 'dbColumn'=>'image_crop_38x38'),
                     array('method'=>'crop', 'width' => 60,   'height'=>60,   'append'=>'_60x60',    'overwrite'=>true, 'dbColumn'=>'image_crop_60x60'),
+                    array('method'=>'crop', 'width' => 63,   'height'=>63,   'append'=>'_63x63',    'overwrite'=>true, 'dbColumn'=>'image_crop_63x63'),
                     array('method'=>'crop', 'width' => 72,   'height'=>72,   'append'=>'_72x72',    'overwrite'=>true, 'dbColumn'=>'image_crop_72x72'),
                     array('method'=>'crop', 'width' => 78,   'height'=>78,   'append'=>'_78x78',    'overwrite'=>true, 'dbColumn'=>'image_crop_78x78'),
+                    array('method'=>'crop', 'width' => 80,   'height'=>80,   'append'=>'_80x80',    'overwrite'=>true, 'dbColumn'=>'image_crop_80x80'),
+                    array('method'=>'crop', 'width' => 100,  'height'=>100,  'append'=>'_100x100',  'overwrite'=>true, 'dbColumn'=>'image_crop_100x100'),
                     array('method'=>'crop', 'width' => 149,  'height'=>182,  'append'=>'_149x182',  'overwrite'=>true, 'dbColumn'=>'image_crop_149x182'),
-                    array('method'=>'crop', 'width' => 188,  'height'=>197,  'append'=>'_188x197',  'overwrite'=>true, 'dbColumn'=>'image_crop_197x197'),
+                    array('method'=>'crop', 'width' => 200,  'height'=>210,  'append'=>'_200x210',  'overwrite'=>true, 'dbColumn'=>'image_crop_200x210'),
                 )
             )
         ),
@@ -32,7 +36,7 @@ class User extends AppModel {
                 'extension'	=> array('gif', 'jpg', 'png', 'jpeg'),
                 'filesize'	=> 1048576,
                 'minWidth'	=> 200,
-                'minHeight'	=> 200,
+                'minHeight'	=> 210,
                 'required'	=> false
             )
         )
