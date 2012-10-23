@@ -1,6 +1,6 @@
 <?php
 class NotificationsController extends AppController {
-	public $name = ' Notifications';
+	public $name = 'Notifications';
 	public $uses = array('Notification');
 
 	public function index($limit=7, $page=1, $markAsRead=true) {

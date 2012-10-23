@@ -49,8 +49,59 @@ class AppController extends Controller {
 
         $this->set('loginClient', $this->Session->read('login_client'));
 
+        /** View params
+         *************************************/
         $this->set('user', $this->Auth->user());
+
+        App::import('Utils.Lib', 'Languages');
+        $lObj = new Languages();
+        $this->set('languages', array_flip($lObj->lists()));
+
+        App::import('Lib', 'CakeTime');
+
+        $this->set('navButtonSelection', $this->detemintControllerToNavButton());
 	}
+    private function detemintControllerToNavButton() {
+        $navButtons = array(
+            'home'          =>false,
+            'board'         =>false,
+            'account'       =>false,
+            'request'       =>false,
+            'howItWorks'    =>false,
+        );
+        switch(strtolower($this->name)) {
+            case 'home':
+            case 'accounts':
+            case 'order':
+            case 'lessons':
+                $navButtons['home']=true;
+                break;
+            case 'message':
+            case 'teacher':
+            case 'student':
+                $navButtons['account']=true;
+                break;
+            case 'requests':
+                $navButtons['request']=true;
+                break;
+            case 'forum':
+            case 'posts':
+            case 'reports':
+            case 'search':
+            case 'staff':
+            case 'stations':
+            case 'topics':
+            case 'users':
+            case 'requests':
+                $navButtons['board']=true;
+                break;
+            default:
+                $navButtons['home']=true;
+                break;
+        }
+
+        return $navButtons;
+    }
 
     public function beforeFacebookSave() {
 
@@ -111,7 +162,6 @@ class AppController extends Controller {
 
         //Set language direction
         //setlocale(LC_ALL, $locale .'UTF8', $locale['locale'] .'UTF-8', $locale['locale'], 'eng.UTF8', 'eng.UTF-8', 'eng', 'en_US');
-
 
         $cataqlog = $localize->catalog($language);
         Configure::write('Config.languageDirection', isSet($cataqlog['direction']) ? $cataqlog['direction'] : 'ltr');
