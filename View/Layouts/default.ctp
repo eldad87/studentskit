@@ -216,11 +216,13 @@
             </div><!--/.nav-collapse -->
         </div>
     </section>
+</header>
 
     <!-- Content
    ================================================== -->
-    <?php echo $this->Session->flash();
-    echo $this->fetch('content'); ?>
+
+        <?php echo $this->Session->flash();
+        echo $this->fetch('content'); ?>
 
     <!-- Footertop
    ================================================== -->

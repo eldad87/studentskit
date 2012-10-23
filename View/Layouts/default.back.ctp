@@ -1,25 +1,9 @@
 <?php
-/**
- *
- * PHP 5
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       Cake.View.Layouts
- * @since         CakePHP(tm) v 0.10.0.1076
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-
 $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework');
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?php echo $this->Html->docType('xhtml-trans'); ?>
+<!--<html xmlns="http://www.w3.org/1999/xhtml" dir="<?php /*echo Configure::read('Config.languageDirection'); */?>">-->
+<?php echo $this->Facebook->html(); ?>
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<title>
@@ -29,7 +13,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 	<?php
 		echo $this->Html->meta('icon');
 
-		echo $this->Html->css('cake.generic');
+		echo $this->Html->css('studentskit');
 
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
@@ -37,25 +21,58 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 	?>
 </head>
 <body>
-	<div id="container">
-		<div id="header">
-			<h1><?php echo $this->Html->link($cakeDescription, 'http://cakephp.org'); ?></h1>
-		</div>
-		<div id="content">
+<div id="container">
 
+<?php
+    pr($user);
+    pr($this->requestAction(array('controller'=>'Message', 'action'=>'getUnreadThreadCount')));
+    pr($this->requestAction(array('controller'=>'Notifications', 'action'=>'getUnreadNotificationsCount')));
+    pr($this->requestAction(array('controller'=>'Notifications', 'action'=>'index')));
+?>
+    <br />
+		<div id="top_strip">
+			<div class="container">
+				<div class="localize">
+					<p>Language</p> <?php echo $this->Html->image('top_strip/lang.jpg'); ?> <?php echo $this->Html->image('top_strip/country.jpg'); ?>
+				</div>
+				<div class="user">
+					<p>Sign in</p> <?php echo $this->Html->image('top_strip/sign_in.jpg', array('class'=>'user_sign_in')); ?>
+					<p>Register</p>
+				</div>
+			</div>
+		</div>
+		
+		<div id="nav">
+			<div class="container">
+				<div class="logo"><?php echo $this->Html->image('nav/logo.jpg'); ?></div>
+				<div class="menu">
+					<div id="slidetabsmenu">
+						<ul>
+							<li class="current"><a href="/" title="Home"><span>Home</span></a></li>
+							<li><?php echo $this->Html->link('<span>Forum</span>', array('controller'=>'forum', 'action'=>'/'), array('title'=>'Forum', 'escape'=>false)); ?></li>
+							<li><?php echo $this->Html->link('<span>Account</span>', array('controller'=>'Student', 'action'=>'/'), array('title'=>'Account', 'escape'=>false)); ?></li>
+
+							<li><?php echo $this->Html->link('<span>Lesson request</span>', array('controller'=>'Requests', 'action'=>'/'), array('title'=>'Account', 'escape'=>false)); ?></li>
+							<li><a href="#" title="How it works"><span>How it works</span></a></li>	
+						</ul>
+					</div>
+					<br style="clear: left;" />
+
+				</div>
+			</div>
+		</div>
+		
+		
+		
+		<div id="content">
 			<?php echo $this->Session->flash(); ?>
 
 			<?php echo $this->fetch('content'); ?>
 		</div>
 		<div id="footer">
-			<?php echo $this->Html->link(
-					$this->Html->image('cake.power.gif', array('alt' => $cakeDescription, 'border' => '0')),
-					'http://www.cakephp.org/',
-					array('target' => '_blank', 'escape' => false)
-				);
-			?>
 		</div>
 	</div>
-	<?php echo $this->element('sql_dump'); ?>
+	<?php //echo $this->element('sql_dump'); ?>
+    <?php echo $this->Facebook->init(); ?>
 </body>
 </html>

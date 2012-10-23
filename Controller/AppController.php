@@ -35,7 +35,7 @@ class AppController extends Controller {
 	public $components = array('RequestHandler', 'Session',
                                 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login'), 'authenticate' => array('Form' => array('fields' => array('username' => 'email')))),
                                 'DebugKit.Toolbar');
-    public $helpers = array('Facebook.Facebook');
+    public $helpers = array('Facebook.Facebook', 'Layout');
 	
 	public function beforeFilter() {
         $this->_setLanguage();
@@ -57,7 +57,7 @@ class AppController extends Controller {
         $lObj = new Languages();
         $this->set('languages', array_flip($lObj->lists()));
 
-        App::import('Lib', 'CakeTime');
+        App::uses('CakeTime', 'Utility');
 
         $this->set('navButtonSelection', $this->detemintControllerToNavButton());
 	}
