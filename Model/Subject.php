@@ -212,15 +212,20 @@ class Subject extends AppModel {
             App::import('Model', 'TeacherLesson');
             $tlObj = new TeacherLesson();
             $tlObj->recursive = -1;
+
             $tlObj->updateAll(array('image'             =>IMAGE_SUBJECT,
                                     'image_source'      =>'\''.Sanitize::escape($this->data['Subject']['image_source'],      $this->useDbConfig).'\'',
 
                                     'image_resize'      =>'\''.Sanitize::escape($this->data['Subject']['image_resize'],      $this->useDbConfig).'\'',
+                                    'image_crop_38x38'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_38x38'],  $this->useDbConfig).'\'',
                                     'image_crop_60x60'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_60x60'],  $this->useDbConfig).'\'',
+                                    'image_crop_63x63'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_63x63'],  $this->useDbConfig).'\'',
                                     'image_crop_72x72'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_72x72'],  $this->useDbConfig).'\'',
+                                    'image_crop_78x78'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_78x78'],  $this->useDbConfig).'\'',
+                                    'image_crop_80x80'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_80x80'],  $this->useDbConfig).'\'',
+                                    'image_crop_100x100'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_100x100'],$this->useDbConfig).'\'',
                                     'image_crop_149x182'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_149x182'],$this->useDbConfig).'\'',
-                                    'image_crop_149x182'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_149x182'],$this->useDbConfig).'\'',
-                                    'image_crop_197x197'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_197x197'],$this->useDbConfig).'\''),
+                                    'image_crop_200x210'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_200x210'],$this->useDbConfig).'\''),
 
                                 array($tlObj->name.'.subject_id'=>$pKey));
 
@@ -232,11 +237,15 @@ class Subject extends AppModel {
                                     'image_source'      =>'\''.Sanitize::escape($this->data['Subject']['image_source'],      $this->useDbConfig).'\'',
 
                                     'image_resize'      =>'\''.Sanitize::escape($this->data['Subject']['image_resize'],      $this->useDbConfig).'\'',
+                                    'image_crop_38x38'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_38x38'],  $this->useDbConfig).'\'',
                                     'image_crop_60x60'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_60x60'],  $this->useDbConfig).'\'',
+                                    'image_crop_63x63'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_63x63'],  $this->useDbConfig).'\'',
                                     'image_crop_72x72'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_72x72'],  $this->useDbConfig).'\'',
+                                    'image_crop_78x78'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_78x78'],  $this->useDbConfig).'\'',
+                                    'image_crop_80x80'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_80x80'],  $this->useDbConfig).'\'',
+                                    'image_crop_100x100'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_100x100'],$this->useDbConfig).'\'',
                                     'image_crop_149x182'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_149x182'],$this->useDbConfig).'\'',
-                                    'image_crop_149x182'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_149x182'],$this->useDbConfig).'\'',
-                                    'image_crop_197x197'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_197x197'],$this->useDbConfig).'\''),
+                                    'image_crop_200x210'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_200x210'],$this->useDbConfig).'\''),
 
                                     array($ulObj->name.'.subject_id'=>$pKey));
         }
@@ -630,13 +639,26 @@ class Subject extends AppModel {
 		
 		if($type==SUBJECT_TYPE_REQUEST) {
 			$this->bindStudentOnLessonRequest();
-		}
+		} else {
+            $this->bindTeacherOnLessonRequest();
+        }
 		return $this->find('all', array('conditions'=>$conditions, 
 										'order'=>'created', 
 										'limit'=>$limit,
 										'page'=>$page
         ));
 	}
+
+    private function bindTeacherOnLessonRequest() {
+        $this->bindModel(array('belongsTo'=>array(
+                'Teacher' => array(
+                    'className' => 'User',
+                    'foreignKey'=>'user_id',
+                    'fields'=>array('username'/*, 'last_name', 'image', 'student_avarage_rating', 'student_total_lessons'*/))
+            )
+            )
+        );
+    }
 	
 	private function bindStudentOnLessonRequest() {
 		$this->bindModel(array('belongsTo'=>array(
