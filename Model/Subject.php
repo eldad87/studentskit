@@ -412,6 +412,11 @@ class Subject extends AppModel {
             return array();
         }
 
+        $return = array();
+        if(!$results->response->docs) {
+            return $return;
+        }
+
         //Build conditions
         $conditions = array();
 
@@ -424,11 +429,12 @@ class Subject extends AppModel {
 
         if($subjectType==SUBJECT_TYPE_REQUEST) {
             $this->bindStudentOnLessonRequest();
+        } else {
+            $this->bindTeacherOnLessonOffer();
         }
 
-        $return = array();
-        $return['subjects'] = $this->find('all', array('conditions'=>$conditions));
 
+        $return['subjects'] = $this->find('all', array('conditions'=>$conditions));
 
         if(isSet($results['facet_counts']['facet_fields'])) {
             $facetName = key($results['facet_counts']['facet_fields']);
@@ -640,7 +646,7 @@ class Subject extends AppModel {
 		if($type==SUBJECT_TYPE_REQUEST) {
 			$this->bindStudentOnLessonRequest();
 		} else {
-            $this->bindTeacherOnLessonRequest();
+            $this->bindTeacherOnLessonOffer();
         }
 		return $this->find('all', array('conditions'=>$conditions, 
 										'order'=>'created', 
@@ -649,7 +655,7 @@ class Subject extends AppModel {
         ));
 	}
 
-    private function bindTeacherOnLessonRequest() {
+    private function bindTeacherOnLessonOffer() {
         $this->bindModel(array('belongsTo'=>array(
                 'Teacher' => array(
                     'className' => 'User',
