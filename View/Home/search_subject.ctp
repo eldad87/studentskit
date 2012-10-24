@@ -13,7 +13,7 @@
                     }
                     ?>
                 </p>
-                <button type="button" class="btns btn-black pull-right space28">Lesson Requests</button>
+                <button type="button" class="btns btn-black pull-right space28"><?php echo $this->Html->link('Lesson Requests', array('controller'=>'Requests')); ?></button>
                 <div class="pull-left space6">
                     <!-- category filter -->
                     <?php if($subjectsData) {
