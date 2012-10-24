@@ -160,24 +160,23 @@ Cache::config('default', array('engine' => 'File'));
  *
  * ));
  */
+// Enable the Dispatcher filters for plugin assets, and
+// CacheHelper.
 Configure::write('Dispatcher.filters', array(
-	'AssetDispatcher',
-	'CacheDispatcher'
+    'AssetDispatcher',
+    'CacheDispatcher'
 ));
 
-/**
- * Configures default file logging options
- */
-App::uses('CakeLog', 'Log');
+// Add logging configuration.
 CakeLog::config('debug', array(
-	'engine' => 'FileLog',
-	'types' => array('notice', 'info', 'debug'),
-	'file' => 'debug',
+    'engine' => 'FileLog',
+    'types' => array('notice', 'info', 'debug'),
+    'file' => 'debug',
 ));
 CakeLog::config('error', array(
-	'engine' => 'FileLog',
-	'types' => array('warning', 'error', 'critical', 'alert', 'emergency'),
-	'file' => 'error',
+    'engine' => 'FileLog',
+    'types' => array('warning', 'error', 'critical', 'alert', 'emergency'),
+    'file' => 'error',
 ));
 
 
