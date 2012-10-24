@@ -364,7 +364,7 @@ class HomeController extends AppController {
         die;
     }*/
 
-    public function testPay( $preapprovalKey ) {
+    /*public function testPay( $preapprovalKey ) {
         App::import('Vendor', 'AdaptivePayments'.DS.'AdaptivePayments');
         $ap = new AdaptivePayments();
 
@@ -391,7 +391,7 @@ class HomeController extends AppController {
         pr($response);
         pr($response->paymentExecStatus);
         die;
-    }
+    }*/
 
     /*public function testForumMessages() {
         app::import('Model', 'Forum.Topic');
@@ -401,12 +401,14 @@ class HomeController extends AppController {
         //die;
     }*/
 
-    /*public function testAddCategory() {
+   /* public function testAddCategory() {
         App::import('Model', 'SubjectCategory');
         $scObj = new SubjectCategory();
 
 
-       $scObj->create();
+       /** Multi lang
+        *******************************/
+       /*$scObj->create();
         $scObj->set(array('name'=>'Spirituality', 'description'=>'about spirituality'));
         $scObj->save();
         $id = $scObj->id;
@@ -418,9 +420,11 @@ class HomeController extends AppController {
         $scObj->save(array('name'=>'רוחניות', 'description'=>'אודות רוחניות'));
 
         $scObj->locale = 'he_he';
-        pr($scObj->find('all'));
+        pr($scObj->find('all'));*/
 
-        /*$scObj->create();
+        /** Plain test
+         ******************************* /
+        $scObj->create();
         $scObj->set(array('name'=>'Spirituality', 'description'=>'about spirituality'));
         $scObj->save();
         $id = $scObj->id;
@@ -475,6 +479,7 @@ $id = $scObj->id;
         $scObj->set(array('name'=>'NoSQL', 'description'=>'NoSQL', 'parent_subject_category_id'=>$id2));
         $scObj->save();
     }*/
+
     /*public function test() {
         App::import('Model', 'Notification');
         $notificationObj = new Notification();
@@ -490,7 +495,6 @@ $id = $scObj->id;
         //Search
         $subjectType = (isSet($this->request->query['type']) ? $this->request->query['type'] : SUBJECT_TYPE_OFFER);
         $subjectsData = $this->Subject->search($query, $subjectType);
-
 
         App::Import('Model', 'SubjectCategory');
         $scObj = new SubjectCategory();
@@ -511,22 +515,25 @@ $id = $scObj->id;
 
             //Add category name
             $foundCategories = $scObj->find('list', array('conditions'=>array('subject_category_id'=>$categoryIds), 'fields'=>array('subject_category_id', 'name')));
+
             foreach($foundCategories AS $subjectCategoryId=>$name) {
                 $categories[$subjectCategoryId]['name'] = $name;
             }
             $subjectsData['categories'] = $categories;
         }
 
-        //Add breadcrumbs
-        $subjectsData['breadcrumbs'] = array();
-        if(isSet($this->request->query['category_id'])) {
-            $scData = $scObj->findBySubjectCategoryId($this->request->query['category_id']);
-            $scData = $scData['SubjectCategory'];
+        if($subjectsData) {
+            //Add breadcrumbs
+            $subjectsData['breadcrumbs'] = array();
+            if(isSet($this->request->query['category_id'])) {
+                $scData = $scObj->findBySubjectCategoryId($this->request->query['category_id']);
+                $scData = $scData['SubjectCategory'];
 
-            if(!empty($scData['path'])); {
-                $subjectsData['breadcrumbs'] = $scObj->find('list', array('fields'=>array('subject_category_id', 'name'), 'conditions'=>array('subject_category_id'=>explode(',', $scData['path']))));
+                if(!empty($scData['path'])); {
+                    $subjectsData['breadcrumbs'] = $scObj->find('list', array('fields'=>array('subject_category_id', 'name'), 'conditions'=>array('subject_category_id'=>explode(',', $scData['path']))));
+                }
+                $subjectsData['breadcrumbs'][$this->request->query['category_id']] = $scData['name'];
             }
-            $subjectsData['breadcrumbs'][$this->request->query['category_id']] = $scData['name'];
         }
 
 
@@ -547,6 +554,7 @@ $id = $scObj->id;
 				return $subjectsData;
 			}
 		}
+        //pr($subjectsData);
 	}
 
     //http://universito.com/Home/subjectSuggestions.json?search_terms=for%20the%20d
@@ -576,7 +584,7 @@ $id = $scObj->id;
         $searchTerms = !empty($this->request->query['search_terms'])        ? $this->request->query['search_terms']             : '*';
 
         $categoryId  = (isSet($this->request->query['category_id'])         ? $this->request->query['category_id']	            : 0);
-        $limit       = (isSet($this->request->query['limit']) 			    ? $this->request->query['limit']		            : 6);
+        $limit       = (isSet($this->request->query['limit']) 			    ? $this->request->query['limit']		            : 8);
         $page        = (isSet($this->request->query['page']) 			    ? $this->request->query['page']		                : 1);
         $language    = (isSet($this->request->query['languages_of_records'])? $this->request->query['languages_of_records'] 	:
                         ($this->Session->read('languagesOfRecords')         ? $this->Session->read('languagesOfRecords')        : null));

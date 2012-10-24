@@ -3,7 +3,7 @@ class SubjectCategory extends AppModel {
 	public $name = 'SubjectCategory';
 	public $useTable = 'subject_categories';
 	public $primaryKey = 'subject_category_id';
-    public $actsAs = array('Translate'=>array('name', 'description'),'Pathable');
+    public $actsAs = array('Translate'=>array('name', 'description'), 'Pathable');
     public $translateModel = 'SubjectCategoryi18n';
     public $translateTable = 'subject_categories_i18n';
 

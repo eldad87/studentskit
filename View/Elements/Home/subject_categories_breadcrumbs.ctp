@@ -1,16 +1,15 @@
-<div id="categories_breadcrumbs">
-			
-<h2>Breadcrumbs</h2>
-<?php
+<p class="pull-left bodytop-leftlink">
+    <?php
     $urlParams = $this->params['url'];
     unset($urlParams['category_id']);
-    echo $this->Html->link('all', array('?'=>$urlParams), true),' / ';
 
+    echo $this->Html->link('All', array('?'=>$urlParams), true);
+
+    $count = count($subject_categories_breadcrumbs);
     foreach($subject_categories_breadcrumbs AS $subjectCategoryId=>$name) {
-        echo $this->Html->link($name, array('?'=>am($urlParams, array('category_id'=>$subjectCategoryId))), true),' / ';
+        echo '<span>></span>';
+        echo $this->Html->link($name, array('?'=>am($urlParams, array('category_id'=>$subjectCategoryId))), array('class'=>(!--$count ? 'color-text' : null))  );
     }
-?>
 
-</div>
-
-
+    ?>
+</p>
