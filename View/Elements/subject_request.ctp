@@ -1,27 +1,26 @@
-<div class="subject">
-<?php
-echo 'Subject id:'.$Subject['subject_id'];
-echo '<br />';
-echo 'Name: '.$Subject['name'];
-echo '<br />';
-echo 'Description: '.$Subject['description'];
-echo '<br />';
-echo 'Language: '.$Subject['language'];
-echo '<br />';
-echo 'Lesson Type: '.$Subject['lesson_type']; 
-echo '<br />';
-echo 'Rating: '.$Subject['avarage_rating']; 
-echo '<br />';
-echo '1 On 1 Price: '.$Subject['1_on_1_price'];
-echo '<br />';
-echo 'Full Group Student price: '.$Subject['full_group_student_price'];
-echo '<br />';
-echo 'Full Group Total price: '.$Subject['full_group_total_price'];
-echo '<br />';
-echo 'Max students: '.$Subject['max_students'];
-echo '<br />';
-echo 'Student image: '.$Student['image'];
-echo '<br />';
-echo $this->Html->link('Offer', array('controller'=>'Requests', 'action'=>'offerLesson', $Subject['subject_id']));
-?>
+<div class="lesson-box">
+    <h3 class="radius1"><strong><?php
+        //Create a string - max 37 chars, camelize each word -> Abcd eFg -> Abcd Efg
+        echo String::truncate(
+            $this->Html->link($this->Layout->formatTitle($name),
+                array('controller'=>'Home', 'action'=>'teacherSubject', $subjectId),
+                array('class'=>'radius1')), 37, array('ending'=>'..', 'html'=>true));?></strong></h3>
+    <div class="lesson-box-content">
+        <div class="user-pic2">
+            <?php
+            echo $this->Html->image($this->Layout->image($imageSource, 72, 72), array('alt' => 'Topic image', 'url'=>array('controller'=>'Home', 'action'=>'teacherSubject', $subjectId)));
+            ?>
+        </div>
+        <div class="usr-text2">
+            <p><?php echo String::truncate(($description), 63, array('ending'=>'..', 'html'=>true));?></p>
+        </div>
+    </div>
+    <div class="lesson-box-footer radius2">
+        <?php echo $this->Layout->rating($avarageRating); ?>
+        <div class="pull-right">
+            <div class="price-tag"><span>
+                <?php echo $this->Html->link($this->Layout->priceTag($oneOnOnePrice, $fullGroupStudentPrice), array('controller'=>'Order', 'action'=>'init', 'order', $subjectId)); ?>
+            </span></div><a href="#"><i class="iconSmall-info space3"></i></a>
+        </div>
+    </div>
 </div>

@@ -671,7 +671,7 @@ class Subject extends AppModel {
 											'Student' => array(
 												'className' => 'User',
 												'foreignKey'=>'user_id',
-												'fields'=>array('first_name', 'last_name', 'image', 'student_avarage_rating', 'student_total_lessons'))
+												'fields'=>array('first_name', 'last_name', 'username', 'image', 'student_avarage_rating', 'student_total_lessons'))
 											)
 								)
 						);

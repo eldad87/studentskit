@@ -146,7 +146,6 @@ class AppController extends Controller {
             $language = $this->Session->read('language');
             $locale = $localize->map($this->Session->read('language'));
             //$language = $this->Session->read('language');
-            Configure::write('Config.language', $language);
         } else {
             //Get language from browser
             $locale = $localize->get();
@@ -154,6 +153,7 @@ class AppController extends Controller {
             $language = $localize->catalog($locale);
             $language = $localize->map($language['localeFallback']);
         }
+        Configure::write('Config.language', $language);
 
         //pr(($this->Session->read('timezone'))); die;
         if($this->Session->read('timezone')) {
