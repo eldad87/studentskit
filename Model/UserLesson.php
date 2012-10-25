@@ -1437,7 +1437,7 @@ class UserLesson extends AppModel {
         //Find teacher lesson
         $this->Subject; //Init const
         $this->TeacherLesson->recursive = -1;
-        $tlData = $this->TeacherLesson->find('first', array('teacher_lesson_id'=>$teacherLessonId));
+        $tlData = $this->TeacherLesson->find('first', array('conditions'=>array('teacher_lesson_id'=>$teacherLessonId)));
         if(!$tlData || $tlData['TeacherLesson']['is_deleted'] || $tlData['TeacherLesson']['lesson_type']!=LESSON_TYPE_LIVE) {
             return false;
         }
