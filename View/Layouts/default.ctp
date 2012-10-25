@@ -1,14 +1,14 @@
-<?php echo $this->Html->docType('xhtml-trans'); ?>
+<?php echo $this->Html->docType(); ?>
 <?php echo $this->Facebook->html(); ?>
 <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <?php echo $this->Html->charset(); ?>
     <title>
         <?php echo $title_for_layout; ?>
     </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
     <?php echo $this->fetch('meta');?>
 
     <!-- styles -->
@@ -50,7 +50,7 @@
     ?>
 
 
-    <script>
+    <script type="text/javascript">
         function changeTime(spanId, val) {
             $('#'+spanId).html(val);
         }

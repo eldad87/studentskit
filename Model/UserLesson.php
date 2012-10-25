@@ -24,17 +24,17 @@ class UserLesson extends AppModel {
 					'Teacher' => array(
 						'className' => 'User',
 						'foreignKey'=>'teacher_user_id',
-						'fields'=>array('first_name', 'last_name', 'image', 'teacher_avarage_rating', 'teacher_total_lessons')
+						'fields'=>array('first_name', 'last_name', 'image', 'image_source', 'teacher_avarage_rating', 'teacher_total_lessons')
 					),
 					'Student' => array(
 						'className' => 'User',
 						'foreignKey'=>'student_user_id',
-						'fields'=>array('first_name', 'last_name', 'image', 'student_avarage_rating', 'student_total_lessons')
+						'fields'=>array('first_name', 'last_name', 'username', 'image', 'image_source', 'student_avarage_rating', 'student_total_lessons')
 					),
 					'Subject' => array(
 						'className' => 'Subject',
 						'foreignKey'=>'subject_id',
-						'fields'=>array('avarage_rating', 'image', 'is_enable')
+						'fields'=>array('avarage_rating', 'image', 'image_source', 'is_enable')
 					),
 					'TeacherLesson' => array(
 						'className' => 'TeacherLesson',
@@ -452,14 +452,17 @@ class UserLesson extends AppModel {
 			'image'	                    => $subjectData['image'],
 			'image_source'	            => $subjectData['image_source'],
 			'image_resize'	            => $subjectData['image_resize'],
+			'image_crop_38x38'	        => $subjectData['image_crop_38x38'],
+			'image_crop_58x58'	        => $subjectData['image_crop_58x58'],
 			'image_crop_60x60'	        => $subjectData['image_crop_60x60'],
-			'image_crop_72x72'	        => $subjectData['image_crop_72x72'],
+			'image_crop_63x63'	        => $subjectData['image_crop_63x63'],
 			'image_crop_72x72'	        => $subjectData['image_crop_72x72'],
 			'image_crop_78x78'	        => $subjectData['image_crop_78x78'],
+			'image_crop_80x80'	        => $subjectData['image_crop_80x80'],
 			'image_crop_149x182'        => $subjectData['image_crop_149x182'],
-			'image_crop_197x197'        => $subjectData['image_crop_197x197'],
+			'image_crop_200x210'        => $subjectData['image_crop_200x210'],
+			'image_crop_436x214'        => $subjectData['image_crop_436x214'],
 		);
-
 
         //Reverse the stages, in use for teacher invite students, or on SUBJECT_TYPE_REQUEST - sending requests to teachers
         if($reverseStage) {
@@ -597,12 +600,16 @@ class UserLesson extends AppModel {
             'image'	                    => $teacherLessonData['image'],
             'image_source'	            => $teacherLessonData['image_source'],
             'image_resize'	            => $teacherLessonData['image_resize'],
+            'image_crop_38x38'	        => $teacherLessonData['image_crop_38x38'],
+            'image_crop_58x58'	        => $teacherLessonData['image_crop_58x58'],
             'image_crop_60x60'	        => $teacherLessonData['image_crop_60x60'],
-            'image_crop_72x72'	        => $teacherLessonData['image_crop_72x72'],
+            'image_crop_63x63'	        => $teacherLessonData['image_crop_63x63'],
             'image_crop_72x72'	        => $teacherLessonData['image_crop_72x72'],
             'image_crop_78x78'	        => $teacherLessonData['image_crop_78x78'],
+            'image_crop_80x80'	        => $teacherLessonData['image_crop_80x80'],
             'image_crop_149x182'        => $teacherLessonData['image_crop_149x182'],
-            'image_crop_197x197'        => $teacherLessonData['image_crop_197x197'],
+            'image_crop_200x210'        => $teacherLessonData['image_crop_200x210'],
+            'image_crop_436x214'        => $teacherLessonData['image_crop_436x214'],
 		);
         if($userLessonId) {
             $userLesson['user_lesson_id'] = $userLessonId; //data that used in event

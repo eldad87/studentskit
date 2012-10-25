@@ -382,12 +382,16 @@ class TeacherLesson extends AppModel {
                 'image'	                    => $subjectData['image'],
                 'image_source'	            => $subjectData['image_source'],
                 'image_resize'	            => $subjectData['image_resize'],
+                'image_crop_38x38'	        => $subjectData['image_crop_38x38'],
+                'image_crop_58x58'	        => $subjectData['image_crop_58x58'],
                 'image_crop_60x60'	        => $subjectData['image_crop_60x60'],
-                'image_crop_72x72'	        => $subjectData['image_crop_72x72'],
+                'image_crop_63x63'	        => $subjectData['image_crop_63x63'],
                 'image_crop_72x72'	        => $subjectData['image_crop_72x72'],
                 'image_crop_78x78'	        => $subjectData['image_crop_78x78'],
+                'image_crop_80x80'	        => $subjectData['image_crop_80x80'],
                 'image_crop_149x182'        => $subjectData['image_crop_149x182'],
-                'image_crop_197x197'        => $subjectData['image_crop_197x197'],
+                'image_crop_200x210'        => $subjectData['image_crop_200x210'],
+                'image_crop_436x214'        => $subjectData['image_crop_436x214'],
             );
 
             //Set the end of the lesson, video lesson end date is first-watching-time+2 days
@@ -523,7 +527,20 @@ class TeacherLesson extends AppModel {
 		
 		return true;
 	}
-	
+
+    /**
+     * Return a list of lessons for a given subject which the user can join to
+     */
+    public function getUpcomingOpenLessons($subjectId, $limit=2, $page=1) {
+        $this->recursive = -1;
+        return $this->find('all', array('conditions'=>array(
+            'subject_id'=>$subjectId,
+            $this->timeExpression('datetime > NOW() + 1 hour'),
+            'max_students >'=>'num_of_students',
+            'is_deleted'=>'0')
+        ));
+    }
+
 	public function getLiveLessonsByDate( $teacherUserId, $year, $month=null ) {
 		$this->getDataSource();
         $this->Subject; //Init const LESSON_TYPE_LIVE

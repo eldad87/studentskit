@@ -32,14 +32,17 @@ class Subject extends AppModel {
                 'transforms' => array(
                     array('method'=>'resize','width'=> 200,  'height'=>210,  'append'=>'_resize',   'overwrite'=>true, 'dbColumn'=>'image_resize', 'aspect'=>true, 'mode'=>Uploader::MODE_HEIGHT, 'setAsTransformationSource'=>true),
                     array('method'=>'crop', 'width' => 38,   'height'=>38,   'append'=>'_38x38',    'overwrite'=>true, 'dbColumn'=>'image_crop_38x38'),
+                    array('method'=>'crop', 'width' => 58,   'height'=>58,   'append'=>'_58x58',    'overwrite'=>true, 'dbColumn'=>'image_crop_58x58'),
                     array('method'=>'crop', 'width' => 60,   'height'=>60,   'append'=>'_60x60',    'overwrite'=>true, 'dbColumn'=>'image_crop_60x60'),
                     array('method'=>'crop', 'width' => 63,   'height'=>63,   'append'=>'_63x63',    'overwrite'=>true, 'dbColumn'=>'image_crop_63x63'),
                     array('method'=>'crop', 'width' => 72,   'height'=>72,   'append'=>'_72x72',    'overwrite'=>true, 'dbColumn'=>'image_crop_72x72'),
                     array('method'=>'crop', 'width' => 78,   'height'=>78,   'append'=>'_78x78',    'overwrite'=>true, 'dbColumn'=>'image_crop_78x78'),
                     array('method'=>'crop', 'width' => 80,   'height'=>80,   'append'=>'_80x80',    'overwrite'=>true, 'dbColumn'=>'image_crop_80x80'),
                     array('method'=>'crop', 'width' => 100,  'height'=>100,  'append'=>'_100x100',  'overwrite'=>true, 'dbColumn'=>'image_crop_100x100'),
+                    array('method'=>'crop', 'width' => 128,  'height'=>95,   'append'=>'_128x95',   'overwrite'=>true, 'dbColumn'=>'image_crop_128x95'),
                     array('method'=>'crop', 'width' => 149,  'height'=>182,  'append'=>'_149x182',  'overwrite'=>true, 'dbColumn'=>'image_crop_149x182'),
                     array('method'=>'crop', 'width' => 200,  'height'=>210,  'append'=>'_200x210',  'overwrite'=>true, 'dbColumn'=>'image_crop_200x210'),
+                    array('method'=>'crop', 'width' => 436,  'height'=>214,  'append'=>'_436x214',  'overwrite'=>true, 'dbColumn'=>'image_crop_436x214'),
                 )
             )
         ),
@@ -48,8 +51,8 @@ class Subject extends AppModel {
             'imageUpload' => array(
                 'extension'	=> array('gif', 'jpg', 'png', 'jpeg'),
                 'filesize'	=> 1048576,
-                'minWidth'	=> 200,
-                'minHeight'	=> 210,
+                'minWidth'	=> 440,
+                'minHeight'	=> 215,
                 'required'	=> false
             )
         )
@@ -218,14 +221,17 @@ class Subject extends AppModel {
 
                                     'image_resize'      =>'\''.Sanitize::escape($this->data['Subject']['image_resize'],      $this->useDbConfig).'\'',
                                     'image_crop_38x38'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_38x38'],  $this->useDbConfig).'\'',
+                                    'image_crop_58x58'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_58x58'],  $this->useDbConfig).'\'',
                                     'image_crop_60x60'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_60x60'],  $this->useDbConfig).'\'',
                                     'image_crop_63x63'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_63x63'],  $this->useDbConfig).'\'',
                                     'image_crop_72x72'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_72x72'],  $this->useDbConfig).'\'',
                                     'image_crop_78x78'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_78x78'],  $this->useDbConfig).'\'',
                                     'image_crop_80x80'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_80x80'],  $this->useDbConfig).'\'',
                                     'image_crop_100x100'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_100x100'],$this->useDbConfig).'\'',
+                                    'image_crop_128x95' =>'\''.Sanitize::escape($this->data['Subject']['image_crop_128x95'],$this->useDbConfig).'\'',
                                     'image_crop_149x182'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_149x182'],$this->useDbConfig).'\'',
-                                    'image_crop_200x210'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_200x210'],$this->useDbConfig).'\''),
+                                    'image_crop_200x210'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_200x210'],$this->useDbConfig).'\'',
+                                    'image_crop_436x214'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_436x214'],$this->useDbConfig).'\''),
 
                                 array($tlObj->name.'.subject_id'=>$pKey));
 
@@ -238,14 +244,17 @@ class Subject extends AppModel {
 
                                     'image_resize'      =>'\''.Sanitize::escape($this->data['Subject']['image_resize'],      $this->useDbConfig).'\'',
                                     'image_crop_38x38'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_38x38'],  $this->useDbConfig).'\'',
+                                    'image_crop_58x58'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_58x58'],  $this->useDbConfig).'\'',
                                     'image_crop_60x60'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_60x60'],  $this->useDbConfig).'\'',
                                     'image_crop_63x63'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_63x63'],  $this->useDbConfig).'\'',
                                     'image_crop_72x72'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_72x72'],  $this->useDbConfig).'\'',
                                     'image_crop_78x78'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_78x78'],  $this->useDbConfig).'\'',
                                     'image_crop_80x80'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_80x80'],  $this->useDbConfig).'\'',
                                     'image_crop_100x100'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_100x100'],$this->useDbConfig).'\'',
+                                    'image_crop_128x95' =>'\''.Sanitize::escape($this->data['Subject']['image_crop_128x95'],$this->useDbConfig).'\'',
                                     'image_crop_149x182'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_149x182'],$this->useDbConfig).'\'',
-                                    'image_crop_200x210'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_200x210'],$this->useDbConfig).'\''),
+                                    'image_crop_200x210'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_200x210'],$this->useDbConfig).'\'',
+                                    'image_crop_436x214'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_436x214'],$this->useDbConfig).'\''),
 
                                     array($ulObj->name.'.subject_id'=>$pKey));
         }
@@ -555,9 +564,13 @@ class Subject extends AppModel {
 		App::import('Model', 'UserLesson');
 		$ulObj = new UserLesson();
 		$conditions = array('UserLesson.subject_id'=>$subjectId, 'stage'=>array(USER_LESSON_PENDING_TEACHER_RATING, USER_LESSON_DONE));
-		
+
+        $ulObj->recursive = 2;
+        $ulObj->unbindAll(array('belongsTo'=>array('Student')));
+        $ulObj->Student->unbindAll();
+
 		return $ulObj->find('all', array(	'conditions'=>$conditions,
-														'fields'=>array('student_user_id', 'rating_by_student', 'comment_by_student', 'student_image', 'datetime'),
+														'fields'=>array('student_user_id', 'rating_by_student', 'comment_by_student', 'datetime'),
 														'limit'=>$limit,
 														'page'=>$page));
 	}
@@ -660,7 +673,7 @@ class Subject extends AppModel {
                 'Teacher' => array(
                     'className' => 'User',
                     'foreignKey'=>'user_id',
-                    'fields'=>array('username'/*, 'last_name', 'image', 'student_avarage_rating', 'student_total_lessons'*/))
+                    'fields'=>array('username', 'image_source'/*, 'last_name', 'image', 'student_avarage_rating', 'student_total_lessons'*/))
             )
             )
         );
@@ -671,7 +684,7 @@ class Subject extends AppModel {
 											'Student' => array(
 												'className' => 'User',
 												'foreignKey'=>'user_id',
-												'fields'=>array('first_name', 'last_name', 'username', 'image', 'student_avarage_rating', 'student_total_lessons'))
+												'fields'=>array('first_name', 'last_name', 'username', 'image', 'image_source', 'student_avarage_rating', 'student_total_lessons'))
 											)
 								)
 						);

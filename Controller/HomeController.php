@@ -634,12 +634,13 @@ $id = $scObj->id;
 		
 		//Get students comments for that subject
 		$subjectRatingByStudents = $this->Subject->getRatingByStudents( $subjectId, 2 );
-		
+
 		//Get teacher other subjects
         $this->Subject->setLanguages($this->Session->read('languages_of_records'));
 		$teacherOtherSubjects = $this->Subject->getOffersByTeacher( $subjectData['user_id'], false, null, 1, 6, null, $subjectId );
 
 		//Get teacher data
+        $this->User->recursive = -1;
 		$teacherData = $this->User->findByUserId( $subjectData['user_id'] );
 		if(!$teacherData) {
 			if (!$this->RequestHandler->isAjax()) {
@@ -658,14 +659,18 @@ $id = $scObj->id;
             if(!in_array($subjectData['language'],$lor)) {
                 $lor[] = $subjectData['language'];
             }
+            //TODO QA
+            //$query = $this->_searchDefaultQueryParams();;
             $query = array(
                 'search'=>$subjectData['name'],
                 'fq'=>array('is_public'=>SUBJECT_IS_PUBLIC_TRUE, 'category_id'=>$subjectData['category_id'], 'language'=>$lor),
                 'page'=>1,
                 'limit'=>6
             );
-           $otherTeacherForThisSubject = $this->Subject->search($query, $subjectData['type']);
-           $this->set('otherTeacherForThisSubject', $otherTeacherForThisSubject);
+            $otherTeacherForThisSubject = $this->Subject->search($query, $subjectData['type']);
+            if($otherTeacherForThisSubject && !empty($otherTeacherForThisSubject['subjects'])) {
+                $this->set('otherTeacherForThisSubject', $otherTeacherForThisSubject['subjects']);
+            }
         }
         /*if($subjectData['catalog_id']) {
 			$otherTeacherForThisSubject = $this->Subject->getbyCatalog( $subjectData['catalog_id'], $subjectId, 6 );
@@ -716,14 +721,18 @@ $id = $scObj->id;
             } else  {
                 $this->set('showOrderFreeLessonButton', true);
             }
+        } else {
+            $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($subjectData['subject_id']);
+            $this->set('upcomingAvailableLessons', $upcomingAvailableLessons);
         }
+
 
         //showOrderButton
         //showVideoPlayButton
 		$this->set('subjectData', 				$subjectData);
 		$this->set('subjectRatingByStudents', 	$subjectRatingByStudents);
 		$this->set('teacherOtherSubjects', 		$teacherOtherSubjects);
-		$this->set('teacherUserData', 			$teacherData['User']);
+		$this->set('teacherData', 			    $teacherData['User']);
 	}
 
    /* public function canWatchVideo($subjectId) {

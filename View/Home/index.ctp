@@ -13,7 +13,9 @@
                         foreach($newSubjects AS $newSubject) {
                             $newSubject['Subject']['one_on_one_price'] = $newSubject['Subject']['1_on_1_price'];
                             echo '<li class="cont-span4 spc space2">';
-                            echo $this->element('subject', array(   'subjectId'             =>$newSubject['Subject']['subject_id'],
+
+                            echo $this->Html->link( $this->element('subject', array(
+                                                                    'subjectId'             =>$newSubject['Subject']['subject_id'],
                                                                     'teacherUserId'         =>$newSubject['Subject']['user_id'],
                                                                     'teacherUsername'       =>$newSubject['Teacher']['username'],
                                                                     'name'                  =>$newSubject['Subject']['name'],
@@ -22,7 +24,7 @@
                                                                     'oneOnOnePrice'         =>$newSubject['Subject']['1_on_1_price'],
                                                                     'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
                                                                     'imageSource'           =>$newSubject['Subject']['image_source'],
-                            ));
+                            )), array('controller'=>'Home', 'action'=>'teacherSubject', $newSubject['Subject']['subject_id']), array('escape'=>false));
                             echo '</li>';
                         }
                     }
@@ -56,14 +58,15 @@
                     if($latestTopics) {
                         $i=0;
                         foreach($latestTopics AS $latestTopic) {
-                            $url = array('plugin'=>'forum','controller'=>'topics', 'action'=>'view', $latestTopic['Topic']['slug']);
-                            echo   '<li class="bg-color',++$i,'">
-                                        <div class="user-pic1">',$this->Html->image($this->Layout->image($latestTopic['User']['image_source'], 60, 60), array('alt' => 'User image', 'url'=>$url)),'</div>
+                            echo $this->Html->link(
+                                    '<li class="bg-color'.(++$i).'">
+                                        <div class="user-pic1">'.$this->Html->image($this->Layout->image($latestTopic['User']['image_source'], 60, 60),
+                                                                                    array('alt' => 'User image')).'</div>
                                         <div class="usr-text1">
-                                            <h6>',$this->Html->link($latestTopic['Topic']['title'], $url),'</h6>
-                                            <p>',$latestTopic['LastPost']['content'],'</p>
+                                            <h6>'.$latestTopic['Topic']['title'].'</h6>
+                                            <p>'.$latestTopic['LastPost']['content'].'</p>
                                         </div>
-                                    </li>';
+                                    </li>', array('plugin'=>'forum','controller'=>'topics', 'action'=>'view', $latestTopic['Topic']['slug']), array('escape'=>false));
                             if($i==2) {
                                 $i=0;
                             }

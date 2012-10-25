@@ -42,7 +42,7 @@ class User extends AppModel {
         )
     );
 
-    public $hasOne = array('Forum.Profile');
+    //public $hasOne = array('Forum.Profile');
     public $hasMany = array('Forum.Access', 'Forum.Moderator');
 
     public $validate = array(

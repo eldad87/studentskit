@@ -8,7 +8,10 @@
  */
 
 class LayoutHelper extends AppHelper {
-    public function rating($rating) {
+    public function rating($rating, $fullHTML=true) {
+        if(!$fullHTML) {
+            return '/img/star.png';
+        }
         return '<div class="pull-left star"><img src="/img/star.png" alt="" title=""></div>';
     }
 
@@ -42,6 +45,7 @@ class LayoutHelper extends AppHelper {
         if(!$width || !$height) {
             return $imageSource;
         }
+
 
         $info = pathinfo($imageSource);
         return str_replace($info['basename'], basename($imageSource, '.'.$info['extension']).'_'.$width.'x'.$height.'.'.$info['extension'], $imageSource);
