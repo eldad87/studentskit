@@ -5,9 +5,11 @@ echo $this->Form->hidden('subject_id');
 echo $this->Form->input('name');
 echo $this->Form->input('description', array('type'=>'textarea'));
 echo $this->Form->input('subject_category_id', array('options'=>$subjectCategories));
-
+echo '<br /><br /><br />';
 echo $this->Form->input('language', array('options'=>$languages));
+echo '<br /><br /><br />';
 echo $this->Form->input('lesson_type', array('options'=>array(LESSON_TYPE_LIVE=>'live', LESSON_TYPE_VIDEO=>'video')));
+echo '<br /><br /><br />';
 echo $this->Form->input('duration_minutes');
 echo $this->Form->input('imageUpload', array('type' => 'file'));
 //echo $this->Form->input('category_id');

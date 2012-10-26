@@ -1467,6 +1467,11 @@ class UserLesson extends AppModel {
         $timing = $this->TeacherLesson->getLessonTiming($tlData['datetime'], $tlData['duration_minutes']);
         $return[$timing] = true;
 
+        //If no user passed - return
+        if(!$userId) {
+            return $return;
+        }
+
         //Check if this user is register for this lesson or not
         $this->recursive = -1;
         $this->cacheQueries = false;

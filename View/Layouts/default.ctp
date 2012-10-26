@@ -1,4 +1,4 @@
-<?php echo $this->Html->docType(); ?>
+<?php echo $this->Html->docType('html5'); ?>
 <?php echo $this->Facebook->html(); ?>
 <head>
     <meta charset="utf-8" />
@@ -10,6 +10,7 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <?php echo $this->fetch('meta');?>
+
 
     <!-- styles -->
     <?php echo $this->Html->css(array('basic', 'style', 'style-responsive', 'bootstrap', 'bootstrap-responsive'));

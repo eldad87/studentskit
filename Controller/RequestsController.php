@@ -27,7 +27,7 @@ class RequestsController extends AppController {
 			$this->request->data['Subject']['is_public'] = 1;
 			$this->request->data['Subject']['user_id'] = $this->Auth->user('user_id');
 			$this->request->data['Subject']['type'] = SUBJECT_TYPE_REQUEST;
-			
+
 			$this->Subject->set($this->request->data);
 			if($this->Subject->save()) {
 				if($this->RequestHandler->isAjax()) {

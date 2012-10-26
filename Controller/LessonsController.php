@@ -134,7 +134,14 @@ class LessonsController extends AppController {
         }
 
         if(!$canWatchData['approved']) {
-            $this->Session->setFlash(__('You cannot watch the video at the moment'));
+            if($canWatchData['pending_teacher_approval']) {
+                $this->Session->setFlash(__('You\'re order is pending for the teacher approval'));
+
+            } /*else if($canWatchData['pending_user_approval']) {
+                $this->Session->setFlash(__('You must order the lesson first'));
+            }*/ else {
+                $this->Session->setFlash(__('You must order the lesson first'));
+            }
             $this->redirect(array('controller'=>'Home', 'action'=>'teacherSubject', $subjectId));
         }
 

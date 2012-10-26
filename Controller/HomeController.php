@@ -14,7 +14,7 @@ class HomeController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacher', 'subject', 'order',
+		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacherLesson', 'teacher', 'subject', 'order',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession'/*,
                             'test', 'testLocking', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount', 'testGeneratePaymentRecivers',
                             'testUpdateRatingStage'*/, 'testWatchitoo', 'uploadTest');
@@ -618,69 +618,9 @@ $id = $scObj->id;
 
 
 	public function teacherSubject($subjectId) {
-		//Get subject data, students_amount, raters_amount, avarage_rating
-		$subjectData = $this->Subject->findBySubjectId( $subjectId );
-		if(!$subjectData || $subjectData['Subject']['is_enable']==SUBJECT_IS_ENABLE_FALSE) {
-			
-			if (!$this->RequestHandler->isAjax()) {
-				$this->Session->setFlash(__('Cannot view this subject'));
-				$this->redirect($this->referer());
-			}
-			return false;
-		}
-		$subjectData = $subjectData['Subject'];
 
-		//$totalTeachingTime = $subjectData['students_amount'] * $subjectData['duration_minutes'];
-		
-		//Get students comments for that subject
-		$subjectRatingByStudents = $this->Subject->getRatingByStudents( $subjectId, 2 );
-
-		//Get teacher other subjects
-        $this->Subject->setLanguages($this->Session->read('languages_of_records'));
-		$teacherOtherSubjects = $this->Subject->getOffersByTeacher( $subjectData['user_id'], false, null, 1, 6, null, $subjectId );
-
-		//Get teacher data
-        $this->User->recursive = -1;
-		$teacherData = $this->User->findByUserId( $subjectData['user_id'] );
-		if(!$teacherData) {
-			if (!$this->RequestHandler->isAjax()) {
-				$this->Session->setFlash(__('Internal error'));
-				$this->redirect($this->referer());
-			}
-			return false;
-		}
-
-
-		//Get other teacher's subjects in the same category as this one
-		if(!empty($subjectData['category_id'])) {
-            if(!$lor = $this->Session->read('languagesOfRecords')) {
-                $lor = array();
-            }
-            if(!in_array($subjectData['language'],$lor)) {
-                $lor[] = $subjectData['language'];
-            }
-            //TODO QA
-            //$query = $this->_searchDefaultQueryParams();;
-            $query = array(
-                'search'=>$subjectData['name'],
-                'fq'=>array('is_public'=>SUBJECT_IS_PUBLIC_TRUE, 'category_id'=>$subjectData['category_id'], 'language'=>$lor),
-                'page'=>1,
-                'limit'=>6
-            );
-            $otherTeacherForThisSubject = $this->Subject->search($query, $subjectData['type']);
-            if($otherTeacherForThisSubject && !empty($otherTeacherForThisSubject['subjects'])) {
-                $this->set('otherTeacherForThisSubject', $otherTeacherForThisSubject['subjects']);
-            }
-        }
-        /*if($subjectData['catalog_id']) {
-			$otherTeacherForThisSubject = $this->Subject->getbyCatalog( $subjectData['catalog_id'], $subjectId, 6 );
-			$this->set('otherTeacherForThisSubject', $otherTeacherForThisSubject);
-		}*/
-
-
-
-        //$this->set('showOrderButton', true);
-        $this->set('paymentNeeded', $subjectData['1_on_1_price']>0);
+        $data = $this->loadSubjectCommonInfo($subjectId);
+        $subjectData =& $data['subjectData'];
         $this->set('lessonType', $subjectData['lesson_type']);
 
 
@@ -699,40 +639,36 @@ $id = $scObj->id;
             $this->set('showGoToLessonButton', false);
             $this->set('showOrderLessonButton', false);
             $this->set('showOrderFreeLessonButton', false);
-            //
+
+            if(!empty($canWatchVideo['user_lesson_id'])) {
+                $this->set('userLessonId', $canWatchVideo['user_lesson_id']);
+            }
 
             if($canWatchVideo['approved'] || $canWatchVideo['is_teacher']) {
-                //TODO: show "Go to lesson" button
+                //show "Go to lesson" button
                 $this->set('showGoToLessonButton', true);
 
             } else if($canWatchVideo['pending_teacher_approval']) {
-                //TODO: Show message on the page "pending for teacher approval, please come back later"
+                //Show message on the page "pending for teacher approval, please come back later"
                 $this->set('showPendingTeacherApproval', true);
 
             } else if($canWatchVideo['pending_user_approval']) {
-                //TODO: Show message on the page "pending for your approval, click <a>here</a> to review it in your panel"
+                //Show message on the page "pending for your approval, click <a>here</a> to review it in your panel"
                 $this->set('showAcceptInvitationButton', true);
                 //$this->redirect(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'invitations', $liveRequestStatus['user_lesson_id']));
 
             } else if($canWatchVideo['payment_needed']) {
-
                 $this->set('showOrderLessonButton', true);
 
             } else  {
                 $this->set('showOrderFreeLessonButton', true);
             }
         } else {
-            $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($subjectData['subject_id']);
+            $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($subjectId);
             $this->set('upcomingAvailableLessons', $upcomingAvailableLessons);
         }
 
-
-        //showOrderButton
-        //showVideoPlayButton
-		$this->set('subjectData', 				$subjectData);
-		$this->set('subjectRatingByStudents', 	$subjectRatingByStudents);
-		$this->set('teacherOtherSubjects', 		$teacherOtherSubjects);
-		$this->set('teacherData', 			    $teacherData['User']);
+        $this->set('orderURL', array('controller'=>'Order', 'action'=>'init', 'order', $subjectId));
 	}
 
    /* public function canWatchVideo($subjectId) {
@@ -757,6 +693,7 @@ $id = $scObj->id;
 
     //Only for join to live lessons
     public function teacherLesson($teacherLessonId) {
+        $this->TeacherLesson->recursive = -1;
         $teacherLessonData = $this->TeacherLesson->findByTeacherLessonId($teacherLessonId);
         if(!$teacherLessonData) {
             $this->Session->setFlash(__('Invalid lesson'));
@@ -765,6 +702,7 @@ $id = $scObj->id;
             //redirect to subject page
             $this->redirect($this->referer(array('controller'=>'Home', 'action'=>'teacherSubject', $teacherLessonData['TeacherLesson']['subject_id'])));
         }
+        $teacherLessonData = $teacherLessonData['TeacherLesson'];
 
         $liveRequestStatus = $this->UserLesson->getLiveLessonStatus($teacherLessonId, $this->Auth->user('user_id'));
         if(!$liveRequestStatus){
@@ -797,14 +735,91 @@ $id = $scObj->id;
             //$this->redirect(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'invitations', $liveRequestStatus['user_lesson_id']));
 
         } else if($liveRequestStatus['payment_needed']) {
-            $this->set('showPayForLessonButton', true);
+            $this->set('showOrderLessonButton', true);
 
         } else  {
-            $this->set('showJoinForFreeLessonButton', true);
+            $this->set('showOrderFreeLessonButton', true);
+        }
+
+        $orderURL = array('controller'=>'Order', 'action'=>'init', 'join', $teacherLessonId);
+        $this->set('settings', array('order_text'=>'Join a LIVE lesson', 'play_link'=>array(), 'order_url'=>$orderURL, 'order_button_text'=>'Join',
+                                    'popup'=>array( 'description'=>'You\'re last order is pending for the teacher approval',
+                                                    'button'=>array(array('name'=>'I want to order again', 'url'=>$orderURL)))));
+        $this->set('teacherLessonData', $teacherLessonData);
+        $this->set('orderURL', array('controller'=>'Order', 'action'=>'init', 'join', $teacherLessonData['teacher_lesson_id']));
+        $this->loadSubjectCommonInfo($teacherLessonData['subject_id']);
+
+        $this->render('teacher_subject');
+    }
+
+    private function loadSubjectCommonInfo($subjectId) {
+        $subjectData = $this->Subject->findBySubjectId( $subjectId );
+        if(!$subjectData || $subjectData['Subject']['is_enable']==SUBJECT_IS_ENABLE_FALSE) {
+
+            if (!$this->RequestHandler->isAjax()) {
+                $this->Session->setFlash(__('Cannot view this subject'));
+                $this->redirect($this->referer());
+            }
+            return false;
+        }
+        $subjectData = $subjectData['Subject'];
+
+        //Get students comments for that subject
+        $subjectRatingByStudents = $this->Subject->getRatingByStudents( $subjectId, 2 );
+
+        //Get teacher other subjects
+        $this->Subject->setLanguages($this->Session->read('languages_of_records'));
+        $teacherOtherSubjects = $this->Subject->getOffersByTeacher( $subjectData['user_id'], false, null, 1, 6, null, $subjectId );
+
+        //Get teacher data
+        $this->User->recursive = -1;
+        $teacherData = $this->User->findByUserId( $subjectData['user_id'] );
+        if(!$teacherData) {
+            if (!$this->RequestHandler->isAjax()) {
+                $this->Session->setFlash(__('Internal error'));
+                $this->redirect($this->referer());
+            }
+            return false;
+        }
+
+        if(!empty($subjectData['category_id'])) {
+            if(!$lor = $this->Session->read('languagesOfRecords')) {
+                $lor = array();
+            }
+            if(!in_array($subjectData['language'],$lor)) {
+                $lor[] = $subjectData['language'];
+            }
+            //TODO QA
+            //$query = $this->_searchDefaultQueryParams();;
+            $query = array(
+                'search'=>$subjectData['name'],
+                'fq'=>array('is_public'=>SUBJECT_IS_PUBLIC_TRUE, 'category_id'=>$subjectData['category_id'], 'language'=>$lor),
+                'page'=>1,
+                'limit'=>6
+            );
+            $otherTeacherForThisSubject = $this->Subject->search($query, $subjectData['type']);
+            if($otherTeacherForThisSubject && !empty($otherTeacherForThisSubject['subjects'])) {
+                $this->set('otherTeacherForThisSubject', $otherTeacherForThisSubject['subjects']);
+            }
         }
 
 
-        $this->set('teacherLessonData', $teacherLessonData);
+        $this->set('subjectData', 				$subjectData);
+        $this->set('subjectRatingByStudents', 	$subjectRatingByStudents);
+        $this->set('teacherOtherSubjects', 		$teacherOtherSubjects);
+        $this->set('teacherData', 			    $teacherData['User']);
+        $this->set('paymentNeeded',             $subjectData['1_on_1_price']>0);
+
+        $return = array('subjectData'               =>$subjectData,
+                        'subjectRatingByStudents'   =>$subjectRatingByStudents,
+                        'teacherOtherSubjects'      =>$teacherOtherSubjects,
+                        'teacherData'               =>$teacherData['User'],
+                        'teacherData'               =>$subjectData['1_on_1_price']>0);
+
+        if(!empty($otherTeacherForThisSubject)) {
+            $return['otherTeacherForThisSubject'] = $otherTeacherForThisSubject;
+        }
+        return $return;
     }
 
 	public function getOtherTeachersForSubject($subjectId, $limit=6, $page=1) {

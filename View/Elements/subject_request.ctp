@@ -21,3 +21,6 @@
         </div>
     </div>
 </div>
+<?php
+    echo $this->Html->link('Offer', array('controller'=>'Requests', 'action'=>'offerLesson', $subjectId));
+?>

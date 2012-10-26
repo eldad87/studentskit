@@ -535,7 +535,7 @@ class TeacherLesson extends AppModel {
         $this->recursive = -1;
         return $this->find('all', array('conditions'=>array(
             'subject_id'=>$subjectId,
-            $this->timeExpression('datetime > NOW() + 1 hour'),
+            'datetime >'=>$this->timeExpression( 'now +1 hour', false),
             'max_students >'=>'num_of_students',
             'is_deleted'=>'0')
         ));

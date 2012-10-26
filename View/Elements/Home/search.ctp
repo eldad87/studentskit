@@ -1,25 +1,25 @@
 <!-- Searchbar
         ================================================== -->
-<script>
-$(document).ready(function(){
+    <?php
+    $this->Html->scriptBlock('$(document).ready(function(){
 
-    $('#search_terms').blur(function() {
-        if($(this).val() == '') {
-            $(this).val('Enter your topic, I.E. Linear Algebra');
+    $(\'#search_terms\').blur(function() {
+        if($(this).val() == \'\') {
+            $(this).val(\'Enter your topic, I.E. Linear Algebra\');
         }
     });
-    $('#search_terms').focus(function() {
-        if($(this).val() == 'Enter your topic, I.E. Linear Algebra') {
-            $(this).val('');
+    $(\'#search_terms\').focus(function() {
+        if($(this).val() == \'Enter your topic, I.E. Linear Algebra\') {
+            $(this).val(\'\');
         }
     });
 
-    if($('#search_terms').val() == '') {
-        $('#search_terms').blur();
+    if($(\'#search_terms\').val() == \'\') {
+        $(\'#search_terms\').blur();
     }
-});
-</script>
-
+});',
+        array('inline'=>false));
+    ?>
 <Section class="searchbar">
     <div class="searchbar-inner">
         <h2>Search Here</h2>
