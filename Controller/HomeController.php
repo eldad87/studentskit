@@ -742,7 +742,7 @@ $id = $scObj->id;
         }
 
         $orderURL = array('controller'=>'Order', 'action'=>'init', 'join', $teacherLessonId);
-        $this->set('settings', array('order_text'=>'Join a LIVE lesson', 'play_link'=>array(), 'order_url'=>$orderURL, 'order_button_text'=>'Join',
+        $this->set('settings', array('order_text'=>'Join a LIVE lesson', 'play_link'=>false, 'order_url'=>$orderURL, 'order_button_text'=>'Join',
                                     'popup'=>array( 'description'=>'You\'re last order is pending for the teacher approval',
                                                     'button'=>array(array('name'=>'I want to order again', 'url'=>$orderURL)))));
         $this->set('teacherLessonData', $teacherLessonData);
@@ -850,6 +850,9 @@ $id = $scObj->id;
 	
 	public function teacher($teacherUserId) {
 		//Get teacher data
+        //$this->User->recursive = -1;
+        $this->User->TeacherAboutVideo->setLanguages($this->Session->read('languages_of_records'));
+        $this->User->unbindAll(array('hasMany'=>array('TeacherCertificate', 'TeacherAboutVideo')));
 		$teacherData = $this->User->findByUserId( $teacherUserId );
 		if(!$teacherData) {
 			return false;
@@ -862,7 +865,7 @@ $id = $scObj->id;
 
 		//Get students comments for that teacher
         $this->UserLesson->setLanguages($this->Session->read('languages_of_records'));
-		$teacherReviews = $this->UserLesson->getTeachertReviews( $teacherUserId, 2 );
+		$teacherReviews = $this->UserLesson->getTeacherReviews( $teacherUserId, 2 );
 
 		//get forum latest posts
         app::import('Model', 'Forum.Post');
@@ -870,16 +873,20 @@ $id = $scObj->id;
         $postObj->setLanguages($this->Session->read('languages_of_records'));
         $latestPosts = $postObj->getLatestByUser($teacherUserId, 2);
 
-		 
-		$this->set('teacherUserData', 	$teacherData['User']);
-		$this->set('teacherSubjects', 	$teacherSubjects);
-		$this->set('teacherReviews', 	$teacherReviews);
-		$this->set('latestPosts', 	    $latestPosts);
+        //Get upcoming lessons
+        $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons();
+
+
+		$this->set('teacherData', 	            $teacherData);
+		$this->set('teacherSubjects', 	        $teacherSubjects);
+		$this->set('teacherReviews', 	        $teacherReviews);
+		$this->set('latestPosts', 	            $latestPosts);
+		$this->set('upcomingAvailableLessons',  $upcomingAvailableLessons);
 	}
 	public function getTeacherRatingByStudents($teacherUserId, $limit=2, $page=1) {
         if($this->Auth->user('user_id')!=$teacherUserId) {
             $this->UserLesson->setLanguages($this->Session->read('languages_of_records'));
-            $subjectRatingByStudents = $this->UserLesson->getTeachertReviews( $teacherUserId, $limit, $page );
+            $subjectRatingByStudents = $this->UserLesson->getTeacherReviews( $teacherUserId, $limit, $page );
         }
 		return $this->success(1, array('rating'=>$subjectRatingByStudents));
 	}

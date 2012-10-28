@@ -144,7 +144,7 @@ $config['Student.subjectRequests.success.1.description'] = __('Subject requests'
 /*-------------------- Student.cancelUserLesson	--------------------*/
 $config['Student.cancelUserLesson.success.1.title'] = __('Success');
 $config['Student.cancelUserLesson.success.1.description'] = __('Lesson canceled');
-$config['Student.cancelUserLesson.error.1.title'] = __('Success');
+$config['Student.cancelUserLesson.error.1.title'] = __('Error');
 $config['Student.cancelUserLesson.error.1.description'] = __('Cannot cancel lesson');
 /*-------------------- Student.acceptUserLesson	--------------------*/
 $config['Student.acceptUserLesson.success.1.title'] = __('Success');
@@ -173,24 +173,48 @@ $config['Teacher.lessonsProposed.success.1.description'] = __('proposed lessons'
 /*-------------------- Teacher.cancelTeacherLesson	--------------------*/
 $config['Teacher.cancelTeacherLesson.success.1.title'] = __('Success');
 $config['Teacher.cancelTeacherLesson.success.1.description'] = __('Lesson canceled');
-$config['Teacher.cancelTeacherLesson.error.1.title'] = __('Success');
+$config['Teacher.cancelTeacherLesson.error.1.title'] = __('Error');
 $config['Teacher.cancelTeacherLesson.error.1.description'] = __('Cannot cancel lesson');
-$config['Teacher.cancelTeacherLesson.error.2.title'] = __('Success');
+$config['Teacher.cancelTeacherLesson.error.2.title'] = __('Error');
 $config['Teacher.cancelTeacherLesson.error.2.description'] = __('Cannot cancel lesson');
 /*-------------------- Teacher.createTeacherLesson	--------------------*/
 $config['Teacher.createTeacherLesson.success.1.title'] = __('Success');
 $config['Teacher.createTeacherLesson.success.1.description'] = __('Lesson created');
-$config['Teacher.createTeacherLesson.error.1.title'] = __('Success');
+$config['Teacher.createTeacherLesson.error.1.title'] = __('Error');
 $config['Teacher.createTeacherLesson.error.1.description'] = __('Cannot create lesson');
-$config['Teacher.createTeacherLesson.error.2.title'] = __('Success');
+$config['Teacher.createTeacherLesson.error.2.title'] = __('Error');
 $config['Teacher.createTeacherLesson.error.2.description'] = __('Cannot create lesson');
 /*-------------------- Teacher.disableSubject	--------------------*/
 $config['Teacher.disableSubject.success.1.title'] = __('Success');
 $config['Teacher.disableSubject.success.1.description'] = __('Subject Canceled');
-$config['Teacher.disableSubject.error.1.title'] = __('Success');
+$config['Teacher.disableSubject.error.1.title'] = __('Error');
 $config['Teacher.disableSubject.error.1.description'] = __('Cannot cancel subject, check if you have any ongoing lessons');
-$config['Teacher.disableSubject.error.2.title'] = __('Success');
-$config['Teacher.disableSubject.error.2.description'] = __('Interanl error');
+$config['Teacher.disableSubject.error.2.title'] = __('Error');
+$config['Teacher.disableSubject.error.2.description'] = __('Internal error');
+/*-------------------- Teacher.addCertificate	--------------------*/
+$config['Teacher.addCertificate.success.1.title'] = __('Success');
+$config['Teacher.addCertificate.success.1.description'] = __('a New certificate has been created');
+$config['Teacher.addCertificate.error.1.title'] = __('Error');
+$config['Teacher.addCertificate.error.1.description'] = __('Cannot create a new certificate');
+/*-------------------- Teacher.removeCertificate	--------------------*/
+$config['Teacher.removeCertificate.success.1.title'] = __('Success');
+$config['Teacher.removeCertificate.success.1.description'] = __('Certificate has been removed');
+$config['Teacher.removeCertificate.error.1.title'] = __('Error');
+$config['Teacher.removeCertificate.error.1.description'] = __('Cannot remove certificate');
+$config['Teacher.removeCertificate.error.2.title'] = __('Error');
+$config['Teacher.removeCertificate.error.2.description'] = __('Cannot remove certificate');
+/*-------------------- Teacher.addAboutVideo	--------------------*/
+$config['Teacher.addAboutVideo.success.1.title'] = __('Success');
+$config['Teacher.addAboutVideo.success.1.description'] = __('a New About Video has been added');
+$config['Teacher.addAboutVideo.error.1.title'] = __('Error');
+$config['Teacher.addAboutVideo.error.1.description'] = __('Cannot add a new About Video');
+/*-------------------- Teacher.removeAboutVideo	--------------------*/
+$config['Teacher.removeAboutVideo.success.1.title'] = __('Success');
+$config['Teacher.removeAboutVideo.success.1.description'] = __('an About Video has been removed');
+$config['Teacher.removeAboutVideo.error.1.title'] = __('Error');
+$config['Teacher.removeAboutVideo.error.1.description'] = __('Cannot remove the About Video');
+$config['Teacher.removeAboutVideo.error.2.title'] = __('Error');
+$config['Teacher.removeAboutVideo.error.2.description'] = __('Cannot remove the About Video');
 /********************* Teacher - End		******************************************/
 
 
@@ -198,12 +222,12 @@ $config['Teacher.disableSubject.error.2.description'] = __('Interanl error');
 /*-------------------- Teacher.makeRequest	--------------------*/
 $config['Requests.makeRequest.success.1.title'] = __('Success');
 $config['Requests.makeRequest.success.1.description'] = __('Subject request');
-$config['Requests.makeRequest.error.1.title'] = __('Success');
+$config['Requests.makeRequest.error.1.title'] = __('Error');
 $config['Requests.makeRequest.error.1.description'] = __('Cannot create subject request');
 /*-------------------- Teacher.offerLesson	--------------------*/
 $config['Requests.makeRequest.success.1.title'] = __('Success');
 $config['Requests.makeRequest.success.1.description'] = __('Lesson offer sent');
-$config['Requests.makeRequest.error.1.title'] = __('Success');
+$config['Requests.makeRequest.error.1.title'] = __('Error');
 $config['Requests.makeRequest.error.1.description'] = __('Cannot send lesson offer');
 /*-------------------- Teacher.subjectSuggestions	--------------------*/
 $config['Requests.subjectSuggestions.success.1.title'] = __('Success');

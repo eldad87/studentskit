@@ -58,7 +58,7 @@ class Subject extends AppModel {
         )
     );
 
-    function formatImageName($name, $field, $file) {
+    public function formatImageName($name, $field, $file) {
         return String::uuid();
     }
 
@@ -80,15 +80,7 @@ class Subject extends AppModel {
 				'message' 	=> 'Must be more then %d characters'
 			)
 		),
-        'language'=> array(
-            'inList' => array(
-                'required'	=> 'create',
-                'allowEmpty'=> false,
-                'rule'    	=> array('inList', array('eng','heb')),
-                'message' 	=> 'Please select a language',
-                'last'      =>true
-            )
-        ),
+
         'lesson_type'=> array(
             'inList' => array(
                 'required'	=> 'create',
@@ -192,7 +184,17 @@ class Subject extends AppModel {
 
     public function beforeValidate($options=array()) {
         parent::beforeValidate($options);
-        App::import('Model', 'Subject');
+
+        App::uses('Languages', 'Utils.Lib');
+        $lang = new Languages();
+        $this->validator()->add('language', 'inList', array(
+            'required'	=> 'create',
+            'allowEmpty'=> false,
+            'rule'    	=> array('inList', array_flip($lang->lists('locale'))),
+            'message' 	=> __('Please select a language'),
+            'last'      =>true
+        ));
+
 
         $exists = $this->exists(!empty($this->data['Subject'][$this->primaryKey]) ? $this->data['Subject'][$this->primaryKey] : $this->id);
         $this->calcFullGroupPriceIfNeeded($this->data['Subject'], $exists );

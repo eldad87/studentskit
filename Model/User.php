@@ -43,8 +43,16 @@ class User extends AppModel {
     );
 
     public $hasOne = array('Forum.Profile');
-    public $hasMany = array('Forum.Access', 'Forum.Moderator');
-
+    public $hasMany = array('Forum.Access', 'Forum.Moderator',
+                            'TeacherCertificate'=>array(
+                                'className'	=> 'TeacherCertificate',
+                                'foreignKey'=>'teacher_user_id'
+                            ),
+                            'TeacherAboutVideo'=>array(
+                                'className'	=> 'TeacherAboutVideo',
+                                'foreignKey'=>'teacher_user_id'
+                            )
+    );
     public $validate = array(
 		'user_id' => array(
 			'blank' => array(
@@ -136,6 +144,10 @@ class User extends AppModel {
 			'allowEmpty' 	=> true,
 		),
 	);
+
+    public function formatImageName($name, $field, $file) {
+        return String::uuid();
+    }
 
     public function __construct($id = false, $table = null, $ds = null) {
         parent::__construct($id, $table, $ds);

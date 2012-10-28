@@ -49,62 +49,14 @@
                         </div>
                     </div> <!-- /student-main-box -->
 
-                    <?php if($teacherOtherSubjects) { ?>
-                    <div class="student-main-box radius3">
-                        <h5 class="fullwidth pad8"><strong>My other Subjects</strong></h5>
-                        <ul class="subject-box">
-                            <?php
-                            foreach($teacherOtherSubjects AS $teacherOtherSubject) {
-                                echo '<li>',
-                                    $this->Html->image($this->Layout->image($teacherOtherSubject['Subject']['image_source'], 128, 95), array('alt' => 'Topic image')),
-                                    $this->Html->link('<strong>'.$teacherOtherSubject['Subject']['name'].'</strong>',
-                                                array('controller'=>'Home', 'action'=>'teacherSubject', $teacherOtherSubject['Subject']['subject_id']),
-                                                array('escape'=>false, 'class'=>'fontsize1')),'
-
-                                    <div class="pull-right"><div class="price-tag"><span>',$this->Layout->priceTag($teacherOtherSubject['Subject']['1_on_1_price'], $teacherOtherSubject['Subject']['full_group_student_price']),'</span></div></div>
-                                </li>';
-                            }
-                            ?>
-                        </ul>
-                    </div>
-                    <?php //if(count($teacherOtherSubjects)>2) {?>
-                    <a href="#" class="more radius3 gradient2 space9 pull-left"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
-                    <?php
-                        //}
+                    <?php if($teacherOtherSubjects) {
+                        echo $this->element('Home/other_subjects', array('teacherSubjects'=>$teacherOtherSubjects));
                     }
 
                     if(!empty($upcomingAvailableLessons)) {
+                        echo $this->element('Home/upcoming_lessons', array('upcomingAvailableLessons'=>$upcomingAvailableLessons));
+                    }
                     ?>
-
-                    <div class="student-main-box radius3 space25">
-                        <h5 class="fullwidth pad8 pull-left"><strong>Upcoming group lessons</strong></h5>
-                        <ul class="subject-morelesson">
-                        <?php
-                        foreach($upcomingAvailableLessons AS $upcomingAvailableLesson) {
-                            echo '<li>
-                                <a href="#" class="pull-left">',$this->Html->image($this->Layout->image($upcomingAvailableLesson['TeacherLesson']['image_source'], 58, 58), array('alt' => 'Topic image')),'</a>
-                                <div class="upcominglesson-textbox">
-                                    <div class="pull-right btn-width">
-                                        <div class="price-tag space25 order-price"><span>',$this->Layout->priceTag($upcomingAvailableLesson['TeacherLesson']['1_on_1_price'], $upcomingAvailableLesson['TeacherLesson']['full_group_student_price']),'</span></div>
-                                        ',$this->Html->link('Join', array('controller'=>'Order', 'action'=>'init', 'join', $upcomingAvailableLesson['TeacherLesson']['teacher_lesson_id']),
-                                                                    array('class'=>'btn-color-gry move-right space35 centered space37')),'
-                                    </div>
-
-                                    <div class="space36">
-                                        ',$this->Html->link($upcomingAvailableLesson['TeacherLesson']['name'], array('controller'=>'Home', 'action'=>'teacherLesson', $upcomingAvailableLesson['TeacherLesson']['teacher_lesson_id'])),'
-                                        <p class="space3">Start :',$upcomingAvailableLesson['TeacherLesson']['datetime'],'</p>
-                                        <p>Current student ',$upcomingAvailableLesson['TeacherLesson']['num_of_students'],' of ',$upcomingAvailableLesson['TeacherLesson']['max_students'],'</p>
-
-                                    </div>
-                                </div>
-                            </li>';
-
-                        }
-                        ?>
-                        </ul>
-                    </div>
-                    <a href="#" class="more radius3 gradient2 space9 pull-left"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
-                    <?php } ?>
                 </div> <!-- /cont-span3 -->
                 <div class="cont-span17 cbox-space">
                     <ul class="teacher-box3">
@@ -114,8 +66,8 @@
                                     <a title="" href="#" class="teacher-pic radius3"><?php echo $this->Html->image($this->Layout->image($teacherData['image_source'], 149, 182), array('alt' => 'Topic image')); ?></a>
                                     <p class="onliestatus">
                                         <i class="iconMedium-mail pull-left"></i>
-                                        <!--<i class="iconSmall-green-dot pull-left space23"></i>
-                                        <span class="pull-left online">Online</span>-->
+                                        <i class="iconSmall-green-dot pull-left space23"></i>
+                                        <span class="pull-left online">Online</span>
                                     </p>
                                     <div class="head-text3">
                                         <div class="pull-left tutorname-wrapeper">
@@ -151,42 +103,10 @@
                     </ul>
                     <a href="#" class="more radius3 gradient2 space8"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
 
-
-                    <div class="lesson-box pad8">
-                        <h3 class="radius1"><strong>What student say about me?</strong></h3>
-                        <div class="box-subject2 radius3">
-
-
-                            <?php
-                                if($subjectRatingByStudents) {
-                                    $countSRBS = count($subjectRatingByStudents);
-                                    $i=0;
-                                    foreach($subjectRatingByStudents AS $subjectRatingByStudent) { ?>
-
-                            <div class="main-student<?php echo (++$i==$countSRBS ? null : ' bod2') ?>">
-                                <div class="left-student-box">
-                                    <?php
-                                    echo $this->Html->image(
-                                        $this->Layout->image($subjectRatingByStudent['Student']['image_source'], 78, 78),
-                                        array('alt' => 'User image', 'class'=>'border1'));
-
-                                    echo $this->Html->image($this->Layout->rating($subjectRatingByStudent['UserLesson']['rating_by_student'], false), array('alt' => 'User rating'));
-                                    ?>
-                                </div>
-                                <div class="right-student-box">
-                                    <div class="pad8"><h6 class="pull-left space10"><strong><?php echo $subjectRatingByStudent['Student']['username']; ?></strong></h6><em class="fontsize1">(Studied at <?php echo $subjectRatingByStudent['UserLesson']['datetime']; ?>)</em></div>
-                                    <p><?php echo $subjectRatingByStudent['UserLesson']['comment_by_student']; ?></p>
-                                </div>
-                            </div>
-                            <?php
-                                }
-                            }
-                            ?>
-
-
-                        </div>
-                    </div>
                     <?php
+                    echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$subjectRatingByStudents, 'title'=>'What student say about this subject?'));
+
+
                     if($subjectRatingByStudents) {
                     ?>
                     <a href="#" class="more radius3 gradient2 space8"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>

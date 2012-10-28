@@ -50,4 +50,22 @@ class LayoutHelper extends AppHelper {
         $info = pathinfo($imageSource);
         return str_replace($info['basename'], basename($imageSource, '.'.$info['extension']).'_'.$width.'x'.$height.'.'.$info['extension'], $imageSource);
     }
+
+    public function videoPlayer($link) {
+        //$teacherData['TeacherAboutVideo'][0]['video_source']
+        $info = pathinfo($link);
+
+        $mimiType = false;
+        switch(strtolower($info['extension'])) {
+            case 'mp4':  $mimiType = 'video/mp4'; break;
+            case 'ogv':  $mimiType = 'video/ogg'; break;
+            case 'webm': $mimiType = 'video/webm'; break;
+            default: return false; break;
+        }
+
+        return ' <video id="example_video_1" class="video-js vjs-default-skin" controls width="430" height="220" preload="auto" data-setup="{}">
+                                <source type="'.$mimiType.'" src="'.Router::url('/', true).$link.'">
+                            </video>';
+
+    }
 }

@@ -1143,13 +1143,17 @@ class UserLesson extends AppModel {
      * @param unknown_type $limit
      * @param unknown_type $page
      */
-    public function getTeachertReviews( $teacherUserId, $limit=12, $page=1 ) {
+    public function getTeacherReviews( $teacherUserId, $limit=12, $page=1 ) {
         App::import('Model', 'UserLesson');
         $ulObj = new UserLesson();
         $conditions = array('UserLesson.teacher_user_id'=>$teacherUserId, 'stage'=>array(USER_LESSON_PENDING_TEACHER_RATING, USER_LESSON_DONE));
 
+        $ulObj->recursive = 2;
+        $ulObj->unbindAll(array('belongsTo'=>array('Student')));
+        $ulObj->Student->unbindAll();
+
         return $ulObj->find('all', array(	'conditions'=>$conditions,
-            'fields'=>array('student_user_id', 'rating_by_student', 'comment_by_student', 'student_image', 'datetime'),
+            'fields'=>array('student_user_id', 'rating_by_student', 'comment_by_student', 'datetime'),
             'limit'=>$limit,
             'page'=>$page));
 

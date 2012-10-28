@@ -21,15 +21,17 @@ $this->start('lesson_box');
     if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
         echo '<div class="black-cent-butn butns-width"><strong>',$settings['order_text'],'</strong></div>';
 
+        //No play link
+        $playLink = $settings['play_link'];
+        $popup = $settings['popup'];
+        $orderURL = $settings['order_url'];
+
         echo $this->Html->link('<i class="iconBig-kart-icon pull-left"></i><span class="pull-left"><strong>'.$settings['order_button_text'].'</strong></span>',
             $orderURL,
             array('escape'=>false, 'class'=>'greencentbutn pull-left radius3', 'data-toggle'=>'modal')
         );
 
-        //No play link
-        $playLink = $settings['play_link'];
-        $popup = $settings['popup'];
-        $orderURL = $settings['order_url'];
+
 
 
     //Video lesson

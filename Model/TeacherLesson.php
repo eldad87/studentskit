@@ -131,6 +131,7 @@ class TeacherLesson extends AppModel {
 				);
 
     public function __construct($id = false, $table = null, $ds = null) {
+
         parent::__construct($id, $table, $ds);
         static $eventListenterAttached = false;
 
@@ -531,14 +532,16 @@ class TeacherLesson extends AppModel {
     /**
      * Return a list of lessons for a given subject which the user can join to
      */
-    public function getUpcomingOpenLessons($subjectId, $limit=2, $page=1) {
+    public function getUpcomingOpenLessons($subjectId=null, $limit=2, $page=1) {
         $this->recursive = -1;
-        return $this->find('all', array('conditions'=>array(
-            'subject_id'=>$subjectId,
+        $conditions = array(
             'datetime >'=>$this->timeExpression( 'now +1 hour', false),
             'max_students >'=>'num_of_students',
-            'is_deleted'=>'0')
-        ));
+            'is_deleted'=>'0');
+        if($subjectId) {
+            $conditions['subject_id'] = $subjectId;
+        }
+        return $this->find('all', array('conditions'=>$conditions, 'limit'=>$limit, 'page'=>$page));
     }
 
 	public function getLiveLessonsByDate( $teacherUserId, $year, $month=null ) {

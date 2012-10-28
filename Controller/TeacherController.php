@@ -189,13 +189,82 @@ class TeacherController extends AppController {
 	}
 	
 	public function profile() {
+        $this->User->unbindAll(array('hasMany'=>array('TeacherCertificate', 'TeacherAboutVideo')));
+        $userData = $this->User->findByUserId($this->Auth->user('user_id'));
+
 		if (empty($this->request->data)) {
-			$this->request->data = $this->User->findByUserId($this->Auth->user('user_id'));
+			$this->request->data = $userData;
 		} else {
 			  $this->User->set($this->request->data);
 			  $this->User->save();
 		}
+
+        $this->set('userData', $userData);
 	}
+
+    /**
+     * Add a certification to the Teacher's profile
+     * @return array
+     */
+    public function addCertificate() {
+        if (!empty($this->request->data)) {
+            $this->request->data['TeacherCertificate']['teacher_user_id'] = $this->Auth->user('user_id');
+            if(!$this->User->TeacherCertificate->save($this->request->data)) {
+                return $this->error(1, array('results'=>$this->User->TeacherCertificate->validationErrors));
+            }
+
+            return $this->success(1, array('results'=>array('teacher_certificate_id'=>$this->User->TeacherCertificate->id)));
+        }
+    }
+    public function removeCertificate($teacherCertificateId) {
+        //Find record
+        $this->User->TeacherCertificate->recursive = -1;
+        $cert = $this->User->TeacherCertificate->find('first', array('teacher_certificate_id'=>$teacherCertificateId));
+        if(!$cert || $cert['TeacherCertificate']['teacher_user_id']!=$this->Auth->user('user_id')) {
+            return $this->error(1, array('results'=>array('teacher_certificate_id'=>$teacherCertificateId)));
+        }
+
+        if(!$this->User->TeacherCertificate->delete($teacherCertificateId)) {
+            return $this->error(2, array('results'=>array('teacher_certificate_id'=>$teacherCertificateId)));
+        }
+
+        return $this->success(1, array('results'=>array('teacher_certificate_id'=>$teacherCertificateId)));
+    }
+    /**
+     * Add a certification to the Teacher's profile
+     * @return array
+     */
+    public function addAboutVideo() {
+
+
+        if (!empty($this->request->data)) {
+            $this->request->data['TeacherAboutVideo']['teacher_user_id'] = $this->Auth->user('user_id');
+            if(!$this->User->TeacherAboutVideo->save($this->request->data)) {
+                return $this->error(1, array('results'=>$this->User->TeacherAboutVideo->validationErrors));
+            }
+
+            return $this->success(1, array('results'=>array('teacher_about_video_id'=>$this->User->TeacherAboutVideo->id)));
+        } else {
+            App::uses('Languages', 'Utils.Lib');
+            $lang = new Languages();
+            $this->set('languages', $lang->lists('locale'));
+        }
+    }
+    public function removeAboutVideo($teacherCertificateId) {
+        //Find record
+        $this->User->TeacherAboutVideo->recursive = -1;
+        $cert = $this->User->TeacherAboutVideo->find('first', array('teacher_about_video_id'=>$teacherCertificateId));
+        if(!$cert || $cert['TeacherAboutVideo']['teacher_user_id']!=$this->Auth->user('user_id')) {
+            return $this->error(1, array('results'=>array('teacher_about_video_id'=>$teacherCertificateId)));
+        }
+
+        if(!$this->User->TeacherCertificate->delete($teacherCertificateId)) {
+            return $this->error(2, array('results'=>array('teacher_about_video_id'=>$teacherCertificateId)));
+        }
+
+        return $this->success(1, array('results'=>array('teacher_about_video_id'=>$teacherCertificateId)));
+    }
+
 	public function awaitingReview() {
 		$awaitingReviews = $this->UserLesson->waitingTeacherReview($this->Auth->user('user_id'));
 		$this->set('awaitingReviews', $awaitingReviews);
@@ -221,7 +290,7 @@ class TeacherController extends AppController {
         //Ajax - Home.getTeacherRatingByStudents
 
 		//Get students comments for that teacher
-		$teacherReviews = $this->UserLesson->getTeachertReviews( $this->Auth->user('user_id'), 10 );
+		$teacherReviews = $this->UserLesson->getTeacherReviews( $this->Auth->user('user_id'), 10 );
 		$this->Set('teacherReviews', $teacherReviews);
 	}
 
