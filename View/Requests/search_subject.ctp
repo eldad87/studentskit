@@ -1,4 +1,4 @@
-<?php echo $this->element('Home/search'); ?>
+<?php echo $this->element('Home/search', array('controller'=>'Requests')); ?>
 
 <!-- Containeer
 ================================================== -->
