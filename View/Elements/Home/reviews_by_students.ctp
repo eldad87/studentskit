@@ -1,6 +1,6 @@
 <!-- reviews -->
 <div class="lesson-box pad8">
-    <h3 class="radius1"><strong><?php echo $title; ?></strong></h3>
+    <h3 class="radius1"><strong><?php echo __('What student says about me?'); ?></strong></h3>
     <div class="box-subject2 radius3">
 
 
@@ -21,7 +21,10 @@
                         ?>
                     </div>
                     <div class="right-student-box">
-                        <div class="pad8"><h6 class="pull-left space10"><strong><?php echo $ratingByStudent['Student']['username']; ?></strong></h6><em class="fontsize1">(Studied at <?php echo $ratingByStudent['UserLesson']['datetime']; ?>)</em></div>
+                        <div class="pad8"><h6 class="pull-left space10"><strong><?php echo $this->Html->link( $ratingByStudent['Student']['username'],
+                                                                                                                array('controller'=>'Home', 'action'=>'user',
+                                                                                                                      $ratingByStudent['UserLesson']['student_user_id']));
+                                    ?></strong></h6><em class="fontsize1">(Studied at <?php echo $ratingByStudent['UserLesson']['datetime']; ?>)</em></div>
                         <p><?php echo $ratingByStudent['UserLesson']['comment_by_student']; ?></p>
                     </div>
                 </div>

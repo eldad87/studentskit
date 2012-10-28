@@ -45,6 +45,9 @@ class LayoutHelper extends AppHelper {
         if(!$width || !$height) {
             return $imageSource;
         }
+        if(!$imageSource) {
+            return false; //TODO: blank image
+        }
 
 
         $info = pathinfo($imageSource);

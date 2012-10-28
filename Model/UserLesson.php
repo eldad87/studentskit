@@ -24,7 +24,7 @@ class UserLesson extends AppModel {
 					'Teacher' => array(
 						'className' => 'User',
 						'foreignKey'=>'teacher_user_id',
-						'fields'=>array('first_name', 'last_name', 'image', 'image_source', 'teacher_avarage_rating', 'teacher_total_lessons')
+						'fields'=>array('first_name', 'last_name', 'username', 'image', 'image_source', 'teacher_avarage_rating', 'teacher_total_lessons')
 					),
 					'Student' => array(
 						'className' => 'User',
@@ -1068,13 +1068,15 @@ class UserLesson extends AppModel {
 
 	    $conditions = array('UserLesson.student_user_id'=>$studentUserId,
 						'OR'=>array(
-                                array('UserLesson.end_datetime <'=>$this->timeExpression('now', false), 'UserLesson.end_datetime IS NOT NULL'),
-                                array('stage'=>array(	USER_LESSON_DENIED_BY_TEACHER, USER_LESSON_DENIED_BY_STUDENT,
-													    USER_LESSON_CANCELED_BY_TEACHER, USER_LESSON_CANCELED_BY_STUDENT,
-													    USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING, USER_LESSON_PENDING_STUDENT_RATING,
-													    USER_LESSON_DONE)),
-                                array('UserLesson.datetime <'=>$this->timeExpression('now +1 hour', false), 'UserLesson.datetime IS NOT NULL',
-                                        'stage'=>USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT, USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER )
+                                'AND'=>array(
+                                    array('OR'=>array( 'UserLesson.end_datetime <'=>$this->timeExpression('now', false), 'UserLesson.end_datetime IS NOT NULL')),
+                                    array('stage'=>array(	USER_LESSON_DENIED_BY_TEACHER, USER_LESSON_DENIED_BY_STUDENT,
+                                                            USER_LESSON_CANCELED_BY_TEACHER, USER_LESSON_CANCELED_BY_STUDENT,
+                                                            USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING, USER_LESSON_PENDING_STUDENT_RATING,
+                                                            USER_LESSON_DONE)),
+                                    ),
+                                array('OR'=>array('UserLesson.datetime <'=>$this->timeExpression('now +1 hour', false), 'UserLesson.datetime IS NOT NULL'),
+                                        'stage'=>array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT, USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER ))
                         ));
         //TODO: use  $this->getLessons
 	    return $this->find('all', array('conditions'=>$conditions,
@@ -1169,7 +1171,12 @@ class UserLesson extends AppModel {
     public function getStudentReviews( $studentUserId, $limit=12, $page=1 ) {
         App::import('Model', 'UserLesson');
         $ulObj = new UserLesson();
-        $conditions = array('teacher_user_id'=>$studentUserId, 'stage'=>array(USER_LESSON_PENDING_STUDENT_RATING, USER_LESSON_DONE));
+        $conditions = array('UserLesson.student_user_id'=>$studentUserId, 'stage'=>array(USER_LESSON_PENDING_STUDENT_RATING, USER_LESSON_DONE));
+
+
+        $ulObj->recursive = 2;
+        $ulObj->unbindAll(array('belongsTo'=>array('Teacher')));
+        $ulObj->Teacher->unbindAll();
 
         return $ulObj->find('all', array(	'conditions'=>$conditions,
             'fields'=>array('teacher_user_id', 'rating_by_teacher', 'comment_by_teacher', 'image', 'datetime'),

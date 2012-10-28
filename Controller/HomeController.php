@@ -14,7 +14,7 @@ class HomeController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacherLesson', 'teacher', 'subject', 'order',
+		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacherLesson', 'teacher', 'user', 'order',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession'/*,
                             'test', 'testLocking', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount', 'testGeneratePaymentRecivers',
                             'testUpdateRatingStage'*/, 'testWatchitoo', 'uploadTest');
@@ -868,10 +868,7 @@ $id = $scObj->id;
 		$teacherReviews = $this->UserLesson->getTeacherReviews( $teacherUserId, 2 );
 
 		//get forum latest posts
-        app::import('Model', 'Forum.Post');
-        $postObj = new Post();
-        $postObj->setLanguages($this->Session->read('languages_of_records'));
-        $latestPosts = $postObj->getLatestByUser($teacherUserId, 2);
+        $latestPosts = $this->getLastUserPosts($teacherUserId, 2);
 
         //Get upcoming lessons
         $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons();
@@ -883,6 +880,14 @@ $id = $scObj->id;
 		$this->set('latestPosts', 	            $latestPosts);
 		$this->set('upcomingAvailableLessons',  $upcomingAvailableLessons);
 	}
+
+    private function getLastUserPosts($userId, $limit) {
+        //get forum latest posts
+        app::import('Model', 'Forum.Post');
+        $postObj = new Post();
+        $postObj->setLanguages($this->Session->read('languages_of_records'));
+        return $postObj->getLatestByUser($userId, $limit);
+    }
 	public function getTeacherRatingByStudents($teacherUserId, $limit=2, $page=1) {
         if($this->Auth->user('user_id')!=$teacherUserId) {
             $this->UserLesson->setLanguages($this->Session->read('languages_of_records'));
@@ -896,7 +901,31 @@ $id = $scObj->id;
 		return $this->success(1, array('subjects'=>$teacherOtherSubjects));
 	}
 	
-	
+	public function user($userId) {
+        $this->User->recursive = -1;
+        $userData = $this->User->findByUserId( $userId );
+        if(!$userData) {
+            return false;
+        }
+
+        //get forum latest posts
+        $latestPosts = $this->getLastUserPosts($userId, 2);
+
+        //Get teachers comments for that user
+        $this->UserLesson->setLanguages($this->Session->read('languages_of_records'));
+        $studentReviews = $this->UserLesson->getStudentReviews( $userId, 2 );
+
+        //Get archived lessons
+        $this->UserLesson->recursive = -1;
+        $this->UserLesson->setLanguages($this->Session->read('languages_of_records'));
+        $archiveLessons = $this->UserLesson->getArchive($userId, 2, 1);
+
+        $this->set('userData',         $userData['User']);
+        $this->set('latestPosts',      $latestPosts);
+        $this->set('studentReviews',   $studentReviews);
+        $this->Set('archiveLessons',   $archiveLessons);
+    }
+
 	public function subject() {
 		//TODO: find related subjects by categories
 		//TODO: find teachers by catalog

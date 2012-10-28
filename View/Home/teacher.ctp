@@ -34,9 +34,9 @@
                             </div>
                         </div>
                         <div class="log-box">
-                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo ceil($teacherData['User']['teacher_total_teaching_minutes']/60); ?> H</span><br>Teaching</p>
-                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_total_lessons']; ?></span><br>Lessons</p>
-                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_students_amount']; ?></span><br>Students</p>
+                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo ceil($teacherData['User']['teacher_total_teaching_minutes']/60); ?> H</span><br />Teaching</p>
+                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_total_lessons']; ?></span><br />Lessons</p>
+                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_students_amount']; ?></span><br />Students</p>
                             <a class="log2 btn-black radius3" href="#"><?php
                                 echo $this->Html->image($this->Layout->rating($teacherData['User']['teacher_avarage_rating'], false), array('alt' => 'Techer rating'));
                                 ?><br/>(<?php echo $teacherData['User']['teacher_avarage_rating']; ?>/<?php echo $teacherData['User']['teacher_raters_amount']; ?> Reviews)</a>
@@ -102,9 +102,11 @@
                         }
                     ?>
                     <?php
-                        echo $this->element('Home/board_topics', array('topics'=>$latestPosts));
+                        if($latestPosts) {
+                            echo $this->element('Home/board_topics', array('topics'=>$latestPosts));
+                        }
 
-                        echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$teacherReviews, 'title'=>'What student says about me?'));
+                        echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$teacherReviews));
                     ?>
                     <!---->
 
