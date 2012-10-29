@@ -217,12 +217,15 @@ class User extends AppModel {
 			foreach($teacherLessons AS &$teacherLesson) {
 				//If !$isOwner, hide details about teacherLessons
 				if( !$isOwner && !$teacherLesson['TeacherLesson']['is_public'] )  {
-					$allLessons[] = array(	'name'=>null, 'type'=>'TeacherLesson', 
-											'datetime'=>$teacherLesson['TeacherLesson']['datetime'], 'duration_minutes'=>$teacherLesson['TeacherLesson']['duration_minutes']);
+					$allLessons[] = array(	'name'=>null, 'description'=>null,
+                                            'type'=>'TeacherLesson',
+                                            'datetime'=>$teacherLesson['TeacherLesson']['datetime'],
+                                            'duration_minutes'=>$teacherLesson['TeacherLesson']['duration_minutes'],
+                    );
 					
 				} else {
-					$allLessons[] = array(	'teacher_lesson_id'=>$teacherLesson['TeacherLesson']['teacher_lesson_id'], 
-											'name'=>$teacherLesson['TeacherLesson']['name'], 'type'=>'TeacherLesson', 
+					$allLessons[] = array(	'teacher_lesson_id'=>$teacherLesson['TeacherLesson']['teacher_lesson_id'],
+                                            'name'=>$teacherLesson['TeacherLesson']['name'], 'description'=>$teacherLesson['TeacherLesson']['description'], 'type'=>'TeacherLesson',
 											'datetime'=>$teacherLesson['TeacherLesson']['datetime'], 'duration_minutes'=>$teacherLesson['TeacherLesson']['duration_minutes'],
 											'num_of_students'=>$teacherLesson['TeacherLesson']['num_of_students'],'max_students'=>$teacherLesson['TeacherLesson']['max_students'],
 											'1_on_1_price'=>$teacherLesson['TeacherLesson']['1_on_1_price'],'full_group_total_price'=>$teacherLesson['TeacherLesson']['full_group_total_price'],
@@ -240,12 +243,13 @@ class User extends AppModel {
 				//If !$isOwner, hide details about userLessons
 					if(!$isOwner && (!$showUserLessonsToOthers || !$userLesson['UserLesson']['is_public'])) {
 						//unset($userLesson['Subject'], $userLesson['Teacher'], $userLesson['Student']);
-						$allLessons[] = array(	'name'=>null, 'type'=>'UserLesson', 
+						$allLessons[] = array(	'name'=>null, 'description'=>null, 'type'=>'UserLesson',
 												'datetime'=>$userLesson['UserLesson']['datetime'], 'duration_minutes'=>$userLesson['UserLesson']['duration_minutes']);
 					} else {
 						
 						$allLessons[] = array(	'user_lesson_id'=>$userLesson['UserLesson']['user_lesson_id'], 'teacher_lesson_id'=>$userLesson['UserLesson']['teacher_lesson_id'],
-												'name'=>$userLesson['UserLesson']['name'], 'stage'=>$userLesson['UserLesson']['stage'], 'type'=>'UserLesson',
+												'name'=>$userLesson['UserLesson']['name'], 'description'=>$userLesson['UserLesson']['description'],
+                                                'stage'=>$userLesson['UserLesson']['stage'], 'type'=>'UserLesson',
 												'datetime'=>$userLesson['UserLesson']['datetime'], 'duration_minutes'=>$userLesson['UserLesson']['duration_minutes'],
 												'num_of_students'=>$userLesson['TeacherLesson']['num_of_students'], 'max_students'=>$userLesson['TeacherLesson']['max_students'],
 												'1_on_1_price'=>$userLesson['UserLesson']['1_on_1_price'], 'full_group_total_price'=>$userLesson['UserLesson']['full_group_total_price'],

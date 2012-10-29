@@ -11,7 +11,7 @@ class OrderController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow(	'index', 'init', 'calendar', 'setLessonDatetime', 'getLiveAndGroupLessons', 'summary', 'paymentPreapprovalIpnNotificationUrl', 'paymentIpnNotificationUrl', 'paymentUpdateTest');
+		$this->Auth->allow(	'index', 'init', 'calendar', 'setLessonDatetime', 'getLiveLessons', 'summary', 'paymentPreapprovalIpnNotificationUrl', 'paymentIpnNotificationUrl', 'paymentUpdateTest');
 		$this->Auth->deny( array('paymentPreapproval', 'status') );
         //$this->Security->requirePost('prerequisites');
 	}
@@ -111,6 +111,22 @@ class OrderController extends AppController {
         $this->redirect(array('controller'=>'Order', 'action'=>( ($datetime || $actionData['Subject']['lesson_type']=='video') ? 'summary' : 'calendar')));
     }
 
+    private function loadCommonData($teacherUserId, $subjectId) {
+
+        $this->User->recursive = -1;
+        $teacherData = $this->User->findByUserId( $teacherUserId );
+        if(!$teacherData) {
+            return false;
+        }
+
+
+        $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($subjectId, 3);
+        $this->set('teacherData', $teacherData['User']);
+        $this->set('upcomingAvailableLessons', $upcomingAvailableLessons);
+
+        return array('teacher'=>$teacherData, 'subject'=>$upcomingAvailableLessons);
+    }
+
     /**
      * Shows the active meeting of the person the current user is trying to set a meeting with.
      * @param null $year
@@ -122,20 +138,26 @@ class OrderController extends AppController {
             $this->redirect($this->getOrderData('redirect'));
         }
 
+        if(!$year) {
+            $year = date('Y');
+            $month = date('m');
+        } else if(!$month) {
+            $month = date('m');
+        }
+
         //get booking-auto-approve-settings
         App::import('Model', 'AutoApproveLessonRequest');
         $aalsObj = new AutoApproveLessonRequest();
         $aalr = $aalsObj->getSettings($actionData['Subject']['user_id']);
 
 
+        $this->loadCommonData($actionData['Subject']['user_id'], $actionData['Subject']['subject_id']);
 
-        $groupAndLiveLessons = $this->getLiveAndGroupLessons($year, $month);
+        $allLiveLessons = $this->getLiveLessons($year, $month);
 
-        $this->set('allLiveLessons',	 	$groupAndLiveLessons['allLiveLessons']);
-        $this->set('groupLessons',	 		$groupAndLiveLessons['groupLessons']);
+        $this->set('allLiveLessons',	 	array('records'=>$allLiveLessons, 'month'=>$month, 'year'=>$year));
         $this->set('aalr', 					$aalr);
         $this->set('subjectData',     		$actionData['Subject']);
-
     }
 
     public function setLessonDatetime() {
@@ -152,7 +174,14 @@ class OrderController extends AppController {
         $this->redirect(array('controller'=>'Order', 'action'=>'summary'));
     }
 
-    public function getLiveAndGroupLessons($year, $month) {
+    public function getLiveLessons($year=null, $month=null) {
+        if(!$year) {
+            $year = date('Y');
+            $month = date('m');
+        } else if(!$month) {
+            $month = date('m');
+        }
+
         $actionData = $this->getActionData();
         if(!$actionData) {
             $this->redirect($this->getOrderData('redirect'));
@@ -161,10 +190,14 @@ class OrderController extends AppController {
         //Get student lessons for a given month
         $allLiveLessons = $this->User->getLiveLessonsByDate( $actionData['Subject']['user_id'], false, $year, $month);
 
-        //Filter potential group lessons
+        if ($this->RequestHandler->isAjax()) {
+            return $this->success(1, array('results'=>$allLiveLessons));
+        }
+        return $allLiveLessons;
+        /*//Filter potential group lessons
         $groupLessons = array();
         foreach($allLiveLessons AS $lesson) {
-            if($lesson['type']=='TeacherLesson' && isSet($lesson['max_students']) && $lesson['max_students']>1 &&  $lesson['max_students']>$lesson['num_of_students']) {
+            if($lesson['type']=='TeacherLesson' && isSet($lesson['max_students']) &&  $lesson['max_students']>$lesson['num_of_students']) {
                 //Make sure group lessons are 1 hour away - otherwise users can't join it
                 if(!$this->TeacherLesson->isFuture1HourDatetime($lesson['datetime'])) {
                     continue;
@@ -178,7 +211,7 @@ class OrderController extends AppController {
         if ($this->RequestHandler->isAjax()) {
             return $this->success(1, array('results'=>$return));
         }
-        return $return;
+        return $return;*/
     }
 
     /**

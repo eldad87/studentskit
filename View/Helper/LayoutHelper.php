@@ -71,4 +71,33 @@ class LayoutHelper extends AppHelper {
                             </video>';
 
     }
+
+    public function lessonsToDaysInMonth($lessons, $month, $year) {
+        //1.  build array of days of the week and their times in the month
+        $days = array(
+            array(), //sunday
+            array(), //monday
+            array(), //tuesday
+            array(), //wednesday
+            array(), //thursday
+            array(), //friday
+            array(), //saturday
+        );
+
+        //Get month info
+        $timestamp = mktime(0,0,0 ,$month, 1, $year);
+        $maxDay = date("t",$timestamp);
+        for($i=1; $i<=$maxDay; $i++) {
+            $dInfo = getdate(mktime(0,0,0 ,$month, $i, $year));
+            $days[$dInfo['wday']][$dInfo['mday']] = array(); //day[day-num][day-of-the-month] = array
+        }
+
+        //Add to each day his lesson
+        foreach($lessons AS $lesson) {
+            $dData = getdate(strtotime($lesson['datetime']));
+            $days[$dData['wday']][$dData['mday']][] = $lesson;
+        }
+
+        return $days;
+    }
 }
