@@ -1188,7 +1188,7 @@ class UserLesson extends AppModel {
 	public function waitingTeacherReview($teacehrUserId, $limit=null, $page=1) {
         $this->Subject;
         //Teacher cannot rate video lesson student.
-		return $this->getLessons(array('UserLesson.teacher_user_id'=>$teacehrUserId, 'lesson_type'=>LESSON_TYPE_LIVE), null, $limit, $page, array(USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING));
+		return $this->getLessons(array('UserLesson.teacher_user_id'=>$teacehrUserId, 'UserLesson.lesson_type'=>LESSON_TYPE_LIVE), null, $limit, $page, array(USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING));
 	}
 
 	public function getLessons($conditions, $time='>', $limit=null, $page=1, $stage=array(), $datetimeField='end_datetime', $timeExpression='now') {
