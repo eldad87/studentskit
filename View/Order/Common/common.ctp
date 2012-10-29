@@ -9,15 +9,28 @@
                         <div class="order-math btn-black radius1">
                             <i class="iconBig-liner-icon pull-left space1"></i>
                             <h2 class="pull-left"><?php echo (isSet($subjectData['name']) ? $subjectData['name'] : $name); ?></h2><br />
-                            <p>Live lesson</p>
+                            <p><?php
+                            if(isSet($orderData['lesson_type'])) {
+                                echo _($orderData['lesson_type']).' '.__('lesson');
+                            }
+                            ?></p>
+
                         </div>
-                        <?php echo $this->element('Order/nav', array('orderData'=>$orderData)); ?>
+                        <?php
+                            if(isSet($orderData)) {
+                                echo $this->element('Order/nav', array('orderData'=>$orderData));
+                            }
+                        ?>
                     </div>
 
                     <?php echo $this->fetch('main'); ?>
 
                 </div> <!-- /cont-span6 -->
-                <?php echo $this->element('Order/teacher_and_upcoming', array('upcomingAvailableLessons'=>$upcomingAvailableLessons, 'teacherData'=>$teacherData)); ?>
+                <?php
+                if(isSet($upcomingAvailableLessons) && isSet($teacherData)) {
+                    echo $this->element('Order/teacher_and_upcoming', array('upcomingAvailableLessons'=>$upcomingAvailableLessons, 'teacherData'=>$teacherData));
+                }
+                ?>
             </div> <!-- /cont-span12 -->
         </div> <!-- /row -->
     </div> <!-- /container-inner -->

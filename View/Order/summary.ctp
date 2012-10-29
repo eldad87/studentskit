@@ -36,11 +36,6 @@ echo $this->Form->create(false, array('url'=>array('controller'=>'Order', 'actio
         </li>
 
         <li>
-            <label>Price</label>
-            <div class="order-billing-intext"><p><span>:</span></p><p class="order-billingtext"><?php echo $price ? $price.'$' : 'Free'; ?> </p></div>
-        </li>
-
-        <li>
             <label>Price </label>
             <div class="order-billing-intext"><p>
                 <span>:</span><span class="space11"><?php echo $price ? $price.'$' : 'Free'; ?></span>

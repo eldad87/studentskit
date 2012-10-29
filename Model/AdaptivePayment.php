@@ -294,6 +294,7 @@ class AdaptivePayment extends AppModel {
         $details = $this->preapprovalDetails($data['AdaptivePayment']['preapproval_key']);
         $details['action'] = $action;
         $details['pending_user_lesson_id'] = $pendingUserLessonId;
+        $details['preapproval_key'] = $data['AdaptivePayment']['preapproval_key'];
         return $this->paymentUpdate($details);
     }
 

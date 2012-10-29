@@ -94,6 +94,10 @@ class PendingUserLesson extends AppModel {
     public function execute($pendingUserLessonId) {
         $this->create(false);
         $pendingUserLessonData = $this->findByPendingUserLessonId($pendingUserLessonId);
+        if( $pendingUserLessonData['PendingUserLesson']['status']=='EXECUTED') {
+            return $pendingUserLessonData['PendingUserLesson']['user_lesson_id'];
+        }
+
         if(!$pendingUserLessonData || $pendingUserLessonData['PendingUserLesson']['status']!='ACTIVE') {
             return false;
         }

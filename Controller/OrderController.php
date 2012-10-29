@@ -387,40 +387,34 @@ class OrderController extends AppController {
         $this->UserLesson->recursive = -1;
         $ulData = $this->UserLesson->findByUserLessonId($userLessonId);
         if(!$ulData) {
-            $this->Session->setFlash(__('Internal error'));
-            $this->redirect('/');
+            $this->set('name', __('Error'));
+
+            //Confirm that the viewer is the student
+        } else if($ulData['UserLesson']['student_user_id']!=$this->Auth->user('user_id')) {
+            $this->set('name', __('Error'));
+        } else {
+            $this->loadCommonData($ulData['UserLesson']['teacher_user_id'], $ulData['UserLesson']['subject_id']);
+
+
+            //Check UserLesson stage
+            $stage = $this->UserLesson->checkStage($ulData['UserLesson']);
+
+            $this->set($stage);
+            $this->set('subjectId', $ulData['UserLesson']['subject_id']);
+            $this->set('name', $ulData['UserLesson']['name']);
+            $this->set('orderData', array('action'=>$action, 'price'=>$ulData['UserLesson']['1_on_1_price'], 'lesson_type'=>$ulData['UserLesson']['lesson_type']));
         }
-
-        //Confirm that the viewer is the student
-        if($ulData['UserLesson']['student_user_id']!=$this->Auth->user('user_id')) {
-            $this->Session->setFlash(__('Internal error'));
-            $this->redirect('/');
-        }
-
-
-        $this->loadCommonData($ulData['UserLesson']['teacher_user_id'], $ulData['UserLesson']['subject_id']);
-
-
-        //Check UserLesson stage
-        $stage = $this->UserLesson->checkStage($ulData['UserLesson']);
-
-        $this->set($stage);
-        $this->set('subjectId', $ulData['UserLesson']['subject_id']);
-        $this->set('name', $ulData['UserLesson']['name']);
-        $this->set('orderData', array('action'=>$action, 'price'=>$ulData['UserLesson']['1_on_1_price'], 'lesson_type'=>$ulData['UserLesson']['lesson_type']));
     }
 
     public function paidStatus($action, $pendingUserLessonId) {
-        echo 2; die;
-        //TODO: make sure the user can view this
+
+
         if(!$this->AdaptivePayment->updateUsingPreapprovalDetails($pendingUserLessonId, $action)) {
             $this->redirect($this->getOrderData('redirect'));
         }
+        $status = $this->AdaptivePayment->getStatus($pendingUserLessonId);
 
-        $status = $this->AdaptivePayment->getStatus($pendingUserLessonId, $action);
-
-        pr($status);
-        echo '<a href=="'.$this->getOrderData('redirect').'">'.$this->getOrderData('redirect').'<a/>';
+        $this->redirect(array('action'=>'status', $action, $status['user_lesson_id']));
     }
 
     public function pay() {
