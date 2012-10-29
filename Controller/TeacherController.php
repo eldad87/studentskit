@@ -258,6 +258,7 @@ class TeacherController extends AppController {
             return $this->error(1, array('results'=>array('teacher_about_video_id'=>$teacherCertificateId)));
         }
 
+        $this->User->TeacherCertificate->recursive = -1;
         if(!$this->User->TeacherCertificate->delete($teacherCertificateId)) {
             return $this->error(2, array('results'=>array('teacher_about_video_id'=>$teacherCertificateId)));
         }
