@@ -36,12 +36,38 @@ $days = array(  array('Sunday', 'Sun'), array('Monday', 'Mon'), array('Tuesday',
 
 
             //Print box start
+            /*if($mDay==20) {
+                echo '
+            <td id="para20"',$class,'>
+                <p>',$mDay,'</p>
+                                                        <div class="time-tooltip-box">
+                                                        	<div class="popupwindow radius3 time-tooltip">
+                                                            <span class="arrow-img"></span>
+                                                            <div class="upr-box-tool">
+                                                                <h6 class="pull-left"><strong>Class Time</strong><br/><span class="fontsize3">9am to 10 am</span></h6>
+
+                                                             </div>
+                                                             <div class="bottom-box-tool sk-form">
+                                                                <form>
+                                                                	<label class="calnder-labeltime">Time :</label>
+                                                                    <input type="text" value="16:16" class="calander-time">
+                                                                    <button class="btn-black time-submit">Submit</button>
+                                                                </form>
+                                                             </div>
+                                                        </div>
+                                                      </div>
+
+                <table class="table-heading3">
+                    <tbody>
+                        <tr>';
+            } else {*/
             echo '
             <td',$class,'>
                 <p>',$mDay,'</p>
                 <table class="table-heading3">
                     <tbody>
                         <tr>';
+            //}
 
 
             //Print lessons rows

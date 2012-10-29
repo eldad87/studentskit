@@ -98,6 +98,7 @@ class OrderController extends AppController {
 
         $this->Session->write('order.extra', $extraParams);
         $this->Session->write('order.price', $price);
+        $this->Session->write('order.lesson_type', $actionData['Subject']['lesson_type']);
         $this->Session->write('order.action', $action);
         $this->Session->write('order.id', $id);
 
@@ -138,6 +139,7 @@ class OrderController extends AppController {
             $this->redirect($this->getOrderData('redirect'));
         }
 
+
         if(!$year) {
             $year = date('Y');
             $month = date('m');
@@ -158,6 +160,7 @@ class OrderController extends AppController {
         $this->set('allLiveLessons',	 	array('records'=>$allLiveLessons, 'month'=>$month, 'year'=>$year));
         $this->set('aalr', 					$aalr);
         $this->set('subjectData',     		$actionData['Subject']);
+        $this->set('orderData',             $this->getOrderData());
     }
 
     public function setLessonDatetime() {
@@ -194,24 +197,6 @@ class OrderController extends AppController {
             return $this->success(1, array('results'=>$allLiveLessons));
         }
         return $allLiveLessons;
-        /*//Filter potential group lessons
-        $groupLessons = array();
-        foreach($allLiveLessons AS $lesson) {
-            if($lesson['type']=='TeacherLesson' && isSet($lesson['max_students']) &&  $lesson['max_students']>$lesson['num_of_students']) {
-                //Make sure group lessons are 1 hour away - otherwise users can't join it
-                if(!$this->TeacherLesson->isFuture1HourDatetime($lesson['datetime'])) {
-                    continue;
-                }
-
-                $groupLessons[] = $lesson;
-            }
-        }
-
-        $return = array('allLiveLessons'=>$allLiveLessons, 'groupLessons'=>$groupLessons);
-        if ($this->RequestHandler->isAjax()) {
-            return $this->success(1, array('results'=>$return));
-        }
-        return $return;*/
     }
 
     /**
@@ -229,6 +214,7 @@ class OrderController extends AppController {
         $viewParameters['name']         = $actionData['Subject']['name'];
         $viewParameters['description']  = $actionData['Subject']['description'];
         $viewParameters['lesson_type']  = $actionData['Subject']['lesson_type'];
+        $viewParameters['duration_minutes']  = $actionData['Subject']['duration_minutes'];
         $viewParameters['datetime']     = $this->getOrderData('datetime');
         $viewParameters['price']        = $this->getOrderData('price');
         if($actionData['Subject']['lesson_type']=='live') {
@@ -266,9 +252,11 @@ class OrderController extends AppController {
         }
 
 
+        $this->loadCommonData($actionData['Subject']['user_id'], $actionData['Subject']['subject_id']);
 
         $this->Session->write('order.viewedSummary', true);
         $this->set($viewParameters);
+        $this->set('orderData',             $this->getOrderData());
     }
 
     /**
@@ -289,8 +277,6 @@ class OrderController extends AppController {
         $orderData = $this->getOrderData();
 
         $this->checkIfCanOrder($this->getActionData());
-
-        //Make sure this is the student of the lesson
 
         $orderData['datetime'] = isSet($orderData['datetime']) ? $orderData['datetime'] : null;
         $this->Session->delete('order.viewedSummary');
@@ -322,10 +308,10 @@ class OrderController extends AppController {
         } else if($orderData['action']=='order') {
             //New order
             if($orderData['price']>0) {
-                $success = $this->PendingUserLesson->lessonRequest($orderData['id'], $this->Auth->user('user_id'), $orderData['datetime']);
+                $success = $this->PendingUserLesson->lessonRequest($orderData['id'], $this->Auth->user('user_id'), $orderData['datetime'], false, array('is_public'=>$this->request->data['is_public']));
                 $pendingUserLessonId = $this->PendingUserLesson->id;
             } else {
-                $success = $this->UserLesson->lessonRequest($orderData['id'], $this->Auth->user('user_id'), $orderData['datetime']);
+                $success = $this->UserLesson->lessonRequest($orderData['id'], $this->Auth->user('user_id'), $orderData['datetime'], false, array('is_public'=>$this->request->data['is_public']));
                 $userLessonId = $this->UserLesson->id;
             }
             if(!$success) {
@@ -396,8 +382,32 @@ class OrderController extends AppController {
      * Tells if the order was successful or not
      */
     public function status($action, $userLessonId) {
-        echo 1; die;
-        //TODO: make sure the user can view this
+
+        $this->UserLesson->Subject; //const
+        $this->UserLesson->recursive = -1;
+        $ulData = $this->UserLesson->findByUserLessonId($userLessonId);
+        if(!$ulData) {
+            $this->Session->setFlash(__('Internal error'));
+            $this->redirect('/');
+        }
+
+        //Confirm that the viewer is the student
+        if($ulData['UserLesson']['student_user_id']!=$this->Auth->user('user_id')) {
+            $this->Session->setFlash(__('Internal error'));
+            $this->redirect('/');
+        }
+
+
+        $this->loadCommonData($ulData['UserLesson']['teacher_user_id'], $ulData['UserLesson']['subject_id']);
+
+
+        //Check UserLesson stage
+        $stage = $this->UserLesson->checkStage($ulData['UserLesson']);
+
+        $this->set($stage);
+        $this->set('subjectId', $ulData['UserLesson']['subject_id']);
+        $this->set('name', $ulData['UserLesson']['name']);
+        $this->set('orderData', array('action'=>$action, 'price'=>$ulData['UserLesson']['1_on_1_price'], 'lesson_type'=>$ulData['UserLesson']['lesson_type']));
     }
 
     public function paidStatus($action, $pendingUserLessonId) {
@@ -443,7 +453,7 @@ class OrderController extends AppController {
         echo 1; die;
     }
 
-    public function testIPN() {
+    /*public function testIPN() {
         $data = array (
             'max_number_of_payments' => 'null',
             'starting_date' => '2012-09-27T00:00:15.000Z',
@@ -470,10 +480,10 @@ class OrderController extends AppController {
             'pending_user_lesson_id' => '31',
         );
         /*$data['action'] = 'order';
-        $data['pending_user_lesson_id'] = 51;*/
+        $data['pending_user_lesson_id'] = 51;* /
 //echo 1; die;
         $this->AdaptivePayment->paymentUpdate($data);
-    }
+    }*/
 
     private function isValidIPN() {
         App::import('Vendor', 'PHP-PayPal-IPN'.DS.'ipnlistener');

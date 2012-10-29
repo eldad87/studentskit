@@ -473,9 +473,9 @@ class UserLesson extends AppModel {
 
         if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
             //Set the end of the lesson, video lesson end date is first-watching-time+2 days
-            if(is_object($datetime)) {
+            /*if(is_object($datetime)) {
                 $datetime = $datetime->value;
-            }
+            }*/
             //$userLesson['end_datetime'] = $this->timeExpression($datetime.' + '.$subjectData['duration_minutes'].' minutes' ,false);
             $userLesson['end_datetime'] = $this->getDataSource()->expression('DATE_ADD(`datetime`, INTERVAL `duration_minutes` MINUTE)');
 
@@ -1499,7 +1499,7 @@ class UserLesson extends AppModel {
 
         foreach($userLessonsData AS $userLessonData) {
             $userLessonData = $userLessonData['UserLesson'];
-            if(in_array($userLessonData['stage'], array(USER_LESSON_ACCEPTED,
+            /*if(in_array($userLessonData['stage'], array(USER_LESSON_ACCEPTED,
                                                         USER_LESSON_PENDING_RATING,
                                                         USER_LESSON_PENDING_TEACHER_RATING,
                                                         USER_LESSON_PENDING_STUDENT_RATING,
@@ -1516,7 +1516,8 @@ class UserLesson extends AppModel {
                 $return['pending_user_approval'] = true;
                 $return['user_lesson_id'] = $userLessonData['user_lesson_id'];
 
-            }
+            }*/
+            $return = am($return, $this->checkStage($userLessonData));
         }
 
 
@@ -1543,6 +1544,28 @@ class UserLesson extends AppModel {
 
         }*/
 
+
+        return $return;
+    }
+
+    public function checkStage($userLessonData) {
+        if(in_array($userLessonData['stage'], array(USER_LESSON_ACCEPTED,
+            USER_LESSON_PENDING_RATING,
+            USER_LESSON_PENDING_TEACHER_RATING,
+            USER_LESSON_PENDING_STUDENT_RATING,
+            USER_LESSON_DONE))) {
+
+            $return['approved'] = true;
+            $return['user_lesson_id'] = $userLessonData['user_lesson_id'];
+
+        } else if(in_array($userLessonData['stage'], array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT))) {
+            $return['pending_teacher_approval'] = true;
+            $return['user_lesson_id'] = $userLessonData['user_lesson_id'];
+
+        } else if(in_array($userLessonData['stage'], array(USER_LESSON_PENDING_STUDENT_APPROVAL, USER_LESSON_RESCHEDULED_BY_TEACHER))) {
+            $return['pending_user_approval'] = true;
+            $return['user_lesson_id'] = $userLessonData['user_lesson_id'];
+        }
 
         return $return;
     }
