@@ -5,10 +5,10 @@
   */
   $config = array(
   	'Watchitoo' => array(
-  		'vendorId' => 'eprof',
+  		'vendorId' => 'universito',
         'customerId'=>177,
         'privateKey'=>'evgnATl7WaMaCTI7LC8f561SaM1VpTMI',
-  		'accessToken' => 'A0df99b19bfd2260abf26eabe69626d967',
+  		'accessToken' => ' A0e9ecb58d7c5480e8b208cd75e23b2198',
   		'domain' => 'http://www.watchitoo.com/',
   		)
   	);
