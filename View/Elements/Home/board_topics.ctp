@@ -1,7 +1,7 @@
 <!-- board-topics start -->
 <div class="lesson-box pad8 space4">
     <h3 class="radius1"><strong>Latest board messages</strong></h3>
-    <div class="box-subject2 radius3">
+    <div class="box-subject2 radius3 fix-height"">
         <?php
         $latestPostsCount = count($latestPosts);
             foreach($latestPosts AS $latestPost) {

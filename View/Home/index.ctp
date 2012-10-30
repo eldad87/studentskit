@@ -6,7 +6,8 @@
         <div class="row">
             <div class="cont-span8">
                 <h2 class="pull-left"><i class="iconBig-about space1"></i>Newest subjects</h2>
-                <!--<button type="button" class="btns btn-black pull-right"><?php /*echo $this->Html->link('Lesson Requests', array('controller'=>'Requests')); */?></button>-->
+                <a data-toggle="modal" href="#myModal" class="btns btn-black pull-right text-color index-blackbtn">Lesson Requests</a>
+				<?php echo $this->element('Home/lesson_request');  ?>
                 <ul class="row">
                     <?php
                     if($newSubjects) {
@@ -53,7 +54,7 @@
             </div> <!-- /cont-span8 -->
             <div class="cont-span4 spc-mar">
                 <h2><i class="iconBig-mesg space1"></i>Board Messages</h2>
-                <ul class="board-msg">
+                <ul class="board-msg scorllbox">
                     <?php
                     if($latestTopics) {
                         $i=0;
@@ -73,6 +74,7 @@
                         }
                     }
                 ?>
+				<div id="more"></div>
                 </ul>
                 <a class="more-btn1">More Threads</a>
             </div> <!-- /cont-span8 -->

@@ -400,7 +400,9 @@ p.order-negotiat-billing{
 }
 
 @media (max-width: 768px) {
-
+h2{
+	font-size:22px;
+}
 /* Color Button */
 .color-btn-row {
   width:100%;
@@ -1047,4 +1049,18 @@ a.add-blckbtn{
 p.order-negotiat-billing{
 	margin-top:25px;
 }
+
+/* inner action pressed */
+
+ul.action-dropdown{
+	left:-14px;
+	margin-top:5px;	
+}
+
+.index-blackbtn{
+	font-size:16px;
+	line-height:33px;
+	text-align:center;
+}
+
 }

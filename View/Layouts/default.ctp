@@ -32,8 +32,12 @@
     <!-- Javascript
 ================================================== -->
     <?php
-        echo $this->Html->script(array( 'custom-form-elements',
-                                        'jquery',
+        echo $this->Html->script(array( 
+										'jquery-1.8.2',
+										'custom-form-elements',
+										'jquery-ui-1.9.1.custom.min',
+										
+										'script.js',
                                         'bootstrap-transition',
                                         'bootstrap-alert',
                                         'bootstrap-modal',
@@ -46,9 +50,11 @@
                                         'bootstrap-collapse',
                                         'bootstrap-carousel',
                                         'bootstrap-typeahead',
-                                        'application'));
+                                        'application',
+										'slimScroll'));
         echo $this->fetch('script');
-    ?>
+    ?><!-- jCarousel Slider -->
+
 
 
     <script type="text/javascript">
@@ -87,9 +93,9 @@
         <div class="top-left">
             <div class="label-txt pull-left space1">Language</div>
             <div class="pull-left space1 position">
-                <div id="countrySelect" class="select">Country</div>
+                <div class="select show-tip" id="selcountry">Country</div>
                 <!-- country box -->
-                <div id="countryList" class="header-tooltip-box toolbarbox">
+                <div  id="selcountry-tip" class="header-tooltip-box toolbarbox alltip">
                     <div class="header-tooltip"></div>
                     <div class="head-countrybox">
                         <form class="sk-form">
@@ -100,10 +106,10 @@
                                 ?>
                             </div>
                             <div class="head-countrybar">
-                                <p class="head-countrytext pull-left fullwidth">Prioritize: <i class="iconSmall-info"></i></p>
-                                <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i>  English</a></p>
-                                <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i>  Hebrew</a></p>
-                                <p  class="space37 fullwidth pull-left"><i class="iconMedium-add-sub"></i>
+								<p class="head-countrytext pull-left fullwidth">Prioritize: <i class="iconSmall-info"></i></p>
+								<p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  English</p>
+								<p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  Hebrew</p>
+								<p  class="space37 fullwidth pull-left"><i class="iconMedium-add-sub"></i>
                                     <?php
                                         echo $this->Form->input('languages', array('options' => $languages, 'label'=>false, 'div'=>false, 'class'=>'space38', 'onChange'=>'changeTime(\'countary1\', this.value)'));
                                     ?>
@@ -130,63 +136,65 @@
 
         <?php if(isSet($user['user_id'])) { ?>
         <!--world icon and messageicon box -->
-        <div class="top-middle">
+		
+		
+		<div class="top-middle">
             <div class="pull-left position request-box">
-                <?php
-                $notificationsCount = $this->requestAction(array('controller'=>'Notifications', 'action'=>'getUnreadNotificationsCount'));
-                if($notificationsCount['unreadCount']) {
-                    echo '<div class="requst-number">',$notificationsCount['unreadCount'],'</div>';
-                }
-                ?>
-                <i id="notificationIcon" class="pull-left iconMedium-world space22 icon"></i>
-                <div id="notificationList" class="header-tooltip-box">
-                    <div class="header-tooltip"></div>
-                    <ul class="headerdropdown radius3">
-                        <li class="visiter-background">
-                            <div class="headeruser"><img src="/img/users/img-38x38-1.jpg" alt=""></div>
-                            <div class="headeruser-text">
-                                <p>Hi, How are you.</p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="headeruser"><img src="/img/users/img-38x38-1.jpg" alt=""></div>
-                            <div class="headeruser-text">
-                                <p>Can you invite me in?</p>
-                            </div>
-                        </li>
-                        <li><a href="#">See all</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="pull-left position">
-                <?php
-                $messagesCount = $this->requestAction(array('controller'=>'Message', 'action'=>'getUnreadThreadCount'));
-                if($messagesCount['unreadCount']) {
-                    echo '<div class="requst-number">',$messagesCount['unreadCount'],'</div>';
-                }
-                ?>
-                <i id="messageIcon" class="pull-left iconMedium-mail space22 icon"></i>
-                <div id="messageList" class="header-tooltip-box">
-                    <div class="header-tooltip"></div>
-                    <ul class="headerdropdown radius3">
-                        <li class="visiter-background">
-                            <div class="headeruser"><img src="/img/users/img-38x38-1.jpg" alt=""></div>
-                            <div class="headeruser-text">
-                                <p>Hi, How are you.</p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="headeruser"><img src="/img/users/img-38x38-1.jpg" alt=""></div>
-                            <div class="headeruser-text">
-                                <p>Can you invite me in?</p>
-                            </div>
-                        </li>
-                        <li><a href="#">See all</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+            <?php
+			$notificationsCount = $this->requestAction(array('controller'=>'Notifications', 'action'=>'getUnreadNotificationsCount'));
+			if($notificationsCount['unreadCount']) {
+				echo '<div class="requst-number">',$notificationsCount['unreadCount'],'</div>';
+			}
+			?>
+			<i class="pull-left iconMedium-world space22 icon show-tip" id="world"></i>
+			<div class="header-tooltip-box alltip" id="world-tip"> 
+				<div class="header-tooltip"></div>  
+				<ul class="headerdropdown radius3">
+					<li class="visiter-background">
+						<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+						 <div class="headeruser-text">
+							<p>Hi, How are you.</p>
+						 </div>   
+					</li>
+					<li>
+						<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+						<div class="headeruser-text">
+							<p>Can you invite me in?</p>
+						</div> 
+					</li>
+					<li><a href="#">See all</a></li>
+				</ul>
+			</div>
+		</div>
+                
+        <div class="pull-left position">
+			<?php
+			$messagesCount = $this->requestAction(array('controller'=>'Message', 'action'=>'getUnreadThreadCount'));
+			if($messagesCount['unreadCount']) {
+				echo '<div class="requst-number">',$messagesCount['unreadCount'],'</div>';
+			}
+			?>
+			<i class="pull-left iconMedium-mail space22 icon show-tip" id="massages"></i>
+			<div id="massages-tip" class="header-tooltip-box alltip"> 
+				<div class="header-tooltip"></div>  
+				<ul class="headerdropdown radius3">
+					<li class="visiter-background">
+						<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+						<div class="headeruser-text">
+							<p>Hi, How are you.</p>
+						</div>   
+					</li>
+					<li>
+						<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+						<div class="headeruser-text">
+							<p>Can you invite me in?</p>
+						</div> 
+					</li>
+					<li><a href="studentkit-message-innerpage action pressed.html">See all</a></li>
+				</ul>
+			</div>
+		</div>
+		
         <!-- world icon and messageicon box -->
         <?php } ?>
 
@@ -227,7 +235,11 @@
 
     <!-- Footertop
    ================================================== -->
-    <footer>
+<footer>
+    <div class="temphtml" style="display:none;"></div>
+    <div class="mysubjectbox-temp" style="display:none;"></div>
+    <!-- Footertop
+   ================================================== -->
     <Section class="footer-top">
         <div class="footer-top-inner">
             <div class="span">
@@ -272,7 +284,6 @@
             </div>
         </div>
     </Section>
-
     <!-- Footerbottom
    ================================================== -->
     <Section class="footer-bottom">
@@ -286,8 +297,5 @@
         </div>
     </Section>
 </footer>
-
-
-
 </body>
 </html>

@@ -28,6 +28,9 @@
 
 <!-- Scripts -->
 <script src="assets/js/custom-form-elements.js"></script>
+<script src="assets/js/jquery-1.8.1.min.js"></script>
+<script src="assets/js/jquery-ui-1.9.1.custom.min.js"></script>                        <script src="assets/js/jquery.js"></script>
+<script type="text/javascript" src="assets/js/script.js"></script>
 
 </head>
 
@@ -35,14 +38,14 @@
 
     <!-- Topbar
         ================================================== -->
-   	  <Section class="topbar">
+   	   <Section class="topbar">
         <div class="topbar-inner">
         	<div class="top-left">
                 <div class="label-txt pull-left space1">Language</div>
                 <div class="pull-left space1 position">               
-                <div class="select">Country</div>
+                <div class="select show-tip" id="selcountry">Country</div>
                    <!-- country box --> 
-                    <div class="header-tooltip-box toolbarbox">
+                     <div  id="selcountry-tip" class="header-tooltip-box toolbarbox alltip">
                         <div class="header-tooltip"></div>                   
                         <div class="head-countrybox">
                         <form class="sk-form">
@@ -56,13 +59,13 @@
                         </div>
                         <div class="head-countrybar">
                             <p class="head-countrytext pull-left fullwidth">Prioritize: <i class="iconSmall-info"></i></p>
-                             <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i>  English</a></p>
-                            <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i>  Hebrew</a></p>
+                             <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  English</p>
+                            <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  Hebrew</p>
                             <p  class="space37 fullwidth pull-left"><i class="iconMedium-add-sub"></i> 
                                 <select id="1" name="" onChange="changeTime('countary1',this.value)" class="space38">
-                                <option value="England">Select</option>
-                                <option value="France">Select</option>
-                                <option value="India">Select</option>	
+                                <option value="England">Select1</option>
+                                <option value="France">Select2</option>
+                                <option value="India">Select3</option>	
                             </select>
                             </p>
                         </div>
@@ -80,6 +83,53 @@
                 </select>
                 </div>
             </div> <!-- /pull-left -->
+            <div class="top-middle">
+                <div class="pull-left position request-box">
+                  	<div class="requst-number">12</div>
+                	<i class="pull-left iconMedium-world space22 icon show-tip" id="world"></i>
+                    <div class="header-tooltip-box alltip" id="world-tip"> 
+                     	<div class="header-tooltip"></div>  
+                        <ul class="headerdropdown radius3">
+                            <li class="visiter-background">
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Hi, How are you.</p>
+                                 </div>   
+                            </li>
+                            <li>
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Can you invite me in?</p>
+                                 </div> 
+                            </li>
+                            <li><a href="#">See all</a></li>
+                        </ul>
+                     </div>
+                    </div>
+                
+                <div class="pull-left position">
+                	<div class="requst-number">12</div>
+                	<i class="pull-left iconMedium-mail space22 icon show-tip" id="massages"></i>
+                    <div id="massages-tip" class="header-tooltip-box alltip" > 
+                     	<div class="header-tooltip"></div>  
+                        <ul class="headerdropdown radius3">
+                            <li class="visiter-background">
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Hi, How are you.</p>
+                                 </div>   
+                            </li>
+                            <li>
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Can you invite me in?</p>
+                                 </div> 
+                            </li>
+                            <li><a href="studentkit-message-innerpage action pressed.html">See all</a></li>
+                        </ul>
+                     </div>
+                </div>
+              </div>
             
             <div class="top-right">
             	<div class="label-txt pull-left space5"><a href="#">Sign In <i class="iconMedium-sign"></i></a></div>
@@ -104,8 +154,8 @@
             <ul class="nav">
                 <li><a href="index.html" title="">Home</a></li>
                 <li><a href="#" title="">Board</a></li>
-                <li><a href="#" title="">Account</a></li>
-                <li class="active"><a href="#" title="">Lesson Requests</a></li>
+                <li><a href="student-profile-um.html" title="">Account</a></li>
+                <li class="active"><a href="student-profile-um.html" title="">Account</a></li>
                 <li><a href="#" title="">How it Works</a></li>
             </ul>
           </div><!--/.nav-collapse -->
@@ -123,30 +173,43 @@
             	<div class="cont-span12">
                 	<div class="cont-span16 c-box-mar cbox-space pos pos1">
                     	<div class="butn-space">
-																				<a data-toggle="modal" href="#myModal" class="black-cent-butn butns-width"><strong>New LIVE lesson request</strong></a>
-																			   <a  class=" greencentbutn pull-left radius3"><i class="iconBig-kart-icon pull-left"></i>
-																					<span class="pull-left"><strong>Order</strong></span></a>
-																					 <div id="myModal1" class="modal hide fade">
-																									<div class="modal-header">
-																										<button type="button" class="close" data-dismiss="modal">&times;</button>
-																										<h3>Info</h3>
-																									</div> <!-- /modal-header -->
-																									<div class="modal-body">
-																									<p>Dear % username %</p>
-																									<p>This lesson required the teacher approval.</p>
-																									<p class="space6">A request has been sent to the teacher.</p>    
-																								<div class="control  control1 pull-right">
-																									<button class="btn-blue" type="button">Submit</button>
-																								</div>  
-																									</div> <!-- /modal-body -->
-																							  </div>
+                            <a data-toggle="modal" href="#myModal" class="black-cent-butn butns-width"><strong>New LIVE lesson request</strong></a>
+                           <a  class=" greencentbutn pull-left radius3"><i class="iconBig-kart-icon pull-left"></i>
+                                <span class="pull-left"><strong>Order</strong></span></a>
+                                 <div id="myModal1" class="modal hide fade">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h3>Info</h3>
+                                                </div> <!-- /modal-header -->
+                                                <div class="modal-body">
+                                                <p>Dear % username %</p>
+                                                <p>This lesson required the teacher approval.</p>
+                                                <p class="space6">A request has been sent to the teacher.</p>    
+                                            <div class="control  control1 pull-right">
+                                                <button class="btn-blue" type="button">Submit</button>
+                                            </div>  
+                                                </div> <!-- /modal-body -->
+                                          </div>
                                           
                                 
                              </div>
                     	<div class="student-main-box2 radius3 pad1">
                         	<div class="sec-main-box">
                                 <a data-toggle="modal" href="#myModal1" class="border1 pull-left"><img src="assets/img/ban-img1.jpg" alt="kajdha" /></a>
-                               
+                                <div id="myModal" class="modal hide fade">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h3>Info</h3>
+                                                </div> <!-- /modal-header -->
+                                                <div class="modal-body">
+                                                <p>Dear % username %</p>
+                                                <p>This is a premium Video, please pay for it first.</p>    
+                                            <div class="control  control1 pull-right">
+                                                <button class="btn-blue" type="button">Submit</button>
+                                            </div>  
+                                                </div> <!-- /modal-body -->
+                                          </div>
+                               <!-- poppup start -->
                                
                                 <h6><a href="#">Video Title Goes Here</a></h6>
                                 <p class="pad2">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
@@ -259,15 +322,30 @@
                         	<div class="lesson-box space8">
                             	<h3 class="radius1"><strong>See Other Teachers On This Subject</strong></h3>
                                 <div class="box-subject radius2">
-                                    <a href="#" class="arrow-left arrws2"></a>
-                                    <ul class="subject-books subject-books1">
+                                    <div id="carousel" class="es-carousel-wrapper">
+                                    <div class="es-carousel">
+                                        <ul>
+										<li><img src="assets/img/users/img-63x63-1.jpg" alt="akjgdkjb" /></li>
+                                        <li><img src="assets/img/users/img-63x63-2.jpg" alt="akjgdkjb" /></li>
                                         <li><img src="assets/img/users/img-63x63-1.jpg" alt="akjgdkjb" /></li>
+                                        <li><img src="assets/img/users/img-63x63-2.jpg" alt="akjgdkjb" /></li>
+                                         <li><img src="assets/img/users/img-63x63-1.jpg" alt="akjgdkjb" /></li>
+                                        <li><img src="assets/img/users/img-63x63-2.jpg" alt="akjgdkjb" /></li>
+                                        <li><img src="assets/img/users/img-63x63-1.jpg" alt="akjgdkjb" /></li>
+                                        <li><img src="assets/img/users/img-63x63-2.jpg" alt="akjgdkjb" /></li>
+                                        <li><img src="assets/img/users/img-63x63-1.jpg" alt="akjgdkjb" /></li>
+                                        <li><img src="assets/img/users/img-63x63-2.jpg" alt="akjgdkjb" /></li>
+                                        <li><img src="assets/img/users/img-63x63-1.jpg" alt="akjgdkjb" /></li>
+                                        <li><img src="assets/img/users/img-63x63-2.jpg" alt="akjgdkjb" /></li>
+                                         <li><img src="assets/img/users/img-63x63-1.jpg" alt="akjgdkjb" /></li>
                                         <li><img src="assets/img/users/img-63x63-2.jpg" alt="akjgdkjb" /></li>
                                         <li><img src="assets/img/users/img-63x63-1.jpg" alt="akjgdkjb" /></li>
                                         <li><img src="assets/img/users/img-63x63-2.jpg" alt="akjgdkjb" /></li>
                                         <li class="m-none3"><img src="assets/img/users/img-63x63-1.jpg" alt="akjgdkjb" /></li>
-                                    </ul>
-                                    <a href="#" class="arrow-right arrws2"></a>  
+                                        </ul>
+                                        <div class="clear"></div>
+                                    </div>
+								  </div>
                                 </div>
                            </div>  
                    </div> <!-- /cont-span17 -->
@@ -341,7 +419,8 @@
     
     <!-- Javascript 
     ================================================== -->
-    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/jquery-1.8.1.min.js"></script>
+<script src="assets/js/jquery-ui-1.9.1.custom.min.js"></script>                        <script src="assets/js/jquery.js"></script>
     <script src="assets/js/bootstrap-transition.js"></script>
     <script src="assets/js/bootstrap-alert.js"></script>
     <script src="assets/js/bootstrap-modal.js"></script>
@@ -355,6 +434,7 @@
     <script src="assets/js/bootstrap-carousel.js"></script>
     <script src="assets/js/bootstrap-typeahead.js"></script>
     <script src="assets/js/application.js"></script>
+<script src="assets/js/slimScroll.js"></script>
 	<script>
         function changeTime(spanId,val)
         {
@@ -367,7 +447,16 @@
                 });
         });
 	</script> <!-- For Selectbox -->
- 
+    
+     <!-- jCarousel Slider -->
+    <script type="text/javascript" src="assets/js/jquery.easing.1.3.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.elastislide.js"></script>
+	<script type="text/javascript">
+    	$('#carousel').elastislide({
+				imageW 	: 63,
+				minItems	: 7
+			});
+    </script>
     
     
 </body>

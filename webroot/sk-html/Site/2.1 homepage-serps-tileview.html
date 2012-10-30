@@ -28,6 +28,9 @@
 
 <!-- Scripts -->
 <script src="assets/js/custom-form-elements.js"></script>
+<script src="assets/js/jquery-1.8.1.min.js"></script>
+<script src="assets/js/jquery-ui-1.9.1.custom.min.js"></script>                        <script src="assets/js/jquery.js"></script>
+<script type="text/javascript" src="assets/js/script.js"></script>
 
 </head>
 
@@ -35,14 +38,14 @@
 
     <!-- Topbar
         ================================================== -->
-   	  <Section class="topbar">
+   	   <Section class="topbar">
         <div class="topbar-inner">
         	<div class="top-left">
                 <div class="label-txt pull-left space1">Language</div>
                 <div class="pull-left space1 position">               
-                <div class="select">Country</div>
+                <div class="select show-tip" id="selcountry">Country</div>
                    <!-- country box --> 
-                    <div class="header-tooltip-box toolbarbox">
+                     <div  id="selcountry-tip" class="header-tooltip-box toolbarbox alltip">
                         <div class="header-tooltip"></div>                   
                         <div class="head-countrybox">
                         <form class="sk-form">
@@ -56,13 +59,13 @@
                         </div>
                         <div class="head-countrybar">
                             <p class="head-countrytext pull-left fullwidth">Prioritize: <i class="iconSmall-info"></i></p>
-                             <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i>  English</a></p>
-                            <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i>  Hebrew</a></p>
+                             <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  English</p>
+                            <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  Hebrew</p>
                             <p  class="space37 fullwidth pull-left"><i class="iconMedium-add-sub"></i> 
                                 <select id="1" name="" onChange="changeTime('countary1',this.value)" class="space38">
-                                <option value="England">Select</option>
-                                <option value="France">Select</option>
-                                <option value="India">Select</option>	
+                                <option value="England">Select1</option>
+                                <option value="France">Select2</option>
+                                <option value="India">Select3</option>	
                             </select>
                             </p>
                         </div>
@@ -80,6 +83,53 @@
                 </select>
                 </div>
             </div> <!-- /pull-left -->
+            <div class="top-middle">
+                <div class="pull-left position request-box">
+                  	<div class="requst-number">12</div>
+                	<i class="pull-left iconMedium-world space22 icon show-tip" id="world"></i>
+                    <div class="header-tooltip-box alltip" id="world-tip"> 
+                     	<div class="header-tooltip"></div>  
+                        <ul class="headerdropdown radius3">
+                            <li class="visiter-background">
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Hi, How are you.</p>
+                                 </div>   
+                            </li>
+                            <li>
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Can you invite me in?</p>
+                                 </div> 
+                            </li>
+                            <li><a href="#">See all</a></li>
+                        </ul>
+                     </div>
+                    </div>
+                
+                <div class="pull-left position">
+                	<div class="requst-number">12</div>
+                	<i class="pull-left iconMedium-mail space22 icon show-tip" id="massages"></i>
+                    <div id="massages-tip" class="header-tooltip-box alltip" > 
+                     	<div class="header-tooltip"></div>  
+                        <ul class="headerdropdown radius3">
+                            <li class="visiter-background">
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Hi, How are you.</p>
+                                 </div>   
+                            </li>
+                            <li>
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Can you invite me in?</p>
+                                 </div> 
+                            </li>
+                            <li><a href="studentkit-message-innerpage action pressed.html">See all</a></li>
+                        </ul>
+                     </div>
+                </div>
+              </div>
             
             <div class="top-right">
             	<div class="label-txt pull-left space5"><a href="#">Sign In <i class="iconMedium-sign"></i></a></div>
@@ -104,8 +154,8 @@
             <ul class="nav">
                 <li class="active"><a href="index.html" title="">Home</a></li>
                 <li><a href="#" title="">Board</a></li>
-                <li><a href="#" title="">Account</a></li>
-                <li><a href="#" title="">Lesson Requests</a></li>
+                <li><a href="student-profile-um.html" title="">Account</a></li>
+                <li class="active"><a href="studentkit-lesson-page.html" title="">Lesson Requests</a></li>
                 <li><a href="#" title="">How it Works</a></li>
             </ul>
           </div><!--/.nav-collapse -->
@@ -160,7 +210,71 @@
                         <span>></span>
                         <a href="#" class="color-text">Thumbview</a>
                      </p>
-                	<button type="button" class="btns btn-black pull-right space28">Lesson Requests</button>
+                	<a data-toggle="modal" href="#myModal" class="btns btn-black pull-right text-color space1 index-blackbtn">Lesson Requests</a>
+                    <div id="myModal" class="modal hide fade">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h3>Lesson Request</h3>
+                                                </div> <!-- /modal-header -->
+                                                <div class="modal-body">
+                                                    <form class="sk-form">
+                                        <fieldset>
+                                        	<div class="control-group">
+                                                <label class="control-label" for="11">Title :</label>
+                                                <div class="control control1">
+                                                   <input type="text" class="x-large2" name="" value="" id="11">
+                                                </div>  
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" for="11">Title :</label>
+                                                <div class="control control1">
+                                                   <select class="x-large2">
+                                                   	<option>Live Lesson</option>
+                                                    <option>Live Lesson</option>
+                                                    <option>Live Lesson</option>
+                                                   </select>
+                                                </div>  
+                                            </div>
+                                        	<div class="control-group">
+                                                <label class="control-label" for="12">Language :</label>
+                                                <div class="control control1">
+                                                   <input type="text" class="x-large2 lite-language" name="" value="Type your suitable language" id="12">
+                                                </div>  
+                                            </div> 
+                                            <div class="control-group">
+                                                <label class="control-label">Pricing :</label>
+                                                <div class="control control1">
+                                                    <input type="text" class="x-large2 lite-price" name="" value="">
+                                                   <select class="lite-price  space22">
+                                                   		<option>$</option>
+                                                        <option>USD</option>
+                                                   </select>
+                                                   <span class="space27">To</span>
+                                                    <input type="text" class="x-large2 lite-price" name="" value="">
+                                                   <select class="lite-price  space22">
+                                                   		<option>$</option>
+                                                        <option>USD</option>
+                                                   </select>
+                                                   <i class="iconSmall-info space22"></i>
+                                                </div>  
+                                            </div>    
+                                            <div class="control-group">
+                                                <label class="control-label" for="17">Description :</label>
+                                                <div class="control control1">
+                                                    <textarea id="17" class="text-are1 lite-textarea" rows="5">Lorem Ipsum is simply dummy text of the printing and typesettingindustry. Lorem Ipsum has been the industry's standard dummy text ever sinc</textarea>
+                                                    <p class="fontsize2">Chracters Left: 255</p>
+                                                </div>    
+                                            </div>
+                                            <div class="control-group">
+                                            <label class="control-label"></label>
+                                            <div class="control  control1">
+                                                <button class="btn-blue" type="button">ADD</button>
+                                            </div>    
+                                        </div>
+                                        </fieldset>
+                                    </form>
+                                                </div> <!-- /modal-body -->
+                                          </div>
                     <div class="pull-left space6">
                     <!-- category filter -->
                     <div class="categorybox radius3">
@@ -253,6 +367,7 @@
                     </div>
                     <!-- end of category filter -->
                     <div class="lesson-wrapper">
+                  <div class="paging"> 
                     <ul class="lesson-container">
                     	<li class="cont-span4 spc space2">
                         	<div class="lesson-box">
@@ -445,16 +560,17 @@
                             </div>    
                         </li>
                     </ul>
+                   </div> 
                     <!-- pager -->
                         <div class="pagination pull-right space1">
-                            <ul>
-                                <li class="disabled"><a href="#">&lt; &lt; Prev</a></li>
-                                <li class="active"><a href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li><a href="#">3</a></li>
-                                <li><a href="#">4</a></li>
-                                <li><a href="#">Next &gt; &gt;</a></li>
-                                </ul>
+                            <ul class="pager">
+                                <li class="disabled"><a href="#" class="prev">&lt; &lt; Prev</a></li>
+                                <li class="active"><a href="#" class="load p1">1</a></li>
+                                <li><a href="#page2" class="load p2" >2</a></li>
+                                <li><a href="#page3" class="load p3">3</a></li>
+                                <li><a href="#page4" class="load p4">4</a></li>
+                                <li><a href="#page5" class="next">Next &gt; &gt;</a></li>
+                             </ul>
                         </div>
                        </div> 
                   </div>   <!-- /row -->
@@ -528,7 +644,8 @@
     
     <!-- Javascript 
     ================================================== -->
-    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/jquery-1.8.1.min.js"></script>
+<script src="assets/js/jquery-ui-1.9.1.custom.min.js"></script>                        <script src="assets/js/jquery.js"></script>
     <script src="assets/js/bootstrap-transition.js"></script>
     <script src="assets/js/bootstrap-alert.js"></script>
     <script src="assets/js/bootstrap-modal.js"></script>
@@ -542,6 +659,7 @@
     <script src="assets/js/bootstrap-carousel.js"></script>
     <script src="assets/js/bootstrap-typeahead.js"></script>
     <script src="assets/js/application.js"></script>
+<script src="assets/js/slimScroll.js"></script>
 	<script>
         function changeTime(spanId,val)
         {

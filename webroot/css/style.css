@@ -17,7 +17,8 @@ section{
 	position:fixed;
 	top:0;
 	left:0;
-	z-index:6;
+	z-index:100;
+	cursor:pointer;
 }
 	
 .navbar{
@@ -126,6 +127,16 @@ section{
 		color-stop(0.74, rgb(255,255,255))
 	);
 	position:relative;
+}
+
+/* fix height and width */
+
+.fix-height{
+	min-height:100px !important;
+}
+
+.fix-width{
+	min-width:100%;
 }
 
 /* +++++++++++++++++ Top Bar +++++++++++++++++ */
@@ -838,6 +849,7 @@ a.btn-color-blue{
 	border: 1px solid #CCCCCC;
 	margin-top:15px;
 	padding:0px 15px 15px 15px;
+	min-height:100px !important;
 }
 
 .student-pic{
@@ -956,7 +968,7 @@ li.bg-sub{
 }
 
 li.bg-active{
-	padding:0px 10px;
+	
 	border:1px solid #1789cd;
 	background-color:#2da4e3;
 	background-image: linear-gradient(bottom, rgb(29,143,213) 0%, rgb(65,188,245) 100%);
@@ -2245,6 +2257,7 @@ a.black-cent-butn2{
 ul.teacher-box2 li{
 	float:left;
 	margin-bottom:20px;
+	width:100%;
 }
 
 a.more{
@@ -2323,12 +2336,13 @@ a.more{
 }
 
 ul.subject-box{
+	float:left;
 }
 
 ul.subject-box li{
 	float:left;
 	width:29%;
-	margin-right:28px;
+	margin-right:26px;
 	margin-bottom:20px;
 }
 
@@ -3277,7 +3291,7 @@ ul.booking-nav.nav-tabs.back-more li.active{
 	position:absolute;
 	top:25px;
 	left:10px;
-	display:block;
+	display:none;
 	z-index:1;
 }
 
@@ -3956,6 +3970,7 @@ a.addplus-icon{
 	position:absolute;
 	right:10px;
 	top:35px;
+	display:none;
 }
 
 .tooltip-position{
@@ -4193,7 +4208,6 @@ ul.subject-sliderbox li{
 	height:139px;
 	float:left;
 	padding:0px;
-	margin:0px 0px 0px 3%;
 	background: #ffffff; /* Old browsers */
 	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
 	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmMWYxZjEiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
@@ -4211,7 +4225,12 @@ ul.subject-sliderbox li{
 	-ms-border-radius:3px;
 	border:solid 1px #cccccc;
 	position:relative;
+	margin-left:15px;	
 
+}
+
+ul.subject-sliderbox li.no-space{
+	margin-left:0px;
 }
 
 .playlistbox{
@@ -4665,6 +4684,7 @@ ul.action-dropdown{
 	-webkit-border-radius:3px;
 	-ms-border-radius:3px;
 	z-index:1;
+	display:none;
 }
 
 ul.action-dropdown li{
@@ -4775,6 +4795,7 @@ ul.messagebar li.msg-active{
 	right:0px;
 	top:20px;
 	z-index:1;
+	display:none;
 }
 
 ul.msgtooltip-text{
@@ -4860,7 +4881,7 @@ a.msg-rly{
 /* studentkit-student-profile-TM-booking-requests-nagotiat-popup */
 
 .booking-nagotiat{
-	width:68%;
+	width:65%;
 	float:left;
 }
 
@@ -4999,7 +5020,7 @@ ul.bookingdd-formwidth{
 /*  um-lesson req page */
 
 a.add-blckbtn{
-	margin:-5px 0 0 17%;
+	margin:-23px 0 0 42%;
 	text-align:center;
 	line-height:30px;
 	float:right;
@@ -5120,7 +5141,7 @@ p.head-countrytext{
 .toolbarbox{
 	width:220px;
 	top:35px;
-	display:block;
+	display:none;
 	z-index:4;
 }
 
@@ -5144,13 +5165,12 @@ p.head-countrytext{
 	padding-bottom:2px;
 }
 .es-carousel ul{
-	display:block;
+	display:none;
 }
 .es-carousel ul li{
 	height:100%;
 	float:left;
 	display:block;
-	margin-right:14px;
 }
 .es-carousel ul li a{
 	display:block;
@@ -5175,8 +5195,6 @@ p.head-countrytext{
 	text-indent:-9000px;
 	cursor:pointer;
 	opacity:0.8;
-	display:block;
-	border:solid 1px;
 }
 .es-nav span.es-nav-next{
 	right:12px;
@@ -5184,7 +5202,7 @@ p.head-countrytext{
 	background-position:top right;
 	background-position: -29px 0px;
 	float:left;
-	left:2%;
+	left:0%;
 }
 .es-nav span:hover{
 	opacity:1.0;
@@ -5196,7 +5214,7 @@ p.head-countrytext{
 	height:20px;
 	right:0px;
 	position:absolute;
-	left:95%;	
+	left:98%;	
 }
 
 .arrow-left{
@@ -5213,4 +5231,23 @@ p.head-countrytext{
 	width:14px;
 	height:20px;
 	margin:5% 0 0 5px;
+}
+
+.es-caurose{
+	padding:5px;
+}
+
+/* scroll */
+.scorllbox{
+	position:relative;
+	top:-21px;
+}
+
+.slimScrollDiv{
+	margin-top:21px;
+	float:left;
+}
+
+.my-subject-box{
+	float:left;
 }

@@ -1716,7 +1716,7 @@ input[type="submit"].btn.btn-mini {
 */
 
 .pagination li:first-child a, .pagination li:last-child a {
-	padding:0px 18px;
+	padding:0px 11px;
 	color:#777777;
 }
 
@@ -1755,7 +1755,7 @@ input[type="submit"].btn.btn-mini {
 
 .pager a {
   display: inline-block;
-  padding: 5px 14px;
+  padding: 2px 12px;
   background-color: #fff;
   border: 1px solid #ddd;
   -webkit-border-radius: 15px;
@@ -1824,7 +1824,7 @@ input[type="submit"].btn.btn-mini {
   top: 50%;
   left: 50%;
   z-index: 1050;
-  width: 560px;
+  width: 580px;
   margin: -250px 0 0 -280px;
   overflow: auto;
   background-color: #ffffff;

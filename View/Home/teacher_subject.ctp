@@ -72,8 +72,9 @@ $this->start('lesson_box');
                 //$playLink = false;
 
                 $popup = array('description'=>'You already have an invitation pending for you\'re approval',
-                    'button'=>array(array('name'=>'I want to order anyway', 'url'=>$orderURL)/*,
-                                                            array('name'=>'View invitation', 'url'=>$orderURL)*/));
+                    'button'=>array(array('name'=>'I want to order anyway', 'url'=>$orderURL)
+                    //,array('name'=>'View invitation', 'url'=>$orderURL)
+                    ));
             }
 
             //Order button

@@ -1,6 +1,5 @@
 <!-- Containeer
 ================================================== -->
-
 <Section class="container">
     <div class="container-inner">
         <div class="row">
@@ -57,12 +56,12 @@
                         echo $this->element('Home/upcoming_lessons', array('upcomingAvailableLessons'=>$upcomingAvailableLessons));
                     }
                     ?>
-                </div> <!-- /cont-span3 -->
+                </div>
                 <div class="cont-span17 cbox-space">
                     <ul class="teacher-box3">
                         <li>
-                            <div class="pic-butn-box pos">
-                                <div class="student-main-box radius3">
+                            <div class="pic-butn-box pos fix-width">
+                                <div class="student-main-box radius3 fix-height">
                                     <a title="" href="#" class="teacher-pic radius3"><?php echo $this->Html->image($this->Layout->image($teacherData['image_source'], 149, 182), array('alt' => 'Topic image')); ?></a>
                                     <p class="onliestatus">
                                         <i class="iconMedium-mail pull-left"></i>
@@ -81,22 +80,6 @@
                                         <!--<span class="fontsize1 pad6 pull-left">Expert Math Teacher</span>-->
                                         <p class="pull-left"><?php echo $teacherData['teacher_about']; ?></p>
                                     </div> <!-- /head-text3-->
-                                    <div class="butn-box2 pull-left">
-                                        <div class="first-box pull-left">
-                                            <!--<a href="#" class="btn-color-blue2"><strong>Follow</strong></a>
-                                            <a href="#" class="btn-color-gry"><strong>Message</strong></a>-->
-                                            &nbsp;
-                                        </div>
-                                        <div class="second-box pull-left space34">
-                                            <h1 class="fontsize1 pad5"><strong>Last 6 Months</strong></h1>
-                                            <a href="#" class="black-cent-butn2"><h5><strong>4.56</strong></h5></a>
-                                        </div>
-                                        <div class="third-box pull-left">
-                                            <h1 class="fontsize1 pad5"><strong>All Time</strong></h1>
-                                            <a href="#" class="black-cent-butn2"><h5><strong>4.62</strong></h5></a>
-                                        </div>
-                                    </div>
-
                                 </div> <!-- /student-main-box -->
                             </div> <!-- /pic-butn-box -->
                         </li>
@@ -105,13 +88,7 @@
 
                     <?php
                     echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$subjectRatingByStudents, 'title'=>'What student say about this subject?'));
-
-
-                    if($subjectRatingByStudents) {
                     ?>
-                    <a href="#" class="more radius3 gradient2 space8"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
-                    <?php } ?>
-
 
 
                     <div class="lesson-box space8">

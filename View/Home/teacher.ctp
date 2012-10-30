@@ -5,7 +5,7 @@
         <div class="row">
             <div class="cont-span12">
                 <div class="cont-span16 c-box-mar cbox-space pos">
-                    <div class="student-main-box3 radius3">
+                    <div class="student-main-box3 radius3 fix-height">
                         <div class="student-main-inner">
                             <a title="" href="#" class="teacher-pic radius3">
                             <?php
@@ -38,8 +38,8 @@
                             <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_total_lessons']; ?></span><br />Lessons</p>
                             <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_students_amount']; ?></span><br />Students</p>
                             <a class="log2 btn-black radius3" href="#"><?php
-                                echo $this->Html->image($this->Layout->rating($teacherData['User']['teacher_avarage_rating'], false), array('alt' => 'Techer rating'));
-                                ?><br/>(<?php echo $teacherData['User']['teacher_avarage_rating']; ?>/<?php echo $teacherData['User']['teacher_raters_amount']; ?> Reviews)</a>
+                                echo $this->Html->image($this->Layout->rating($teacherData['User']['teacher_avarage_rating'], false), array('alt' => 'Teacher rating'));
+                                ?><br />(<?php echo $teacherData['User']['teacher_avarage_rating']; ?>/<?php echo $teacherData['User']['teacher_raters_amount']; ?> Reviews)</a>
                         </div>
                     </div> <!-- /student-main-box -->
 
@@ -81,7 +81,7 @@
                     <!-- certification-box -->
                     <div class="lesson-box pad8 space4">
                         <h3 class="radius1"><strong>Certifications</strong></h3>
-                        <div class="box-subject2 radius3">
+                        <div class="box-subject2 radius3 fix-height">
                     <?php
                             $tcCount = count($teacherData['TeacherCertificate']);
                             foreach($teacherData['TeacherCertificate'] AS $cert) {

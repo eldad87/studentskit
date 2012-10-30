@@ -29,6 +29,9 @@
 
 <!-- Scripts -->
 <script src="assets/js/custom-form-elements.js"></script>
+<script src="assets/js/jquery-1.8.1.min.js"></script>
+<script src="assets/js/jquery-ui-1.9.1.custom.min.js"></script>                        <script src="assets/js/jquery.js"></script>
+<script type="text/javascript" src="assets/js/script.js"></script>
 
 </head>
 
@@ -36,14 +39,14 @@
 
     <!-- Topbar
         ================================================== -->
-   	  <Section class="topbar">
+   	   <Section class="topbar">
         <div class="topbar-inner">
         	<div class="top-left">
                 <div class="label-txt pull-left space1">Language</div>
                 <div class="pull-left space1 position">               
-                <div class="select">Country</div>
+                <div class="select show-tip" id="selcountry">Country</div>
                    <!-- country box --> 
-                    <div class="header-tooltip-box toolbarbox">
+                     <div  id="selcountry-tip" class="header-tooltip-box toolbarbox alltip">
                         <div class="header-tooltip"></div>                   
                         <div class="head-countrybox">
                         <form class="sk-form">
@@ -57,13 +60,13 @@
                         </div>
                         <div class="head-countrybar">
                             <p class="head-countrytext pull-left fullwidth">Prioritize: <i class="iconSmall-info"></i></p>
-                             <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i>  English</a></p>
-                            <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i>  Hebrew</a></p>
+                             <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  English</p>
+                            <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  Hebrew</p>
                             <p  class="space37 fullwidth pull-left"><i class="iconMedium-add-sub"></i> 
                                 <select id="1" name="" onChange="changeTime('countary1',this.value)" class="space38">
-                                <option value="England">Select</option>
-                                <option value="France">Select</option>
-                                <option value="India">Select</option>	
+                                <option value="England">Select1</option>
+                                <option value="France">Select2</option>
+                                <option value="India">Select3</option>	
                             </select>
                             </p>
                         </div>
@@ -81,6 +84,53 @@
                 </select>
                 </div>
             </div> <!-- /pull-left -->
+            <div class="top-middle">
+                <div class="pull-left position request-box">
+                  	<div class="requst-number">12</div>
+                	<i class="pull-left iconMedium-world space22 icon show-tip" id="world"></i>
+                    <div class="header-tooltip-box alltip" id="world-tip"> 
+                     	<div class="header-tooltip"></div>  
+                        <ul class="headerdropdown radius3">
+                            <li class="visiter-background">
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Hi, How are you.</p>
+                                 </div>   
+                            </li>
+                            <li>
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Can you invite me in?</p>
+                                 </div> 
+                            </li>
+                            <li><a href="#">See all</a></li>
+                        </ul>
+                     </div>
+                    </div>
+                
+                <div class="pull-left position">
+                	<div class="requst-number">12</div>
+                	<i class="pull-left iconMedium-mail space22 icon show-tip" id="massages"></i>
+                    <div id="massages-tip" class="header-tooltip-box alltip" > 
+                     	<div class="header-tooltip"></div>  
+                        <ul class="headerdropdown radius3">
+                            <li class="visiter-background">
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Hi, How are you.</p>
+                                 </div>   
+                            </li>
+                            <li>
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Can you invite me in?</p>
+                                 </div> 
+                            </li>
+                            <li><a href="studentkit-message-innerpage action pressed.html">See all</a></li>
+                        </ul>
+                     </div>
+                </div>
+              </div>
             
             <div class="top-right">
             	<div class="label-txt pull-left space5"><a href="#">Sign In <i class="iconMedium-sign"></i></a></div>
@@ -105,8 +155,8 @@
             <ul class="nav">
                 <li><a href="index.html" title="">Home</a></li>
                 <li><a href="#" title="">Board</a></li>
-                <li><a href="#" title="">Account</a></li>
-                <li class="active"><a href="#" title="">Lesson Requests</a></li>
+                <li><a href="student-profile-um.html" title="">Account</a></li>
+                <li class="active"><a href="student-profile-um.html" title="">Account</a></li>
                 <li><a href="#" title="">How it Works</a></li>
             </ul>
           </div><!--/.nav-collapse -->
@@ -152,24 +202,40 @@
                         <div class="lesson-box space8">
                             	<h3 class="radius1"><strong>Other Related Subjects</strong></h3>
                                 <div class="box-subject radius2">
-                                	<a href="#" class="arrow-left"></a>
-                                    <ul class="subject-books">
+                               
+                                	<div id="carousel" class="es-carousel-wrapper">
+                                    <div class="es-carousel">
+                                        <ul>
+										 <li><img src="assets/img/book1.jpg" alt="kagua" /></li>
+                                        <li><img src="assets/img/book2.jpg" alt="kagua" /></li>
+                                        <li><img src="assets/img/book3.jpg" alt="kagua" /></li>
+                                        <li><img src="assets/img/book4.jpg" alt="kagua" /></li>
+                                        <li><img src="assets/img/book6.jpg" alt="kagua" /></li>
+                                        <li><img src="assets/img/book1.jpg" alt="kagua" /></li>
+                                        <li><img src="assets/img/book2.jpg" alt="kagua" /></li>
+                                        <li><img src="assets/img/book3.jpg" alt="kagua" /></li>
+                                        <li><img src="assets/img/book4.jpg" alt="kagua" /></li>
+                                        <li><img src="assets/img/book6.jpg" alt="kagua" /></li>
                                         <li><img src="assets/img/book1.jpg" alt="kagua" /></li>
                                         <li><img src="assets/img/book2.jpg" alt="kagua" /></li>
                                         <li><img src="assets/img/book3.jpg" alt="kagua" /></li>
                                         <li><img src="assets/img/book4.jpg" alt="kagua" /></li>
                                         <li><img src="assets/img/book6.jpg" alt="kagua" /></li>
                                         <li class="m-none"><img src="assets/img/book3.jpg" alt="kagua" /></li>
-                                    </ul>
-                                    <a href="#" class="arrow-right"></a>
+                                        </ul>
+                                       <div class="clear"></div>
+                                    </div>
+				</div>
+                                    
                                 </div>
                            </div> <!-- /lesson-box -->
                            
                       </div> <!-- /cont-span3 -->
                   <div class="cont-span17 cbox-space">
+                   <div class="teacherbox">
                      	<ul class="teacher-box2">
                        	 	<li>
-                                <div class="pic-butn-box pos">
+                                <div class="pic-butn-box pos fix-width">
                                  	<div class="student-main-box radius3">
                                         <a title="" href="#" class="teacher-pic radius3"><img alt="" src="assets/img/users/teacher-img.jpg"></a>
                                         <div class="head-text3">
@@ -196,7 +262,7 @@
                               </div> <!-- /pic-butn-box -->
                        	   </li>
                            <li>
-                                <div class="pic-butn-box pos">
+                                <div class="pic-butn-box pos fix-width">
                                 	<div class="student-main-box radius3">
                                         <a title="" href="#" class="teacher-pic radius3"><img alt="" src="assets/img/users/teacher-img.jpg"></a>
                                         <div class="head-text3">
@@ -223,7 +289,7 @@
                               </div> <!-- /pic-butn-box -->
                        	   </li>
                            <li>
-                                <div class="pic-butn-box pos">
+                                <div class="pic-butn-box pos  fix-width">
                                 	<div class="student-main-box radius3">
                                         <a title="" href="#" class="teacher-pic radius3"><img alt="" src="assets/img/users/teacher-img.jpg"></a>
                                         <div class="head-text3">
@@ -250,7 +316,9 @@
                               </div> <!-- /pic-butn-box -->
                        	   </li>
                         </ul>
-                      <a href="#" class="more radius3 gradient2"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
+                        <div id="more"></div>
+                       </div> 
+                      <a href="#" class="more radius3 gradient2 teacher-more"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
                    </div> <!-- /cont-span17 -->
                 </div> <!-- /cont-span12 -->
             </div><!-- /row -->
@@ -319,10 +387,11 @@
             </div>
         </Section>
     </footer>
-    
+    <div class="mysubjectbox-temp" style="display:none;"></div>
     <!-- Javascript 
     ================================================== -->
-    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/jquery-1.8.1.min.js"></script>
+<script src="assets/js/jquery-ui-1.9.1.custom.min.js"></script>  
     <script src="assets/js/bootstrap-transition.js"></script>
     <script src="assets/js/bootstrap-alert.js"></script>
     <script src="assets/js/bootstrap-modal.js"></script>
@@ -336,6 +405,7 @@
     <script src="assets/js/bootstrap-carousel.js"></script>
     <script src="assets/js/bootstrap-typeahead.js"></script>
     <script src="assets/js/application.js"></script>
+<script src="assets/js/slimScroll.js"></script>
 	<script>
         function changeTime(spanId,val)
         {
@@ -348,7 +418,16 @@
                 });
         });
 	</script> <!-- For Selectbox -->
-   
+    
+     <!-- jCarousel Slider -->
+    <script type="text/javascript" src="assets/js/jquery.easing.1.3.js"></script>
+    <script type="text/javascript" src="assets/js/jquery.elastislide.js"></script>
+	<script type="text/javascript">
+    	$('#carousel').elastislide({
+				imageW 	: 63,
+				minItems	: 7
+			});
+    </script>
     
 </body>
 </html>
