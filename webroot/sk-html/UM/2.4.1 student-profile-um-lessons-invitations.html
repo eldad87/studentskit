@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>StudentsKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<!-- styles -->
+<link href="assets/css/basic.css" rel="stylesheet">
+<link href="assets/css/style.css" rel="stylesheet">
+<link href="assets/css/style-responsive.css" rel="stylesheet">
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<!-- fav and touch icons -->
+<link rel="shortcut icon" href="assets/ico/favicon1.ico">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+<link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+
+<!-- Scripts -->
+<script src="assets/js/custom-form-elements.js"></script>
+
+</head>
+
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+
+    <!-- Topbar
+        ================================================== -->
+   	  <Section class="topbar">
+        <div class="topbar-inner">
+        	<div class="top-left">
+                <div class="label-txt pull-left space1">Language</div>
+                <div class="pull-left space1 position">               
+                <div class="select">Country</div>
+                   <!-- country box --> 
+                    <div class="header-tooltip-box toolbarbox">
+                        <div class="header-tooltip"></div>                   
+                        <div class="head-countrybox">
+                        <form class="sk-form">
+                          <div class="head-countrybar">	
+                            <label class="countrylabel">Layout :</label>
+                             <select id="1" name="" onChange="changeTime('countary1',this.value)">
+                                <option value="England">England</option>
+                                <option value="France">France</option>
+                                <option value="India">India</option>	
+                            </select>
+                        </div>
+                        <div class="head-countrybar">
+                            <p class="head-countrytext pull-left fullwidth">Prioritize: <i class="iconSmall-info"></i></p>
+                             <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i>  English</a></p>
+                            <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i>  Hebrew</a></p>
+                            <p  class="space37 fullwidth pull-left"><i class="iconMedium-add-sub"></i> 
+                                <select id="1" name="" onChange="changeTime('countary1',this.value)" class="space38">
+                                <option value="England">Select</option>
+                                <option value="France">Select</option>
+                                <option value="India">Select</option>	
+                            </select>
+                            </p>
+                        </div>
+                        </form>
+                      </div>  
+                     </div>
+                   <!-- /country box -->  
+                </div>
+                <div class="pull-left head-languagebox">
+                <span id="countary2" class="select2">GMT + 2</span>
+                <select id="2" name="" class="styled2" onChange="changeTime('countary2',this.value)">
+                    <option value="GMT + 2">GMT + 2</option>
+                    <option value="GMT + 3">GMT + 3</option>
+                    <option value="GMT + 5:30">GMT + 5:30</option>	
+                </select>
+                </div>
+            </div> <!-- /pull-left -->
+            
+            <div class="top-right">
+            	<div class="label-txt pull-left space5"><a href="#">Sign In <i class="iconMedium-sign"></i></a></div>
+                <div class="label-txt pull-left"><a href="#">Register</a></div>	
+            </div> <!-- /pull-right -->    
+        </div>
+    </Section>
+    
+    <header>	
+        
+        <!-- Navbar
+        ================================================== -->
+        <section class="navbar">
+      	<div class="navbar-inner">
+          <button type="button" class="btn btn-navbar space6" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <h1><a href="index.html">Studentskit</a></h1>
+          <div class="nav-collapse">
+            <ul class="nav">
+                <li><a href="index.html" title="">Home</a></li>
+                <li><a href="#" title="">Board</a></li>
+                <li  class="active"><a href="#" title="">Account</a></li>
+                <li><a href="#" title="">Lesson Requests</a></li>
+                <li><a href="#" title="">How it Works</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+    	</section>
+        
+        </header>
+    
+    
+    <!-- Containeer
+        ================================================== -->
+    <Section class="container">
+        <div class="container-inner">
+        	<div class="row">
+            	<div class="cont-span12">
+                	<div class="cont-span3 c-box-mar cbox-space">
+                    	<div class="student-main-box radius3">
+                        	<a class="student-pic radius3" href="#" title="">
+                            	<img src="assets/img/users/student-pic-1.jpg" alt="">
+                                <p class="student-pic-edit"><span class="student-pic-edit-txt">Edit Image</span></p>
+                            </a>
+                            <h5><a href="#">Natali Besee</a></h5>
+                        </div> <!-- /student-main-box -->
+                        
+                        <ul class="right-menu">
+                        	<li class="bg-main"><a href="#">User Management</a></li>
+                            <li class="bg-active"><a href="#">Lessons</a></li>
+                            <li class="bg-sub"><a href="#">Profile</a></li>
+                            <li class="bg-sub"><a href="#">Rate (3)</a></li>
+                            <li class="bg-main"><a href="#">Teacher Management</a></li>
+                            <li class="bg-sub"><a href="#">My Subjects</a></li>
+                            <li class="bg-sub"><a href="#">Profile</a></li>
+                            <li class="bg-sub"><a href="#">Booking</a></li>
+                            <li class="bg-sub"><a href="#">Rate</a></li>
+                            <li class="bg-main"><a href="#">Billing Info</a></li>
+                            <li class="bg-main"><a href="#">Calender</a></li>
+                            <li class="bg-main"><a href="#">Credit</a></li>	
+                        </ul> <!-- /right-menu -->
+                    </div> <!-- /cont-span3 -->
+                    <div class="cont-span6 ext-wid cbox-space">
+                        <div class="search-all2 sort-mar">
+                        	<div class="black-line-approv"></div>
+                    		<ul class="booking-nav sort-pad">
+                            	<li><a href="#">Upcoming</a></li>
+                                <li><a href="#">Archive</a></li>
+                                <li><a href="#">Booking</a></li>
+                                <li class="active"><a href="#">Invitations</a></li>
+                                <li class="c-mar3"><a href="#">Requests</a></li>
+                            </ul>
+                     	</div>
+                        <div class="clear"></div>
+                         <p class="fontsize1 space2">Here you find the resources about the lessons you took.</p>
+                         <div class="add-sub pull-left space3">
+                         	<div class="lesson-box space2">
+                            	<div class="head-back radius1">
+                                   <h1><strong>iOS Developer</strong></h1>
+                              		<a href="#" class=" pull-right space23"><i class="iconSmall-drop-arrow"></i></a>
+                                    <a href="#" class="pull-right space27"><i class="iconMedium-mail  bot-pad"></i></a>
+                                    <a href="#" class="pull-right space23"><i class="iconSmall-info"></i></a>
+                                
+                                <div class="popup-box">
+                                    	<div class="header-tooltip tooltip-position"></div>
+                                        <ul class="popupcontent-box">
+                                        	<li><a href="#">Accept</a></li>
+                                        	<li><a href="#" class="popupactive">Cancel</a></li>
+                                            <li><a href="#myModal" data-toggle="modal">Negotiate</a></li>
+                                        </ul>
+                                    </div>
+                                    <div id="myModal" class="modal hide fade">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h3>Negotiat</h3>
+                                                </div> <!-- /modal-header -->
+                                                <div class="modal-body">
+                                                    <form class="sk-form">
+                                        <fieldset>
+                                        	<div class="booking-nagotiat">
+                                            	<h6 class="pull-left fullwidth head-textcolor"><i class="iconSmall-info space10"></i> Modified Setting</h6>
+                                                <ul>
+                                                	<li>
+                                                    	<label><i class="iconSmall-info space10"></i> Date time :</label>
+                                                        <div class="negote-inputbox"><input type="text" value="" > <i class="iconMedium-calender"></i></div>
+                                                    </li>
+                                                    <li>
+                                                    	<label><i class="iconSmall-info space10"></i> Duration :</label>
+                                                        <div class="negote-inputbox"><input type="text" value="" ></div>
+                                                    </li>
+                                                    <li>
+                                                    	<label><i class="iconSmall-info space10"></i> 1 on 1 price :</label>
+                                                        <div class="negote-inputbox"><input type="text" value="" class="negotiat-price" > 
+                                                        <select class="negotiate-currncy">
+                                                        <option>$</option><option>$</option><option>$</option>
+                                                        </select>
+                                                        </div>
+                                                    </li>
+                                                     <li>
+                                                    	<label><i class="iconSmall-info space10"></i> Max Students :</label>
+                                                        <div class="negote-inputbox"><input type="text" value="" ></div>
+                                                    </li>
+                                                    <li>
+                                                    	<label><i class="iconSmall-info space10"></i> Full group price :</label>
+                                                        <div class="negote-inputbox"><input type="text" value="" class="negotiat-price" > 
+                                                        <select class="negotiate-currncy">
+                                                        <option>$</option><option>$</option><option>$</option>
+                                                        </select>
+                                                        </div>
+                                                    </li>
+                                                    
+                                                    <li>
+                                                    	<label><i class="iconSmall-info space10"></i>Public/Privacy :</label>
+                                                        <div class="negote-inputbox">
+                                                        <select class="privacy">
+                                                        <option>Public</option><option>$</option>
+                                                        </select>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="booking-orignal-setting space11">
+                                            	<h6 class="pull-left fullwidth head-textcolor"><i class="iconSmall-info space10"></i> Original Setting</h6>
+                                                <ul class="ul-textcolor">
+                                                	<li>None</li>
+                                                    <li>60 min</li>
+                                                    <li>30 USD</li>
+                                                    <li>3 students</li>
+                                                    <li>60 USD</li>
+                                                    <li>Public</li>
+                                                </ul>
+                                            </div>
+                                            <div class="control-group">
+                                            <label class="control-label"></label>
+                                            <div class="control  control61 pull-right">
+                                                <a class="btn-blue text-color" >Submit</a>
+                                            </div>    
+                                        </div>
+                                        </fieldset>
+                                    </form>
+                                                </div> <!-- /modal-body -->
+                                          </div>
+                              	</div> <!-- /head-back -->
+                              	<div class="lesson-box-content radius2">
+                                	<div class="user-pic2"><img src="assets/img/users/img-72x72-3.jpg" alt="" title=""></div>
+                                    <div class="usr-text2">
+                                        <h4 class="sort-pad-head">Suzi - Math Professor</h4>
+                                        <p class="fontsize2">10 Apr, 2012</p>
+                                        <p>ello evryone! It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. </p>
+                                    </div>
+                                </div>
+                            </div> <!-- /lesson-box -->   
+                            <div class="lesson-box space2">
+                            	<div class="head-back radius1">
+                            		<h1 class="radius1"><strong>iOS Developer</strong></h1>
+                                        <a href="#" class=" pull-right space23"><i class="iconSmall-drop-arrow"></i></a>
+                                    <a href="#" class="pull-right space27"><i class="iconMedium-mail  bot-pad"></i></a>
+                                    <a href="#" class="pull-right space23"><i class="iconSmall-info"></i></a>
+                                 </div>
+                                <div class="lesson-box-content radius2">
+                                    <div class="user-pic2"><img src="assets/img/users/img-72x72-3.jpg" alt="" title=""></div>
+                                    <div class="usr-text2">
+                                        <h4 class="sort-pad-head">Suzi - Math Professor</h4>
+                                        <p class="fontsize2">10 Apr, 2012</p>
+                                        <p>ello evryone! It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. </p>
+                                    </div>
+                                </div>
+                              </div> <!-- /lesson-box -->   
+                         </div><!-- /add-sub -->
+                     </div> <!-- /cont-span6 -->
+                    <div class="cont-span3 sort-wid c-box-mar2 banner-visibility">
+                    	<div class="banner-box"></div>
+                    </div> <!-- /cont-span3 -->
+                </div> <!-- /cont-span12 --> 
+            </div> <!-- /row -->
+        </div> <!-- /container-inner -->
+    </Section>
+    
+    <footer>
+        
+        <!-- Footertop
+        ================================================== -->
+        <Section class="footer-top">
+            <div class="footer-top-inner">
+            	<div class="span">
+                	<h2>Link Title One</h2>
+                    <ul class="footer-widget">
+                    	<li><a href="#" title="">Link 1</a></li>
+                        <li><a href="#" title="">Link 2</a></li>
+                        <li><a href="#" title="">Link 3</a></li>
+                        <li><a href="#" title="">Link 4</a></li>
+                        <li><a href="#" title="">Link 5</a></li>
+                    </ul>
+                </div>
+                <div class="span">
+                	<h2>Link Title Two</h2>
+                    <ul class="footer-widget">
+                    	<li><a href="#" title="">Link 1</a></li>
+                        <li><a href="#" title="">Link 2</a></li>
+                        <li><a href="#" title="">Link 3</a></li>
+                        <li><a href="#" title="">Link 4</a></li>
+                        <li><a href="#" title="">Link 5</a></li>
+                    </ul>
+                </div>
+                <div class="span">
+                	<h2>Link Title Three</h2>
+                    <ul class="footer-widget">
+                    	<li><a href="#" title="">Link 1</a></li>
+                        <li><a href="#" title="">Link 2</a></li>
+                        <li><a href="#" title="">Link 3</a></li>
+                        <li><a href="#" title="">Link 4</a></li>
+                        <li><a href="#" title="">Link 5</a></li>
+                    </ul>
+                </div>
+                <div class="span">
+                	<h2>Link Title Four</h2>
+                    <ul class="footer-widget">
+                    	<li><a href="#" title="">Link 1</a></li>
+                        <li><a href="#" title="">Link 2</a></li>
+                        <li><a href="#" title="">Link 3</a></li>
+                        <li><a href="#" title="">Link 4</a></li>
+                        <li><a href="#" title="">Link 5</a></li>
+                    </ul>
+                </div>
+            </div>
+        </Section>
+        
+        <!-- Footerbottom
+        ================================================== -->
+        <Section class="footer-bottom">
+            <div class="footer-bottom-inner">
+            	<div class="footer-bottom-left">
+                	<p>Copyright ©2012 StudentKit. All rights reserved.</p>
+                </div>
+                <div class="footer-bottom-right">
+                	<p><a href="#" title="">Privacy Policy</a><a href="#" title="">Terms of Use</a></p>
+                </div>
+            </div>
+        </Section>
+    </footer>
+    
+    <!-- Javascript 
+    ================================================== -->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap-transition.js"></script>
+    <script src="assets/js/bootstrap-alert.js"></script>
+    <script src="assets/js/bootstrap-modal.js"></script>
+    <script src="assets/js/bootstrap-dropdown.js"></script>
+    <script src="assets/js/bootstrap-scrollspy.js"></script>
+    <script src="assets/js/bootstrap-tab.js"></script>
+    <script src="assets/js/bootstrap-tooltip.js"></script>
+    <script src="assets/js/bootstrap-popover.js"></script>
+    <script src="assets/js/bootstrap-button.js"></script>
+    <script src="assets/js/bootstrap-collapse.js"></script>
+    <script src="assets/js/bootstrap-carousel.js"></script>
+    <script src="assets/js/bootstrap-typeahead.js"></script>
+    <script src="assets/js/application.js"></script>
+	<script>
+        function changeTime(spanId,val)
+        {
+        document.getElementById(spanId).innerHTML=	val;
+        }
+		// For Search Selectbox
+		$(document).ready(function(){
+                $('.dropdown-menu li').click(function(){
+                    $('.btn-selt-catg').html('<i class="iconSmall-info btn-selt-catg-info"></i>'+$(this).text()+'<span class="caret btn-selt-catg-arw"></span>');
+                });
+        });
+	</script> <!-- For Selectbox -->
+    
+</body>
+</html>

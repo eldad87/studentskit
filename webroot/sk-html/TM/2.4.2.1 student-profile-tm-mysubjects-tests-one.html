@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>StudentsKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<!-- styles -->
+<link href="assets/css/basic.css" rel="stylesheet">
+<link href="assets/css/style.css" rel="stylesheet">
+<link href="assets/css/style-responsive.css" rel="stylesheet">
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<!-- fav and touch icons -->
+<link rel="shortcut icon" href="assets/ico/favicon1.ico">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+<link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+
+<!-- Scripts -->
+<script src="assets/js/custom-form-elements.js"></script>
+
+</head>
+
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+
+    <!-- Topbar
+        ================================================== -->
+   	  <Section class="topbar">
+        <div class="topbar-inner">
+        	<div class="top-left">
+                <div class="label-txt pull-left space1">Language</div>
+                <div class="pull-left space1 position">               
+                <div class="select">Country</div>
+                   <!-- country box --> 
+                    <div class="header-tooltip-box toolbarbox">
+                        <div class="header-tooltip"></div>                   
+                        <div class="head-countrybox">
+                        <form class="sk-form">
+                          <div class="head-countrybar">	
+                            <label class="countrylabel">Layout :</label>
+                             <select id="1" name="" onChange="changeTime('countary1',this.value)">
+                                <option value="England">England</option>
+                                <option value="France">France</option>
+                                <option value="India">India</option>	
+                            </select>
+                        </div>
+                        <div class="head-countrybar">
+                            <p class="head-countrytext pull-left fullwidth">Prioritize: <i class="iconSmall-info"></i></p>
+                             <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i>  English</a></p>
+                            <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i>  Hebrew</a></p>
+                            <p  class="space37 fullwidth pull-left"><i class="iconMedium-add-sub"></i> 
+                                <select id="1" name="" onChange="changeTime('countary1',this.value)" class="space38">
+                                <option value="England">Select</option>
+                                <option value="France">Select</option>
+                                <option value="India">Select</option>	
+                            </select>
+                            </p>
+                        </div>
+                        </form>
+                      </div>  
+                     </div>
+                   <!-- /country box -->  
+                </div>
+                <div class="pull-left head-languagebox">
+                <span id="countary2" class="select2">GMT + 2</span>
+                <select id="2" name="" class="styled2" onChange="changeTime('countary2',this.value)">
+                    <option value="GMT + 2">GMT + 2</option>
+                    <option value="GMT + 3">GMT + 3</option>
+                    <option value="GMT + 5:30">GMT + 5:30</option>	
+                </select>
+                </div>
+            </div> <!-- /pull-left -->
+            
+            <div class="top-right">
+            	<div class="label-txt pull-left space5"><a href="#">Sign In <i class="iconMedium-sign"></i></a></div>
+                <div class="label-txt pull-left"><a href="#">Register</a></div>	
+            </div> <!-- /pull-right -->    
+        </div>
+    </Section>
+    
+    <header>	
+        
+        <!-- Navbar
+        ================================================== -->
+        <section class="navbar">
+      	<div class="navbar-inner">
+          <button type="button" class="btn btn-navbar space6" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <h1><a href="index.html">Studentskit</a></h1>
+          <div class="nav-collapse">
+            <ul class="nav">
+                <li><a href="index.html" title="">Home</a></li>
+                <li><a href="#" title="">Board</a></li>
+                <li class="active"><a href="#" title="">Account</a></li>
+                <li><a href="#" title="">Lesson Requests</a></li>
+                <li><a href="#" title="">How it Works</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+    	</section>
+        
+        </header>
+    
+    
+    <!-- Containeer
+        ================================================== -->
+    <Section class="container">
+        <div class="container-inner">
+        	<div class="row">
+            	<div class="cont-span12">
+                	<div class="cont-span3 c-box-mar cbox-space">
+                    	<div class="student-main-box radius3">
+                        	<a class="student-pic radius3" href="#" title="">
+                            	<img src="assets/img/users/student-pic-1.jpg" alt="">
+                                <p class="student-pic-edit"><span class="student-pic-edit-txt">Edit Image</span></p>
+                            </a>
+                            <h5><a href="#">Natali Besee</a></h5>
+                        </div> <!-- /student-main-box -->
+                        
+                        <ul class="right-menu">
+                        	<li class="bg-main"><a href="#">User Management</a></li>
+                            <li class="bg-sub"><a href="#">Lessons</a></li>
+                            <li class="bg-sub"><a href="#">Profile</a></li>
+                            <li class="bg-sub"><a href="#">Rate (3)</a></li>
+                            <li class="bg-main"><a href="#">Teacher Management</a></li>
+                            <li class="bg-active pad-more"><a href="#">My Subjects</a></li>
+                            <li class="bg-sub pad-more"><a href="#">Lesson</a></li>
+                            <!--<li class="bg-sub sub-more"><a href="#">Upcoming</a></li>
+                            <li class="bg-sub sub-more"><a href="#">Archive</a></li>
+                            <li class="bg-sub sub-more"><a href="#">Booking Requests</a></li>
+                            <li class="bg-sub sub-more"><a href="#">Invitations Sent</a></li>
+                            <li class="bg-sub sub-more"><a href="#">Proposed Lessons</a></li>-->
+                            <li class="bg-sub"><a href="#">Profile</a></li>
+                            <!--<li class="bg-sub"><a href="#">Booking</a></li>-->
+                            <li class="bg-sub"><a href="#">Rate</a></li>
+                            <li class="bg-main"><a href="#">Billing Info</a></li>
+                            <li class="bg-main"><a href="#">Calender</a></li>
+                            <li class="bg-main"><a href="#">Credit</a></li>	
+                        </ul> <!-- /right-menu -->
+                    </div> <!-- /cont-span3 -->
+                    <div class="cont-span15 cbox-space">
+                    	<p class="fontsize1 space8">Your next lesson is about to start in HH:MM:SS</p>
+                      	<div class="search-all2">
+                        	<div class="black-line-approv"></div>
+                    		<ul class="booking-nav">
+                            	<li><a href="#">Details</a></li>
+                                
+                                <li><a href="#">Files</a></li>
+                                <li class="active"><a href="#">Tests</a></li>
+                                <li class="c-mar3"><a href="#">Pricing</a></li>
+                                <!--<li><a href="#">Playlist</a></li>
+                                <li class="c-mar3"><a href="#">Lessons</a></li>-->
+                            </ul>
+                     	</div>
+                      </div><!-- /cont-span15-->
+                      <div class="cont-span15 m-none cbox-space">
+                          <div class="cont-span19 cbox-space">
+                           <div class="fullwidth pull-left">
+                           		<h5 class=" pull-left space2"><strong>Lesson 1 - History</strong><a href="#" class="iconSmall-pencil space23"></a></h5>
+                           		<p class=" pull-right space19">
+                                <a class="add-icon2" data-toggle="modal" href=".myModal1" rel="">
+                                <i class="iconSmall-add-rang"></i></a><strong>Add Question</strong></p>
+                                <div class="modal hide fade myModal1">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h3>Test name</h3>
+                                                </div> <!-- /modal-header -->
+                                                <div class="modal-body">
+                                               <form class="sk-form">
+                                            	<div class="control-group">
+                                                <label class="control-label" for="11">Name :</label>
+                                                <div class="control control1">
+                                                   <input type="text" class="x-large2" name="" value="" id="11">
+                                                </div>  
+                                            </div>
+                                            	<div class="control-group">
+                                            <label class="control-label"></label>
+                                            <div class="control  control1 pull-right">
+                                                <button class="btn-blue" type="button">Save</button>
+                                            </div>    
+                                        </div>
+                                       </form>
+                                                </div> <!-- /modal-body -->
+                                          </div>
+                            	<div class="form-first">
+                                    <form class="sk-form">
+                                        <fieldset>
+                                            <div class="control-group">
+                                                <label class="control-label" for="3">Type :</label>
+                                                <div class="control">
+                                                    <select class="in-large-2" id="3">
+                                                        <option>American Questions</option>
+                                                        <option>American Questions</option>
+                                                        <option>American Questions</option>
+                                                    </select>
+                                               </div>
+        									</div>
+                                            <div class="control-group">
+                                                <label class="control-label" for="4">Question :</label>
+                                                <div class="control">
+                                                   <input type="text" class="x-large2" name="" value="" id="4">
+                                                </div>  
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" for="5">Answer #1 :</label>
+                                                <div class="control">
+                                                     <input type="text" class="x-large2" name="" value="" id="5">
+                                                </div>    
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" for="6">Answer #2 :</label>
+                                                <div class="control">
+                                                    <input type="text" class="x-large2" name="" value="" id="6">
+                                                </div>    
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" for="7">Answer #3 :</label>
+                                                 <div class="control">
+                                                     <input type="text" class="x-large2" name="" value="" id="7">
+                                                 </div>
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" for="8">Right Answer :</label>
+                                                <div class="control">
+                                                  <select class="in-large-2" id="8">
+                                                        <option>#2.Assembler</option>
+                                                        <option>#2.Assembler</option>
+                                                        <option>#2.Assembler</option>
+                                                    </select>
+                                                </div>  
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label"></label>
+                                                 <div class="control">
+                                                     <p class=" pull-left space19"><a class="add-icon2" href="#"><i class="iconSmall-add-rang"></i></a><strong>Add Question</strong></p>
+                                                 </div>
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label"></label>
+                                                <div class="control">
+                                                	<button type="button" class="btn-blue">Save</button>
+                                        		</div>    
+                                    		</div>
+                                        </fieldset>
+                                    </form>
+                                </div> <!-- /form-first -->
+                            </div> <!-- /fullwidth -->
+                       </div> <!-- /cont-span19 -->
+                    </div> <!-- /cont-span15 -->
+                </div> <!-- /cont-span12 -->
+            </div> <!-- /row -->
+        </div> <!-- /container-inner -->
+    </Section>
+    
+    <footer>
+        
+        <!-- Footertop
+        ================================================== -->
+        <Section class="footer-top">
+            <div class="footer-top-inner">
+            	<div class="span">
+                	<h2>Link Title One</h2>
+                    <ul class="footer-widget">
+                    	<li><a href="#" title="">Link 1</a></li>
+                        <li><a href="#" title="">Link 2</a></li>
+                        <li><a href="#" title="">Link 3</a></li>
+                        <li><a href="#" title="">Link 4</a></li>
+                        <li><a href="#" title="">Link 5</a></li>
+                    </ul>
+                </div>
+                <div class="span">
+                	<h2>Link Title Two</h2>
+                    <ul class="footer-widget">
+                    	<li><a href="#" title="">Link 1</a></li>
+                        <li><a href="#" title="">Link 2</a></li>
+                        <li><a href="#" title="">Link 3</a></li>
+                        <li><a href="#" title="">Link 4</a></li>
+                        <li><a href="#" title="">Link 5</a></li>
+                    </ul>
+                </div>
+                <div class="span">
+                	<h2>Link Title Three</h2>
+                    <ul class="footer-widget">
+                    	<li><a href="#" title="">Link 1</a></li>
+                        <li><a href="#" title="">Link 2</a></li>
+                        <li><a href="#" title="">Link 3</a></li>
+                        <li><a href="#" title="">Link 4</a></li>
+                        <li><a href="#" title="">Link 5</a></li>
+                    </ul>
+                </div>
+                <div class="span">
+                	<h2>Link Title Four</h2>
+                    <ul class="footer-widget">
+                    	<li><a href="#" title="">Link 1</a></li>
+                        <li><a href="#" title="">Link 2</a></li>
+                        <li><a href="#" title="">Link 3</a></li>
+                        <li><a href="#" title="">Link 4</a></li>
+                        <li><a href="#" title="">Link 5</a></li>
+                    </ul>
+                </div>
+            </div>
+        </Section>
+        
+        <!-- Footerbottom
+        ================================================== -->
+        <Section class="footer-bottom">
+            <div class="footer-bottom-inner">
+            	<div class="footer-bottom-left">
+                	<p>Copyright ©2012 StudentKit. All rights reserved.</p>
+                </div>
+                <div class="footer-bottom-right">
+                	<p><a href="#" title="">Privacy Policy</a><a href="#" title="">Terms of Use</a></p>
+                </div>
+            </div>
+        </Section>
+    </footer>
+    
+    <!-- Javascript 
+    ================================================== -->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap-transition.js"></script>
+    <script src="assets/js/bootstrap-alert.js"></script>
+    <script src="assets/js/bootstrap-modal.js"></script>
+    <script src="assets/js/bootstrap-dropdown.js"></script>
+    <script src="assets/js/bootstrap-scrollspy.js"></script>
+    <script src="assets/js/bootstrap-tab.js"></script>
+    <script src="assets/js/bootstrap-tooltip.js"></script>
+    <script src="assets/js/bootstrap-popover.js"></script>
+    <script src="assets/js/bootstrap-button.js"></script>
+    <script src="assets/js/bootstrap-collapse.js"></script>
+    <script src="assets/js/bootstrap-carousel.js"></script>
+    <script src="assets/js/bootstrap-typeahead.js"></script>
+    <script src="assets/js/application.js"></script>
+	<script>
+        function changeTime(spanId,val)
+        {
+        document.getElementById(spanId).innerHTML=	val;
+        }
+		// For Search Selectbox
+		$(document).ready(function(){
+                $('.dropdown-menu li').click(function(){
+                    $('.btn-selt-catg').html('<i class="iconSmall-info btn-selt-catg-info"></i>'+$(this).text()+'<span class="caret btn-selt-catg-arw"></span>');
+                });
+        });
+	</script> <!-- For Selectbox -->
+    
+</body>
+</html>
