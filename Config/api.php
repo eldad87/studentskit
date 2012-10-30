@@ -108,6 +108,15 @@ $config['Home.subjectSuggestions.success.1.description'] = __('Subjects suggesti
 /*-------------------- Home.getTeacherLessons	--------------------*/
 $config['Home.getUserLessons.success.1.title'] = __('Success');
 $config['Home.getUserLessons.success.1.description'] = __('All lessons');
+/*-------------------- Home.getTeacherLessons	--------------------*/
+$config['Home.latestBoardPosts.success.1.title'] = __('Success');
+$config['Home.latestBoardPosts.success.1.description'] = __('Latest posts');
+/*-------------------- Home.getUpcomingOpenLesson	--------------------*/
+$config['Home.getUpcomingOpenLesson.success.1.title'] = __('Success');
+$config['Home.getUpcomingOpenLesson.success.1.description'] = __('Upcoming lessons');
+/*-------------------- Home.getLastUserPosts	--------------------*/
+$config['Home.getLastUserPosts.success.1.title'] = __('Success');
+$config['Home.getLastUserPosts.success.1.description'] = __('Latest user posts');
 /*-------------------- Home.canWatchVideo	--------------------*/
 $config['Home.canWatchVideo.success.1.title'] = __('Success');
 $config['Home.canWatchVideo.success.1.description'] = __('Payment needed first');

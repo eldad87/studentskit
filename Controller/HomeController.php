@@ -294,15 +294,15 @@ class HomeController extends AppController {
 
 		$this->set('newSubjects', $newSubjects);
 		$this->set('latestTopics', $latestTopics);
-        /*
-       App::uses('Languages', 'Utils.Lib');
-       $lang = new Languages();
-       $this->set('languages', $lang->lists('locale'));
+    }
 
-       App::uses('Timezone', 'Lib');
-       $tz = new Timezone();
-       $this->set('timezones', $tz->getList());
-        */
+    public function latestBoardPosts($limit, $page) {
+        app::import('Model', 'Forum.Topic');
+        $topicObj = new Topic();
+        $topicObj->setLanguages($this->Session->read('languages_of_records'));
+        $latestTopics = $topicObj->getLatest($limit, $page);
+
+        return $this->success(1, array('results'=>$latestTopics));
     }
 
     /*public function testCalcStudentFullGroupPrice() {
@@ -671,6 +671,11 @@ $id = $scObj->id;
         $this->set('orderURL', array('controller'=>'Order', 'action'=>'init', 'order', $subjectId));
 	}
 
+    public function getUpcomingOpenLesson($limit, $page, $subjectId=null) {
+        $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($subjectId, $limit, $page);
+        return $this->success(1, array('results'=>$upcomingAvailableLessons));
+    }
+
    /* public function canWatchVideo($subjectId) {
         $canWatchVideo = $this->UserLesson->getVideoLessonStatus($subjectId, $this->Auth->user('user_id'), true);
         if(!$canWatchVideo) {
@@ -868,7 +873,7 @@ $id = $scObj->id;
 		$teacherReviews = $this->UserLesson->getTeacherReviews( $teacherUserId, 2 );
 
 		//get forum latest posts
-        $latestPosts = $this->getLastUserPosts($teacherUserId, 2);
+        $latestPosts = $this->getLastUserPosts($teacherUserId, 2, 1);
 
         //Get upcoming lessons
         $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons();
@@ -881,12 +886,17 @@ $id = $scObj->id;
 		$this->set('upcomingAvailableLessons',  $upcomingAvailableLessons);
 	}
 
-    private function getLastUserPosts($userId, $limit) {
+    public function getLastUserPosts($userId, $limit, $page) {
         //get forum latest posts
         app::import('Model', 'Forum.Post');
         $postObj = new Post();
         $postObj->setLanguages($this->Session->read('languages_of_records'));
-        return $postObj->getLatestByUser($userId, $limit);
+
+        $results = $postObj->getLatestByUser($userId, $limit, $page);
+        if ($this->RequestHandler->isAjax()) {
+            return $this->success(1, array('results'=>$results));
+        }
+        return $results;
     }
 	public function getTeacherRatingByStudents($teacherUserId, $limit=2, $page=1) {
         if($this->Auth->user('user_id')!=$teacherUserId) {
@@ -909,7 +919,7 @@ $id = $scObj->id;
         }
 
         //get forum latest posts
-        $latestPosts = $this->getLastUserPosts($userId, 2);
+        $latestPosts = $this->getLastUserPosts($userId, 2, 1);
 
         //Get teachers comments for that user
         $this->UserLesson->setLanguages($this->Session->read('languages_of_records'));
