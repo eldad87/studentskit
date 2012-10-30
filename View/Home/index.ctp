@@ -6,7 +6,7 @@
         <div class="row">
             <div class="cont-span8">
                 <h2 class="pull-left"><i class="iconBig-about space1"></i>Newest subjects</h2>
-                <button type="button" class="btns btn-black pull-right"><?php echo $this->Html->link('Lesson Requests', array('controller'=>'Requests')); ?></button>
+                <!--<button type="button" class="btns btn-black pull-right"><?php /*echo $this->Html->link('Lesson Requests', array('controller'=>'Requests')); */?></button>-->
                 <ul class="row">
                     <?php
                     if($newSubjects) {
