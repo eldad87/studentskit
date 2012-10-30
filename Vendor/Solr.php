@@ -71,7 +71,7 @@ class Solr {
 
         try {
             $this->client->addDocument($doc);
-            $updateResponse = $this->client->commit();
+            $updateResponse = $this->client->commit(); //https://bugs.php.net/bug.php?id=62332
             return $updateResponse->success();
         } catch (Exception $e) {
             CakeLog::write('solr', 'options: '.var_export($this->client->getOptions(),true).', Message: '.$e->getMessage());
@@ -100,7 +100,7 @@ class Solr {
     public function removeDocumentById( $id ) {
         try {
             $updateResponse =  $this->client->deleteById ( $id );
-            $this->client->commit();
+            $this->client->commit(); ///https://bugs.php.net/bug.php?id=62332
             return $updateResponse->success();
         } catch (Exception $e) {
             CakeLog::write('solr', 'options: '.var_export($this->client->getOptions(),true).', Message: '.$e->getMessage());
