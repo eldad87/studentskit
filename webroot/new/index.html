@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>StudentsKit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<!-- styles -->
+<link href="assets/css/basic.css" rel="stylesheet">
+<link href="assets/css/style.css" rel="stylesheet">
+<link href="assets/css/style-responsive.css" rel="stylesheet">
+<link href="assets/css/bootstrap.css" rel="stylesheet">
+<link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+<!-- fav and touch icons -->
+<link rel="shortcut icon" href="assets/ico/favicon1.ico">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+<link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+
+<!-- Scripts -->
+<script src="assets/js/custom-form-elements.js"></script>
+<script src="assets/js/jquery-1.8.1.min.js"></script>
+<script src="assets/js/jquery-ui-1.9.1.custom.min.js"></script>                        <script src="assets/js/jquery.js"></script>
+<script type="text/javascript" src="assets/js/script.js"></script>
+
+</head>
+
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+
+    <!-- Topbar
+        ================================================== -->
+     <Section class="topbar">
+        <div class="topbar-inner">
+        	<div class="top-left">
+                <div class="label-txt pull-left space1">Language</div>
+                <div class="pull-left space1 position">               
+                <div class="select show-tip" id="selcountry">Country</div>
+                   <!-- country box --> 
+                     <div  id="selcountry-tip" class="header-tooltip-box toolbarbox alltip">
+                        <div class="header-tooltip"></div>                   
+                        <div class="head-countrybox">
+                        <form class="sk-form">
+                          <div class="head-countrybar">	
+                            <label class="countrylabel">Layout :</label>
+                             <select id="1" name="" onChange="changeTime('countary1',this.value)">
+                                <option value="England">England</option>
+                                <option value="France">France</option>
+                                <option value="India">India</option>	
+                            </select>
+                        </div>
+                        <div class="head-countrybar">
+                            <p class="head-countrytext pull-left fullwidth">Prioritize: <i class="iconSmall-info"></i></p>
+                             <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  English</p>
+                            <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  Hebrew</p>
+                            <p  class="space37 fullwidth pull-left"><i class="iconMedium-add-sub"></i> 
+                                <select id="1" name="" onChange="changeTime('countary1',this.value)" class="space38">
+                                <option value="England">Select1</option>
+                                <option value="France">Select2</option>
+                                <option value="India">Select3</option>	
+                            </select>
+                            </p>
+                        </div>
+                        </form>
+                      </div>  
+                     </div>
+                   <!-- /country box -->  
+                </div>
+                <div class="pull-left head-languagebox">
+                <span id="countary2" class="select2">GMT + 2</span>
+                <select id="2" name="" class="styled2" onChange="changeTime('countary2',this.value)">
+                    <option value="GMT + 2">GMT + 2</option>
+                    <option value="GMT + 3">GMT + 3</option>
+                    <option value="GMT + 5:30">GMT + 5:30</option>	
+                </select>
+                </div>
+            </div> <!-- /pull-left -->
+            <div class="top-middle">
+                <div class="pull-left position request-box">
+                  	<div class="requst-number">12</div>
+                	<i class="pull-left iconMedium-world space22 icon show-tip" id="world"></i>
+                    <div class="header-tooltip-box alltip" id="world-tip"> 
+                     	<div class="header-tooltip"></div>  
+                        <ul class="headerdropdown radius3">
+                            <li class="visiter-background">
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Hi, How are you.</p>
+                                 </div>   
+                            </li>
+                            <li>
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Can you invite me in?</p>
+                                 </div> 
+                            </li>
+                            <li><a href="#">See all</a></li>
+                        </ul>
+                     </div>
+                    </div>
+                
+                <div class="pull-left position">
+                	<div class="requst-number">12</div>
+                	<i class="pull-left iconMedium-mail space22 icon show-tip" id="massages"></i>
+                    <div id="massages-tip" class="header-tooltip-box alltip" > 
+                     	<div class="header-tooltip"></div>  
+                        <ul class="headerdropdown radius3">
+                            <li class="visiter-background">
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Hi, How are you.</p>
+                                 </div>   
+                            </li>
+                            <li>
+                            	<div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
+                                 <div class="headeruser-text">
+                                	<p>Can you invite me in?</p>
+                                 </div> 
+                            </li>
+                            <li><a href="studentkit-message-innerpage action pressed.html">See all</a></li>
+                        </ul>
+                     </div>
+                </div>
+              </div>
+            
+            <div class="top-right">
+            	<div class="label-txt pull-left space5"><a href="#">Sign In <i class="iconMedium-sign"></i></a></div>
+                <div class="label-txt pull-left"><a href="#">Register</a></div>	
+            </div> <!-- /pull-right -->    
+        </div>
+    </Section>
+    
+    <header>	
+        
+        <!-- Navbar
+        ================================================== -->
+         <section class="navbar">
+      	<div class="navbar-inner">
+          <button type="button" class="btn btn-navbar space6" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <h1><a href="index.html">Studentskit</a></h1>
+          <div class="nav-collapse">
+            <ul class="nav">
+                <li class="active"><a href="index.html" title="">Home</a></li>
+                <li><a href="#" title="">Board</a></li>
+                <li><a href="student-profile-um.html" title="">Account</a></li>
+                <li class="active"><a href="studentkit-lesson-page.html" title="">Lesson Requests</a></li>
+                <li><a href="#" title="">How it Works</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+    	</section>
+        
+        <!-- Searchbar
+        ================================================== -->
+        <Section class="searchbar">
+            <div class="searchbar-inner">
+            	<h2>Search Here</h2>
+                <div class="searchbox-bg">
+                	<div class="search-fullwidth">
+                        <div class="search-right-btn-left">
+                            <div class="search-box-main">
+                                <label></label>
+                                <input type="text" id="3" name="" onBlur="if(this.value == '') { this.value = 'Enter your subject, I.E. Linear Algebra'; }" onFocus="if(this.value == 'Enter your subject, I.E. Linear Algebra') { this.value = ''; }" value="Enter your subject, I.E. Linear Algebra">
+                            </div>
+                        </div>
+                        <div class="search-right-btn">
+                            <div class="btn-group">
+                            	<button type="button" class="btn-selt-catg dropdown-toggle" data-toggle="dropdown"><i class="iconSmall-info btn-selt-catg-info"></i>Select A Category <span class="caret btn-selt-catg-arw"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Online Lessons </a></li>
+                                    <li><a href="#">Face to face Lessons </a></li>
+                                    <li><a href="#">1 on 1 Lessons</a></li>
+                                    <li><a href="#">Group Teaching </a></li>
+                                    <li><a href="#">1 time Lessons </a></li>
+                                    <li><a href="#">Course </a></li>
+                                </ul>
+                            </div><!-- /btn-group -->
+                            <button type="button" class="btn-search">SEARCH</button>
+                        </div>
+                    </div>
+                  </div>
+                <small>*Try your fav. subjects</small>
+            </div>
+        </Section>
+    </header>
+    
+    
+    <!-- Containeer
+        ================================================== -->
+    <Section class="container">
+        <div class="container-inner">
+        	<div class="row">
+            	<div class="cont-span8">
+                	<h2 class="pull-left"><i class="iconBig-about space1 "></i>Lesson About to Learn</h2>
+                	<a data-toggle="modal" href="#myModal" class="btns btn-black pull-right text-color index-blackbtn">Lesson Requests</a>
+                    <div id="myModal" class="modal hide fade">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h3>Lesson Request</h3>
+                                                </div> <!-- /modal-header -->
+                                                <div class="modal-body">
+                                                    <form class="sk-form">
+                                        <fieldset>
+                                        	<div class="control-group">
+                                                <label class="control-label" for="11">Title :</label>
+                                                <div class="control control1">
+                                                   <input type="text" class="x-large2" name="" value="" id="11">
+                                                </div>  
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" for="11">Title :</label>
+                                                <div class="control control1">
+                                                   <select class="x-large2">
+                                                   	<option>Live Lesson</option>
+                                                    <option>Live Lesson</option>
+                                                    <option>Live Lesson</option>
+                                                   </select>
+                                                </div>  
+                                            </div>
+                                        	<div class="control-group">
+                                                <label class="control-label" for="12">Language :</label>
+                                                <div class="control control1">
+                                                   <input type="text" class="x-large2 lite-language" name="" value="Type your suitable language" id="12">
+                                                </div>  
+                                            </div> 
+                                            <div class="control-group">
+                                                <label class="control-label">Pricing :</label>
+                                                <div class="control control1">
+                                                    <input type="text" class="x-large2 lite-price" name="" value="">
+                                                   <select class="lite-price  space22">
+                                                   		<option>$</option>
+                                                        <option>USD</option>
+                                                   </select>
+                                                   <span class="space27">To</span>
+                                                    <input type="text" class="x-large2 lite-price" name="" value="">
+                                                   <select class="lite-price  space22">
+                                                   		<option>$</option>
+                                                        <option>USD</option>
+                                                   </select>
+                                                   <i class="iconSmall-info space22"></i>
+                                                </div>  
+                                            </div>    
+                                            <div class="control-group">
+                                                <label class="control-label" for="17">Description :</label>
+                                                <div class="control control1">
+                                                    <textarea id="17" class="text-are1 lite-textarea" rows="5">Lorem Ipsum is simply dummy text of the printing and typesettingindustry. Lorem Ipsum has been the industry's standard dummy text ever sinc</textarea>
+                                                    <p class="fontsize2">Chracters Left: 255</p>
+                                                </div>    
+                                            </div>
+                                            <div class="control-group">
+                                            <label class="control-label"></label>
+                                            <div class="control  control1">
+                                                <button class="btn-blue" type="button">ADD</button>
+                                            </div>    
+                                        </div>
+                                        </fieldset>
+                                    </form>
+                                                </div> <!-- /modal-body -->
+                                          </div>
+                    <ul class="row">
+                    	<li class="cont-span4 spc space2">
+                        	<div class="lesson-box">
+                            	<h3 class="radius1">5:30 - <strong>iOS Developer</strong></h3>
+                                <div class="lesson-box-content">
+                                	<div class="user-pic2"><img src="assets/img/users/img-72x72-1.jpg" alt="" title=""></div>
+                                    <div class="usr-text2">
+                                        <h4>Suzi - Math Professor</h4>
+                                        <p>Neque porro quisquam est qui dolorem ipsum quia dolor</p>
+                                    </div>
+                                </div>
+                                <div class="lesson-box-footer radius2">
+                                	<div class="pull-left star"><img src="assets/img/star.png" alt="" title=""></div>
+                                    <div class="pull-right">
+                                    	<div class="price-tag"><span>$</span></div>
+                                        <a href="#"><i class="iconSmall-info space3"></i></a>
+                                	</div>
+                            	</div>
+                            </div>    
+                        </li>
+                        <li class="cont-span4 spc space2">
+                        	<div class="lesson-box">
+                            	<h3 class="radius1">5:30 - <strong>iOS Developer</strong></h3>
+                                <div class="lesson-box-content">
+                                	<div class="user-pic2"><img src="assets/img/users/img-72x72-2.jpg" alt="" title=""></div>
+                                    <div class="usr-text2">
+                                        <h4>Suzi - Math Professor</h4>
+                                        <p>Neque porro quisquam est qui dolorem ipsum quia dolor</p>
+                                    </div>
+                                </div>
+                                <div class="lesson-box-footer radius2">
+                                	<div class="pull-left star"><img src="assets/img/star.png" alt="" title=""></div>
+                                    <div class="pull-right">
+                                    	<div class="price-tag"><span>$</span></div>
+                                        <a href="#"><i class="iconSmall-info space3"></i></a>
+                                	</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="cont-span4 spc space2">
+                        	<div class="lesson-box">
+                            	<h3 class="radius1">5:30 - <strong>iOS Developer</strong></h3>
+                                <div class="lesson-box-content">
+                                	<div class="user-pic2"><img src="assets/img/users/img-72x72-blank.jpg" alt="" title=""></div>
+                                    <div class="usr-text2">
+                                        <h4>Suzi - Math Professor</h4>
+                                        <p>Neque porro quisquam est qui dolorem ipsum quia dolor</p>
+                                    </div>
+                                </div>
+                                <div class="lesson-box-footer radius2">
+                                	<div class="pull-left star"><img src="assets/img/star.png" alt="" title=""></div>
+                                    <div class="pull-right">
+                                    	<div class="price-tag"><span>$</span></div>
+                                        <a href="#"><i class="iconSmall-info space3"></i></a>
+                                	</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="cont-span4 spc space2">
+                        	<div class="lesson-box">
+                            	<h3 class="radius1">5:30 - <strong>iOS Developer</strong></h3>
+                                <div class="lesson-box-content">
+                                	<div class="user-pic2"><img src="assets/img/users/img-72x72-1.jpg" alt="" title=""></div>
+                                    <div class="usr-text2">
+                                        <h4>Suzi - Math Professor</h4>
+                                        <p>Neque porro quisquam est qui dolorem ipsum quia dolor</p>
+                                    </div>
+                                </div>
+                                <div class="lesson-box-footer radius2">
+                                	<div class="pull-left star"><img src="assets/img/star.png" alt="" title=""></div>
+                                    <div class="pull-right">
+                                    	<div class="price-tag"><span>$</span></div>
+                                        <a href="#"><i class="iconSmall-info space3"></i></a>
+                                	</div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul> <!-- /row -->
+                    <div class="color-btn-row">
+                    	<div class="color-btn-span">
+                        	<a href="#" title="" class="btn-color-green">
+                            	<i class="iconMedium-work"></i>
+                                <p class="btn-color-txt"><span>How it</span><br>Works?</p>
+                            </a>
+                        </div>
+                        <div class="color-btn-span">
+                        	<a href="#" title="" class="btn-color-red">
+                            	<i class="iconMedium-more"></i>
+                            	<p class="btn-color-txt"><span>Learn</span><br>More</p>
+                            </a>
+                        </div>
+                        <div class="color-btn-span last">
+                        	<a href="#" title="" class="btn-color-blue">
+                            	<i class="iconMedium-teacher"></i>
+                            	<p class="btn-color-txt"><span>Become A</span><br>Teacher</p>
+                            </a>
+                        </div>
+                    </div>
+                </div> <!-- /cont-span8 -->
+                <div class="cont-span4 spc-mar">
+                	<h2><i class="iconBig-mesg space1"></i>Board Messages</h2>
+                    <ul class="board-msg scorllbox">
+                    	<li class="bg-color1">
+                        	<div class="user-pic1"><img src="assets/img/users/img-60x60-1.jpg" alt="" title=""></div>
+                            <div class="usr-text1">
+                            	<h6>Math Linear Algebra</h6>
+                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                            </div>    
+                        </li>
+                        <li class="bg-color2">
+                        	<div class="user-pic1"><img src="assets/img/users/img-60x60-2.jpg" alt="" title=""></div>
+                            <div class="usr-text1">
+                            	<h6>Math Linear Algebra</h6>
+                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                            </div>    
+                        </li>
+                        <li class="bg-color1">
+                        	<div class="user-pic1"><img src="assets/img/users/img-60x60-blank.jpg" alt="" title=""></div>
+                            <div class="usr-text1">
+                            	<h6>Math Linear Algebra</h6>
+                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                            </div>    
+                        </li>
+                        <li class="bg-color2">
+                        	<div class="user-pic1"><img src="assets/img/users/img-60x60-2.jpg" alt="" title=""></div>
+                            <div class="usr-text1">
+                            	<h6>Math Linear Algebra</h6>
+                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                            </div>    
+                        </li>
+                        <li class="bg-color1">
+                        	<div class="user-pic1"><img src="assets/img/users/img-60x60-1.jpg" alt="" title=""></div>
+                            <div class="usr-text1">
+                            	<h6>Math Linear Algebra</h6>
+                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                            </div>    
+                        </li>
+                        
+                        <div id="more"></div>
+                    </ul>
+                    
+                    <a class="more-btn1">More Threads</a>
+                </div> <!-- /cont-span8 -->
+            </div>
+        </div>
+    </Section>
+    
+    <footer>
+        
+        <!-- Footertop
+        ================================================== -->
+        <Section class="footer-top">
+            <div class="footer-top-inner">
+            	<div class="span">
+                	<h2>Link Title One</h2>
+                    <ul class="footer-widget">
+                    	<li><a href="#" title="">Link 1</a></li>
+                        <li><a href="#" title="">Link 2</a></li>
+                        <li><a href="#" title="">Link 3</a></li>
+                        <li><a href="#" title="">Link 4</a></li>
+                        <li><a href="#" title="">Link 5</a></li>
+                    </ul>
+                </div>
+                <div class="span">
+                	<h2>Link Title Two</h2>
+                    <ul class="footer-widget">
+                    	<li><a href="#" title="">Link 1</a></li>
+                        <li><a href="#" title="">Link 2</a></li>
+                        <li><a href="#" title="">Link 3</a></li>
+                        <li><a href="#" title="">Link 4</a></li>
+                        <li><a href="#" title="">Link 5</a></li>
+                    </ul>
+                </div>
+                <div class="span">
+                	<h2>Link Title Three</h2>
+                    <ul class="footer-widget">
+                    	<li><a href="#" title="">Link 1</a></li>
+                        <li><a href="#" title="">Link 2</a></li>
+                        <li><a href="#" title="">Link 3</a></li>
+                        <li><a href="#" title="">Link 4</a></li>
+                        <li><a href="#" title="">Link 5</a></li>
+                    </ul>
+                </div>
+                <div class="span">
+                	<h2>Link Title Four</h2>
+                    <ul class="footer-widget">
+                    	<li><a href="#" title="">Link 1</a></li>
+                        <li><a href="#" title="">Link 2</a></li>
+                        <li><a href="#" title="">Link 3</a></li>
+                        <li><a href="#" title="">Link 4</a></li>
+                        <li><a href="#" title="">Link 5</a></li>
+                    </ul>
+                </div>
+            </div>
+        </Section>
+        
+        <!-- Footerbottom
+        ================================================== -->
+        <Section class="footer-bottom">
+            <div class="footer-bottom-inner">
+            	<div class="footer-bottom-left">
+                	<p>Copyright ©2012 StudentKit. All rights reserved.</p>
+                </div>
+                <div class="footer-bottom-right">
+                	<p><a href="#" title="">Privacy Policy</a><a href="#" title="">Terms of Use</a></p>
+                </div>
+            </div>
+        </Section>
+    </footer>
+     <div class="temphtml" style="display:none;">
+		
+	</div>
+    <!-- Javascript 
+    ================================================== -->
+    <script src="assets/js/jquery-1.8.1.min.js"></script>
+	<script src="assets/js/jquery-ui-1.9.1.custom.min.js"></script>
+    <script src="assets/js/bootstrap-transition.js"></script>
+    <script src="assets/js/bootstrap-alert.js"></script>
+    <script src="assets/js/bootstrap-modal.js"></script>
+    <script src="assets/js/bootstrap-dropdown.js"></script>
+    <script src="assets/js/bootstrap-scrollspy.js"></script>
+    <script src="assets/js/bootstrap-tab.js"></script>
+    <script src="assets/js/bootstrap-tooltip.js"></script>
+    <script src="assets/js/bootstrap-popover.js"></script>
+    <script src="assets/js/bootstrap-button.js"></script>
+    <script src="assets/js/bootstrap-collapse.js"></script>
+    <script src="assets/js/bootstrap-carousel.js"></script>
+    <script src="assets/js/bootstrap-typeahead.js"></script>
+    <script src="assets/js/application.js"></script>
+<script src="assets/js/slimScroll.js"></script>
+	<script>
+        function changeTime(spanId,val)
+        {
+        document.getElementById(spanId).innerHTML=	val;
+        }
+		// For Search Selectbox
+		$(document).ready(function(){
+                $('.dropdown-menu li').click(function(){
+                    $('.btn-selt-catg').html('<i class="iconSmall-info btn-selt-catg-info"></i>'+$(this).text()+'<span class="caret btn-selt-catg-arw"></span>');
+                });
+        });
+	</script> <!-- For Selectbox -->
+    
+</body>
+</html>

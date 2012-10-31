@@ -1,0 +1,472 @@
+# LANGUAGE translation of CakePHP Application
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2012-08-09 00:39+0300\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: Config\api.php:4;10;14;20;30;34;40;56;59;62;65;70;73;76;79;81;83;85;97;100;103;106;109;112;114;117;119;125;128;131;134;137;141;143;146;148;150;153;155;157;164;166;169;171;174;180;182;184;186
+msgid "Success"
+msgstr "הצלחה"
+
+#: Config\api.php:5;11
+msgid "Logging success"
+msgstr "התחברת בהצלחה"
+
+#: Config\api.php:7;17;23;37;43;46;49;67;88;90
+msgid "Error"
+msgstr "שגיאה"
+
+#: Config\api.php:8
+#: Controller\AccountsController.php:86
+msgid "Email or password is incorrect"
+msgstr "אימייל או שם משתמש אינם נכונים"
+
+#: Config\api.php:15
+msgid "New timezone set"
+msgstr "איזור זמן הוגדר"
+
+#: Config\api.php:18
+msgid "Cannot set timezone"
+msgstr "לא ניתן להגדיר איזור זמן"
+
+#: Config\api.php:21
+msgid "New locale set"
+msgstr "שפה מקומית הוגדרה"
+
+#: Config\api.php:24
+msgid "Cannot set locale"
+msgstr "לא ניתן להגדיר שפה מקומית"
+
+#: Config\api.php:31
+msgid "List of threads"
+msgstr "רשימת אשכולות"
+
+#: Config\api.php:35
+msgid "Thread messages"
+msgstr "הודעות האשכול"
+
+#: Config\api.php:38
+msgid "Wrong thread ID"
+msgstr "מזהה אשכול שגוי"
+
+#: Config\api.php:41
+msgid "Message sent"
+msgstr "הודעה נשלחה"
+
+#: Config\api.php:44
+msgid "Missing parameter, please set message"
+msgstr "חסר פרמטר, אנא הגדר הודעה"
+
+#: Config\api.php:47
+msgid "Missing parameter"
+msgstr "חסר פרמטר"
+
+#: Config\api.php:50
+msgid "Cannot send message"
+msgstr "לא ניתן לשלוח הודעה"
+
+#: Config\api.php:57
+msgid "Rating"
+msgstr "דירוג"
+
+#: Config\api.php:60;63;66;71
+msgid "Subjects"
+msgstr "נושאים"
+
+#: Config\api.php:68;89
+msgid "Cannot find subject"
+msgstr "לא נמצאו נושאים"
+
+#: Config\api.php:74
+msgid "Subjects suggestions"
+msgstr "הצעת נושאים"
+
+#: Config\api.php:77
+msgid "All lessons"
+msgstr "כל השיעורים"
+
+#: Config\api.php:80
+msgid "Payment needed first"
+msgstr "תשלום דרוש תחילה"
+
+#: Config\api.php:82
+msgid "Pending teacher's approval, a request sent to the teacher"
+msgstr "בקשה נשלחה וממתינה לאישור המורה"
+
+#: Config\api.php:84
+msgid "Pending your approval"
+msgstr "ממתין לאישורך"
+
+#: Config\api.php:86
+msgid "You can watch the video"
+msgstr "אתה יכול לצפות בוידאו"
+
+#: Config\api.php:91
+#: Controller\HomeController.php:262;426
+#: Controller\RequestsController.php:123
+msgid "Internal error"
+msgstr "שגיאה פנימית"
+
+#: Config\api.php:98;101
+msgid "Upcomming lessons and booking"
+msgstr "השיעורים הבאים ובוקינג"
+
+#: Config\api.php:104
+msgid "Archive lessons"
+msgstr "ארכיון שיעורים"
+
+#: Config\api.php:107;135
+msgid "Lesson invitations"
+msgstr "הזמנות שיעורים"
+
+#: Config\api.php:110
+msgid "Subject requests"
+msgstr "בקשת נושאים"
+
+#: Config\api.php:113;142
+msgid "Lesson canceled"
+msgstr "שיעור בוטל"
+
+#: Config\api.php:115;144
+msgid "Cannot cancel lesson"
+msgstr "לא ניתן לבטל את השיעור"
+
+#: Config\api.php:118
+msgid "Lesson accepted"
+msgstr "השיעור אושר"
+
+#: Config\api.php:120
+msgid "Cannot accpet lesson"
+msgstr "לא ניתן לאשר את השיעור"
+
+#: Config\api.php:126
+msgid "Upcoming lessons"
+msgstr "לא ניתן לאשר את השיעור"
+
+#: Config\api.php:129
+msgid "Booking lesson requests"
+msgstr "בקשות בוקינג"
+
+#: Config\api.php:132
+msgid "Lessons archive"
+msgstr "ארכיון שיעורים"
+
+#: Config\api.php:138
+msgid "proposed lessons"
+msgstr "שיעורים מוצעים"
+
+#: Config\api.php:147
+msgid "Lesson created"
+msgstr "השיעור נשמר"
+
+#: Config\api.php:149;151
+msgid "Cannot create lesson"
+msgstr "לא ניתן לשמור את השיעור"
+
+#: Config\api.php:154
+msgid "Subject Canceled"
+msgstr "הנושא בוטל"
+
+#: Config\api.php:156
+msgid "Cannot cancel subject, check if you have any ongoing lessons"
+msgstr "לא ניתן לבטל את הנושא, אנא בדוק האם יש שיעורים קיימים עבורו"
+
+#: Config\api.php:158
+msgid "Interanl error"
+msgstr "שגיאה פנימית"
+
+#: Config\api.php:165
+msgid "Subject request"
+msgstr "בקשת נושא"
+
+#: Config\api.php:167
+msgid "Cannot create subject request"
+msgstr "לא ניתן לשמור את בקשת הנושא"
+
+#: Config\api.php:170;175
+msgid "Lesson offer sent"
+msgstr "הצעה נשלחה"
+
+#: Config\api.php:172
+msgid "Cannot send lesson offer"
+msgstr "לא ניתן לשלוח את ההצעה"
+
+#: Config\api.php:181
+msgid "Invitations sent"
+msgstr "ההזמנה נשלחה"
+
+#: Config\api.php:183
+msgid "Missing parameters"
+msgstr "פרמטר חסר"
+
+#: Config\api.php:185;187
+msgid "Cannot send invitations"
+msgstr "לא ניתן לשלוח את ההזמנות"
+
+#: Controller\AccountsController.php:63
+msgid "Please activate you'r account"
+msgstr "אנא הפעל את חשבונך"
+
+#: Controller\AccountsController.php:67
+msgid "You have been banned!"
+msgstr "אתה מושעה!"
+
+#: Controller\HomeController.php:243
+#: Controller\TeacherController.php:31
+msgid "Cannot view this subject"
+msgstr "לא ניתן לצפות בנושא זה"
+
+#: Controller\HomeController.php:308
+msgid "Lesson is overdue"
+msgstr "פג תוקפו של השיעור"
+
+#: Controller\HomeController.php:413
+#: Controller\RequestsController.php:73
+msgid "This subject is no longer available"
+msgstr "הנושא לא זמין"
+
+#: Controller\HomeController.php:419
+#: Controller\RequestsController.php:80
+msgid "This lesson cannot be ordered"
+msgstr "לא ניתן להזמין את הנושא"
+
+#: Controller\HomeController.php:486
+msgid "Cannot order lesson"
+msgstr "לא ניתן להזמין את השיעור"
+
+#: Controller\LessonsController.php:28;69
+msgid "Invalid request"
+msgstr "בקשה לא חוקית"
+
+#: Controller\LessonsController.php:34
+msgid "The lesson you're trying to enter is overdue"
+msgstr "פג תוקפו של השיעור אליו אתה מנסה להכנס"
+
+#: Controller\LessonsController.php:75
+msgid "This video is waiting the teacher's approval"
+msgstr "הוידאו ממתין לאישור המורה"
+
+#: Controller\LessonsController.php:77
+msgid "This video require your approval"
+msgstr "הוידאו ממתין לאישורך"
+
+#: Controller\LessonsController.php:80
+msgid "This video is a premium video, please pay for it first"
+msgstr "וידאו זה הוא וידאו פרימיום, תשלום נדרש תחילה"
+
+#: Controller\RequestsController.php:35
+msgid "Request saved, you can browse and manage it through the control panel"
+msgstr "הבקשה נשמרה, אתה יכול לנהל אותה דרך ממשק הניהול"
+
+#: Controller\RequestsController.php:102
+msgid "Offer sent, you can browse and manage it through your control panel"
+msgstr "ההצעה נשלחה, אתה יכול לנהל אותה דרך ממשק הניהול"
+
+#: Controller\StudentController.php:89
+msgid "Re-Propose sent"
+msgstr "ההצעה החדשה נשלחה"
+
+#: Controller\StudentController.php:94
+msgid "Error, cannot Re-Propose"
+msgstr "שגיאה, לא ניתן לשלוח את ההצעה החדשה"
+
+#: Controller\TeacherController.php:43
+msgid "Subject saved"
+msgstr "הנושא נשמר"
+
+#: Model\Subject.php:117
+#: Model\UserLesson.php:234
+msgid "Please enter a valid max students"
+msgstr "אנא הזן מקס' סטודנטים הגיוני"
+
+#: Model\Subject.php:127
+#: Model\TeacherLesson.php:184
+msgid "Group price error, max is %d (max students * 1 on 1 price)"
+msgstr ""
+"המחיר המקסימלי עבור שיעור קבוצתי זה הינו %d (מקס' סטודנטים * מחיר שיעור פרטי)"
+
+#: Model\Subject.php:131
+#: Model\TeacherLesson.php:188
+#: Model\UserLesson.php:247
+msgid "Full group price must be more the 1 on 1 price (%d)"
+msgstr "מחיר שיעור קבוצתי חייב להיות גבוהה יותר ממחיר שיעור פרטי (%d)"
+
+#: Model\Subject.php:139
+#: Model\TeacherLesson.php:196
+#: Model\UserLesson.php:255
+msgid "Please enter a valid group price or set Max students to 1"
+msgstr "אנא הזן מחיר קבוצתי הגיוני"
+
+#: Model\TeacherLesson.php:124
+#: Model\UserLesson.php:183
+msgid "must be a offer subject"
+msgstr "חייב להיות שיעור מוצע"
+
+#: Model\TeacherLesson.php:130
+#: Model\UserLesson.php:189
+msgid "The teacher must be the subject owner"
+msgstr "המורה חייב להיות הבעלים של הנושא"
+
+#: Model\TeacherLesson.php:142
+#: Model\UserLesson.php:177;203
+msgid "Invalid request subject"
+msgstr "בקשת שיעור לא תקינה"
+
+#: Model\TeacherLesson.php:148
+#: Model\UserLesson.php:209
+msgid "must be a request subject"
+msgstr "חייב להיות שיעור מבוקש"
+
+#: Model\TeacherLesson.php:155
+#: Model\UserLesson.php:216
+msgid "Please chose a LIVE lesson as a suggestion"
+msgstr "אנא הצע שיעור חיי בלבד"
+
+#: Model\TeacherLesson.php:157
+#: Model\UserLesson.php:218
+msgid "Please chose a VIDEO lesson as a suggestion"
+msgstr "אנא הצע וידאו בלבד"
+
+#: Model\TeacherLesson.php:165
+msgid "The main student must be the owner of the requested subject"
+msgstr "הסטודנט הראשי חייב להיות הבעלים של הנושא"
+
+#: Model\TeacherLesson.php:229
+#: Model\UserLesson.php:288
+msgid "Please set a future datetime"
+msgstr "אנא הזן תאריך\\זמן עתידיים"
+
+#: Model\TeacherLesson.php:238
+#: Model\UserLesson.php:297
+msgid "Invalid datetime format"
+msgstr "הפורמט לא תקין"
+
+#: Model\UserLesson.php:243
+msgid "Group price error, max is %d. (max students * 1 on 1 price)"
+msgstr ""
+"מחיר שיעור קבוצתי חייב להיות נמוך מ%d (מקסימות סטודנטים * מחיר שיעור פרטי)"
+
+#: Model\Profile.php:validation for field user_id
+#: Model\User.php:validation for field user_id
+msgid "This field must be a numeric value"
+msgstr "השדה חייב להכיל ערך מספרי"
+
+#: Model\Profile.php:validation for field dob
+#: Model\User.php:validation for field dob
+msgid "Enter a valid date."
+msgstr "הזן תאריך תקין"
+
+#: Model\Profile.php:validation for field phone
+#: Model\User.php:validation for field phone
+msgid "Enter a valid phone."
+msgstr "הזן טלפון תקין"
+
+#: Model\Profile.php:validation for field user_zipcpde;validation for field teacher_zipcpde
+#: Model\User.php:validation for field user_zipcpde;validation for field teacher_zipcpde
+msgid "Enter a valid zipcode."
+msgstr "הזן מיקוד תקין"
+
+#: Model\Subject.php:validation for field name
+#: Model\TeacherLesson.php:validation for field name
+#: Model\User.php:validation for field first_name;validation for field last_name
+#: Model\UserLesson.php:validation for field name
+msgid "Between %d to %d characters"
+msgstr "בין %d ל%d תווים"
+
+#: Model\Subject.php:validation for field description
+#: Model\TeacherLesson.php:validation for field description
+#: Model\UserLesson.php:validation for field description
+msgid "Must be more then %d characters"
+msgstr "חייב להכיל יותר מ%d תווים"
+
+#: Model\Subject.php:validation for field language
+msgid "Please select a language"
+msgstr "אנא בחר שפה"
+
+#: Model\Subject.php:validation for field lesson_type
+msgid "Please select a lesson type"
+msgstr "אנא בחר סוג שיעור"
+
+#: Model\Subject.php:validation for field duration_minutes
+#: Model\TeacherLesson.php:validation for field duration_minutes
+#: Model\UserLesson.php:validation for field duration_minutes
+msgid "Lesson must be more then %d minutes and less then %d minutes"
+msgstr "השיעור חייב להיות בין מ%d - מ%d דקות"
+
+#: Model\Subject.php:validation for field 1_on_1_price
+#: Model\TeacherLesson.php:validation for field 1_on_1_price
+#: Model\UserLesson.php:validation for field 1_on_1_price
+msgid "Enter a valid price"
+msgstr "הזן מחיר תקין"
+
+#: Model\Subject.php:validation for field 1_on_1_price
+#: Model\TeacherLesson.php:validation for field 1_on_1_price
+#: Model\UserLesson.php:validation for field 1_on_1_price
+msgid "Price must be more then %d and less then %d"
+msgstr "המחיר חייב להיות בין %d-%d"
+
+#: Model\Subject.php:validation for field max_students
+#: Model\TeacherLesson.php:validation for field max_students
+#: Model\UserLesson.php:validation for field max_students
+msgid "Lesson must have more then %d or less then %d students"
+msgstr "שיעור חייב להכיל בין %d-%d סטודנטים"
+
+#: Model\Subject.php:validation for field max_students;validation for field full_group_total_price
+#: Model\TeacherLesson.php:validation for field max_students;validation for field full_group_total_price
+#: Model\UserLesson.php:validation for field full_group_total_price
+msgid "You must set group price"
+msgstr "אנא הזן מחיר מחיר קבוצתי"
+
+#: Model\Subject.php:validation for field full_group_total_price
+#: Model\TeacherLesson.php:validation for field full_group_total_price
+#: Model\UserLesson.php:validation for field full_group_total_price
+msgid "Enter a valid group price"
+msgstr "הזן מחיר קבוצתי תקין"
+
+#: Model\TeacherLesson.php:validation for field subject_id
+#: Model\UserLesson.php:validation for field subject_id
+msgid "You cannot use this subject"
+msgstr "אתה לא יכול להשתמש בנושא זה"
+
+#: Model\TeacherLesson.php:validation for field request_subject_id
+#: Model\UserLesson.php:validation for field request_subject_id
+msgid "You cannot offer this subject"
+msgstr "אתה לא יכול להציע נושא זה"
+
+#: Model\User.php:validation for field user_id
+msgid "This field must be left blank"
+msgstr "שדה זן חייב להשאר ריק"
+
+#: Model\User.php:validation for field email
+msgid "This email has already been taken."
+msgstr "כתובת האימייל תפוסה"
+
+#: Model\User.php:validation for field email
+msgid "Enter a valid email"
+msgstr "הזן כתובת מייל תקינה"
+
+#: Model\User.php:validation for field first_name;validation for field last_name
+msgid "Alphabets and numbers only"
+msgstr "השתמש באותיות (באנגלית) ומספרים בלבד"
+
+#: Model\UserLesson.php:validation for field max_students
+msgid "Error on max group price"
+msgstr "אנא הזן מחיר קבוצתי מקסימלי"
+
+#: Model\UserLesson.php:validation for field comment_by_student
+msgid "Please enter a number between %d and %d"
+msgstr "אנא הזן מספר בין %d ל%d"
+
+#: Model\UserLesson.php:validation for field rating_by_student
+msgid "Error, rating must be numeric"
+msgstr "שגיאה, דירוג חייב להיות בעל ערך מספרי"

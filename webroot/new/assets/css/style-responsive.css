@@ -1,0 +1,1066 @@
+@media (max-width: 959px) { 
+
+.topbar-inner, .navbar-inner{
+	width:100%;
+	padding:0px 10px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.searchbar-inner, .container-inner, .footer-top-inner, .footer-bottom-inner{
+	width:100%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.topbar{
+	position:inherit;
+}
+
+.navbar{
+	margin-top:0px;
+}
+
+ul.nav{
+	padding:5px 0px;
+}
+
+.row{
+	margin-left: 0px;
+}
+
+ul.row{
+	margin-left: 0px;
+	margin-left:-2%;
+}
+
+ul.row2{
+	margin-left: 0px;
+}
+
+[class*="cont-span"] {
+  float: left;
+  margin-left: 0px;
+}
+  
+.cont-span12 {
+	width: 99.999999993%;
+}
+
+.cont-span11 {
+  width: 91.436464082%;
+}
+
+.cont-span10 {
+  width: 82.87292817100001%;
+}
+
+.cont-span9 {
+  width: 74.30939226%;
+}
+
+.cont-span8 {
+  width: 65.74585634900001%;
+}
+
+.cont-span7 {
+  width: 57.182320438000005%;
+}
+
+.cont-span6 {
+  width: 48.618784527%;
+}
+
+.cont-span5 {
+  width: 40.055248616%;
+}
+
+.cont-span4 {
+  width: 31.491712705%;
+}
+
+.cont-span3, .cont-span18{
+  width: 22.928176794%;
+}
+
+.cont-span2 {
+  width: 14.364640883%;
+}
+
+.cont-span1 {
+  width: 5.801104972%;
+}
+
+.cont-span4.spc {
+  width: 48%;
+  margin-left:2%;
+}
+
+.cont-span4.spc-mar {
+  margin-left:2%;
+}
+
+.cont-span8.spc-c-box {
+  margin-left:2.7624%;
+}
+
+.cont-span3.c-box-mar, .cont-span15.c-box-mar {
+    margin-left: 0px;
+}
+
+.cont-span3.c-box-mar2, .cont-span18.cbox-space2 {
+    margin-left: 2%;
+}
+
+.cont-span6.cbox-space {
+	margin-left:2%;
+}
+
+/*Ajay*/
+
+.cont-span15{
+	 width: 74.30939226%;
+	 margin-left:2%;
+}
+
+.blue-box{
+	margin-left:2%;
+}
+
+.box-with-text{
+ 	margin-right:2%;
+}
+
+.large2 {
+	margin-left:0px;
+}
+
+.search-box .sk-form .large2{
+	width:30%;
+}
+
+.blue-box2{
+	width:30px;
+}
+
+.cont-span16.c-box-mar{
+	margin-left:0px;
+}
+
+.pad1 img{
+	width:100%;
+	height:auto;
+}
+
+.cont-span17{
+	margin-left:2%;
+	width:48%;
+}
+
+.log-box img{
+	width:auto;
+	height:auto;
+}
+
+.log-box .btn-black{
+	width:97.5%;
+	margin-top:10px;
+}
+
+/* Footer Top */
+.footer-top .span{
+	width:40%;
+	margin-right:10%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+
+.table-heading td.border-none1{
+	border-right:1px solid #444444;
+}
+
+ul.subject-books2 li{
+	margin-right: 7px;
+}
+
+.butn-box2{
+	width:100%;
+	padding:0px;
+}
+
+.first-box, .second-box{
+	margin-right:8%;
+}
+
+.right-student-box{
+	width:73%;
+}
+
+.right-student-box1{
+	width:100%;
+}
+
+.log1{
+	margin-left:5%;
+	margin-right:0px;
+}
+
+a.fb , a.twit, a.g-one{
+	margin-right:2px;
+}
+
+.cont-span19{
+	width:73%;
+}
+
+tr.table-heading{
+	font-size:11px;
+	padding: 6px 5px;
+}
+
+select.small2{
+	width:35%;
+}
+
+.cont-span19.extra-wid{
+	width:78%;
+}
+
+.cont-span21{
+	width:20%;
+}
+
+.cont-span21.c-box-mar2{
+	margin-left:10px;
+}
+
+.add-icon.space-icon{
+	margin-left:0px;
+}
+
+.cont-span15.m-none{
+	margin-left:2%;
+}
+
+select.small5{
+	width:15%;
+}
+
+.cont-span19.extra-wid4{
+	margin-left:20px;
+}
+
+.x-large9.pad-text-in{
+	width:50%;
+}
+
+.tech-thir-box{
+	width:36%;
+}
+
+.cont-span15.c-mar-message{
+	margin-left:2%;
+}
+
+.message-tm-main{
+	padding-left:0px;
+}
+
+ul.subject-box li{
+	margin-right:21px;
+}
+
+.cont-span6.ext-wid{
+	width:48%;
+}
+
+ul.booking-nav.sort-pad li{
+	padding: 12px 8px;
+	font-size:12px;
+}
+
+.message-tm-left.long-wid, .message-tm-right.long-wid{
+	width:100%;
+	padding:0px;
+}
+
+.in-large.sort-sel{
+	width:32.6%;
+}
+
+select.in-large{
+	width:90%;
+}
+
+a.black-cent-butn2.long-wid{
+	width: 42%;
+	text-align:center;
+	margin: 0 29.4% 3%;
+	font-size:16px;
+	padding:5px 15px 8px;
+}
+
+ul.booking-nav.f-pad-norml li{
+	font-size: 14px;
+	padding: 12px 20px;
+}
+
+
+/* student-teacher-subject-page */
+a.greencentbutn{
+	left:5%;
+	padding:2px;
+}
+
+ul.subject-books1 {
+    width: 88%;
+}
+
+
+ul.subject-books1 li {
+    margin: 0 3.3%;
+}
+
+/* student-profile-calender */
+
+ul.colordetail li.greenbox-margin{
+	margin: 25px 7.7% 0 0;
+}
+
+
+.head-text {
+    width: 66%;
+}
+
+/* student-profile-tm-mysubjects-details */
+
+p.x-space{
+	width:72%;
+}
+
+/* student-profile-tm-booking-requests */
+
+ul.requestfill-box li{
+	width:100%;
+}
+
+/*student-profile-tm-mysubjects-files(p)*/
+ul.subject-sliderbox{
+	width:93%;
+}
+
+ul.subject-sliderbox li{
+	width:29%;
+}
+
+a.subject-slider-arrow {
+    margin: 11% 0 0 5px;
+}
+
+.btnblue1{
+	margin-left:64%;
+}
+
+/* order profile calander */
+.table-main{
+	padding-right:0.3%;
+}
+
+/* studentkit-student-profile-UM-request */	
+ul.booking-nav.f-pad-norml1 li{
+	padding:12px 9px;
+}
+
+.request-responsebox{
+	width:73.182%;
+	margin-left:10px!important;
+}
+
+ul.responsive-menu li{
+	padding:12px 16px;
+}
+
+.banner-visible{
+	display:none;
+}
+
+a.add-blckbtn{
+	margin:10px 0px;
+	width:92%;
+	float:left;
+}
+
+p.order-negotiat-billing{
+	margin-top:20px;
+}
+}
+
+@media (max-width: 768px) {
+h2{
+	font-size:22px;
+}
+/* Color Button */
+.color-btn-row {
+  width:100%;
+}
+
+.color-btn-span {
+  width: 100%;
+   margin-right:0%;
+}
+
+a.btn-color-green, a.btn-color-red, a.btn-color-blue {
+	margin-bottom:20px;
+}
+
+.cont-span3.cbox-space, .cont-span18{
+	width:30%;
+}
+
+.cont-span6.cbox-space {
+	width:66%;
+}
+
+.banner-visibility{
+	visibility:hidden;
+	width:0px;
+	height:0px;
+}
+
+.cont-span15{
+	 width: 67.30939226%;
+	 margin-left:2%;
+	}
+	
+.blue-box{
+	margin-left:10%;
+	margin-right:2%;
+	margin-bottom:20px;
+}
+
+
+.search-box .sk-form .large2{
+	width:71%;
+	}
+	
+.butn-text-box{
+	width:100%;
+	}
+	
+.teacher-pic {
+	width:50%;
+}
+
+.head-text3{
+	width:100%;
+}
+
+ul.subject-books li{
+	width:12%;
+}
+
+.butn-box2{
+	padding-left:20px;
+}
+
+.first-box{
+	margin-right:8%;
+}
+
+.first-box, .second-box, .third-box{
+	width:100%;
+}
+
+a.btn-color-blue2, a.btn-color-gry, a.black-cent-butn2{
+
+	text-align:center;
+	padding: 10px;
+}
+
+a.btn-color-blue2{
+	width:85%;
+}
+
+a.btn-color-gry{
+	width:89%;
+}
+
+.butn-box2{
+	text-align:center;
+	width:90%;
+}
+
+a.black-cent-butn2{
+	width:92%;
+}
+
+.student-main-box h5{
+	float:none;
+}
+
+.log-box .btn-black{
+	width:97.5%;
+}
+
+.log1{
+	margin: 0 0 2% 4%;
+	width:75%;
+}
+
+a.fb , a.twit, a.g-one img{
+	margin-right:10px;
+}
+
+.cont-span19{
+	width:100%;
+}
+
+.message-tm-main{
+	padding-left:10px;
+}
+
+tr.table-heading{
+	font-size:5px;
+	padding: 6px 1px 0 5px;
+}
+
+tr.table-heading p{
+	opacity:0;
+}
+
+.sec-text{
+	opacity: 100;
+	font-size:12px;
+	color:#FFFFFF;
+	margin:-18px 0 0 7px;
+}
+
+select.small, .x-small3{
+	width:100%;
+	margin-bottom:10px;
+}
+
+.left-student-box2,.right-student-box2{
+	width:100%;
+	padding:0px;
+}
+
+select.small2, .x-small4{
+	width:100%;
+	margin-bottom:10px;
+}
+
+.cont-span19.extra-wid{
+	width:68%;
+}
+
+ul.booking-nav li{
+	font-size:14px;
+	padding:12px 10px;
+}
+
+.cont-span21{
+	width:29%;
+}
+
+.message-tm-left.new-wid, .message-tm-right.new-wid {
+    padding: 0px;
+}
+
+.cont-span16.m-none, .cont-span17.m-none{
+	margin-bottom:20px;
+	width:100%;
+}
+
+select.small5{
+	width:20%;
+}
+
+.cont-span19.wid-full{
+	width:100%;
+}
+
+.x-small7{
+	width:100%;
+}
+
+.cont-span19.extra-wid4{
+	width:65%;
+}
+
+.x-large8{
+	width:75%;
+}
+
+.list-box-file{
+	width:79%;
+}
+
+.x-large9.pad-text-in{
+	width:93%;
+	margin-bottom:10px;
+}
+
+select.in-large4{
+	width:98%;
+	margin-bottom:10px;
+}
+
+.teach-space-left{
+	float:left;
+	margin-left:0px;
+	margin-top:10px;
+}
+
+.pad-cheak{
+	padding:4% 0px;
+}
+
+.tech-thir-box{
+	width:34%;
+}
+
+select.large{
+	width:100%;
+}
+
+.message-tm-main{
+	padding-left:0px;
+}
+
+.message-tm-left, .message-tm-right{
+	width:100%;
+}
+
+.x-small{
+	width:10%;
+}
+
+ul.subject-box li{
+	margin-right:10px;
+}
+
+select.in-large{
+	width:80%;
+}
+
+a.black-cent-butn2.long-wid{
+	width: 45%;
+	margin: 0 25% 3%;
+}
+
+.x-small-12 {
+    width: 12%;
+}
+
+
+ul.categorystripbox1 li input[type="text"] {
+    margin: 0 4px;
+    padding: 0 6px;
+	width:35px;
+}
+
+
+label#middletexr {
+    margin: 9px 2px 0 0;
+ 
+}
+
+.lesson-wrapper{
+	width:68%;
+}
+
+/* student-teacher-subject-page */
+
+ul.subject-books1{
+	width:84%;
+}
+
+ul.subject-books1 li{
+	margin:0px 3.4%;
+}
+
+
+a.greencentbutn{
+	left:4%;
+	padding:2px;
+}
+
+a.greencentbutn span{
+	padding-right:10px;
+	padding-left:10px;
+}
+
+.head-text {
+    width: 61%;
+}
+
+ul.billinginfo-order li p span.full-lesson {
+    margin:10px 0px 0px 0px;
+}
+
+/* student-profile-tm-booking-requests */
+.refresingbox{
+	margin:3% 50%;
+}
+
+.left-student-newbox2{
+	margin-bottom:0px;
+}
+
+.right-student-newbox2{
+	margin-top:10px;
+}
+
+.tech-head{
+	display:block;
+}
+
+/*student-profile-tm-mysubjects-files(p)*/
+ul.subject-sliderbox{
+	width:89%;
+}
+
+ul.subject-sliderbox li{
+	width:29%;
+}
+
+
+a.subject-slider-arrow {
+    margin: 18% 0 0 5px;
+}
+
+.btnblue1{
+	margin-left:80%;
+}
+
+/* order profile calander */
+.table-main{
+	padding-right:0.5%;
+}
+
+/* studentkit-student-profile-UM-request */
+ul.booking-nav.f-pad-norml1 li{
+	padding:12px 6px;
+	font-size:12px;
+}
+
+.request-responsebox{
+	width:68.182%;
+	margin-left:10px;
+}
+ul.responsive-menu li{
+	padding:12px 4px;
+}
+
+p.order-negotiat-billing{
+	margin-top:20px;
+}
+
+}
+@media (max-width: 480px) {
+
+.top-left{
+	padding-left:0%;
+	padding-right:0%;
+}
+
+.top-right{
+	float:left;
+	padding:10px 0px 0px 0px;
+}
+
+.topright-languagebox{
+	margin-top:10px;
+}
+
+/* Search Bar */
+.search-right-btn{
+	width:100%;
+	float:left;
+	}
+	
+.search-right-btn-left{
+	margin-right:0px;
+	}
+	
+.search-box-main{
+	width:100%;
+	float:left;
+	}		
+
+.searchbox-bg input[type="text"]{
+	border-radius:30px;
+	-moz-border-radius:30px;
+	-webkit-border-radius:30px;
+	-o-border-radius:30px;
+	-ms-border-radius:30px;
+	margin-right:0px;
+}
+
+.btn-selt-catg{
+	width:100%;
+	border-left:none;
+	border-radius:30px;
+	-moz-border-radius:30px;
+	-webkit-border-radius:30px;
+	-o-border-radius:30px;
+	-ms-border-radius:30px;
+	margin-bottom:12px;
+	margin-top:12px;
+	padding:0px 12px !important;
+}
+
+.btn-search{
+	width:100%;
+	border-radius:30px;
+	-moz-border-radius:30px;
+	-webkit-border-radius:30px;
+	-o-border-radius:30px;
+	-ms-border-radius:30px;
+	padding:0px;
+}
+
+.cont-span8 {
+  width: 100%;
+}
+
+.cont-span4 {
+  width: 100%;
+}
+
+.cont-span4.spc {
+  width: 98%;
+  margin-left:2%;
+}
+
+.cont-span4.spc-mar {
+  margin-left:0%;
+}
+
+.cont-span8.spc-c-box {
+  margin-left:0%;
+  margin-top:20px;
+}
+
+.cont-span3.cbox-space {
+	width:100%;
+}
+
+.cont-span6.cbox-space {
+	width:100%;
+	margin-left:0%;
+	margin-top:20px;
+}
+
+.btn-selt-catg-arw{
+	float:right;
+}
+
+.footer-bottom-left{
+	float:none;
+	text-align:center;
+}
+	
+.footer-bottom-right{
+	float:inherit;
+	padding-top:10px;
+	text-align:center;
+}
+
+.btn-black{
+	width:100%;
+	height:33px;
+	margin-top:12px;
+}
+
+.cont-span15, .cont-span18.cbox-space2{
+	 width: 100%;
+	 margin-left:0%;
+	}
+.blue-box{
+	margin-left:2%;
+	margin-right:2%;
+}
+	
+.cont-span16.c-box-mar{
+	width:100%;
+}
+
+.cont-span17{
+	width:100%;
+	margin-left:0px;
+}
+
+
+
+.cont-span16.c-box-mar{
+	margin-bottom:30px;
+}
+
+.log-box .btn-black{
+	width:97.5%;
+}
+
+.log1{
+	margin: 0 0 0 5%;
+	width:auto;
+}
+
+.order-math.btn-black{
+	height:68px;
+}
+
+.order-frm-box{
+	width:100%;
+}
+
+.message-tm-main{
+	padding:0px;
+}
+
+.inner-tabel{
+	width: 14.2857%;
+}
+
+ul.right-menu{
+	margin-bottom:20px;
+}
+
+.cont-span19.extra-wid{
+	width:98%;
+}
+
+ul.booking-nav li{
+	font-size:12px;
+	padding:12px 10px;
+}
+
+.cont-span19.extra-wid4{
+	width:100%;
+	margin-left:0px;
+}
+
+.cont-span15.c-mar-message{
+	margin-left:0px;
+}
+
+ul.subject-box li{
+	margin-right:18px;
+}
+
+/* studentkit-homepage-serps-listview */
+
+.categorybox{
+	width:98%;
+}
+
+ul.categorystripbox1 li input[type="text"] {
+    margin: 0 10px 0 0;
+    padding: 0 10px;
+    width: 40px;
+}
+
+label#middletexr {
+    margin: 9px 10px 0 0;
+}
+
+
+.lesson-wrapper {
+    width: 100%;
+	margin:20px 0px 0px 0px;
+}
+
+.cont-span4.spc {
+	margin-left:0px;
+}
+
+ul.subject-books1 {
+    width: 89%;
+}
+
+
+ul.subject-books1 li {
+    margin: 0 3.6%;
+}
+
+
+.head-text {
+    width: 64%;
+}
+
+/* index */
+.top-middle{
+	float:right;
+}
+
+/* student-profile-tm-booking-requests */
+.refresingbox{
+	margin:3% 50%;
+}
+
+/*student-profile-tm-mysubjects-files(p)*/
+ul.subject-sliderbox{
+	width:88%;
+}
+
+ul.subject-sliderbox li{
+	width:29%;
+}
+
+.btnblue1{
+	margin-left:75%;
+}
+/* studentkit-student-profile-UM-request */
+ul.booking-nav.f-pad-norml1 li{
+	padding:12px 4px;
+	font-size:12px;
+}
+
+.responsive-menubox{
+	width:100%;
+}
+
+ul.responsive-menu{
+	width:100%;
+	float:left;
+}
+
+ul.responsive-menu li{
+	padding:12px 2%;
+}
+
+a.add-blckbtn{
+	margin:10px 0px;
+	width:94%;
+	float:left;
+}
+
+/* order group offer */
+
+.popmargin{
+	margin:10px 0%;
+}
+
+p.order-negotiat-billing{
+	margin-top:25px;
+}
+
+/* inner action pressed */
+
+ul.action-dropdown{
+	left:-14px;
+	margin-top:5px;	
+}
+
+.index-blackbtn{
+	font-size:16px;
+	line-height:33px;
+	text-align:center;
+}
+
+}

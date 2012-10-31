@@ -1,0 +1,342 @@
+
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#"><head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />    <title>
+        Home    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    
+
+    <!-- styles -->
+    
+	<link rel="stylesheet" type="text/css" href="/css/basic.css" />
+	<link rel="stylesheet" type="text/css" href="/css/style.css" />
+	<link rel="stylesheet" type="text/css" href="/css/style-responsive.css" />
+	<link rel="stylesheet" type="text/css" href="/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="/css/bootstrap-responsive.css" />
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- fav and touch icons -->
+    <link href="/favicon.ico" type="image/x-icon" rel="icon" /><link href="/favicon.ico" type="image/x-icon" rel="shortcut icon" /><link href="http://universito.com/ico/apple-touch-icon-144-precomposed.png" rel="apple-touch-icon-precomposed" size="144x144" />
+<link href="http://universito.com/ico/apple-touch-icon-72-precomposed.png" rel="apple-touch-icon-precomposed" size="72x72" />
+<link href="http://universito.com/ico/apple-touch-icon-57-precomposed.png" rel="apple-touch-icon-precomposed" />
+
+    <!-- Javascript
+================================================== -->
+    
+	<script type="text/javascript" src="/js/jquery-1.8.2.js"></script>
+	<script type="text/javascript" src="/js/custom-form-elements.js"></script>
+	<script type="text/javascript" src="/js/jquery-ui-1.9.1.custom.min.js"></script>
+	<script type="text/javascript" src="/js/script.js"></script>
+	<script type="text/javascript" src="/js/bootstrap-transition.js"></script>
+	<script type="text/javascript" src="/js/bootstrap-alert.js"></script>
+	<script type="text/javascript" src="/js/bootstrap-modal.js"></script>
+	<script type="text/javascript" src="/js/bootstrap-dropdown.js"></script>
+	<script type="text/javascript" src="/js/bootstrap-scrollspy.js"></script>
+	<script type="text/javascript" src="/js/bootstrap-tab.js"></script>
+	<script type="text/javascript" src="/js/bootstrap-tooltip.js"></script>
+	<script type="text/javascript" src="/js/bootstrap-popover.js"></script>
+	<script type="text/javascript" src="/js/bootstrap-button.js"></script>
+	<script type="text/javascript" src="/js/bootstrap-collapse.js"></script>
+	<script type="text/javascript" src="/js/bootstrap-carousel.js"></script>
+	<script type="text/javascript" src="/js/bootstrap-typeahead.js"></script>
+	<script type="text/javascript" src="/js/application.js"></script>
+	<script type="text/javascript" src="/js/slimScroll.js"></script>
+<!-- jCarousel Slider -->
+    </script>
+
+
+    <script type="text/javascript">
+        function changeTime(spanId, val) {
+            $('#'+spanId).html(val);
+        }
+
+        $(document).ready(function(){
+            // For Search Selectbox
+            $('.dropdown-menu li').click(function(){
+                $('.btn-selt-catg').html('<i class="iconSmall-info btn-selt-catg-info"></i>'+$(this).text()+'<span class="caret btn-selt-catg-arw"></span>');
+            });
+
+            <!-- For language Selectbox -->
+            $('.header-tooltip-box').css('display','none');
+
+            $("#countrySelect").click(function(){
+                $("#countryList").slideToggle();
+            });
+            $("#notificationIcon").click(function(){
+                $("#notificationList").slideToggle();
+            });
+            $("#messageIcon").click(function(){
+                $("#messageList").slideToggle();
+            });
+        });
+    </script>
+<link rel="stylesheet" type="text/css" href="/debug_kit/css/debug_toolbar.css" /><script type="text/javascript" src="/debug_kit/js/jquery.js"></script><script type="text/javascript" src="/debug_kit/js/js_debug_toolbar.js"></script>
+</head>
+
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+
+
+
+
+
+
+
+<!-- Topbar
+================================================== -->
+<Section class="topbar">
+    <div class="topbar-inner">
+        <div class="top-left">
+            <div class="label-txt pull-left space1">Language</div>
+            <div class="pull-left space1 position">
+                <div class="select show-tip" id="selcountry">Country</div>
+                <!-- country box -->
+                <div  id="selcountry-tip" class="header-tooltip-box toolbarbox alltip">
+                    <div class="header-tooltip"></div>
+                    <div class="head-countrybox">
+                        <form class="sk-form">
+                            <div class="head-countrybar">
+                                <label class="countrylabel">Layout :</label>
+                                <select name="data[layout]" onChange="changeTime(&#039;countary1&#039;, this.value)" id="layout">
+<option value="heb">Hebrew</option>
+<option value="eng">English</option>
+</select>                            </div>
+                            <div class="head-countrybar">
+								<p class="head-countrytext pull-left fullwidth">Prioritize: <i class="iconSmall-info"></i></p>
+								<p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  English</p>
+								<p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  Hebrew</p>
+								<p  class="space37 fullwidth pull-left"><i class="iconMedium-add-sub"></i>
+                                    <select name="data[languages]" class="space38" onChange="changeTime(&#039;countary1&#039;, this.value)" id="languages">
+<option value="afr">Afrikaans</option>
+<option value="alb">Albanian</option>
+</select>                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- /country box -->
+            </div>
+            <div class="pull-left head-languagebox">
+                <span id="countary2" class="select2">UTC</span>
+                <select name="data[TZ]" class="styled2" onChange="changeTime(&#039;countary2&#039;, this.value)" id="TZ">
+<option value="Africa/Abidjan">Africa/Abidjan</option>
+<option value="UTC" selected="selected">UTC</option>
+</select>            </div>
+        </div> <!-- /pull-left -->
+
+        <div class="top-right">
+            <div class="label-txt pull-left space5"><a href="#">Sign In <i class="iconMedium-sign"></i></a></div>
+            <div class="label-txt pull-left"><a href="#">Register</a></div>
+        </div> <!-- /pull-right -->
+
+
+        
+
+    </div>
+</Section>
+
+<header>
+
+    <!-- Navbar
+   ================================================== -->
+    <section class="navbar">
+        <div class="navbar-inner">
+            <button type="button" class="btn btn-navbar space6" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <h1><a href="/" title="Home">Universito</a></h1>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li class="active"><a href="/" title="Home">Home</a></li>
+                    <li><a href="/forum" title="Board"><span>Board</span></a></li>
+                    <li><a href="/Student" title="Account"><span>Account</span></a></li>
+                    <li><a href="/Requests" title="Account"><span>Lesson request</span></a></li>
+                    <li><a href="#" title="">How it Works</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </section>
+</header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Containeer
+        ================================================== -->
+<Section class="container">
+  <div class="container-inner">
+    <div class="row">
+      <div class="cont-span12">
+        <div class="cont-span16 c-box-mar cbox-space pos">
+          <div class="butn-space">
+            <div class="black-cent-butn butns-width"><strong>New LIVE lesson request</strong></div>
+            <a href="#" class=" greencentbutn pull-left radius3">
+            <i class="iconBig-kart-icon pull-left"></i> <span class="pull-left"><strong>Order</strong></span></a> 
+		</div>
+          <div class="student-main-box2 radius3 pad1 fix-height">
+            <div class="sec-main-box"> <a href="#" class="border1 pull-left"><img src="assets/img/ban-img.jpg" alt="kajdha" /></a>
+              <h6><a href="#">Video Title Goes Here</a></h6>
+              <p class="pad2">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            </div>
+            <div class="icon-box-social  bod2">
+              <div class="social-icons pad2"> <a href="#" class="fb"></a> <a href="#" class="twit"></a> <a href="#" class="g-one"></a>
+                <p class="maxstudntbar"><span class="maxstudent">Max. Students:5</span><span class="duration">Duration:60 min</span></p>
+                <div class="pull-right price-margn">
+                  <div class="price-tag"><span>$</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="log-box">
+              <p class="log1 radius3 gradient2"><span class="fontsize4">60 H</span><br/>
+                Logged</p>
+              <p class="log1 radius3 gradient2"><span class="fontsize4">70</span><br/>
+                Reviews</p>
+              <p class="log1 radius3 gradient2"><span class="fontsize4">10</span><br/>
+                Students</p>
+              <a href="#" class="log2 btn-black radius3"><img src="assets/img/star.png" alt="oahoia" /><br/>
+              (4.0/70 Reviews)</a> </div>
+          </div>
+			  <!-- /student-main-box -->
+			  <div class="student-main-box radius3 fix-height">
+				<h5 class="fullwidth pad8"><strong>My Subjects</strong></h5>
+				<div class="my-subject-box">
+				  <ul class="subject-box">
+					<li> <img src="assets/img/subject-1.jpg" alt="akjhdi" /> <a href="#" class="fontsize1"><strong>Subject Name</strong></a>
+					  <div class="pull-right">
+						<div class="price-tag"><span>$</span></div>
+					  </div>
+					</li>
+					<li> <img src="assets/img/subject-2.jpg" alt="akjhdi" /> <a href="#" class="fontsize1 "><strong>Subject Name</strong></a>
+					  <div class="pull-right">
+						<div class="price-tag"><span>$</span></div>
+					  </div>
+					</li>
+					<li class="m-none2"> <img src="assets/img/subject-1.jpg" alt="akjhdi" /> <a href="#" class="fontsize1"><strong>Subject Name</strong></a>
+					  <div class="pull-right">
+						<div class="price-tag"><span>$</span></div>
+					  </div>
+					</li>
+				  </ul>
+				  <div id="more"></div>
+				</div>
+			  </div>
+			  <a href="#" class="more radius3 gradient2 space9 pull-left mysubject-more"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
+			  <!-- upcoming group lessons -->
+			  <div class="student-main-box radius3 space25 fix-height">
+				<h5 class="fullwidth pad8 pull-left"><strong>Upcoming group lessons</strong></h5>
+				<div class="up-coming">
+				  <ul class="subject-morelesson">
+					<li> <a href="#" class="pull-left"><img src="assets/img/book3.jpg" alt="" /></a>
+					  <div class="upcominglesson-textbox">
+						<div class="pull-right btn-width">
+						  <div class="price-tag space25 order-price"><span>$</span></div>
+						  <a href="#" class="btn-color-gry move-right space35 centered space37">Join</a> </div>
+						<div class="space36"> <a href="#">Live lesson name</a>
+						  <p class="space3">Start :15/10/2012 10:25</p>
+						  <p>Current student 2 of 10</p>
+						</div>
+					  </div>
+					</li>
+					<li> <a href="#" class="pull-left"><img src="assets/img/book3.jpg" alt="" /></a>
+					  <div class="upcominglesson-textbox">
+						<div class="pull-right btn-width">
+						  <div class="price-tag space25 order-price"><span>$</span></div>
+						  <a href="#" class="btn-color-gry move-right space35 centered space37">Join</a> </div>
+						<div class="space36"> <a href="#">Live lesson name</a>
+						  <p class="space3">Start :15/10/2012 10:25</p>
+						  <p>Current student 2 of 10</p>
+						</div>
+					  </div>
+					</li>
+					<div id="more"></div>
+				  </ul>
+				</div>
+			  </div>
+			  <a href="#" class="more radius3 gradient2 space9 pull-left lesson-more"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a> </div>
+        <div class="cont-span17 cbox-space">
+          <ul class="teacher-box3">
+            <li>
+              <div class="pic-butn-box pos fix-width">
+                <div class="student-main-box radius3 fix-height ">
+                 <a title="" href="#" class="teacher-pic radius3"><img alt="" src="assets/img/users/teacher-img.jpg"></a>
+                  <p class="onliestatus"> <i class="iconMedium-mail pull-left"></i> <i class="iconSmall-green-dot pull-left space23"></i> <span class="pull-left online">Online</span> </p>
+                  <div class="head-text3">
+                    <div class="pull-left tutorname-wrapeper"> <a href="#" class="tutroaname"><span class="pad5"><strong>Suzzene</strong></span></a> </div>
+                    <span class="fontsize1 pad6 pull-left">Expert Math Teacher</span>
+                    <p class="pull-left">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo. </p>
+                  </div>
+                  
+                </div>
+                <!-- /student-main-box -->
+              </div>
+              <!-- /pic-butn-box -->
+            </li>
+          </ul>
+          <a href="#" class="more radius3 gradient2 space8"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
+		  
+          <div class="lesson-box pad8 space4">
+            <h3 class="radius1"><strong>What student say about me?</strong></h3>
+            <div class="box-subject2 radius3 fix-height">
+              <div class="studnt-page-scorll ">
+                <div class="main-student bod2">
+                  <div class="left-student-box"> <img src="assets/img/users/img-78x78-1.jpg" alt="jkhajsd" class="border1" /> <img src="assets/img/star.png" alt="kahajb" /> </div>
+                  <div class="right-student-box">
+                    <div class="pad8">
+                      <h6 class="pull-left space10"><strong>Student Name</strong></h6>
+                      <em class="fontsize1 space31">(Studied at 21,sept 2011)</em></div>
+                    <p class="studeenmsg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                  </div>
+                </div>
+                <div class="main-student bod2">
+                  <div class="left-student-box"> <img src="assets/img/users/img-78x78-1.jpg" alt="jkhajsd" class="border1" /> <img src="assets/img/star.png" alt="kahajb" /> </div>
+                  <div class="right-student-box">
+                    <div class="pad8">
+                      <h6 class="pull-left space10"><strong>Student Name</strong></h6>
+                      <em class="fontsize1 space31">(Studied at 21,sept 2011)</em></div>
+                    <p class="studeenmsg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                  </div>
+                </div>
+                <div id="more"></div>
+              </div>
+            </div>
+            <!-- /lesson-box -->
+          </div>
+          <a href="#" class="more radius3 gradient2 space8 scroll-more"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
+          
+        <!-- /cont-span17 -->
+      </div>
+      <!-- /cont-span12 -->
+    </div>
+    <!-- /row -->
+  </div>
+  <!-- /container-inner -->
+</Section>
+
+
+
+
+
+<div class="temphtml" style="display:none;"></div>
+  <div class="mysubjectbox-temp" style="display:none;"></div>
+
+</body>
+</html>
