@@ -13,3 +13,9 @@
 [submodule "Plugin/Uploader"]
 	path = Plugin/Uploader
 	url = https://github.com/eldad87/cake-uploader
+[submodule "Plugin/Forum"]
+	path = Plugin/Forum
+	url = https://github.com/eldad87/cake-forum.git
+[submodule "Vendor/PHP-PayPal-IPN"]
+	path = Vendor/PHP-PayPal-IPN
+	url = https://github.com/eldad87/PHP-PayPal-IPN.git
