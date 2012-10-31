@@ -2,113 +2,113 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="450cef18-1c51-46a7-a858-dcdb7822e893" name="Default" comment="plugins">
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\basic.css" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\bootstrap-responsive.css" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\bootstrap.css" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\skin.css" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\style-responsive.css" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\style.css" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\tipTip.css" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\ico\Thumbs.db" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\ico\apple-touch-icon-114-precomposed.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\ico\apple-touch-icon-144-precomposed.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\ico\apple-touch-icon-57-precomposed.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\ico\apple-touch-icon-72-precomposed.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\ico\favicon.ico" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\Thumbs.db" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\ban-img.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\ban-img1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\book1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\book2.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\book3.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\book4.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\book6.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\certificate.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\icon-img-big.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\icon-img-medium.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\icon-img-small.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\icon.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\logo.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\newletter-footer.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\newletter-tooltip.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\price-arw-left.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\price-arw-right.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\select1.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\select2.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\social-icon.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\star-white.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\star.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\subject-1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\subject-2.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\teacherpage-video.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\tooltip.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\tooltip2.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\Thumbs.db" afterPath="" />
       <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-100x100-1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-100x100-2.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-100x100-3.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-38x38-1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-60x60-1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-60x60-2.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-60x60-3.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-63x63-1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-63x63-2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\icon-img-big.png" afterPath="" />
       <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-72x72-1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\select1.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\ico\favicon.ico" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\social-icon.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\book4.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-modal.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\teacher-msg-img.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-alert.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-typeahead.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-60x60-1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-100x100-2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\jquery.tipTip.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-tab.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\ico\Thumbs.db" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\style.css" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-dropdown.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\newletter-tooltip.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\custom-form-elements.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\bootstrap.css" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\newletter-footer.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\tooltip.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\icon-img-small.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\ban-img1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\Thumbs.db" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\star-white.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\subject-2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\book6.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\ico\apple-touch-icon-57-precomposed.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-100x100-3.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-78x78-1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\style-responsive.css" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\ico\apple-touch-icon-144-precomposed.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-scrollspy.js" afterPath="" />
       <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-72x72-2.jpg" afterPath="" />
       <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-72x72-3.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-78x78-1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\student-pic-1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\student-pic-188x197-1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\book1.jpg" afterPath="" />
       <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\teacher-img.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\teacher-msg-img.jpg" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\v-bg.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\application.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-alert.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-button.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-carousel.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\ban-img.jpg" afterPath="" />
       <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-collapse.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-dropdown.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-modal.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-popover.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-scrollspy.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-tab.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-tooltip.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-transition.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-typeahead.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\Thumbs.db" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-60x60-3.jpg" afterPath="" />
       <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap.min.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\custom-form-elements.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\star.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\tooltip2.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\student-pic-1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\subject-1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\basic.css" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\application.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\icon-img-medium.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-button.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\logo.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\tipTip.css" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\book3.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-popover.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-63x63-2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\price-arw-right.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\student-pic-188x197-1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\v-bg.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\bootstrap-responsive.css" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\price-arw-left.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\certificate.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\book2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\icon.png" afterPath="" />
       <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\jquery.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\jquery.tipTip.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Plugin/Forum" afterPath="$PROJECT_DIR$/Plugin/Forum" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Elements/Home/other_subjects.ctp" afterPath="$PROJECT_DIR$/View/Elements/Home/other_subjects.ctp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Elements/Home/reviews_by_students.ctp" afterPath="$PROJECT_DIR$/View/Elements/Home/reviews_by_students.ctp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Elements/Home/upcoming_lessons.ctp" afterPath="$PROJECT_DIR$/View/Elements/Home/upcoming_lessons.ctp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Home/Common/subject.ctp" afterPath="$PROJECT_DIR$/View/Home/Common/subject.ctp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Home/index.ctp" afterPath="$PROJECT_DIR$/View/Home/index.ctp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Home/search_subject.ctp" afterPath="$PROJECT_DIR$/View/Home/search_subject.ctp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Home/teacher_subject.ctp" afterPath="$PROJECT_DIR$/View/Home/teacher_subject.ctp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Layouts/default.ctp" afterPath="$PROJECT_DIR$/View/Layouts/default.ctp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Requests/index.ctp" afterPath="$PROJECT_DIR$/View/Requests/index.ctp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Requests/search_subject.ctp" afterPath="$PROJECT_DIR$/View/Requests/search_subject.ctp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/css/bootstrap.css" afterPath="$PROJECT_DIR$/webroot/css/bootstrap.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/css/style-responsive.css" afterPath="$PROJECT_DIR$/webroot/css/style-responsive.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/css/style.css" afterPath="$PROJECT_DIR$/webroot/css/style.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/1.1 index.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/1.1 index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.1 studentkit-design3 online.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.1 studentkit-design3 online.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.2 studentkit-design3 notification pressed.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.2 studentkit-design3 notification pressed.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.3 studentkit-design3-message-notification.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.3 studentkit-design3-message-notification.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.4 studentkit-design3-message-notification-pressed.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.4 studentkit-design3-message-notification-pressed.html" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\select2.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-63x63-1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\css\skin.css" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-transition.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-38x38-1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\ico\apple-touch-icon-114-precomposed.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-carousel.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\js\bootstrap-tooltip.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\users\img-60x60-2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\ico\apple-touch-icon-72-precomposed.png" afterPath="" />
+      <change type="DELETED" beforePath="C:\Zend\Apache2\htdocs\studentskit\studentskit\webroot\sk-html\assets\img\teacherpage-video.jpg" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/2.1 homepage-serps-tileview.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/2.1 homepage-serps-tileview.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/2.2 homepage-no-serps.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/2.2 homepage-no-serps.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/3.1 student-teacher-subject-page.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/3.1 student-teacher-subject-page.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/3.2 studentkit-teacher-live-join-subject-page.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/3.2 studentkit-teacher-live-join-subject-page.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/3.3.1 studentkit-teacher-video-subject-page.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/3.3.1 studentkit-teacher-video-subject-page.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/4 student-teacher-page.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/4 student-teacher-page.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/5 student-subject-page.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/5 student-subject-page.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/6 studentkit-student-page.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/6 studentkit-student-page.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/7.1 studentkit-lesson-page-file.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/7.1 studentkit-lesson-page-file.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/7.2 studentkit-lesson-page-taking-test.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/7.2 studentkit-lesson-page-taking-test.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/6 studentkit-student-page.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/6 studentkit-student-page.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Requests/search_subject.ctp" afterPath="$PROJECT_DIR$/View/Requests/search_subject.ctp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/3.1 student-teacher-subject-page.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/3.1 student-teacher-subject-page.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Elements/Home/reviews_by_students.ctp" afterPath="$PROJECT_DIR$/View/Elements/Home/reviews_by_students.ctp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Layouts/default.ctp" afterPath="$PROJECT_DIR$/View/Layouts/default.ctp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/css/style-responsive.css" afterPath="$PROJECT_DIR$/webroot/css/style-responsive.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.1 studentkit-design3 online.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.1 studentkit-design3 online.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Home/index.ctp" afterPath="$PROJECT_DIR$/View/Home/index.ctp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/3.3.1 studentkit-teacher-video-subject-page.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/3.3.1 studentkit-teacher-video-subject-page.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Home/teacher_subject.ctp" afterPath="$PROJECT_DIR$/View/Home/teacher_subject.ctp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.4 studentkit-design3-message-notification-pressed.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.4 studentkit-design3-message-notification-pressed.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/7.1 studentkit-lesson-page-file.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/7.1 studentkit-lesson-page-file.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.2 studentkit-design3 notification pressed.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.2 studentkit-design3 notification pressed.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Elements/Home/upcoming_lessons.ctp" afterPath="$PROJECT_DIR$/View/Elements/Home/upcoming_lessons.ctp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/3.2 studentkit-teacher-live-join-subject-page.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/3.2 studentkit-teacher-live-join-subject-page.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/5 student-subject-page.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/5 student-subject-page.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Home/Common/subject.ctp" afterPath="$PROJECT_DIR$/View/Home/Common/subject.ctp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/1.1 index.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/1.1 index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/css/bootstrap.css" afterPath="$PROJECT_DIR$/webroot/css/bootstrap.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Home/search_subject.ctp" afterPath="$PROJECT_DIR$/View/Home/search_subject.ctp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.3 studentkit-design3-message-notification.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/1.2.3 studentkit-design3-message-notification.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Plugin/Forum" afterPath="$PROJECT_DIR$/Plugin/Forum" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Requests/index.ctp" afterPath="$PROJECT_DIR$/View/Requests/index.ctp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/View/Elements/Home/other_subjects.ctp" afterPath="$PROJECT_DIR$/View/Elements/Home/other_subjects.ctp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/4 student-teacher-page.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/4 student-teacher-page.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/sk-html/Site/2.2 homepage-no-serps.html" afterPath="$PROJECT_DIR$/webroot/sk-html/Site/2.2 homepage-no-serps.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webroot/css/style.css" afterPath="$PROJECT_DIR$/webroot/css/style.css" />
     </list>
     <list id="46ca5d6f-2265-4bd2-b6ac-641950b24bab" name="Rejected commit: Default" comment="plugins" />
     <ignored path="studentskit.iws" />
@@ -128,66 +128,6 @@
   </component>
   <component name="FavoritesManager">
     <favorites_list name="studentskit" />
-  </component>
-  <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="HomeController.php" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Controller/HomeController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="670" column="17" selection-start="28737" selection-end="28737" vertical-scroll-proportion="-26.384615">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="teacher_subject.ctp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/View/Home/teacher_subject.ctp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="0" selection-start="75" selection-end="3510" vertical-scroll-proportion="-3.2692308">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="subject.ctp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/View/Home/Common/subject.ctp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="57" column="22" selection-start="3703" selection-end="3703" vertical-scroll-proportion="-21.576923">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="reviews_by_students.ctp" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/View/Elements/Home/reviews_by_students.ctp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="28" column="107" selection-start="1718" selection-end="1727" vertical-scroll-proportion="0.609475">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="other_subjects.ctp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/View/Elements/Home/other_subjects.ctp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="0" selection-start="1196" selection-end="1368" vertical-scroll-proportion="-17.0">
-              <folding>
-                <marker date="1351634939266" expanded="true" signature="867:921" placeholder="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="upcoming_lessons.ctp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/View/Elements/Home/upcoming_lessons.ctp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="0" selection-start="0" selection-end="1992" vertical-scroll-proportion="-22.23077">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -246,7 +186,7 @@
     <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+    <navigator proportions="" version="1" splitterProportion="0.5">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -257,38 +197,7 @@
       <autoscrollFromSource />
       <sortByType />
     </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="studentskit" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="studentskit" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="studentskit" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
@@ -303,15 +212,15 @@
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="175" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="1083" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="1083" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="1083" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="175" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="175" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RunManager">
     <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
@@ -380,7 +289,6 @@
     <frame x="-9" y="-9" width="1698" height="1020" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3293979" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -395,6 +303,7 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32839224" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3293979" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -497,116 +406,82 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Vendor/PHP-PayPal-IPN/ipnlistener.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="31" selection-start="2355" selection-end="2355" vertical-scroll-proportion="-22.23077">
-          <folding />
-        </state>
+        <state line="82" column="31" selection-start="2355" selection-end="2355" vertical-scroll-proportion="-22.23077" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Plugin/Forum/Controller/ForumAppController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="8" selection-start="899" selection-end="899" vertical-scroll-proportion="0.58770806">
-          <folding />
-        </state>
+        <state line="34" column="8" selection-start="899" selection-end="899" vertical-scroll-proportion="0.58770806" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/View/Elements/Home/lesson_request.ctp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="75" column="0" selection-start="3899" selection-end="3899" vertical-scroll-proportion="1.6325225">
-          <folding />
-        </state>
+        <state line="75" column="0" selection-start="3899" selection-end="3899" vertical-scroll-proportion="1.6325225" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/View/Home/index.ctp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="16" selection-start="284" selection-end="460" vertical-scroll-proportion="-5.230769">
-          <folding />
-        </state>
+        <state line="8" column="16" selection-start="284" selection-end="460" vertical-scroll-proportion="-5.230769" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/View/Requests/index.ctp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="69" selection-start="503" selection-end="503" vertical-scroll-proportion="-4.576923">
-          <folding />
-        </state>
+        <state line="7" column="69" selection-start="503" selection-end="503" vertical-scroll-proportion="-4.576923" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/View/Requests/search_subject.ctp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="57" selection-start="476" selection-end="476" vertical-scroll-proportion="-5.8846154">
-          <folding />
-        </state>
+        <state line="11" column="57" selection-start="476" selection-end="476" vertical-scroll-proportion="-5.8846154" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Controller/HomeController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="670" column="17" selection-start="28737" selection-end="28737" vertical-scroll-proportion="-26.384615">
-          <folding />
-        </state>
+        <state line="670" column="17" selection-start="28737" selection-end="28737" vertical-scroll-proportion="-26.384615" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/View/Home/search_subject.ctp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="94" selection-start="1782" selection-end="1782" vertical-scroll-proportion="0.65300894">
-          <folding />
-        </state>
+        <state line="33" column="94" selection-start="1782" selection-end="1782" vertical-scroll-proportion="0.65300894" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/View/Layouts/default.ctp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="4" selection-start="2614" selection-end="2614" vertical-scroll-proportion="0.659411">
-          <folding />
-        </state>
+        <state line="56" column="4" selection-start="2614" selection-end="2614" vertical-scroll-proportion="0.659411" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/View/Home/teacher_subject.ctp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="0" selection-start="75" selection-end="3510" vertical-scroll-proportion="-3.2692308">
-          <folding />
-        </state>
+        <state line="5" column="0" selection-start="75" selection-end="3510" vertical-scroll-proportion="-3.2692308" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Config/core.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="31" selection-start="1155" selection-end="1155" vertical-scroll-proportion="0.34256926">
-          <folding />
-        </state>
+        <state line="34" column="31" selection-start="1155" selection-end="1155" vertical-scroll-proportion="0.34256926" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/View/Elements/Home/other_subjects.ctp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="0" selection-start="1196" selection-end="1368" vertical-scroll-proportion="-17.0">
-          <folding>
-            <marker date="1351634939266" expanded="true" signature="867:921" placeholder="..." />
-          </folding>
-        </state>
+        <state line="26" column="0" selection-start="1196" selection-end="1368" vertical-scroll-proportion="-17.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/View/Home/Common/subject.ctp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="22" selection-start="3703" selection-end="3703" vertical-scroll-proportion="-21.576923">
-          <folding />
-        </state>
+        <state line="57" column="22" selection-start="3703" selection-end="3703" vertical-scroll-proportion="-21.576923" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/View/Elements/Home/upcoming_lessons.ctp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="0" selection-start="0" selection-end="1992" vertical-scroll-proportion="-22.23077">
-          <folding />
-        </state>
+        <state line="34" column="0" selection-start="0" selection-end="1992" vertical-scroll-proportion="-22.23077" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/View/Elements/Home/reviews_by_students.ctp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="107" selection-start="1718" selection-end="1727" vertical-scroll-proportion="0.609475">
-          <folding />
-        </state>
+        <state line="28" column="107" selection-start="1718" selection-end="1727" vertical-scroll-proportion="0.609475" />
       </provider>
     </entry>
   </component>
