@@ -53,7 +53,7 @@
                                         'application',
 										'slimScroll'));
         echo $this->fetch('script');
-    ?><!-- jCarousel Slider -->
+    ?>
 
 
 
