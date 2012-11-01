@@ -490,6 +490,7 @@ ul.row2 li.last{
 
 /* Lesson */
 .lesson-box{
+	min-height:100px;
 }
 
 .lesson-box h4{
@@ -1636,8 +1637,8 @@ select.x-large{
 
 
 .head-text{
-	margin:15px;
-	width:83%;
+	margin:20px 15px 15px 15px;
+	width:72%;
 	text-align:center;
 	font-weight:bold;
 	}
@@ -1980,6 +1981,7 @@ a.g-one.c-mr-none{
     float: left;
     padding: 10px;
     width: 100%;
+	min-height:60px;
 }
 
 .arrow-left, .arrow-right{
@@ -2021,6 +2023,7 @@ ul.subject-books .m-none{
 	width:100%;
 	float:left;
 	height: auto;
+	min-height:50px;
 	color:#ffffff;
 	font-size:14px;
 	border:1px solid #444444;
@@ -2069,6 +2072,7 @@ ul.stu-list li{
 	float:left;
 	list-style:none;
 	margin-bottom:10px;
+	min-width:100%;
 }
 
 .cont-span17{
@@ -2289,6 +2293,7 @@ a.more{
 .student-main-box2{
 	border: 1px solid #CCCCCC;
     margin-top: 15px;
+	min-height:100px;
 }
 
 .bod2{
@@ -2384,6 +2389,7 @@ ul.teacher-box3 li {
     border-right: 1px solid #CCCCCC;
     float: left;
     width: 100%;
+	min-height:100px;
 }
 
 .main-student{
@@ -2411,6 +2417,7 @@ ul.subject-books2 .m-none3{
     border: 1px solid #CCCCCC;
     margin-top: 15px;
 	margin-bottom:30px;
+	min-height:100px;
 }
 
 .student-main-inner{
@@ -2511,6 +2518,7 @@ ul.message-tm-stu{
 	float:left;
 	width:100%;
 	height:auto;
+	margin-top:10px;
 }
 
 ul.message-tm-stu li{
@@ -2519,6 +2527,7 @@ ul.message-tm-stu li{
 	height:auto;
 	background-color:#e5e5e5;
 	padding:10px;
+	min-height:50px;
 }
 
 ul.message-tm-stu li img{
@@ -2943,6 +2952,7 @@ select.in-large3{
 	float:left;
 	width:59%;
 	height:auto;
+	min-height:100px;
 	padding-bottom:40px;
 	border:1px solid #cccccc;
 	background-color:#f1f1f1;	
@@ -2971,7 +2981,7 @@ select.in-large3{
 	height:auto;
 	border-bottom:1px solid#cccccc;
 	padding:6px 10px;
-	font-size:20px;
+	font-size:20px;	
 }
 
 ul.file-box-all{
@@ -3427,6 +3437,7 @@ ul.lesson-container{
 
 .categorybox{
 	width:30.6184%;
+	min-height:100px;
 	float:left;
 	margin:0px;
 	border:solid 1px #cccccc;
@@ -4176,6 +4187,7 @@ ul.requestfill-box li label select{
 /*student-profile-tm-mysubjects-files(p)*/
 .subject-slider{
 	width:100%;
+	min-height:100px;
 	float:left;
 	border-radius:3px;
 	-webkit-border-radius:3px;
@@ -5250,4 +5262,16 @@ p.head-countrytext{
 
 .my-subject-box{
 	float:left;
+}
+
+
+/* loading icon box */
+
+.loadingbox{
+	width:auto;
+	position:absolute;
+	top:30%;
+	float:left;
+	left:30%;
+	background:rgba(255,255,255, 0.6);
 }
