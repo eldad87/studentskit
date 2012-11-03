@@ -1,6 +1,6 @@
 <!-- /reviews -->
 <div class="lesson-box pad8 space4">
-    <h3 class="radius1"><strong><?php echo __('What student says about me?'); ?></strong></h3>
+    <h3 class="radius1"><strong><?php echo $title; ?></strong></h3>
     <div class="box-subject2 radius3 fix-height">
         <div class="reviews-by-students">
             <?php

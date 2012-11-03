@@ -2356,6 +2356,7 @@ a.more{
 }
 
 ul.subject-box{
+    width: 100%;
 	float:left;
 }
 
@@ -2393,8 +2394,8 @@ ul.teacher-box3 li {
 
 .right-student-box{
 	float:left;
-	float:left;
 	padding:10px 0px 0px 5px;
+    width: 76%;
 }
 
 .box-subject2 {

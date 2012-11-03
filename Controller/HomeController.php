@@ -16,7 +16,7 @@ class HomeController extends AppController {
 		parent::beforeFilter();
 		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacherLesson', 'teacher', 'user', 'order',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession',
-							'getUpcomingOpenLesson', 'latestBoardPosts'
+							'getUpcomingOpenLesson', 'getUpcomingOpenLessonForSubject', 'latestBoardPosts', 'getStudentArchiveLessons', 'getStudentRatingByTeachers'
 							/*,'test', 'testLocking', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount', 'testGeneratePaymentRecivers',
                             'testUpdateRatingStage'*/, 'testWatchitoo', 'uploadTest');
 		$this->Auth->deny('submitOrder');
@@ -630,6 +630,8 @@ $id = $scObj->id;
         $this->set('lessonType', $subjectData['lesson_type']);
 
 
+
+
         //Video lesson, show order button if no request already made
         //else show play button
         if($subjectData['lesson_type']=='video') {
@@ -670,15 +672,19 @@ $id = $scObj->id;
                 $this->set('showOrderFreeLessonButton', true);
             }
         } else {
-            $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($subjectId);
+            $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons(null, $subjectId);
             $this->set('upcomingAvailableLessons', $upcomingAvailableLessons);
         }
 
         $this->set('orderURL', array('controller'=>'Order', 'action'=>'init', 'order', $subjectId));
 	}
 
-    public function getUpcomingOpenLesson($limit=3, $page=1, $subjectId=null) {
-        $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($subjectId, $limit, $page);
+    public function getUpcomingOpenLesson($teacherUserId, $limit=3, $page=1) {
+        $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($teacherUserId, null, $limit, $page);
+        return $this->success(1, array('results'=>$upcomingAvailableLessons));
+    }
+    public function getUpcomingOpenLessonForSubject($subjectId, $limit=3, $page=1) {
+        $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons(null, $subjectId, $limit, $page);
         return $this->success(1, array('results'=>$upcomingAvailableLessons));
     }
 
@@ -774,6 +780,10 @@ $id = $scObj->id;
             return false;
         }
         $subjectData = $subjectData['Subject'];
+
+        //JS view params
+        $this->setJSSetting('subject_id', $subjectId);
+        $this->setJSSetting('teacher_user_id', $subjectData['user_id']);
 
         //Get students comments for that subject
         $subjectRatingByStudents = $this->Subject->getRatingByStudents( $subjectId, 2 );
@@ -884,7 +894,7 @@ $id = $scObj->id;
         $latestPosts = $this->getLastUserPosts($teacherUserId, 2, 1);
 
         //Get upcoming lessons
-        $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons();
+        $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($teacherUserId);
 
 
 		$this->set('teacherData', 	            $teacherData);
@@ -913,9 +923,9 @@ $id = $scObj->id;
         $subjectRatingByStudents = $this->UserLesson->getTeacherReviews( $teacherUserId, $limit, $page );
 		return $this->success(1, array('rating'=>$subjectRatingByStudents));
 	}
-	public function getTeacherSubjects($teacherUserId, $limit=6, $page=1) {
+	public function getTeacherSubjects($teacherUserId, $limit=6, $page=1, $subjectId=null) {
         $this->Subject->setLanguages($this->Session->read('languages_of_records'));
-		$teacherOtherSubjects = $this->Subject->getOffersByTeacher( $teacherUserId, false, null, $page, $limit );
+		$teacherOtherSubjects = $this->Subject->getOffersByTeacher( $teacherUserId, false, null, $page, $limit, null, $subjectId );
 		return $this->success(1, array('results'=>$teacherOtherSubjects));
 	}
 	
@@ -925,6 +935,8 @@ $id = $scObj->id;
         if(!$userData) {
             return false;
         }
+
+        $this->setJSSetting('student_user_id', $userId);
 
         //get forum latest posts
         $latestPosts = $this->getLastUserPosts($userId, 2, 1);
@@ -942,6 +954,15 @@ $id = $scObj->id;
         $this->set('latestPosts',      $latestPosts);
         $this->set('studentReviews',   $studentReviews);
         $this->Set('archiveLessons',   $archiveLessons);
+    }
+
+    public function getStudentArchiveLessons($studentUserId, $limit=2, $page=1) {
+        $archiveLessons = $this->UserLesson->getArchive($studentUserId, $limit, $page);
+        return $this->success(1, array('lessons'=>$archiveLessons));
+    }
+    public function getStudentRatingByTeachers($studentUserId, $limit=2, $page=1) {
+        $studentReviews = $this->UserLesson->getStudentReviews( $studentUserId, $limit, $page );
+        return $this->success(1, array('rating'=>$studentReviews));
     }
 
 	public function subject() {

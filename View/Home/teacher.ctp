@@ -106,7 +106,7 @@
                             echo $this->element('Home/board_topics', array('topics'=>$latestPosts));
                         }
 
-                        echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$teacherReviews));
+                        echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$teacherReviews, 'title'=>'What student say about me?'));
                     ?>
                     <!---->
 

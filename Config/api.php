@@ -114,6 +114,12 @@ $config['Home.latestBoardPosts.success.1.description'] = __('Latest posts');
 /*-------------------- Home.getUpcomingOpenLesson	--------------------*/
 $config['Home.getUpcomingOpenLesson.success.1.title'] = __('Success');
 $config['Home.getUpcomingOpenLesson.success.1.description'] = __('Upcoming lessons');
+/*-------------------- Home.getUpcomingOpenLessonForSubject	--------------------*/
+$config['Home.getUpcomingOpenLessonForSubject.success.1.title'] = __('Success');
+$config['Home.getUpcomingOpenLessonForSubject.success.1.description'] = __('Upcoming lessons');
+/*-------------------- Home.getStudentArchiveLessons	--------------------*/
+$config['Home.getStudentArchiveLessons.success.1.title'] = __('Success');
+$config['Home.getStudentArchiveLessons.success.1.description'] = __('Archive lessons');
 /*-------------------- Home.getLastUserPosts	--------------------*/
 $config['Home.getLastUserPosts.success.1.title'] = __('Success');
 $config['Home.getLastUserPosts.success.1.description'] = __('Latest user posts');

@@ -84,10 +84,10 @@
                             </div> <!-- /pic-butn-box -->
                         </li>
                     </ul>
-                    <a href="#" class="more radius3 gradient2 space8"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
+                    <!--<a href="#" class="more radius3 gradient2 space8"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>-->
 
                     <?php
-                    echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$subjectRatingByStudents, 'title'=>'What student say about this subject?'));
+                        echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$subjectRatingByStudents, 'title'=>__('What student say about this subject?')));
                     ?>
 
 

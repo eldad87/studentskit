@@ -248,7 +248,12 @@ $(document).ready(function(){
         disableFadeOut: true
     });
 
-    lmObj.loadMoreButton('.mysubject-more', 'click', '.subject-box', '/Home/getTeacherSubjects/{teacher_user_id}/{limit}/{page}', jsSettings, 'get', 3);
+    var url = '/Home/getTeacherSubjects/{teacher_user_id}/{limit}/{page}';
+    if(jsSettings['subject_id']) {
+        url = url + '/{subject_id}'
+    }
+
+    lmObj.loadMoreButton('.mysubject-more', 'click', '.subject-box', url, jsSettings, 'get', 3);
 });
 
 $(document).ready(function(){
@@ -262,13 +267,16 @@ $(document).ready(function(){
         disableFadeOut: true
     });
 
-    lmObj.loadMoreButton('a.upcoming-more', 'click', 'ul.upcoming-more', '/Home/getUpcomingOpenLesson/{limit}/{page}', jsSettings, 'get', 3);
+    var url = '/Home/getUpcomingOpenLesson/{teacher_user_id}/{limit}/{page}';
+    if(jsSettings['subject_id']) {
+        url = '/Home/getUpcomingOpenLessonForSubject/{subject_id}/{limit}/{page}';
+    }
+
+    lmObj.loadMoreButton('a.upcoming-more', 'click', 'ul.upcoming-more', url, jsSettings, 'get', 3);
 });
 
-/* studentkit-student-page */
-
 $(document).ready(function(){
-    /* Reviews by students */
+    /* Reviews by students for teacher/teacherSubject pages */
 
     $(document).ready(function(){
         $('div.reviews-by-students').slimScroll({
@@ -277,13 +285,28 @@ $(document).ready(function(){
             start: 'top'
         });
 
-        lmObj.loadMoreButton('a.reviews-by-students', 'click', 'div.reviews-by-students', '/Home/getTeacherRatingByStudents/{teacher_user_id}/{limit}/{page}', jsSettings, 'get', 3);
+        var url = '/Home/getTeacherRatingByStudents/{teacher_user_id}/{limit}/{page}';
+        if(jsSettings['subject_id']) {
+            var url = '/Home/getTeacherRatingByStudentsForSubject/{subject_id}/{limit}/{page}';
+        }
+
+        lmObj.loadMoreButton('a.reviews-by-students', 'click', 'div.reviews-by-students', url, jsSettings, 'get', 3);
     });
 });
 
+$(document).ready(function(){
+    /* Reviews by teachers for user page */
 
+    $(document).ready(function(){
+        $('div.reviews-by-teachers').slimScroll({
+            height: '135px',
+            width: '100%',
+            start: 'top'
+        });
 
-/* slim scroll */
+        lmObj.loadMoreButton('a.reviews-by-teachers', 'click', 'div.reviews-by-teachers', '/Home/getStudentRatingByTeachers/{student_user_id}/{limit}/{page}', jsSettings, 'get', 3);
+    });
+});
 
 $(document).ready(function(){
     /* Home last board posts */
@@ -301,30 +324,25 @@ $(document).ready(function(){
 
 
 $(document).ready(function(){
-    // For Search Selectbox
-    $(document).ready(function(){
-        $('.studnt-page-scorll1').slimScroll({
-            height: '243px',
-            alwaysVisible: false,
-            start: 'bottom',
-            wheelStep: 6
-        });
-        $("a.studnt-page-scorll-2").click(function(){
-            $(".temphtml2").load("/ajax/more1.html", function(response, status, xhr) {
-                $('.studnt-page-scorll1').append(response);
-                $(".studnt-page-scorll1").slimScroll({scroll: '50px' });
-            });
+    /* user latest lessons */
 
-        });
-
+    //Scroll
+    $('div.latest-lessons').slimScroll({
+        height: '115px',
+        alwaysVisible: false,
+        start: 'top',
+        wheelStep: 6
     });
+
+    lmObj.loadMoreButton('a.latest-lessons', 'click', 'div.latest-lessons', '/Home/getStudentArchiveLessons/{student_user_id}/{limit}/{page}', jsSettings, 'get', 5);
 });
+
+
+///////////////////////////////////////
+
 /* student subject page */
 
 $(document).ready(function(){
-	function changeTime(spanId,val){
-			document.getElementById(spanId).innerHTML=	val;
-        }
 		// For Search Selectbox
 	
 			$('.teacherbox').slimScroll({
@@ -344,9 +362,6 @@ $(document).ready(function(){
   });
 
 $(document).ready(function(){
-	function changeTime(spanId,val){
-			document.getElementById(spanId).innerHTML=	val;
-        }
 		// For Search Selectbox
 		$(document).ready(function(){
 			$('.scorllbox').slimScroll({
@@ -366,9 +381,6 @@ $(document).ready(function(){
 });
 
 $(document).ready(function(){
-	function changeTime(spanId,val){
-			document.getElementById(spanId).innerHTML=	val;
-        }
 		// For Search Selectbox
 		$(document).ready(function(){
 			$('.message-tm-stu').slimScroll({

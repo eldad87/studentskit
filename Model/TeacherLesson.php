@@ -532,7 +532,10 @@ class TeacherLesson extends AppModel {
     /**
      * Return a list of lessons for a given subject which the user can join to
      */
-    public function getUpcomingOpenLessons($subjectId=null, $limit=2, $page=1) {
+    public function getUpcomingOpenLessons($teacherUserId=null, $subjectId=null, $limit=2, $page=1) {
+        if(!$teacherUserId && !$subjectId) {
+            return false;
+        }
         $this->recursive = -1;
         $conditions = array(
             'datetime >'=>$this->timeExpression( 'now +1 hour', false),
@@ -540,6 +543,9 @@ class TeacherLesson extends AppModel {
             'is_deleted'=>'0');
         if($subjectId) {
             $conditions['subject_id'] = $subjectId;
+        }
+        if($teacherUserId) {
+            $conditions['teacher_user_id'] = $teacherUserId;
         }
         return $this->find('all', array('conditions'=>$conditions, 'limit'=>$limit, 'page'=>$page));
     }
