@@ -3,6 +3,7 @@
     <h3 class="radius1"><strong>Latest board messages</strong></h3>
     <div class="box-subject2 radius3 fix-height"">
         <?php
+    unset($latestPosts[1]);
         $latestPostsCount = count($latestPosts);
             foreach($latestPosts AS $latestPost) {
                 echo '<div class="main-student'.(--$latestPostsCount ? ' bod2' : null).'">

@@ -36,6 +36,7 @@ class AppController extends Controller {
                                 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login'), 'authenticate' => array('Form' => array('fields' => array('username' => 'email')))),
                                 'DebugKit.Toolbar');
     public $helpers = array('Facebook.Facebook', 'Layout');
+    public $jsSettings = array();
 	
 	public function beforeFilter() {
         $this->_setLanguage();
@@ -53,6 +54,8 @@ class AppController extends Controller {
          *************************************/
         $this->set('user', $this->Auth->user());
 
+
+
         App::import('Utils.Lib', 'Languages');
         $lObj = new Languages();
         $this->set('languages', array_flip($lObj->lists()));
@@ -61,6 +64,11 @@ class AppController extends Controller {
 
         $this->set('navButtonSelection', $this->detemintControllerToNavButton());
 	}
+    public function beforeRender() {
+        parent::beforeRender();
+        $this->set('jsSettings', $this->jsSettings);
+    }
+
     private function detemintControllerToNavButton() {
         $navButtons = array(
             'home'          =>false,
@@ -166,6 +174,10 @@ class AppController extends Controller {
         $cataqlog = $localize->catalog($language);
         Configure::write('Config.languageDirection', isSet($cataqlog['direction']) ? $cataqlog['direction'] : 'ltr');
     }
+
+    protected function setJSSetting($key, $val) {
+        $this->jsSettings[$key] = $val;
+    }
 	
 	protected function error( $code, $data=array() ) {
 		return $this->apiMessage('error', $code, $data);
@@ -179,7 +191,11 @@ class AppController extends Controller {
 		
 		Configure::load('api');
 		$data = Configure::read($this->name.'.'.$this->params['action'].'.'.$type.'.'.$code);
-		
+
+
+        //Fix image
+        $extra = $this->fixImage($extra);
+
 		$response = array(
 				'code'=>array($code),
 				'type'=>array($type),
@@ -210,5 +226,39 @@ class AppController extends Controller {
 			$this->viewPath = 'debug';
 			$this->render('debug');
 		}
+        if($this->RequestHandler->isAjax()) {
+            $this->viewPath = $this->viewPath.DS.'ajax';
+        }
+
 	}
+
+    /**
+     * Create 'image' parameter with the requested image size
+     * @param $data
+     * @param null $image
+     * @return array
+     */
+    private function fixImage($data, $image=null) {
+        if(!$image) {
+            if(!isSet($this->request->query['image'])) {
+                return $data;
+            }
+            $image = $this->request->query['image'];
+            $image = explode('x', $image);
+        }
+
+        App::import('Helper', 'Layout');
+        $lhObj = new LayoutHelper(new View(null));
+
+
+        foreach($data AS $key=>$val) {
+            if(is_array($val)) {
+                $data[$key] = $this->fixImage($val);
+            } else if($key=='image_source'){
+                $data['image'] = $lhObj->image($val['image_source'], $image[0], $image[1]);
+            }
+        }
+
+        return $data;
+    }
 }

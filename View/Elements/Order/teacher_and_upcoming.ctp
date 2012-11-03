@@ -44,7 +44,7 @@
                     <div class="main-student fullwidth<?php echo (--$upcomingAvailableLessonsCount ? ' bod2' : null )?>">
                         <div class="inner-spots-box">
                             <div class="pull-right btn-width">
-                                <div class="price-tag space25 order-price"><span><?php echo $this->Layout->priceTag($ual['1_on_1_price'], $ual['full_group_student_price']); ?></span></div>
+                                <?php echo $this->Layout->priceTag($ual['1_on_1_price'], $ual['full_group_student_price'], 'space25 order-price'); ?>
                                 <?php
                                 echo $this->Html->link('Join', array('controller'=>'Order', 'action'=>'init', 'join', $ual['teacher_lesson_id']),
                                     array('class'=>'btn-color-gry move-right space35 centered space3'));
@@ -83,7 +83,7 @@
                     <div class="main-student fullwidth bod2<?php echo (!$i ? ' space6' : null) ?>">
                         <div class="inner-spots-box">
                             <div class="pull-right btn-width">
-                                <div class="price-tag space25 order-price"><span><?php echo $this->Layout->priceTag($ual['1_on_1_price'], $ual['full_group_student_price']); ?></span></div>
+                                <?php echo $this->Layout->priceTag($ual['1_on_1_price'], $ual['full_group_student_price'], 'space25 order-price'); ?>
                                 <?php
                                 echo $this->Html->link('Join', array('controller'=>'Order', 'action'=>'init', 'join', $ual['teacher_lesson_id']),
                                     array('class'=>'btn-color-gry move-right space35 centered space3'));

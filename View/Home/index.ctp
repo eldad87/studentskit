@@ -15,7 +15,7 @@
                             $newSubject['Subject']['one_on_one_price'] = $newSubject['Subject']['1_on_1_price'];
                             echo '<li class="cont-span4 spc space2">';
 
-                            echo $this->Html->link( $this->element('subject', array(
+                            echo $this->Html->link( $this->element( 'subject', array(
                                                                     'subjectId'             =>$newSubject['Subject']['subject_id'],
                                                                     'teacherUserId'         =>$newSubject['Subject']['user_id'],
                                                                     'teacherUsername'       =>$newSubject['Teacher']['username'],

@@ -2,7 +2,7 @@
 <div class="lesson-box pad8 space4">
     <h3 class="radius1"><strong><?php echo __('What student says about me?'); ?></strong></h3>
     <div class="box-subject2 radius3 fix-height">
-        <div class="studnt-page-scorll ">
+        <div class="studnt-page-scorll">
             <?php
             if($ratingByTeachers) {
                 $countRBT = count($ratingByTeachers);
@@ -25,7 +25,7 @@
                                     array('controller'=>'Home', 'action'=>'teacher',
                                         $ratingByTeacher['UserLesson']['teacher_user_id']));
                                     ?></strong></h6>
-                                <em class="fontsize1 space31">(Studied at <?php echo date('j,M,Y', strtotime($ratingByTeacher['UserLesson']['datetime'])), null; ?>)</em></div>
+                                <em class="fontsize3">(Studied at <?php echo date('j,M,Y', strtotime($ratingByTeacher['UserLesson']['datetime'])), null; ?>)</em></div>
                             <p class="studeenmsg"><?php echo $ratingByTeacher['UserLesson']['comment_by_teacher']; ?></p>
                         </div>
                     </div>

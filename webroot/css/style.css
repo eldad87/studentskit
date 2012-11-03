@@ -109,6 +109,9 @@ section{
 	box-sizing: border-box;
 }
 
+ul.board-msg li {
+    color: #333;
+}
 .lesson-box, .c-box, .student-main-box, .student-main-box2, .student-main-box3{
 	width:100%;
 	float:left;
@@ -566,6 +569,9 @@ ul.row2 li.last{
 	line-height:normal;
 	margin:9px 10px 8px 0px;
 }
+.price-tag-free {
+    background:url("../img/price-arw-right-free.png") no-repeat scroll top right;
+}
 
 .price-tag span {
     background:url("../img/price-arw-left.png") no-repeat;
@@ -573,6 +579,9 @@ ul.row2 li.last{
     padding: 1px 6px 0px 10px;
 	height:16px;
 	font-size:10px;
+}
+.price-tag-free span {
+    background:url("../img/price-arw-left-free.png") no-repeat;
 }
 
 .vote-tag, .vote-tag2, .vote-tag3, .vote-tag4{
@@ -2347,7 +2356,7 @@ ul.subject-box{
 ul.subject-box li{
 	float:left;
 	width:29%;
-	margin-right:26px;
+	margin-right:18px;
 	margin-bottom:20px;
 }
 
@@ -2368,7 +2377,7 @@ ul.teacher-box3 li {
 
 .left-student-box{
 	float:left;
-	padding:10px 5px 0px 10px;
+	padding:10px 5px 0px 15px;
 	width:18%;
 }
 
@@ -2380,7 +2389,6 @@ ul.teacher-box3 li {
 	float:left;
 	float:left;
 	padding:10px 0px 0px 5px;
-	width: 77%;
 }
 
 .box-subject2 {
@@ -2390,11 +2398,17 @@ ul.teacher-box3 li {
     float: left;
     width: 100%;
 	min-height:100px;
+
+    padding-right: 15px;
 }
 
-.main-student{
+.main-student {
 	float:left;
 	padding-top:10px;
+    width: 100%;
+}
+.main-student strong a {
+    color: #333;
 }
 ul.subject-books2{
 	padding:1px 7px 1px 7px;
@@ -3172,7 +3186,10 @@ i.bot-pad2{
 
 .lesson-box h3.text-shd-none{
 	text-shadow:none;
-} 
+}
+.lesson-box .usr-text2 p {
+    color: #333;
+}
 
 .head-back{
 	width:100%;
@@ -5118,6 +5135,10 @@ ul.subject-morelesson li .upcominglesson-textbox{
 	margin:0px 0px 0px 70px;
 }
 
+.upcominglesson-textbox .pull-right {
+    margin-right: 18px;
+}
+
 /* country tooltip bar */
 .head-languagebox{
 	margin-left:145px;
@@ -5256,7 +5277,6 @@ p.head-countrytext{
 }
 
 .slimScrollDiv{
-	margin-top:21px;
 	float:left;
 }
 

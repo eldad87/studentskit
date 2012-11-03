@@ -15,8 +15,9 @@ class HomeController extends AppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacherLesson', 'teacher', 'user', 'order',
-							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession'/*,
-                            'test', 'testLocking', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount', 'testGeneratePaymentRecivers',
+							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession',
+							'getUpcomingOpenLesson'
+							/*,'test', 'testLocking', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount', 'testGeneratePaymentRecivers',
                             'testUpdateRatingStage'*/, 'testWatchitoo', 'uploadTest');
 		$this->Auth->deny('submitOrder');
 	}
@@ -671,7 +672,7 @@ $id = $scObj->id;
         $this->set('orderURL', array('controller'=>'Order', 'action'=>'init', 'order', $subjectId));
 	}
 
-    public function getUpcomingOpenLesson($limit, $page, $subjectId=null) {
+    public function getUpcomingOpenLesson($limit=3, $page, $subjectId=null) {
         $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($subjectId, $limit, $page);
         return $this->success(1, array('results'=>$upcomingAvailableLessons));
     }
@@ -854,6 +855,8 @@ $id = $scObj->id;
 	}
 	
 	public function teacher($teacherUserId) {
+        $this->setJSSetting('teacher_user_id', $teacherUserId);
+
 		//Get teacher data
         //$this->User->recursive = -1;
         $this->User->TeacherAboutVideo->setLanguages($this->Session->read('languages_of_records'));
@@ -901,14 +904,14 @@ $id = $scObj->id;
 	public function getTeacherRatingByStudents($teacherUserId, $limit=2, $page=1) {
         if($this->Auth->user('user_id')!=$teacherUserId) {
             $this->UserLesson->setLanguages($this->Session->read('languages_of_records'));
-            $subjectRatingByStudents = $this->UserLesson->getTeacherReviews( $teacherUserId, $limit, $page );
         }
+        $subjectRatingByStudents = $this->UserLesson->getTeacherReviews( $teacherUserId, $limit, $page );
 		return $this->success(1, array('rating'=>$subjectRatingByStudents));
 	}
 	public function getTeacherSubjects($teacherUserId, $limit=6, $page=1) {
         $this->Subject->setLanguages($this->Session->read('languages_of_records'));
 		$teacherOtherSubjects = $this->Subject->getOffersByTeacher( $teacherUserId, false, null, $page, $limit );
-		return $this->success(1, array('subjects'=>$teacherOtherSubjects));
+		return $this->success(1, array('results'=>$teacherOtherSubjects));
 	}
 	
 	public function user($userId) {

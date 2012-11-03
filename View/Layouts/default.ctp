@@ -1,3 +1,4 @@
+<?php echo $this->element('js_settings', array('jsSettings'=>$jsSettings));  ?>
 <?php echo $this->Html->docType('html5'); ?>
 <?php echo $this->Facebook->html(); ?>
 <head>
@@ -36,8 +37,8 @@
 										'jquery-1.8.2',
 										'custom-form-elements',
 										'jquery-ui-1.9.1.custom.min',
-										
-										'script.js',
+										'nano',
+										'script',
                                         'bootstrap-transition',
                                         'bootstrap-alert',
                                         'bootstrap-modal',
@@ -50,7 +51,7 @@
                                         'bootstrap-collapse',
                                         'bootstrap-carousel',
                                         'bootstrap-typeahead',
-                                        'application',
+                                        //'application',
 										'slimScroll'));
         echo $this->fetch('script');
     ?>

@@ -19,9 +19,8 @@
     <div class="lesson-box-footer radius2">
         <?php echo $this->Layout->rating($avarageRating); ?>
         <div class="pull-right">
-            <div class="price-tag"><span>
-                <?php echo$this->Layout->priceTag($oneOnOnePrice, $fullGroupStudentPrice); ?>
-            </span></div><a href="#"><i class="iconSmall-info space3"></i></a>
+            <?php echo$this->Layout->priceTag($oneOnOnePrice, $fullGroupStudentPrice); ?>
+            <a href="#"><i class="iconSmall-info space3"></i></a>
         </div>
     </div>
 </div>

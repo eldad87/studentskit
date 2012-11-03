@@ -23,7 +23,7 @@
 
                                 </div>
                                 <span class="fontsize1 pad6 pull-left">Since <?php echo $teacherData['User']['created']; ?></span>
-                                <p class="pull-left pad8"><?php echo $teacherData['User']['teacher_about']; ?></p>
+                                <p class="pull-left pad8 clear-left"><?php echo $teacherData['User']['teacher_about']; ?></p>
                             </div> <!-- /head-text3-->
                         </div>
                         <div class="icon-box-social  bod2">

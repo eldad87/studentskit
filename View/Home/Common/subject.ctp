@@ -34,7 +34,7 @@
                                     }
                                     ?>
                                 </span><span class="duration">Duration: <?php echo $subjectData['duration_minutes']; ?> min</span></p>
-                                <div class="pull-right price-margn"><div class="price-tag"><span><?php echo $this->Layout->priceTag($subjectData['1_on_1_price'], $subjectData['full_group_student_price']); ?></span></div></div>
+                                <div class="pull-right price-margn"><?php echo $this->Layout->priceTag($subjectData['1_on_1_price'], $subjectData['full_group_student_price']); ?></div>
                             </div>
                         </div>
                         <div class="log-box">
@@ -91,26 +91,25 @@
                     ?>
 
 
-                    <div class="lesson-box space8">
+                    <!--<div class="lesson-box space8">
                         <h3 class="radius1"><strong>See Other Teachers On This Subject</strong></h3>
                         <div class="box-subject radius2">
-                            <?php if(!empty($otherTeacherForThisSubject)) { ?>
+                            <?php /*if(!empty($otherTeacherForThisSubject)) { */?>
                             <a href="#" class="arrow-left arrws2"></a>
                             <ul class="subject-books subject-books1">
                             <?php
-                                /*$count = count($otherTeacherForThisSubject);
-                                $i=1;*/
+/*                                //$count = count($otherTeacherForThisSubject); $i=1;
                                 foreach($otherTeacherForThisSubject AS $otfts) {
                                     //echo '<li',($i++==$count ? 'class="m-none3"' : null),'>';
                                     echo '<li>',$this->Html->image($this->Layout->image($otfts['Teacher']['image_source'], 63, 63), array('alt' => 'Topic image')),'</li>';
                                 }
 
-                            ?>
+                            */?>
                             </ul>
                             <a href="#" class="arrow-right arrws2"></a>
-                            <?php } ?>
+                            <?php /*} */?>
                         </div>
-                    </div>
+                    </div>-->
 
 
                 </div> <!-- /cont-span17 -->

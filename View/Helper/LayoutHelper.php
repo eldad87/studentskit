@@ -15,13 +15,27 @@ class LayoutHelper extends AppHelper {
         return '<div class="pull-left star"><img src="/img/star.png" alt="" title=""></div>';
     }
 
-    public function priceTag($oneOnOne, $fullGroupStudentPrice, $currency='$') {
-        $return = $oneOnOne;
+    public function priceTag($oneOnOne, $fullGroupStudentPrice, $appendClass=null, $currency='$', $format='html') {
+        $priceText = $oneOnOne;
         if($fullGroupStudentPrice) {
-            $return .= '-'.$fullGroupStudentPrice;
+            $priceText .= '-'.$fullGroupStudentPrice;
+        }
+        $priceText .= $currency;
+
+
+        $class = 'price-tag';
+        if(!$oneOnOne) {
+            $priceText = __('Free');
+            $class .= ' price-tag-free';
+        }
+        if($appendClass) {
+            $class .= ' '.$appendClass;
         }
 
-        return $return.$currency;
+       /* if($format=='tpl') {
+            return '<div class="'.$class.'{class}"><span>{price}'.$currency.'</span></div>';
+        }*/
+        return '<div class="'.$class.'"><span>'.$priceText.'</span></div>';
     }
 
     /**
@@ -46,7 +60,7 @@ class LayoutHelper extends AppHelper {
             return $imageSource;
         }
         if(!$imageSource) {
-            return false; //TODO: blank image
+            return 'img-'.$width.'x'.$height.'-blank.jpg';
         }
 
 
@@ -99,5 +113,26 @@ class LayoutHelper extends AppHelper {
         }
 
         return $days;
+    }
+
+
+    public function scriptBlock($script, $options = array()) {
+        $options += array('safe' => true, 'inline' => true, 'type'=>'text/javascript');
+        if ($options['safe']) {
+            $script  = "\n" . '//<![CDATA[' . "\n" . $script . "\n" . '//]]>' . "\n";
+        }
+        if (!$options['inline'] && empty($options['block'])) {
+            $options['block'] = 'script';
+        }
+        unset($options['inline'], $options['safe']);
+
+        $attributes = $this->_parseAttributes($options, array('block'), ' ');
+        $out = sprintf('<script%s>%s</script>', $attributes, $script);
+
+        if (empty($options['block'])) {
+            return $out;
+        } else {
+            $this->_View->append($options['block'], $out);
+        }
     }
 }
