@@ -544,3 +544,7 @@ a.move-right{
 .space38{
 	margin-top:-10px;
 }
+
+.a-black a {
+    color: #333;
+}
