@@ -1947,6 +1947,7 @@ tr.table-heading2 td ul.color-box li{
 	float:left;
 	width:100%;
 	height:auto;
+    padding-top: 10px;
 }
 
 a.fb , a.twit, a.g-one{
@@ -2306,6 +2307,9 @@ a.more{
 }
 
 .bod2{
+	border-bottom: 1px solid #cccccc;
+}
+.bot2{
 	border-top: 1px solid #cccccc;
 }
 
