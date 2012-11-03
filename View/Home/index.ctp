@@ -54,28 +54,21 @@
             </div> <!-- /cont-span8 -->
             <div class="cont-span4 spc-mar">
                 <h2><i class="iconBig-mesg space1"></i>Board Messages</h2>
-                <ul class="board-msg scorllbox">
-                    <?php
-                    if($latestTopics) {
-                        $i=0;
-                        foreach($latestTopics AS $latestTopic) {
-                            echo $this->Html->link(
-                                    '<li class="bg-color'.(++$i).'">
-                                        <div class="user-pic1">'.$this->Html->image($this->Layout->image($latestTopic['User']['image_source'], 60, 60),
-                                                                                    array('alt' => 'User image')).'</div>
-                                        <div class="usr-text1">
-                                            <h6>'.$latestTopic['Topic']['title'].'</h6>
-                                            <p>'.$latestTopic['LastPost']['content'].'</p>
-                                        </div>
-                                    </li>', array('plugin'=>'forum','controller'=>'topics', 'action'=>'view', $latestTopic['Topic']['slug']), array('escape'=>false));
-                            if($i==2) {
-                                $i=0;
+                <div class="board-msg-container">
+                    <ul class="board-msg">
+                        <?php
+                        if($latestTopics) {
+                            $bgColor=0;
+                            foreach($latestTopics AS $latestTopic) {
+                                echo $this->element('Home/last_board_msg_li', array('latestTopic'=>$latestTopic, 'bgColor'=>++$bgColor));
+                                if($bgColor==2) {
+                                    $bgColor=0;
+                                }
                             }
                         }
-                    }
-                ?>
-				<div id="more"></div>
-                </ul>
+                    ?>
+                    </ul>
+                </div>
                 <a class="more-btn1">More Threads</a>
             </div> <!-- /cont-span8 -->
         </div>

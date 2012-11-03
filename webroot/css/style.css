@@ -621,8 +621,10 @@ ul.row2 li.last{
 ul.board-msg{
 	width:100%;
 	float:left;
-	margin-top:20px;
-	}
+}
+div.board-msg-container {
+    margin-top: 20px;
+}
 	
 ul.board-msg li{
 	width:100%;
@@ -634,7 +636,7 @@ ul.board-msg li{
 ul.board-msg h6{
 	text-shadow:1px 1px #ffffff;
 	padding-bottom:7px;
-	}	
+}
 	
 .user-pic1{
 	width:60px;
@@ -5298,4 +5300,8 @@ p.head-countrytext{
 	float:left;
 	left:30%;
 	background:rgba(255,255,255, 0.6);
+}
+
+.a-black a {
+    color: #333;
 }

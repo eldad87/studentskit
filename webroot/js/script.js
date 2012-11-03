@@ -269,7 +269,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
     /* Reviews by students */
-    // For Search Selectbox
+
     $(document).ready(function(){
         $('div.reviews-by-students').slimScroll({
             height: '135px',
@@ -286,33 +286,21 @@ $(document).ready(function(){
 /* slim scroll */
 
 $(document).ready(function(){
-    function changeTime(spanId,val){
-        document.getElementById(spanId).innerHTML=	val;
-    }
-    // For Search Selectbox
-    $(document).ready(function(){
-        $('.board-msg').slimScroll({
-            height: '404px',
-            alwaysVisible: false,
-            start: 'bottom',
-            wheelStep: 10
-        });
-        $(".more-btn1").click(function(){
-            var ht=$(".temphtml").load("/ajax/more.html", function(response, status, xhr){;
-                $('.board-msg').append(response);
-                $(".board-msg").slimScroll({scroll: '50px' });
-            });
-        });
+    /* Home last board posts */
 
+    //Scroll
+    $('.board-msg').slimScroll({
+        height: '404px',
+        alwaysVisible: false,
+        start: 'top'
     });
+
+    lmObj.loadMoreButton('a.more-btn1', 'click', 'ul.board-msg', '/Home/latestBoardPosts/{limit}/{page}', jsSettings, 'get', 5);
 });
 
 
 
 $(document).ready(function(){
-    function changeTime(spanId,val){
-        document.getElementById(spanId).innerHTML=	val;
-    }
     // For Search Selectbox
     $(document).ready(function(){
         $('.studnt-page-scorll1').slimScroll({

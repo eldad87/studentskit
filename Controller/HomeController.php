@@ -16,7 +16,7 @@ class HomeController extends AppController {
 		parent::beforeFilter();
 		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacherLesson', 'teacher', 'user', 'order',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession',
-							'getUpcomingOpenLesson'
+							'getUpcomingOpenLesson', 'latestBoardPosts'
 							/*,'test', 'testLocking', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount', 'testGeneratePaymentRecivers',
                             'testUpdateRatingStage'*/, 'testWatchitoo', 'uploadTest');
 		$this->Auth->deny('submitOrder');
@@ -298,10 +298,15 @@ class HomeController extends AppController {
     }
 
     public function latestBoardPosts($limit, $page) {
+        $page = 1;
         app::import('Model', 'Forum.Topic');
         $topicObj = new Topic();
         $topicObj->setLanguages($this->Session->read('languages_of_records'));
         $latestTopics = $topicObj->getLatest($limit, $page);
+
+        //Those are used for HTML rendering even/odd colors
+        $this->set('page', $page);
+        $this->set('limit', $page);
 
         return $this->success(1, array('results'=>$latestTopics));
     }
