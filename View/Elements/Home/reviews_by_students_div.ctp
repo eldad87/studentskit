@@ -1,4 +1,4 @@
-<div class="main-student bod2">
+<div class="main-student<?php echo (!$first ? ' bod2' : null); ?>">
     <div class="left-student-box">
         <?php
         echo $this->Html->image(

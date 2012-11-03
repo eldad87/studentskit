@@ -4,9 +4,10 @@
     <div class="box-subject2 radius3 fix-height">
         <div class="reviews-by-students">
             <?php
+            $i = 0;
             if($ratingByStudents) {
                 foreach($ratingByStudents AS $ratingByStudent) {
-                    echo $this->element('Home/reviews_by_students_div', array('ratingByStudent'=>$ratingByStudent));
+                    echo $this->element('Home/reviews_by_students_div', array('ratingByStudent'=>$ratingByStudent, 'first'=>!$i++));
                 }
             }
             ?>

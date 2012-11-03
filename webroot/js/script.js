@@ -242,7 +242,7 @@ $(document).ready(function(){
 
     //Scroll
     $('.my-subject-box').slimScroll({
-        height: '155px',
+        height: '159px',
         start: 'top',
         width: '100%',
         disableFadeOut: true
@@ -272,7 +272,7 @@ $(document).ready(function(){
     // For Search Selectbox
     $(document).ready(function(){
         $('div.reviews-by-students').slimScroll({
-            height: '132px',
+            height: '135px',
             width: '100%',
             start: 'top'
         });

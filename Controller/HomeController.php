@@ -672,7 +672,7 @@ $id = $scObj->id;
         $this->set('orderURL', array('controller'=>'Order', 'action'=>'init', 'order', $subjectId));
 	}
 
-    public function getUpcomingOpenLesson($limit=3, $page, $subjectId=null) {
+    public function getUpcomingOpenLesson($limit=3, $page=1, $subjectId=null) {
         $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($subjectId, $limit, $page);
         return $this->success(1, array('results'=>$upcomingAvailableLessons));
     }

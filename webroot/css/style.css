@@ -2306,7 +2306,7 @@ a.more{
 }
 
 .bod2{
-	border-bottom: 1px solid #cccccc;
+	border-top: 1px solid #cccccc;
 }
 
 .sec-main-box{
@@ -2357,7 +2357,7 @@ ul.subject-box li{
 	float:left;
 	width:29%;
 	margin-right:18px;
-	margin-bottom:20px;
+	/*margin-bottom:20px;*/
 }
 
 ul.subject-box .m-none2{
