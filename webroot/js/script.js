@@ -1,161 +1,6 @@
 // JavaScript Document
 
 
-/* Ajax tab script */
-
-$(document).ready(function(){
-  $(".load").live("click",function(){
-$(".loadpage").load("/ajax/"+$(this).attr('rel'));
-$(".booking-nav li").removeClass("active");
-$(this).parent("li").addClass("active");
-});
-
-});
-$(document).ready(function(){
-  $(".load1").live("click",function(){
-$(".loadpage1").load("/ajax/"+$(this).attr('rel'));
-$(".right-menu li").removeClass("bg-active");
-$(this).parent("li").addClass("bg-active");
-});
-
-});
-
-/* tooltip script */
-$(document).ready(function(){
-	
-	$(".show-tip").live("click",function(event){ 	
-		var id=$(this).attr("id");		
-		var visi=$("#"+id+"-tip").is(":visible");
-		$(".alltip").hide();
-		if(visi){
-				$("#"+id+"-tip").hide(300);
-		}else{
-			$("#"+id+"-tip").slideDown(300);
-			
-		}
-		event.stopPropagation();
-		
-	});
-	$(".alltip").children().click(function(event){
-		event.stopPropagation();
-	});
-	$("html").live("click",function(ev){
-		//alert(ev.target.attr('class'));
-		$(".alltip").hide();
-	});
-});
-/* message notificatoin pressed */
-
-/* more thread notificaiton pressed page */
-
-$(document).ready(function(){
-
-  $(".more-btn1").live("click",function(){
-setTimeout(function(){$("#more").load("assets/more.html");},300);
-
-  });
-
-});
-
-/* info tooltip */
-
-$(document).ready(function(){
-	
-$(".show-info").live("mouseover",function(event){ 	
-		var id=$(this).attr("id");		
-		var visi=$("#"+id+"-tip").is(":visible");
-		if(!visi){
-			$("#"+id+"-tip").slideDown(0);
-			
-		}
-		event.stopPropagation();
-		
-	});
-   $(".info-pop").live("mouseover",function(){
-		$(".info-pop").is("visible");							 
-	});	
-	
-	$("html").live("mouseover",function(){
-		$(".info-pop").slideUp(0);
-	});
-});
-
-
-/* pager script */
-
-$(document).ready(function(){
-var currentpage=1;
-var maxpage=4;
- $(".load").click(function(){
- currentpage=eval($(this).text());
-if(currentpage>=maxpage)
-{
-$(".next").parent("li").addClass("disabled");
-}
-else
-{
-$(".next").parent("li").removeClass("disabled");
-}
-	if(currentpage>1)
-	{
-	$(".prev").parent("li").removeClass("disabled");
-	}
-	else
-	{$(".prev").parent("li").addClass("disabled");
-	}
-    	$(".paging").load("/ajax/page"+currentpage+".html");
-	$(".pager li").removeClass("active");
-	$(this).parent("li").addClass("active");
-
-  });
-  
-$(".next").click(function(){
-	currentpage=currentpage+1;
-if(currentpage>=maxpage)
-{
-$(".next").parent("li").addClass("disabled");
-}
-else
-{
-$(".next").parent("li").removeClass("disabled");
-}
-	if(currentpage>1)
-	{
-	$(".prev").parent("li").removeClass("disabled");
-	}
-		else
-		{$(".prev").parent("li").addClass("disabled");
-		}
-		$(".load").parent("li").removeClass("active");
-	$(".p"+currentpage).parent("li").addClass("active");
-				$(".paging").load("/ajax/page"+currentpage+".html");
-});
-  
-$(".prev").click(function(){
-
-	if(currentpage>1)
-	{
-	currentpage=currentpage-1;
-		$(".load").parent("li").removeClass("active");
-	$(".p"+currentpage).parent("li").addClass("active");
-	$(".paging").load("/ajax/page"+currentpage+".html");
-	}	if(currentpage>1)
-	{
-	$(".prev").parent("li").removeClass("disabled");
-	}
-		else
-		{$(".prev").parent("li").addClass("disabled");
-	}if(currentpage>=maxpage)
-{
-$(".next").parent("li").addClass("disabled");
-}
-else
-{
-$(".next").parent("li").removeClass("disabled");
-}
-});
-
-});
 
 
 
@@ -237,6 +82,76 @@ LoadMore.prototype.getAppendCallback = function( buttonSelector, on ) {
 
 var lmObj = new LoadMore();
 
+///////////////////////////////////////////// Login/registration management
+
+$(document).ready(function(){
+
+    //Make sure the user logged in
+    $.ajaxSetup({
+        error: function(event, request, options, error) {
+            switch (event.status) {
+                case 403: //Forbidden - caused by users that not logged in
+                    $('#login-popup').modal('toggle');
+                    break;
+            }
+        }
+    });
+
+    //Login form JS
+    $('#login-form').submit(function() {
+        $.post(
+            '/login.json',
+            $(this).serialize(),
+            function(data){
+                if(data['response']['title'][0]=='Error') {
+                    //Show error
+                    var error = '<div class="alert fade in"> <button type="button" class="close" data-dismiss="alert">×</button> <strong>'+ data['response']['title'][0] +': </strong>'+ data['response']['description'][0] +'</div>';
+                    $('#login-form .modal-body').prepend(error);
+
+                } else {
+                    //Login Success
+                    location.reload(); //Reload page
+                }
+            }
+        );
+
+        return false;
+    });
+
+    //Registration form JS
+    $('#register-form').submit(function() {
+        $.post(
+            '/register.json',
+            $(this).serialize(),
+            function(data){
+                console.log(data);
+                if(data['response']['title'][0]=='Error') {
+                    //Show error
+                    var msg = '';
+                    $.each(data['response']['validation_errors'], function(key, val) {
+                        msg += val[0] + '<br />';
+                    });
+
+                    var error = '<div class="alert fade in"> <button type="button" class="close" data-dismiss="alert">×</button> <strong>'+ data['response']['description'][0] +': </strong>'+ msg +'</div>';
+                    $('#register-form .modal-body').prepend(error);
+
+                } else {
+                    //Login Success
+                    location.reload(); //Reload page
+                }
+            }
+        );
+
+        return false;
+    });
+
+});
+
+
+
+
+
+///////////////////////////////////////////// Teacher/TeacherSubject page
 $(document).ready(function(){
     /* My Subject */
 
@@ -294,6 +209,7 @@ $(document).ready(function(){
     });
 });
 
+///////////////////////////////////////////// User page
 $(document).ready(function(){
     /* Reviews by teachers for user page */
 
@@ -309,21 +225,6 @@ $(document).ready(function(){
 });
 
 $(document).ready(function(){
-    /* Home last board posts */
-
-    //Scroll
-    $('.board-msg').slimScroll({
-        height: '404px',
-        alwaysVisible: false,
-        start: 'top'
-    });
-
-    lmObj.loadMoreButton('a.more-btn1', 'click', 'ul.board-msg', '/Home/latestBoardPosts/{limit}/{page}', jsSettings, 'get', 5);
-});
-
-
-
-$(document).ready(function(){
     /* user latest lessons */
 
     //Scroll
@@ -337,72 +238,70 @@ $(document).ready(function(){
     lmObj.loadMoreButton('a.latest-lessons', 'click', 'div.latest-lessons', '/Home/getStudentArchiveLessons/{student_user_id}/{limit}/{page}', jsSettings, 'get', 5);
 });
 
+///////////////////////////////////////////// Home page
+$(document).ready(function() {
+    /* Home last board posts */
 
-///////////////////////////////////////
+    //Scroll
+    $('.board-msg').slimScroll({
+        height: '404px',
+        alwaysVisible: false,
+        start: 'top'
+    });
 
-/* student subject page */
-
-$(document).ready(function(){
-		// For Search Selectbox
-	
-			$('.teacherbox').slimScroll({
-			  height: '525px',
-			  alwaysVisible: false,
-			  start: 'bottom',
-			  wheelStep: 6
-			});		
-			$("a.teacher-more").click(function(){
-				$(".mysubjectbox-temp").load("/ajax/teacher-profile.html", function(response, status, xhr) {
-							$('.teacher-box2').append(response);
-							$(".teacherbox").slimScroll({scroll: '50px' });												 
-				 });
-	
-				
-			});
-  });
-
-$(document).ready(function(){
-		// For Search Selectbox
-		$(document).ready(function(){
-			$('.scorllbox').slimScroll({
-			  height: '300px',
-			  alwaysVisible: false,
-			  start: 'bottom',
-			  wheelStep: 10
-			});		
-			$(".message-tm-more").click(function(){
-				var ht=$(".temphtml").load("/ajax/more.html", function(response, status, xhr){;
-				$('.scorllbox').append(response);
-				$(".scorllbox").slimScroll({scroll: '50px' });
-		       });
-			});
-
-        });						   
+    lmObj.loadMoreButton('a.more-btn1', 'click', 'ul.board-msg', '/Home/latestBoardPosts/{limit}/{page}', jsSettings, 'get', 5);
 });
 
-$(document).ready(function(){
-		// For Search Selectbox
-		$(document).ready(function(){
-			$('.message-tm-stu').slimScroll({
-			  height: '300px',
-			  alwaysVisible: false,
-			  start: 'bottom',
-			  wheelStep: 10
-			});		
-			$(".message-tm-more").click(function(){
-				var ht=$(".temphtml").load("/ajax/more.html", function(response, status, xhr){;
-				$('.message-tm-stu').append(response);
-				$(".message-tm-stu").slimScroll({scroll: '50px' });
-		       });
-			});
 
-        });						   
+/////////////////////////////////////// Teacher/User panel
+$(document).ready(function(){
+    /* homepage - show latest board messages */
+
+    // For Search Selectbox
+    $(document).ready(function(){
+        $('.message-tm-stu').slimScroll({
+              height: '300px',
+              alwaysVisible: false,
+              start: 'bottom',
+              wheelStep: 10
+        });
+        $(".message-tm-more").click(function(){
+                var ht=$(".temphtml").load("/ajax/more.html", function(response, status, xhr){;
+                    $('.message-tm-stu').append(response);
+                    $(".message-tm-stu").slimScroll({scroll: '50px' });
+                });
+        });
+
+    });
 });
 
+
+
+
+/////////////////////////////////////// WTF?
+/* student subject page
+
+
+ $(document).ready(function(){
+ // For Search Selectbox
+ $(document).ready(function(){
+ $('.scorllbox').slimScroll({
+ height: '300px',
+ alwaysVisible: false,
+ start: 'bottom',
+ wheelStep: 10
+ });
+ $(".message-tm-more").click(function(){
+ var ht=$(".temphtml").load("/ajax/more.html", function(response, status, xhr){;
+ $('.scorllbox').append(response);
+ $(".scorllbox").slimScroll({scroll: '50px' });
+ });
+ });
+
+ });
+ });*/
 
 /* loadign */
-
-
 
 $(document).ready(function(){
 
@@ -418,3 +317,160 @@ function hideLoading()
 {
 	$(".loadingbox").hide();
 }
+
+
+/* Ajax tab script */
+
+$(document).ready(function(){
+    $(".load").live("click",function(){
+        $(".loadpage").load("/ajax/"+$(this).attr('rel'));
+        $(".booking-nav li").removeClass("active");
+        $(this).parent("li").addClass("active");
+    });
+
+});
+$(document).ready(function(){
+    $(".load1").live("click",function(){
+        $(".loadpage1").load("/ajax/"+$(this).attr('rel'));
+        $(".right-menu li").removeClass("bg-active");
+        $(this).parent("li").addClass("bg-active");
+    });
+
+});
+
+/* tooltip script */
+$(document).ready(function(){
+
+    $(".show-tip").live("click",function(event){
+        var id=$(this).attr("id");
+        var visi=$("#"+id+"-tip").is(":visible");
+        $(".alltip").hide();
+        if(visi){
+            $("#"+id+"-tip").hide(300);
+        }else{
+            $("#"+id+"-tip").slideDown(300);
+
+        }
+        event.stopPropagation();
+
+    });
+    $(".alltip").children().click(function(event){
+        event.stopPropagation();
+    });
+    $("html").live("click",function(ev){
+        //alert(ev.target.attr('class'));
+        $(".alltip").hide();
+    });
+});
+/* message notificatoin pressed */
+
+/* more thread notificaiton pressed page */
+
+$(document).ready(function(){
+
+    $(".more-btn1").live("click",function(){
+        setTimeout(function(){$("#more").load("assets/more.html");},300);
+
+    });
+
+});
+
+/* info tooltip */
+
+$(document).ready(function(){
+
+    $(".show-info").live("mouseover",function(event){
+        var id=$(this).attr("id");
+        var visi=$("#"+id+"-tip").is(":visible");
+        if(!visi){
+            $("#"+id+"-tip").slideDown(0);
+
+        }
+        event.stopPropagation();
+
+    });
+    $(".info-pop").live("mouseover",function(){
+        $(".info-pop").is("visible");
+    });
+
+    $("html").live("mouseover",function(){
+        $(".info-pop").slideUp(0);
+    });
+});
+
+
+/* pager script */
+
+$(document).ready(function(){
+    var currentpage=1;
+    var maxpage=4;
+    $(".load").click(function(){
+        currentpage=eval($(this).text());
+        if(currentpage>=maxpage)
+        {
+            $(".next").parent("li").addClass("disabled");
+        }
+        else
+        {
+            $(".next").parent("li").removeClass("disabled");
+        }
+        if(currentpage>1)
+        {
+            $(".prev").parent("li").removeClass("disabled");
+        }
+        else
+        {$(".prev").parent("li").addClass("disabled");
+        }
+        $(".paging").load("/ajax/page"+currentpage+".html");
+        $(".pager li").removeClass("active");
+        $(this).parent("li").addClass("active");
+
+    });
+
+    $(".next").click(function(){
+        currentpage=currentpage+1;
+        if(currentpage>=maxpage)
+        {
+            $(".next").parent("li").addClass("disabled");
+        }
+        else
+        {
+            $(".next").parent("li").removeClass("disabled");
+        }
+        if(currentpage>1)
+        {
+            $(".prev").parent("li").removeClass("disabled");
+        }
+        else
+        {$(".prev").parent("li").addClass("disabled");
+        }
+        $(".load").parent("li").removeClass("active");
+        $(".p"+currentpage).parent("li").addClass("active");
+        $(".paging").load("/ajax/page"+currentpage+".html");
+    });
+
+    $(".prev").click(function(){
+
+        if(currentpage>1)
+        {
+            currentpage=currentpage-1;
+            $(".load").parent("li").removeClass("active");
+            $(".p"+currentpage).parent("li").addClass("active");
+            $(".paging").load("/ajax/page"+currentpage+".html");
+        }	if(currentpage>1)
+        {
+            $(".prev").parent("li").removeClass("disabled");
+        }
+        else
+        {$(".prev").parent("li").addClass("disabled");
+        }if(currentpage>=maxpage)
+        {
+            $(".next").parent("li").addClass("disabled");
+        }
+        else
+        {
+            $(".next").parent("li").removeClass("disabled");
+        }
+    });
+
+});

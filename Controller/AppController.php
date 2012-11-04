@@ -188,7 +188,6 @@ class AppController extends Controller {
 	private function apiMessage( $type, $code, array $extra=array() ) {
 		//$this->set('xstatus', $type);
 		//$this->set('xstatuscode', $code);
-		
 		Configure::load('api');
 		$data = Configure::read($this->name.'.'.$this->params['action'].'.'.$type.'.'.$code);
 

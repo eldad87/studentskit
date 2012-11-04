@@ -16,7 +16,7 @@ class HomeController extends AppController {
 		parent::beforeFilter();
 		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacherLesson', 'teacher', 'user', 'order',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession',
-							'getUpcomingOpenLesson', 'getUpcomingOpenLessonForSubject', 'latestBoardPosts', 'getStudentArchiveLessons', 'getStudentRatingByTeachers'
+							'getUpcomingOpenLesson', 'getUpcomingOpenLessonForSubject'/*, 'latestBoardPosts'*/, 'getStudentArchiveLessons', 'getStudentRatingByTeachers'
 							/*,'test', 'testLocking', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount', 'testGeneratePaymentRecivers',
                             'testUpdateRatingStage'*/, 'testWatchitoo', 'uploadTest');
 		$this->Auth->deny('submitOrder');
@@ -298,7 +298,6 @@ class HomeController extends AppController {
     }
 
     public function latestBoardPosts($limit, $page) {
-        $page = 1;
         app::import('Model', 'Forum.Topic');
         $topicObj = new Topic();
         $topicObj->setLanguages($this->Session->read('languages_of_records'));

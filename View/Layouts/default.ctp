@@ -14,7 +14,7 @@
 
 
     <!-- styles -->
-    <?php echo $this->Html->css(array('basic', 'style', 'style-responsive', 'bootstrap', 'bootstrap-responsive'));
+    <?php echo $this->Html->css(array('basic', 'style-responsive', 'bootstrap', 'bootstrap-responsive', 'style'));
     echo $this->fetch('css');?>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -130,9 +130,13 @@
         </div> <!-- /pull-left -->
 
         <div class="top-right">
-            <div class="label-txt pull-left space5"><a href="#">Sign In <i class="iconMedium-sign"></i></a></div>
-            <div class="label-txt pull-left"><a href="#">Register</a></div>
-        </div> <!-- /pull-right -->
+            <div class="top-right">
+                <?php if(!$user) {
+                    echo '<div class="label-txt pull-left space5"><a href="#login-popup" role="button"  data-toggle="modal">Login/Register <i class="iconMedium-sign"></i></a></div>';
+                    echo $this->element('login_register');
+                }
+                ?>
+            </div> <!-- /pull-right -->
 
 
         <?php if(isSet($user['user_id'])) { ?>

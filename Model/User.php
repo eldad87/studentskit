@@ -99,14 +99,14 @@ class User extends AppModel {
 		'first_name'=> array(
 			'alphaNumeric' => array(
 				'rule'		=> 'alphaNumeric',
-				'message'	=> 'Alphabets and numbers only',
-				'required'		=> true,
-				'on'	=> 'create',
+				'message'	=> 'First name can contain alphabets and numbers only',
+				'required'	=> true,
+				'on'	    => 'create',
 				'allowEmpty' => false
             ),
 			'between' => array(
 				'rule'    => array('between', 2, 45),
-				'message' => 'Between %d to %d characters'
+				'message' => 'First name can have %d to %d characters'
 			)
 		),
 		
@@ -119,23 +119,20 @@ class User extends AppModel {
             ),*/
 			'between' => array(
 				'rule'    => array('between', 2, 45),
-				'message' => 'Between %d to %d characters',
+                'allowEmpty' => true,
+                'required'	=> false,
+				'message' => 'Last name can have %d to %d characters',
 			)
 		),
 		'dob' => array(
 			'rule'    		=> array('date', 'dmy'),
-			'message' 		=> 'Enter a valid date.',
+			'message' 		=> 'Enter a valid date of birth.',
 			'allowEmpty' 	=> true,
 		),
 		
 		'phone'=>array(
 			'rule'    		=> 'phone',
 			'message' 		=> 'Enter a valid phone.',
-			'allowEmpty' 	=> true,
-		),
-		'user_zipcpde'=>array(
-			'rule'    		=> array('postal', null, 'all'),
-			'message' 		=> 'Enter a valid zipcode.',
 			'allowEmpty' 	=> true,
 		),
 		'teacher_zipcpde'=>array(

@@ -47,8 +47,6 @@ class AccountsController extends AppController {
 	
 	
 	public function login() {
-
-
         if(!isSet($this->request->query['login_client'])) {
             $this->request->query['login_client'] = 'default';
         }
@@ -61,7 +59,9 @@ class AccountsController extends AppController {
 
             $this->Auth->redirect($redirect);
         }
+
 		if ($this->request->is('post') || $this->Auth->user()) {
+            //pr($this->request->data); die;
 			if ($this->Auth->login()) {
                 $active = (int) $this->Auth->user('active');
                 if(!$active) {
@@ -200,7 +200,22 @@ class AccountsController extends AppController {
     }
 
 	public function register() {
-		$this->SignMeUp->register();
+        $res = $this->SignMeUp->register();
+        if($this->RequestHandler->isAjax()) {
+            if($res) {
+                extract($this->SignMeUp->settings);
+                if (empty($activation_field)) {
+                    unset($this->request->data['User']['first_name']);
+                    unset($this->request->data['User']['last_name']);
+                    unset($this->request->data['User']['password2']);
+                    $this->login();
+                }
+                return $this->success(1);
+            } else {
+                return $this->error(1, array('validation_errors'=>$this->User->validationErrors));
+            }
+        }
+
 	}
 
 	public function activate() {
