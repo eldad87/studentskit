@@ -14,8 +14,8 @@ echo $this->Html->link('<div class="lesson-box">
             <a href="#"><i class="iconSmall-info space3"></i></a>
         </div>
     </div>
-</div>', array('controller'=>'Requests', 'action'=>'offerSubject', 'live', $subjectId),
+</div>', array('controller'=>'Requests', 'action'=>'offerSubject', $subjectId),
             $this->Layout->requireLogin(array(  'data-toggle'=>'modal', 'data-target'=>'#makeOfferForlive',
-                                                'data-id'=>$subjectId, 'data-hidden-input'=>'#request_subject_id',
+                                                'data-id'=>$subjectId, 'data-hidden-input'=>'#live_request_subject_id',
                                                 'class'=>'copyDataId', 'escape'=>false)));
 ?>

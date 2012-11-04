@@ -69,7 +69,7 @@ class RequestsController extends AppController {
 	}
 	
 	
-	public function	offerSubject($lessonType, $requestSubjectId=null) {
+	public function	offerSubject($requestSubjectId=null) {
 
 
 
@@ -97,56 +97,58 @@ class RequestsController extends AppController {
                 return $this->error(3);
             }
 
-            //Only live lessons need to have 'by' and can have 'datetime'
-            if($lessonType==LESSON_TYPE_LIVE) {
-
-                //By is missing
-                if(!isSet($this->request->data['by']) || empty($this->request->data['by'])) {
-                    return $this->error(4);
-                }
-
-                if($this->request->data['by']=='teacher_lesson_id') {
-
-                    $res = $this->UserLesson->joinRequest(  $this->request->data['UserLesson']['teacher_lesson_id'],
-                                                            $requestSubjectData['user_id'],
-                                                            $this->Auth->user('user_id'),
-                                                            null,
-                                                            array('request_subject_id'=>$requestSubjectId)); //Send invitation
-
-                    if(!$res) {
-                        return $this->error(5, array('validation_errros'=>$this->UserLesson->validationErrors));
-                    }
-                    return $this->success(1, array('user_lesson_id'=>$this->UserLesson->id));
-                }
+            //By is missing
+            if(!isSet($this->request->data['by']) || empty($this->request->data['by'])) {
+                return $this->error(4);
             }
 
 
+            if($this->request->data['by']=='teacher_lesson_id') {
+                //Only live lessons can have 'teacher_lesson_id'
+                $res = $this->UserLesson->joinRequest(  $this->request->data['UserLesson']['teacher_lesson_id'],
+                                                        $requestSubjectData['user_id'],
+                                                        $this->Auth->user('user_id'),
+                                                        null,
+                                                        array('request_subject_id'=>$requestSubjectId)); //Send invitation
+
+                if(!$res) {
+                    return $this->error(5, array('validation_errros'=>$this->UserLesson->validationErrors));
+                }
+                return $this->success(1, array('results'=>array(    'user_lesson_id'=>$this->UserLesson->id,
+                                                                    'subject_id'=>$this->request->data['UserLesson']['subject_id'],
+                                                                    'request_subject_id'=>$requestSubjectId,
+                                                                    'teacher_lesson_id'=>$this->request->data['UserLesson']['teacher_lesson_id'])));
+            }
 
             //Format datetime
             $datetime = null;
-            if(isSet($this->request->data['UserLesson']) && !empty($this->request->data['UserLesson'])) {
-                $datetime = $this->request->data['UserLesson']['datetime'];
-                $datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
-                $datetime = $this->UserLesson->timeExpression($datetime, false);
+            if($this->request->data['by']=='datetime') {
+                if(isSet($this->request->data['UserLesson']) && !empty($this->request->data['UserLesson'])) {
+                    $datetime = $this->request->data['UserLesson']['datetime'];
+                    $datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
+                    $datetime = $this->UserLesson->timeExpression($datetime, false);
+                }
             }
             unset($this->request->data['UserLesson']['datetime']);
 
 
 
             if($this->UserLesson->lessonOffer($this->request->data['UserLesson']['subject_id'], $requestSubjectId, $datetime)) {
-                return $this->success(2, array('user_lesson_id'=>$this->UserLesson->id));
+                return $this->success(2, array('results'=>array(    'user_lesson_id'=>$this->UserLesson->id,
+                                                                    'subject_id'=>$this->request->data['UserLesson']['subject_id'],
+                                                                    'request_subject_id'=>$requestSubjectId)));
             }
             return $this->error(6, array('validation_errors'=>$this->UserLesson->validationErrors));
 
         }
 
         //Get teacher subjects
-        $teacherSubjectsData = $this->Subject->getOffersByTeacher($this->Auth->user('user_id'), true, $lessonType);
+        $teacherSubjectsData = $this->Subject->getOffersByTeacher($this->Auth->user('user_id'), true/*, $lessonType*/);
         //Build DropDown options
         $teacherSubjectsSuggestions = array(0=>__('Please select a subject'));
         foreach($teacherSubjectsData AS $teacherSubject) {
             $teacherSubject = $teacherSubject['Subject'];
-            $teacherSubjectsSuggestions[$teacherSubject['subject_id']] = $teacherSubject['name'];
+            $teacherSubjectsSuggestions[$teacherSubject['lesson_type']][$teacherSubject['subject_id']] = $teacherSubject['name'];
         }
 
         $this->set('teacherSubjectsSuggestions', $teacherSubjectsSuggestions);

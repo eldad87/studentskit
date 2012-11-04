@@ -8,15 +8,17 @@ echo $this->Form->hidden('subject_id');
 
 echo $this->Form->input('name');
 echo $this->Form->input('description');
-echo $this->Form->input('language', array('options'=>$languages));
+echo $this->Form->input('language', array('options'=>$languages, 'div'=>false));
 echo '<br />';
 
-echo $this->Form->input('subject_category_id', array('options'=>$subjectCategories));
+echo $this->Form->input('subject_category_id', array('options'=>$subjectCategories, 'div'=>false));
 echo '<br />';
 
-echo $this->Form->input('lesson_type', array('options'=>array(LESSON_TYPE_LIVE=>'live', LESSON_TYPE_VIDEO=>'video')));
-echo $this->Form->input('is_enable', array('options'=>array(1=>'on', 0=>'off')));
-echo $this->Form->input('is_public', array('options'=>array(1=>'on', 0=>'off')));
+echo $this->Form->input('lesson_type', array('options'=>array(LESSON_TYPE_LIVE=>'live', LESSON_TYPE_VIDEO=>'video'), 'div'=>false));
+echo '<br />';
+echo $this->Form->input('is_enable', array('options'=>array(1=>'on', 0=>'off'), 'div'=>false));
+echo '<br />';
+echo $this->Form->input('is_public', array('options'=>array(1=>'on', 0=>'off'), 'div'=>false));
 echo $this->Form->input('duration_minutes');
 echo $this->Form->input('imageUpload', array('type' => 'file'));
 

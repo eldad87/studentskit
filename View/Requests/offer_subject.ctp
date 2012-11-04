@@ -1,7 +1,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
 
-        //copy subject it to popup
+        //copy request_subject_id it to popup
         $(".copyDataId").click(function () {
             $($(this).data('hidden-input')).val($(this).data('id'))
         });
@@ -92,7 +92,7 @@
                     showError('#makeOfferForlive .modal-body'); //Remove old alert msg
                     $('#live-offer-by').val('');
 
-                    //User selected the first option (not a asubject)
+                    //User selected the first option (not a subject)
                     if($(this).val()==0) {
                         $('#offer-teacher-lesson-group').hide();
                         $('#offer-datetime-group').hide();
@@ -101,36 +101,46 @@
                         //User select a subject
                     } else {
 
-                        //2. Load TeacherLessons for a given subject
-                        $.get('/Home/getUpcomingOpenLessonForSubject/'+ $(this).val() + '/100/1.json').done(function(data){
-                            //Remove old TeacherLessons
-                            $("#offer-teacher-lesson option").remove();
+                        //Check if its under live of video
+                        var label = $(this.options[this.selectedIndex]).closest('optgroup').prop('label');
 
-                            //3. Check if there are any Techer lessons
-                            if(data['response']['results']['0']) {
+                        if(label=='video') {
+                            $('#offer-teacher-lesson-group').hide();
+                            $('#offer-datetime-group').hide();
+                            $('#live-offer-by').val('video');
+                        } else {
 
-                                //4.1. Add Teacher lessons to option menu
-                                $.each(data['response']['results'], function(key, val){
-                                    $('#offer-teacher-lesson').append($("<option></option>").attr('value', val['TeacherLesson']['teacher_lesson_id']).text(val['TeacherLesson']['datetime']));
-                                });
+                            //2. Load TeacherLessons for a given subject
+                            $.get('/Home/getUpcomingOpenLessonForSubject/'+ $(this).val() + '/100/1.json').done(function(data){
+                                //Remove old TeacherLessons
+                                $("#offer-teacher-lesson option").remove();
 
-                                //Show teacher lesson
-                                $("#offer-teacher-lesson-group").show();
-                                //Hide datetime
-                                $("#offer-datetime-group").hide();
-                                $('#live-offer-by').val('teacher_lesson_id');
+                                //3. Check if there are any Techer lessons
+                                if(data['response']['results']['0']) {
+
+                                    //4.1. Add Teacher lessons to option menu
+                                    $.each(data['response']['results'], function(key, val){
+                                        $('#offer-teacher-lesson').append($("<option></option>").attr('value', val['TeacherLesson']['teacher_lesson_id']).text(val['TeacherLesson']['datetime']));
+                                    });
+
+                                    //Show teacher lesson
+                                    $("#offer-teacher-lesson-group").show();
+                                    //Hide datetime
+                                    $("#offer-datetime-group").hide();
+                                    $('#live-offer-by').val('teacher_lesson_id');
 
 
-                                //4.2, No TeacherLessons - force datetime
-                            } else {
-                                //Hide teacher lesson
-                                $("#offer-teacher-lesson-group").hide();
-                                //Show datetime
-                                $("#offer-datetime-group").show();
-                                $('#live-offer-by').val('datetime');
-                            }
+                                    //4.2, No TeacherLessons - force datetime
+                                } else {
+                                    //Hide teacher lesson
+                                    $("#offer-teacher-lesson-group").hide();
+                                    //Show datetime
+                                    $("#offer-datetime-group").show();
+                                    $('#live-offer-by').val('datetime');
+                                }
 
-                        });
+                            });
+                        }
                     }
                 });
 
@@ -143,7 +153,7 @@
 <?php
 $this->Form->create('UserLesson');
 
-echo $this->Form->input('request_subject_id',  array('type'=>'hidden', 'id'=>'request_subject_id', 'value'=>$requestSubjectId, 'class'=>'request_subject_id'));
+echo $this->Form->input('request_subject_id',  array('type'=>'hidden', 'id'=>'live_request_subject_id', 'value'=>$requestSubjectId, 'class'=>'request_subject_id'));
 ?>
 
 <fieldset>
