@@ -90,6 +90,13 @@ function showError(inSelector, title, msg) {
     $(inSelector).prepend('<div class="alert fade in"> <button type="button" class="close" data-dismiss="alert">×</button> <strong>'+ title +' </strong>'+ msg +'</div>'); //Append new alert msg
 }
 
+//Copy ids from A to model
+function initCopyIdLinks() {
+    $(".copyDataId").click(function () {
+        $($(this).data('hidden-input')).val($(this).data('id'))
+    });
+}
+
 ///////////////////////////////////////////// Login/registration management
 
 $(document).ready(function(){
@@ -167,10 +174,6 @@ $(document).ready(function(){
         //location.reload(); //Reload page
     }
 });
-
-
-///////////////////////////////////////////// Lesson request page
-
 
 
 ///////////////////////////////////////////// Teacher/TeacherSubject page

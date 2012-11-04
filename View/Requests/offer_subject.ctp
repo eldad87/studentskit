@@ -2,11 +2,9 @@
     $(document).ready(function(){
 
         //copy request_subject_id it to popup
-        $(".copyDataId").click(function () {
-            $($(this).data('hidden-input')).val($(this).data('id'))
-        });
+        initCopyIdLinks();
 
-        $('#makeOfferForlive').on('shown', function () {
+        $('#makeOffer').on('shown', function () {
 
             //Reset form
             $("#offer-teacher-lesson option").remove();//Remove old TeacherLessons
@@ -15,41 +13,41 @@
 
             /* Toggle Datetime - to - TeacherLessons */
             $('#show-offer-datetime-group').click(function(){
-                showError('#makeOfferForlive .modal-body'); //Remove old alert msg
+                showError('#makeOffer .modal-body'); //Remove old alert msg
 
                 $('#offer-teacher-lesson-group').hide();
                 $('#offer-datetime-group').show();
-                $('#live-offer-by').val('datetime');
+                $('#offer-by').val('datetime');
             });
 
             $('#show-offer-teacher-lesson-group').click(function(){
-                showError('#makeOfferForlive .modal-body'); //Remove old alert msg
+                showError('#makeOffer .modal-body'); //Remove old alert msg
 
                 //Check first if there are any teacher lesson options, if not, don't allow the switch and show error
                 if($('#offer-teacher-lesson option').size()==0) {
-                    showError('#makeOfferForlive .modal-body', 'You got no existing lessons to offer', '');
+                    showError('#makeOffer .modal-body', 'You got no existing lessons to offer', '');
 
                     return false;
                 }
 
                 $('#offer-datetime-group').hide();
                 $('#offer-teacher-lesson-group').show();
-                $('#live-offer-by').val('teacher_lesson_id');
+                $('#offer-by').val('teacher_lesson_id');
             });
 
 
 
 
             //Handle form submit
-            $('#live-offer-form').submit(function() {
+            $('#offer-form').submit(function() {
 
                 if($('#offer-subject').val()==0) {
-                    showError('#makeOfferForlive .modal-body', 'Please select a subject', '');
+                    showError('#makeOffer .modal-body', 'Please select a subject', '');
                     return false;
                 }
 
                 $.post(
-                    '/Requests/offerSubject/live.json',
+                    '/Requests/offerSubject.json',
                     $(this).serialize(),
                     function(data){
 
@@ -61,10 +59,10 @@
                                     msg += val[0] + '<br />';
                                 });
                             }
-                            showError('#makeOfferForlive .modal-body', data['response']['description'][0], msg);
+                            showError('#makeOffer .modal-body', data['response']['description'][0], msg);
 
                         } else {
-                            $('#makeOfferForlive').modal('hide');
+                            $('#makeOffer').modal('hide');
                         }
 
                     }
@@ -80,7 +78,7 @@
 
             /* Check if the current user can offer anything */
             if(!$('#offer-subject option') || $('#offer-subject option').size()<=1) {
-                $('#makeOfferForlive').modal('hide');
+                $('#makeOffer').modal('hide');
                 showError('section .container-inner', 'You got no subjects to offer', '');
 
 
@@ -89,8 +87,8 @@
 
                 //1. On select a subject
                 $('#offer-subject').change(function(){
-                    showError('#makeOfferForlive .modal-body'); //Remove old alert msg
-                    $('#live-offer-by').val('');
+                    showError('#makeOffer .modal-body'); //Remove old alert msg
+                    $('#offer-by').val('');
 
                     //User selected the first option (not a subject)
                     if($(this).val()==0) {
@@ -107,7 +105,7 @@
                         if(label=='video') {
                             $('#offer-teacher-lesson-group').hide();
                             $('#offer-datetime-group').hide();
-                            $('#live-offer-by').val('video');
+                            $('#offer-by').val('video');
                         } else {
 
                             //2. Load TeacherLessons for a given subject
@@ -127,7 +125,7 @@
                                     $("#offer-teacher-lesson-group").show();
                                     //Hide datetime
                                     $("#offer-datetime-group").hide();
-                                    $('#live-offer-by').val('teacher_lesson_id');
+                                    $('#offer-by').val('teacher_lesson_id');
 
 
                                     //4.2, No TeacherLessons - force datetime
@@ -136,7 +134,7 @@
                                     $("#offer-teacher-lesson-group").hide();
                                     //Show datetime
                                     $("#offer-datetime-group").show();
-                                    $('#live-offer-by').val('datetime');
+                                    $('#offer-by').val('datetime');
                                 }
 
                             });
@@ -153,7 +151,7 @@
 <?php
 $this->Form->create('UserLesson');
 
-echo $this->Form->input('request_subject_id',  array('type'=>'hidden', 'id'=>'live_request_subject_id', 'value'=>$requestSubjectId, 'class'=>'request_subject_id'));
+echo $this->Form->input('request_subject_id',  array('type'=>'hidden', 'id'=>'request_subject_id', 'value'=>$requestSubjectId, 'class'=>'request_subject_id'));
 ?>
 
 <fieldset>
