@@ -16,7 +16,7 @@ class HomeController extends AppController {
 		parent::beforeFilter();
 		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacherLesson', 'teacher', 'user', 'order',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession',
-							'getUpcomingOpenLesson', 'getUpcomingOpenLessonForSubject'/*, 'latestBoardPosts'*/, 'getStudentArchiveLessons', 'getStudentRatingByTeachers'
+							'getUpcomingOpenLesson', 'getUpcomingOpenLessonForSubject', 'latestBoardPosts', 'getStudentArchiveLessons', 'getStudentRatingByTeachers'
 							/*,'test', 'testLocking', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount', 'testGeneratePaymentRecivers',
                             'testUpdateRatingStage'*/, 'testWatchitoo', 'uploadTest');
 		$this->Auth->deny('submitOrder');
