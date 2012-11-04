@@ -5,7 +5,7 @@
 <Section class="container">
     <div class="container-inner">
         <div class="row">
-            <div class="cont-span8">
+
                 <h2 class="pull-left"><i class="iconBig-about space1"></i>Newest subjects</h2>
                 <a data-toggle="modal" href="#myModal" class="btns btn-black pull-right text-color index-blackbtn">Lesson Requests</a>
                 <?php echo $this->element('Home/lesson_request');  ?>
@@ -32,7 +32,7 @@
                     ?>
                 </ul> <!-- /row -->
 
-            </div> <!-- /cont-span8 -->
+             <!-- /cont-span8 -->
         </div>
     </div>
 </Section>
