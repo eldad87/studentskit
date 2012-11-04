@@ -52,10 +52,6 @@ class AppController extends Controller {
 
         /** View params
          *************************************/
-        $this->set('user', $this->Auth->user());
-
-
-
         App::import('Utils.Lib', 'Languages');
         $lObj = new Languages();
         $this->set('languages', array_flip($lObj->lists()));
@@ -64,8 +60,16 @@ class AppController extends Controller {
 
         $this->set('navButtonSelection', $this->detemintControllerToNavButton());
 	}
+
     public function beforeRender() {
         parent::beforeRender();
+
+        $this->set('user', $this->Auth->user());
+
+        if($this->Auth->user('user_id')) {
+            $this->setJSSetting('user_id', $this->Auth->user('user_id'));
+        }
+
         $this->set('jsSettings', $this->jsSettings);
     }
 

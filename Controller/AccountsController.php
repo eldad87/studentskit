@@ -87,7 +87,7 @@ class AccountsController extends AppController {
                 }
 
                 if ($this->RequestHandler->isAjax()) {
-                    return $this->success(1);
+                    return $this->success(1, array('user_id'=>$this->Auth->user('user_id')));
                 }
 
                 return $this->redirect($this->Auth->redirect());
@@ -205,12 +205,9 @@ class AccountsController extends AppController {
             if($res) {
                 extract($this->SignMeUp->settings);
                 if (empty($activation_field)) {
-                    unset($this->request->data['User']['first_name']);
-                    unset($this->request->data['User']['last_name']);
-                    unset($this->request->data['User']['password2']);
                     $this->login();
                 }
-                return $this->success(1);
+                return $this->success(1, array('user_id'=>$this->Auth->user('user_id')));
             } else {
                 return $this->error(1, array('validation_errors'=>$this->User->validationErrors));
             }

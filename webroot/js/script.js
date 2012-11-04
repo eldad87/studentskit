@@ -82,6 +82,14 @@ LoadMore.prototype.getAppendCallback = function( buttonSelector, on ) {
 
 var lmObj = new LoadMore();
 
+function showError(inSelector, title, msg) {
+    $(inSelector + ' .alert').remove(); //Remove old alert msg
+    if(title==undefined || msg==undefined) {
+        return false;
+    }
+    $(inSelector).prepend('<div class="alert fade in"> <button type="button" class="close" data-dismiss="alert">×</button> <strong>'+ title +' </strong>'+ msg +'</div>'); //Append new alert msg
+}
+
 ///////////////////////////////////////////// Login/registration management
 
 $(document).ready(function(){
@@ -91,9 +99,18 @@ $(document).ready(function(){
         error: function(event, request, options, error) {
             switch (event.status) {
                 case 403: //Forbidden - caused by users that not logged in
-                    $('#login-popup').modal('toggle');
-                    break;
+                    $('#login-popup').modal('show');
+                break;
             }
+        }
+    });
+
+    //Make sure .requireLogin elements will popup the login-form first and cancel other event-listeners
+    $('.requireLogin').click(function() {
+        if(!jsSettings['user_id']) {
+            //TODO: make sure this is the first event
+            $('#login-popup').modal('show');
+            return false;
         }
     });
 
@@ -105,12 +122,13 @@ $(document).ready(function(){
             function(data){
                 if(data['response']['title'][0]=='Error') {
                     //Show error
-                    var error = '<div class="alert fade in"> <button type="button" class="close" data-dismiss="alert">×</button> <strong>'+ data['response']['title'][0] +': </strong>'+ data['response']['description'][0] +'</div>';
-                    $('#login-form .modal-body').prepend(error);
+                    showError('#login-form .modal-body', data['response']['title'][0], data['response']['description'][0]);
 
                 } else {
                     //Login Success
-                    location.reload(); //Reload page
+                    jsSettings['user_id'] = data['response']['user_id'];
+                    updateTopBar();
+                    $('#login-popup').modal('hide');
                 }
             }
         );
@@ -124,20 +142,19 @@ $(document).ready(function(){
             '/register.json',
             $(this).serialize(),
             function(data){
-                console.log(data);
                 if(data['response']['title'][0]=='Error') {
                     //Show error
                     var msg = '';
                     $.each(data['response']['validation_errors'], function(key, val) {
                         msg += val[0] + '<br />';
                     });
-
-                    var error = '<div class="alert fade in"> <button type="button" class="close" data-dismiss="alert">×</button> <strong>'+ data['response']['description'][0] +': </strong>'+ msg +'</div>';
-                    $('#register-form .modal-body').prepend(error);
+                    showError('#login-form .modal-body', data['response']['description'][0], msg);
 
                 } else {
                     //Login Success
-                    location.reload(); //Reload page
+                    jsSettings['user_id'] = data['response']['user_id'];
+                    updateTopBar();
+                    $('#register-popup').modal('hide');
                 }
             }
         );
@@ -145,9 +162,14 @@ $(document).ready(function(){
         return false;
     });
 
+    function updateTopBar() {
+        //TODO:
+        //location.reload(); //Reload page
+    }
 });
 
 
+///////////////////////////////////////////// Lesson request page
 
 
 

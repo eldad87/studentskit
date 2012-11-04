@@ -1,4 +1,7 @@
-<?php echo $this->element('Home/search', array('controller'=>'Requests'));  ?>
+<?php
+    echo $this->element('Home/search', array('controller'=>'Requests'));
+    echo $this->element('Requests/offer_popups');
+?>
 <Section class="container">
     <div class="container-inner">
         <div class="row">
@@ -21,6 +24,7 @@
                                                                             'oneOnOnePrice'         =>$newSubject['Subject']['1_on_1_price'],
                                                                             'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
                                                                             'imageSource'           =>$newSubject['Subject']['image_source'],
+                                                                            'lessonType'            =>$newSubject['Subject']['lesson_type'],
                             ));
                             echo '</li>';
                         }

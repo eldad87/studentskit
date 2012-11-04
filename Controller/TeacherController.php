@@ -133,8 +133,8 @@ class TeacherController extends AppController {
 		$this->Set('pendingProposedLessons', $pendingProposedLessons);*/
 	}
 
-	public function lessonsUpcoming( $limit=6, $page=1 ) {
-		$nextLessons = $this->TeacherLesson->getUpcomming($this->Auth->user('user_id'), null, $limit, $page);
+	public function lessonsUpcoming( $limit=6, $page=1, $subjectId=null ) {
+		$nextLessons = $this->TeacherLesson->getUpcomming($this->Auth->user('user_id'), $subjectId, $limit, $page);
 		return $this->success(1, array('upcoming_lessons'=>$nextLessons));
 	}
 	public function lessonBookingRequests($limit=6, $page=1) {

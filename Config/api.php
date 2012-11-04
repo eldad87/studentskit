@@ -250,6 +250,26 @@ $config['Requests.makeRequest.success.1.title'] = __('Success');
 $config['Requests.makeRequest.success.1.description'] = __('Lesson offer sent');
 $config['Requests.makeRequest.error.1.title'] = __('Error');
 $config['Requests.makeRequest.error.1.description'] = __('Cannot send lesson offer');
+/*-------------------- Teacher.offerSubject	--------------------*/
+$config['Requests.offerSubject.success.1.title'] = __('Success');
+$config['Requests.offerSubject.success.1.description'] = __('Invitation sent');
+$config['Requests.offerSubject.success.1.title'] = __('Success');
+$config['Requests.offerSubject.success.1.description'] = __('Lesson offer sent');
+
+$config['Requests.offerSubject.error.1.title'] = __('Error');
+$config['Requests.offerSubject.error.1.description'] = __('Subject is no longer available');
+$config['Requests.offerSubject.error.2.title'] = __('Error');
+$config['Requests.offerSubject.error.2.description'] = __('Not a subject request');
+$config['Requests.offerSubject.error.3.title'] = __('Error');
+$config['Requests.offerSubject.error.3.description'] = __('You cannot offer lessons to yourself');
+$config['Requests.offerSubject.error.4.title'] = __('Error');
+$config['Requests.offerSubject.error.4.description'] = __('Missing parameter');
+$config['Requests.offerSubject.error.5.title'] = __('Error');
+$config['Requests.offerSubject.error.5.description'] = __('Validation error');
+$config['Requests.offerSubject.error.6.title'] = __('Error');
+$config['Requests.offerSubject.error.6.description'] = __('Validation error');
+
+
 /*-------------------- Teacher.subjectSuggestions	--------------------*/
 $config['Requests.subjectSuggestions.success.1.title'] = __('Success');
 $config['Requests.subjectSuggestions.success.1.description'] = __('Lesson offer sent');

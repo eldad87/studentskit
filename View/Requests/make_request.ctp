@@ -1,5 +1,5 @@
 <h3>Subject</h3>
-<?php 
+<?php
 echo $this->Form->create('Subject', array('type' => 'file'));
 echo $this->Form->hidden('subject_id');
 echo $this->Form->input('name');
@@ -17,7 +17,7 @@ echo $this->Form->input('imageUpload', array('type' => 'file'));
 ?>
 <br />
 <h3>Pricing</h3>
-<?php 
+<?php
 //pr($this->data['Subject']);
 echo $this->Form->input('1_on_1_price');
 
@@ -32,21 +32,21 @@ echo $this->Form->submit('Save');
 echo $this->Form->end();
 ?>
 <br />
-<?php 
+<?php
 if(isSet($nextLessons)) {
 	echo '<h3>Lessons</h3>';
 	pr($nextLessons);
 }
 ?>
 <br />
-<?php 
+<?php
 if(isSet($fileSystem)) {
 	echo '<h3>FileSystem</h3>';
 	pr($fileSystem);
 }
 ?>
 <br />
-<?php 
+<?php
 if(isSet($tests)) {
 	echo '<h3>Test</h3>';
 	pr($tests);

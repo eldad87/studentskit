@@ -135,4 +135,15 @@ class LayoutHelper extends AppHelper {
             $this->_View->append($options['block'], $out);
         }
     }
+
+    public function requireLogin($vars) {
+        if(!$this->_View->getVar('user')) {
+            $class = 'requireLogin';
+            if(isSet($vars['class'])) {
+                $class .= ' '.$vars['class'];
+            }
+            $vars['class'] = $class;
+        }
+        return $vars;
+    }
 }

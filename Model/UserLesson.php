@@ -522,7 +522,7 @@ class UserLesson extends AppModel {
 	 * @param unknown_type $studentUserId - the student id, leave null only if subject_type==SUBJECT_TYPE_REQUEST
 	 * @param unknown_type $teacherUserId - the teacher id, supply it only if you are the teacher (Invitation)
 	 */
-	public function joinRequest( $teacherLessonId, $studentUserId=null, $teacherUserId=null, $userLessonId=null ) {
+	public function joinRequest( $teacherLessonId, $studentUserId=null, $teacherUserId=null, $userLessonId=null, $extra=array() ) {
 		//TODO: don't allow to send invitations if subject_type=request and the user did not approved his invitation yet
 		
 		//Find the teacher lesson
@@ -614,7 +614,7 @@ class UserLesson extends AppModel {
         if($userLessonId) {
             $userLesson['user_lesson_id'] = $userLessonId; //data that used in event
         }
-
+        $userLesson = am($userLesson, $extra);
 
 		$event = new CakeEvent('Model.UserLesson.beforeJoinRequest', $this, array('teacher_lesson'=>$teacherLessonData, 'user_lesson'=>$userLesson, 'by_user_id'=>( $teacherUserId ? $teacherUserId : $studentUserId), 'user_lesson_id'=>$userLessonId));
 		$this->getEventManager()->dispatch($event);

@@ -39,7 +39,8 @@
 										'jquery-ui-1.9.1.custom.min',
 										'nano',
 										'script',
-                                        'bootstrap-transition',
+                                        'bootstrap',
+                                        /*'bootstrap-transition',
                                         'bootstrap-alert',
                                         'bootstrap-modal',
                                         'bootstrap-dropdown',
@@ -50,7 +51,7 @@
                                         'bootstrap-button',
                                         'bootstrap-collapse',
                                         'bootstrap-carousel',
-                                        'bootstrap-typeahead',
+                                        'bootstrap-typeahead',*/
                                         //'application',
 										'slimScroll'));
         echo $this->fetch('script');
@@ -132,7 +133,12 @@
         <div class="top-right">
             <div class="top-right">
                 <?php if(!$user) {
-                    echo '<div class="label-txt pull-left space5"><a href="#login-popup" role="button"  data-toggle="modal">Login/Register <i class="iconMedium-sign"></i></a></div>';
+                    echo '<div class="label-txt pull-left space5">
+                            <a data-toggle="modal" data-target="#login-popup">
+                            Login/Register
+                            <i class="iconMedium-sign"></i>
+                            </a>
+                    </div>';
                     echo $this->element('login_register');
                 }
                 ?>
