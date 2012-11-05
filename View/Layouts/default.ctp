@@ -241,7 +241,9 @@
     <!-- Content
    ================================================== -->
 
-        <?php echo $this->Session->flash();
+        <?php
+
+        echo $this->Session->flash();
         echo $this->fetch('content'); ?>
 
     <!-- Footertop

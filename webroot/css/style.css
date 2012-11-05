@@ -5310,3 +5310,11 @@ p.head-countrytext{
 .modal-backdrop {
     z-index: 0;
 }
+
+.center-container {
+    margin: 0 auto;
+    width: 400px; /* Whatever exact width you are looking for (not bound by preset bootstrap widths) */
+}
+.text-error {
+    color: #B94A48;
+}

@@ -163,7 +163,10 @@ class LayoutHelper extends AppHelper {
                         'div'=>array('class'=>'control-group'),
                         'between'=>'<div class="control control1">',
                         'after'=>'</div>',
-                        'class'=>'x-large2');
+                        'class'=>'x-large2',
+                        'error' => array('attributes' => array('class' => 'textalign-left text-error')),
+                        'format'=>array('before', 'error', 'label', 'between', 'input', 'after')
+        );
 
         if(isSet($extra['tooltip'])) {
             $style['after'] = $this->toolTip($extra['tooltip'], 'space11').$style['after'];

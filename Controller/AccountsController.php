@@ -66,11 +66,11 @@ class AccountsController extends AppController {
                 $active = (int) $this->Auth->user('active');
                 if(!$active) {
                     $this->Auth->logout();
-                    $this->Session->setFlash(__('Please activate you\'r account'), 'default', array(), 'auth');
+                    $this->Session->setFlash(__('Please activate you\'r account'), 'flash_error'/*, 'default', array(), 'auth'*/);
                     $this->redirect(array('action'=>'activate'));
                 } else if($active==2) {
                     $this->Auth->logout();
-                    $this->Session->setFlash(__('You have been banned!'), 'default', array(), 'auth');
+                    $this->Session->setFlash(__('You have been banned!'), 'flash_error'/*, 'default', array(), 'auth'*/);
                     $this->redirect('/');
                 }
 
@@ -95,7 +95,7 @@ class AccountsController extends AppController {
                 if ($this->RequestHandler->isAjax()) {
                     return $this->error(1);
                 }
-				$this->Session->setFlash(__('Email or password is incorrect'), 'default', array(), 'auth');
+				$this->Session->setFlash(__('Email or password is incorrect'), 'flash_error'/*, 'default', array(), 'auth'*/);
 			}
 	    }
 	}
