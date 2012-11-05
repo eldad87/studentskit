@@ -98,9 +98,16 @@ function initCopyIdLinks() {
     });
 }
 
-//Activate tooltip
+
 $(document).ready(function(){
+    //Activate tooltip
     $("[rel=tooltip]").tooltip();
+
+    //Disable links anchor default <a href="#">..
+    //Without it - the user screen will jump
+    $('a[href="#"]').click(function(e) {
+        e.preventDefault();
+    });
 });
 ///////////////////////////////////////////// Login/registration management
 
