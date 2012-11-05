@@ -8,11 +8,12 @@ class RequestsController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow(	'index', 'searchSubject', 'searchSubjectLoadMore');
+		$this->Auth->allow(	'index', 'searchSubject', 'searchSubjectLoadMore', 'subjectSearchSuggestions');
 		$this->Auth->deny('makeRequest', 'testRequest');
 	}
 	
 	public function index() {
+        $this->setJSSetting('search_suggestions_url', $this->getCurrentParamsWithDifferentURL(array('controller'=>'Requests','action'=>'subjectSearchSuggestions'), array('page', 'limit', 'term')));
 
         $this->Subject->setLanguages($this->Session->read('languages_of_records'));
 	 	$newSubjects = $this->Subject->getNewest(false, SUBJECT_TYPE_REQUEST);
@@ -54,10 +55,10 @@ class RequestsController extends AppController {
 	}
 
 
-    public function subjectSuggestions() {
+    public function subjectSearchSuggestions() {
         $this->Subject;
         $this->request->query['type'] = SUBJECT_TYPE_REQUEST;
-        $results = $this->requestAction(array('controller'=>'Home', 'action'=>'subjectSuggestions'), $this->request->query);
+        $results = $this->requestAction(array('controller'=>'Home', 'action'=>'subjectSearchSuggestions'), $this->request->query);
         $this->request->data = $this->request->query; //For search form
         return $this->success(1, array('results'=>$results));
     }
@@ -75,6 +76,7 @@ class RequestsController extends AppController {
 	}
     public function searchSubject() {
         $this->setJSSetting('search_load_more_url', $this->getCurrentParamsWithDifferentURL(array('controller'=>'Requests','action'=>'searchSubjectLoadMore'), array('page', 'limit')));
+        $this->setJSSetting('search_suggestions_url', $this->getCurrentParamsWithDifferentURL(array('controller'=>'Requests','action'=>'subjectSearchSuggestions'), array('page', 'limit', 'term')));
 
 		$this->Subject;
 		$this->request->query['type'] = SUBJECT_TYPE_REQUEST;

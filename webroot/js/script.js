@@ -286,6 +286,11 @@ $(document).ready(function(){
     lmObj.loadMoreButton('.upcoming-lessons-for-subject', 'click', '#upcoming .modal-body', url, jsSettings, 'get', 3);
 });
 
+///////////////////////////////////////////// Home/Requests auto complete
+$(document).ready(function(){
+    $( "#term" ).autocomplete({ source: jsSettings['search_suggestions_url'] });
+});
+
 ///////////////////////////////////////////// Home/Requests search load more
 $(document).ready(function(){
     /* Home/Requests search load more */

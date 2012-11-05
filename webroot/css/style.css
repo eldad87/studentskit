@@ -313,12 +313,12 @@ ul.nav li a:hover,
 }
 
 .search-right-btn{
-	width:280px;
+	width:95px;
 	float:right;
 	}
 	
 .search-right-btn-left{
-	margin-right:280px;
+	margin-right:95px;
 	}
 	
 .search-box-main{
@@ -5315,6 +5315,8 @@ p.head-countrytext{
     margin: 0 auto;
     width: 400px; /* Whatever exact width you are looking for (not bound by preset bootstrap widths) */
 }
-.text-error {
-    color: #B94A48;
+
+/* jQuery UI autocomplete update text */
+.ui-helper-hidden-accessible {
+    display: none;
 }

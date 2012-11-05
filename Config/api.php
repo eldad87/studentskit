@@ -120,9 +120,9 @@ $config['Home.searchSubject.success.1.description'] = __('Subjects');
 /*-------------------- Home.searchSubjectLoadMore	--------------------*/
 $config['Home.searchSubjectLoadMore.success.1.title'] = __('Success');
 $config['Home.searchSubjectLoadMore.success.1.description'] = __('Subjects');
-/*-------------------- Home.subjectSuggestions	--------------------*/
-$config['Home.subjectSuggestions.success.1.title'] = __('Success');
-$config['Home.subjectSuggestions.success.1.description'] = __('Subjects suggestions');
+/*-------------------- Home.subjectSearchSuggestions	--------------------*/
+$config['Home.subjectSearchSuggestions.success.1.title'] = __('Success');
+$config['Home.subjectSearchSuggestions.success.1.description'] = __('Subjects suggestions');
 /*-------------------- Home.getTeacherLessons	--------------------*/
 $config['Home.getUserLessons.success.1.title'] = __('Success');
 $config['Home.getUserLessons.success.1.description'] = __('All lessons');
@@ -282,9 +282,9 @@ $config['Requests.offerSubject.error.6.title'] = __('Error');
 $config['Requests.offerSubject.error.6.description'] = __('Validation error');
 
 
-/*-------------------- Teacher.subjectSuggestions	--------------------*/
-$config['Requests.subjectSuggestions.success.1.title'] = __('Success');
-$config['Requests.subjectSuggestions.success.1.description'] = __('Lesson offer sent');
+/*-------------------- Teacher.subjectSearchSuggestions	--------------------*/
+$config['Requests.subjectSearchSuggestions.success.1.title'] = __('Success');
+$config['Requests.subjectSearchSuggestions.success.1.description'] = __('Lesson offer sent');
 /********************* Requests - End		******************************************/
 
 /********************* Reqtests - Start		******************************************/

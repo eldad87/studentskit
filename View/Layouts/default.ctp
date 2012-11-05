@@ -14,7 +14,7 @@
 
 
     <!-- styles -->
-    <?php echo $this->Html->css(array('basic', 'style-responsive', 'bootstrap', 'bootstrap-responsive', 'style'));
+    <?php echo $this->Html->css(array('basic', 'style-responsive', 'bootstrap', 'bootstrap-responsive', 'jquery-ui/ui-lightness/jquery-ui-1.9.1.custom', 'style'));
     echo $this->fetch('css');?>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -36,7 +36,8 @@
         echo $this->Html->script(array( 
 										'jquery-1.8.2',
 										'custom-form-elements',
-										'jquery-ui-1.9.1.custom.min',
+                                        //'jquery-ui-1.9.1.custom.min',
+                                        'jquery-ui/jquery-ui-1.9.1.custom',
 										'nano',
 										'script',
                                         'bootstrap',

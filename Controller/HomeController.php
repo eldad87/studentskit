@@ -14,7 +14,7 @@ class HomeController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow(	'index', 'searchSubject', 'searchSubjectLoadMore', 'subjectSuggestions', 'teacherSubject', 'teacherLesson', 'teacher', 'user', 'order',
+		$this->Auth->allow(	'index', 'searchSubject', 'searchSubjectLoadMore', 'subjectSearchSuggestions', 'teacherSubject', 'teacherLesson', 'teacher', 'user', 'order',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession',
 							'getUpcomingOpenLesson', 'getUpcomingOpenLessonForSubject', 'latestBoardPosts', 'getStudentArchiveLessons', 'getStudentRatingByTeachers'
 							/*,'test', 'testLocking', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount', 'testGeneratePaymentRecivers',
@@ -283,6 +283,7 @@ class HomeController extends AppController {
 
 
 	public function index() {
+        $this->setJSSetting('search_suggestions_url', $this->getCurrentParamsWithDifferentURL(array('controller'=>'Home','action'=>'subjectSearchSuggestions'), array('page', 'limit', 'term')));
 
 		//Get about to start messages
         $this->Subject->setLanguages($this->Session->read('languages_of_records'));
@@ -508,6 +509,8 @@ $id = $scObj->id;
 
 	public function searchSubject() {
         $this->setJSSetting('search_load_more_url', $this->getCurrentParamsWithDifferentURL(array('controller'=>'Home','action'=>'searchSubjectLoadMore'), array('page', 'limit')));
+        $this->setJSSetting('search_suggestions_url', $this->getCurrentParamsWithDifferentURL(array('controller'=>'Home','action'=>'subjectSearchSuggestions'), array('page', 'limit', 'term')));
+
 
         $query = $this->_searchDefaultQueryParams();
 
@@ -575,8 +578,8 @@ $id = $scObj->id;
 		}
 	}
 
-    //http://universito.com/Home/subjectSuggestions.json?search_terms=for%20the%20d
-    public function subjectSuggestions() {
+    //http://universito.com/Home/subjectSearchSuggestions.json?search_terms=for%20the%20d
+    public function subjectSearchSuggestions() {
 
 
         $query = $this->_searchDefaultQueryParams();
@@ -585,7 +588,15 @@ $id = $scObj->id;
         $results = $this->Subject->searchSuggestions($query, $subjectType);
 
 
-        if (empty($this->request->params['requested'])) {
+
+
+        if($this->RequestHandler->isAjax()) {
+            //Without it - a regular response will return - something while autocomplere is waiting for a list of words
+            if(isSet($results['collations'])) {
+                echo json_encode($results['collations']);
+            }
+            die;
+        } else if (empty($this->request->params['requested'])) {
             return $this->success(1, array('results'=>$results));
         } else {
             return $results;
@@ -599,7 +610,7 @@ $id = $scObj->id;
 
 
         $this->Subject; //For loading the const
-        $searchTerms = !empty($this->request->query['search_terms'])        ? $this->request->query['search_terms']             : '*';
+        $searchTerms = !empty($this->request->query['term'])        ? $this->request->query['term']                             : '*';
 
         $categoryId  = (isSet($this->request->query['category_id'])         ? $this->request->query['category_id']	            : 0);
         $limit       = (isSet($this->request->query['limit']) 			    ? $this->request->query['limit']		            : 8);
