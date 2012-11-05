@@ -49,15 +49,10 @@
 							</ul>
 						</div>
                         <!-- pager -->
-                        <div class="pagination pull-right space1">
-                            <ul class="pager">
-                                <li class="disabled"><a href="#" class="prev">&lt; &lt; Prev</a></li>
-                                <li class="active"><a href="#" class="load p1">1</a></li>
-                                <li><a href="#page2" class="load p2" >2</a></li>
-                                <li><a href="#page3" class="load p3">3</a></li>
-                                <li><a href="#page4" class="load p4">4</a></li>
-                                <li><a href="#page5" class="next">Next &gt; &gt;</a></li>
-                             </ul>
+                        <div class="fullwidth pull-left">
+                            <div class="popmargin">
+                                <a href="#" class="more radius3 gradient2 space9 pull-left search-load-more"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>

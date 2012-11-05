@@ -8,7 +8,7 @@ class RequestsController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow(	'index', 'searchSubject');
+		$this->Auth->allow(	'index', 'searchSubject', 'searchSubjectLoadMore');
 		$this->Auth->deny('makeRequest', 'testRequest');
 	}
 	
@@ -62,7 +62,20 @@ class RequestsController extends AppController {
         return $this->success(1, array('results'=>$results));
     }
 
-	public function searchSubject() {
+	public function searchSubjectLoadMore() {
+		$this->Subject;
+		$this->request->query['type'] = SUBJECT_TYPE_REQUEST;
+		$subjectsData = $this->requestAction(array('controller'=>'Home', 'action'=>'searchSubjectLoadMore'), $this->request->query);
+        $this->request->data = $this->request->query; //For search form
+
+        if($subjectsData) {
+            return $this->success(1, array('subjects'=>$subjectsData['subjects']));
+        }
+        return $this->success(1, array('subjects'=>array()));
+	}
+    public function searchSubject() {
+        $this->setJSSetting('search_load_more_url', $this->getCurrentParamsWithDifferentURL(array('controller'=>'Requests','action'=>'searchSubjectLoadMore'), array('page', 'limit')));
+
 		$this->Subject;
 		$this->request->query['type'] = SUBJECT_TYPE_REQUEST;
 		$subjectsData = $this->requestAction(array('controller'=>'Home', 'action'=>'searchSubject'), $this->request->query);

@@ -264,4 +264,15 @@ class AppController extends Controller {
 
         return $data;
     }
+
+    protected function getCurrentParamsWithDifferentURL($url=array(), $removeKeys=array()) {
+        $query = $this->request->query;
+        if($query) {
+            foreach($removeKeys AS $key) {
+                unset($query[$key]);
+            }
+            $url['?'] = $query;
+        }
+        return Router::url( $url );
+    }
 }

@@ -279,11 +279,9 @@ $(document).ready(function(){
     lmObj.loadMoreButton('.upcoming-lessons-for-subject', 'click', '#upcoming .modal-body', url, jsSettings, 'get', 3);
 });
 
-///////////////////////////////////////////// Home search load more
+///////////////////////////////////////////// Home/Requests search load more
 $(document).ready(function(){
-    /* Home search load more */
-
-
+    /* Home/Requests search load more */
 
     var url = '{search_load_more_url}&limit={limit}&page={page}';
 

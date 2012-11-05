@@ -494,17 +494,6 @@ $id = $scObj->id;
         $notificationObj->addNotification(4, array('message_enum'=>'teacher.subject.request.offer.sent', 'params'=>array('teacher_user_id'=>4, 'student_user_id'=>5 , 'name'=>'lesson name', 'datetime'=>'10/2/87')));
     }*/
 
-    private function getCurrentParamsWithDifferentURL($url=array(), $removeKeys=array()) {
-        $query = $this->request->query;
-        if($query) {
-            foreach($removeKeys AS $key) {
-                unset($query[$key]);
-            }
-            $url['?'] = $query;
-        }
-        return Router::url( $url );
-    }
-
     public function searchSubjectLoadMore() {
         $query = $this->_searchDefaultQueryParams();
 
@@ -512,7 +501,6 @@ $id = $scObj->id;
         $subjectType = (isSet($this->request->query['type']) ? $this->request->query['type'] : SUBJECT_TYPE_OFFER);
         $subjectsData = $this->Subject->search($query, $subjectType);
         if($subjectsData) {
-
             return $this->success(1, array('subjects'=>$subjectsData['subjects']));
         }
         return $this->success(1, array('subjects'=>array()));
