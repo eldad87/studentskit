@@ -117,6 +117,9 @@ $config['Home.getOtherTeachersForSubject.error.1.description'] = __('Cannot find
 /*-------------------- Home.searchSubject	--------------------*/
 $config['Home.searchSubject.success.1.title'] = __('Success');
 $config['Home.searchSubject.success.1.description'] = __('Subjects');
+/*-------------------- Home.searchSubjectLoadMore	--------------------*/
+$config['Home.searchSubjectLoadMore.success.1.title'] = __('Success');
+$config['Home.searchSubjectLoadMore.success.1.description'] = __('Subjects');
 /*-------------------- Home.subjectSuggestions	--------------------*/
 $config['Home.subjectSuggestions.success.1.title'] = __('Success');
 $config['Home.subjectSuggestions.success.1.description'] = __('Subjects suggestions');

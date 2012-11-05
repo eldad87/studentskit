@@ -30,12 +30,13 @@ LoadMore.prototype.curlyBracketsVars = function(url, params) {
     return url;
 }
 LoadMore.prototype.loadMoreButton = function(buttonSelector, eventName, appendToSelector, url, params, type, limit) {
-    params['rnd'] = Math.random(); //to avoid cache
 
-    params['limit'] = limit;
     var loadMoreObj = this;
 
     $(buttonSelector).bind(eventName ,function() {
+
+        params['rnd'] = Math.random(); //to avoid cache
+        params['limit'] = limit;
 
         params['page'] = loadMoreObj.getNextPage(buttonSelector);
 
@@ -274,11 +275,19 @@ $(document).ready(function(){
     });
 
     var url = '/Order/getUpcomingOpenLessonForSubject/{subject_id}/{limit}/{page}';
-    if(jsSettings['subject_id']) {
-        url = url + '/{subject_id}'
-    }
 
     lmObj.loadMoreButton('.upcoming-lessons-for-subject', 'click', '#upcoming .modal-body', url, jsSettings, 'get', 3);
+});
+
+///////////////////////////////////////////// Home search load more
+$(document).ready(function(){
+    /* Home search load more */
+
+
+
+    var url = '{search_load_more_url}&limit={limit}&page={page}';
+
+    lmObj.loadMoreButton('.search-load-more', 'click', 'ul.lesson-container', url, jsSettings, 'get', 8);
 });
 
 ///////////////////////////////////////////// Teacher/TeacherSubject page

@@ -6,7 +6,7 @@
     <div class="container-inner">
         <div class="row">
 
-                <h2 class="pull-left"><i class="iconBig-about space1"></i>Newest subjects</h2>
+                <h2 class="pull-left"><i class="iconBig-about space1"></i>Newest requests</h2>
                 <?php
                     echo $this->Layout->lessonRequestButton();
                     echo $this->element('Home/lesson_request');
@@ -16,6 +16,7 @@
                     <?php
                     if($newSubjects) {
                         foreach($newSubjects AS $newSubject) {
+                            //Home
                             $newSubject['Subject']['one_on_one_price'] = $newSubject['Subject']['1_on_1_price'];
                             echo '<li class="cont-span4 spc space2">';
                             echo $this->element('subject_request', array(   'subjectId'             =>$newSubject['Subject']['subject_id'],

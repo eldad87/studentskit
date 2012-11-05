@@ -14,7 +14,7 @@ class HomeController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow(	'index', 'searchSubject', 'subjectSuggestions', 'teacherSubject', 'teacherLesson', 'teacher', 'user', 'order',
+		$this->Auth->allow(	'index', 'searchSubject', 'searchSubjectLoadMore', 'subjectSuggestions', 'teacherSubject', 'teacherLesson', 'teacher', 'user', 'order',
 							'getTeacherRatingByStudentsForSubject', 'getTeacherSubjects', 'getTeacherRatingByStudents', 'getOtherTeachersForSubject', 'getUserLessons', 'cleanSession',
 							'getUpcomingOpenLesson', 'getUpcomingOpenLessonForSubject', 'latestBoardPosts', 'getStudentArchiveLessons', 'getStudentRatingByTeachers'
 							/*,'test', 'testLocking', 'calcStudentPriceAfterDiscount', 'calcStudentPriceAfterDiscount', 'testGeneratePaymentRecivers',
@@ -494,7 +494,33 @@ $id = $scObj->id;
         $notificationObj->addNotification(4, array('message_enum'=>'teacher.subject.request.offer.sent', 'params'=>array('teacher_user_id'=>4, 'student_user_id'=>5 , 'name'=>'lesson name', 'datetime'=>'10/2/87')));
     }*/
 
+    private function getCurrentParamsWithDifferentURL($url=array(), $removeKeys=array()) {
+        $query = $this->request->query;
+        if($query) {
+            foreach($removeKeys AS $key) {
+                unset($query[$key]);
+            }
+            $url['?'] = $query;
+        }
+        return Router::url( $url );
+    }
+
+    public function searchSubjectLoadMore() {
+        $query = $this->_searchDefaultQueryParams();
+
+        //Search
+        $subjectType = (isSet($this->request->query['type']) ? $this->request->query['type'] : SUBJECT_TYPE_OFFER);
+        $subjectsData = $this->Subject->search($query, $subjectType);
+        if($subjectsData) {
+
+            return $this->success(1, array('subjects'=>$subjectsData['subjects']));
+        }
+        return $this->success(1, array('subjects'=>array()));
+    }
+
 	public function searchSubject() {
+        $this->setJSSetting('search_load_more_url', $this->getCurrentParamsWithDifferentURL(array('controller'=>'Home','action'=>'searchSubjectLoadMore'), array('page', 'limit')));
+
         $query = $this->_searchDefaultQueryParams();
 
         //Search
@@ -559,7 +585,6 @@ $id = $scObj->id;
 				return $subjectsData;
 			}
 		}
-        //pr($subjectsData);
 	}
 
     //http://universito.com/Home/subjectSuggestions.json?search_terms=for%20the%20d
