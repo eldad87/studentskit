@@ -11,7 +11,7 @@ class OrderController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow(	'index', 'init', 'calendar', 'setLessonDatetime', 'getLiveLessons', 'summary', 'paymentPreapprovalIpnNotificationUrl', 'paymentIpnNotificationUrl', 'paymentUpdateTest');
+		$this->Auth->allow(	'index', 'init', 'calendar', 'setLessonDatetime', 'getLiveLessons', 'summary', 'paymentPreapprovalIpnNotificationUrl', 'paymentIpnNotificationUrl', 'paymentUpdateTest', 'getUpcomingOpenLessonForSubject');
 		$this->Auth->deny( array('paymentPreapproval', 'status') );
         //$this->Security->requirePost('prerequisites');
 	}
@@ -121,9 +121,11 @@ class OrderController extends AppController {
         }
 
 
-        $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($subjectId, 3);
+        $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons(null, $subjectId, 3);
         $this->set('teacherData', $teacherData['User']);
         $this->set('upcomingAvailableLessons', $upcomingAvailableLessons);
+
+        $this->setJSSetting('subject_id', $subjectId);
 
         return array('teacher'=>$teacherData, 'subject'=>$upcomingAvailableLessons);
     }
@@ -197,6 +199,10 @@ class OrderController extends AppController {
             return $this->success(1, array('results'=>$allLiveLessons));
         }
         return $allLiveLessons;
+    }
+    public function getUpcomingOpenLessonForSubject($subjectId, $limit=3, $page=1) {
+        $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons(null, $subjectId, $limit, $page);
+        return $this->success(1, array('results'=>$upcomingAvailableLessons));
     }
 
     /**

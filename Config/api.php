@@ -50,6 +50,15 @@ $config['Accounts.setLanguagesOfRecords.error.2.title'] = __('Error');
 $config['Accounts.setLanguagesOfRecords.error.2.description'] = __('Cannot set language');
 /********************* Accounts - End		******************************************/
 
+/********************* Order - Start		******************************************/
+/*-------------------- Order.login		--------------------*/
+$config['Order.getUpcomingOpenLessonForSubject.success.1.title'] = __('Success');
+$config['Order.getUpcomingOpenLessonForSubject.success.1.description'] = __('Upcoming lessons');
+/*-------------------- Order.getLiveLessons		--------------------*/
+$config['Order.getUpcomingOpenLessonForSubject.success.1.title'] = __('Success');
+$config['Order.getLiveLessons.success.1.description'] = __('Live lessons');
+/********************* Accounts - End		******************************************/
+
 /********************* Notifications - Start		******************************************/
 /*-------------------- Notifications.index		--------------------*/
 $config['Notifications.index.success.1.title'] = __('Success');

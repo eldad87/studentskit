@@ -1,75 +1,42 @@
-<div id="lessonRequestPopup" class="modal hide fade">
+<div id="lesson-request-popup" class="modal hide fade">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h3>Lesson Request</h3>
     </div> <!-- /modal-header -->
-    <div class="modal-body">
-        <form class="sk-form">
+
+    <?php echo $this->Form->create( 'Subject',
+                                    array(  'class'=>'sk-form', 'type' => 'file', 'method'=>'post', 'id'=>'make-subject-request-form',
+                                            'url'=>array('controller'=>'Requests', 'action'=>'makeRequest'))); ?>
+
+
+        <div class="modal-body">
+
+
             <fieldset>
-                <div class="control-group">
-                    <label class="control-label" for="11">Title :</label>
-                    <div class="control control1">
-                        <input type="text" class="x-large2" name="" value="" id="11">
-                    </div>
-                </div>
-                <div class="control-group pad8">
-                    <label class="control-label">Category :</label>
-                    <div class="control control1">
-                        <p class="x-large2 x-space pull-left f-size" ><b>Maths>Liner algebra. (Click here to select a category)</b></p>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="12">Language :</label>
-                    <div class="control control1">
-                        <input type="text" class="x-large2 lite-language" name="" value="Type your suitable language" id="12">
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="13">Duration :</label>
-                    <div class="control control1">
-                        <input type="text" class="x-large2 lite-duratin" name="" value="" id="13">
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="14">1 on 1 price :</label>
-                    <div class="control control1">
-                        <input type="text" class="x-large2 lite-price pull-left" name="" value="" id="14">
-                        <select class="lite-price  space22">
-                            <option>$</option>
-                            <option>USD</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="15">Max Students  :</label>
-                    <div class="control control1">
-                        <input type="text" class="x-large2 lite-duratin" name="" value="" id="15">
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="16">Full group price :</label>
-                    <div class="control control1">
-                        <input type="text" class="x-large2 lite-price pull-left" name="" value="" id="16">
-                        <select class="lite-price  space22">
-                            <option>$</option>
-                            <option>USD</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="17">Description :</label>
-                    <div class="control control1">
-                        <textarea id="17" class="text-are1 lite-textarea" rows="5">Lorem Ipsum is simply dummy text of the printing and typesettingindustry. Lorem Ipsum has been the industry's standard dummy text ever sinc</textarea>
-                        <p class="fontsize2">Chracters Left: 255</p>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label"></label>
-                    <div class="control  control1">
-                        <button class="btn-blue" type="button">ADD</button>
-                    </div>
-                </div>
+                <?php
+                    //echo $this->Form->hidden('subject_id');
+                    echo $this->Form->input('name', $this->Layout->styleForInput());
+                    echo $this->Form->input('description', $this->Layout->styleForInput(array('type'=>'textarea')));
+                    //echo $this->Form->input('subject_category_id', $this->Layout->styleForInput(array('options'=>$subjectCategories)));
+                    echo $this->Form->input('language', $this->Layout->styleForInput(array('options'=>$languages)));
+                    echo $this->Form->input('lesson_type', $this->Layout->styleForInput(array('options'=>array(LESSON_TYPE_LIVE=>__('Live'), LESSON_TYPE_VIDEO=>__('Video')))));
+                    echo $this->Form->input('duration_minutes', $this->Layout->styleForInput(array('type'=>'number', 'min'=>10)));
+                    echo $this->Form->input('imageUpload', $this->Layout->styleForInput(array('type'=>'file')));
+
+                    echo $this->Form->input('1_on_1_price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0)));
+                    echo $this->Form->input('max_students', $this->Layout->styleForInput(array('type'=>'number', 'min'=>1, 'div'=>array('id'=>'msDiv', 'class'=>'control-group'))));
+
+                    echo $this->Form->input('full_group_student_price', $this->Layout->styleForInput(array( 'type'=>'number', 'min'=>0,
+                                                                                                            'div'=>array('style'=>'display:none', 'id'=>'fgspDiv', 'class'=>'control-group') ,
+                                                                                                            'tooltip'=>__('a max discount price for a full lesson, the discount will take place starting from 2 students and above'))));
+                ?>
             </fieldset>
-        </form>
-    </div> <!-- /modal-body -->
+        </div> <!-- /modal-body -->
+
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true"><?php echo __('Close'); ?></button>
+            <button class="btn btn-primary"><?php echo __('Add request'); ?></button>
+        </div>
+
+    <?php echo $this->Form->end(); ?>
 </div>

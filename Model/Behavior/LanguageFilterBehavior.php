@@ -42,6 +42,9 @@ class LanguageFilterBehavior extends ModelBehavior {
             return true;
         }
 
+        $this->preserveAssociations($model);
+
+
 
         //['Model']['language'] = array('he','en');
         $associateModel = $this->getAssociateModelByLanguageField($model);
@@ -65,6 +68,7 @@ class LanguageFilterBehavior extends ModelBehavior {
 
         if(!$languages = $this->getSettings($model, 'languages', true)) {
             //No need to add any language filtering
+            $this->restoreAssociations($model);
             return true;
         }
 
@@ -72,6 +76,7 @@ class LanguageFilterBehavior extends ModelBehavior {
 
         if($this->getSettings($model, 'search', false)!='continues') {
             //No need to add any other languages
+            $this->restoreAssociations($model);
             return true;
         }
 
@@ -160,7 +165,25 @@ class LanguageFilterBehavior extends ModelBehavior {
             }
         }
 
+        $this->restoreAssociations($model);
         return $results;
+    }
+
+    //Prevent find() { resetAssociations() } - so associations will continue into after find
+    private function preserveAssociations($model) {
+        //Preserve associations
+        $this->settings[$model->alias]['__backAssociation'] = $model->__backAssociation;
+        $model->__backAssociation = array();
+    }
+
+    //Reset the associations, like it was originally called by find
+    private function restoreAssociations($model) {
+        if(!isSet($this->settings[$model->alias]['__backAssociation'])) {
+            return true;
+        }
+
+        $model->__backAssociation = $this->settings[$model->alias]['__backAssociation'];
+        $model->resetAssociations();
     }
 
     private function getSettings(Model $model, $setting, $remove=true) {

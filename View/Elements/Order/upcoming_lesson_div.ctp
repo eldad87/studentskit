@@ -1,0 +1,17 @@
+<div class="main-student fullwidth bod2<?php echo ($first ? ' space6' : null) ?>">
+    <div class="inner-spots-box">
+        <div class="pull-right btn-width">
+            <?php echo $this->Layout->priceTag($upcomingAvailableLesson['1_on_1_price'], $upcomingAvailableLesson['full_group_student_price'], 'space25 order-price'); ?>
+            <?php
+            echo $this->Html->link('Join', array('controller'=>'Order', 'action'=>'init', 'join', $upcomingAvailableLesson['teacher_lesson_id']),
+                array('class'=>'btn-color-gry move-right space35 centered space3'));
+            ?>
+        </div>
+        <div class="space36">
+            <p class="pull-left fullwidth">Start <?php echo $this->Time->niceShort($upcomingAvailableLesson['datetime']); ?></p>
+            <p class="pull-left fullwidth">Current student <?php echo $upcomingAvailableLesson['num_of_students']; ?> of <?php echo $upcomingAvailableLesson['max_students']; ?></p>
+            <?php echo $this->Html->link('Lesson page', array('controller'=>'Home', 'action'=>'teacherLesson', $upcomingAvailableLesson['teacher_lesson_id']));  ?>
+        </div>
+
+    </div>
+</div>

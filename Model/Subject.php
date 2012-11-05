@@ -68,7 +68,7 @@ class Subject extends AppModel {
             	'required'	=> 'create',
 				'allowEmpty'=> false,
                 'rule'    	=> array('between', 2, 45),
-				'message' 	=> 'Between %d to %d characters',
+				'message' 	=> 'Name must have %d to %d characters',
                 'last'      =>true
 			)
 		),
@@ -77,7 +77,7 @@ class Subject extends AppModel {
 				'required'	=> 'create',
 				'allowEmpty'=> false,
 				'rule'    	=> array('minLength', 15),
-				'message' 	=> 'Must be more then %d characters'
+				'message' 	=> 'Description must have more then %d characters'
 			)
 		),
 
@@ -95,7 +95,7 @@ class Subject extends AppModel {
 				'required'	=> 'create',
 				'allowEmpty'=> false,
 				'rule'    	=> array('range', 4, 241),
-				'message' 	=> 'Lesson must be more then %d minutes and less then %d minutes'
+				'message' 	=> 'Duration must be more then %d minutes and less then %d minutes'
 			)
 		),
 		'1_on_1_price'=> array(
@@ -103,7 +103,7 @@ class Subject extends AppModel {
             	'required'	=> 'create',
 				'allowEmpty'=> false,
 				'rule'    	=> 'numeric',
-				'message' 	=> 'Enter a valid price'
+				'message' 	=> 'Enter a valid 1 on 1 price'
 			),
 			'price_range' => array(
 				'required'	=> 'create',
@@ -123,7 +123,7 @@ class Subject extends AppModel {
 				'required'	=> 'create',
 				'allowEmpty'=> true,
 				'rule'    	=> 'maxStudentsCheck',
-				'message' 	=> 'You must set group price'
+				'message' 	=> 'You must set a full Group Student Price'
 			)
 		),
 		/*'full_group_total_price'=> array(
@@ -681,7 +681,7 @@ class Subject extends AppModel {
         );
     }
 	
-	private function bindStudentOnLessonRequest() {
+	public function bindStudentOnLessonRequest() {
 		$this->bindModel(array('belongsTo'=>array(
 											'Student' => array(
 												'className' => 'User',

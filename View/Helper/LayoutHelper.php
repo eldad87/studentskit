@@ -149,8 +149,29 @@ class LayoutHelper extends AppHelper {
 
     public function lessonRequestButton() {
 
-        return $this->_View->Html->link(__('Lesson Request'), '#lessonRequestPopup',
+        return $this->_View->Html->link(__('Lesson Request'), '#lesson-request-popup',
                                             $this->requireLogin(array( 'class'=>'btns btn-black pull-right text-color index-blackbtn',
                                             'data-toggle'=>'modal')));
+    }
+
+    public function toolTip($text, $class='space3') {
+        return '<a href="#" rel="tooltip" data-placement="left" data-title="'.$text.'"><i class="iconSmall-info '.$class.'"></i></a>';
+    }
+
+    public function styleForInput($extra=array()) {
+        $style = array( 'label' => array('class'=>'control-label'),
+                        'div'=>array('class'=>'control-group'),
+                        'between'=>'<div class="control control1">',
+                        'after'=>'</div>',
+                        'class'=>'x-large2');
+
+        if(isSet($extra['tooltip'])) {
+            $style['after'] = $this->toolTip($extra['tooltip'], 'space11').$style['after'];
+        }
+        if($extra) {
+            $style = am($style, $extra);
+        }
+
+        return $style;
     }
 }

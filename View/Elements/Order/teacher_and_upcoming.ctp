@@ -38,23 +38,23 @@
             <div class="box-subject2 radius3">
                 <?php
                 $upcomingAvailableLessonsCount = count($upcomingAvailableLessons);
-                foreach($upcomingAvailableLessons AS $ual) {
-                    $ual = $ual['TeacherLesson'];
+                foreach($upcomingAvailableLessons AS $upcomingAvailableLesson) {
+                    $upcomingAvailableLesson = $upcomingAvailableLesson['TeacherLesson'];
                     ?>
                     <div class="main-student fullwidth<?php echo (--$upcomingAvailableLessonsCount ? ' bod2' : null )?>">
                         <div class="inner-spots-box">
                             <div class="pull-right btn-width">
-                                <?php echo $this->Layout->priceTag($ual['1_on_1_price'], $ual['full_group_student_price'], 'space25 order-price'); ?>
+                                <?php echo $this->Layout->priceTag($upcomingAvailableLesson['1_on_1_price'], $upcomingAvailableLesson['full_group_student_price'], 'space25 order-price'); ?>
                                 <?php
-                                echo $this->Html->link('Join', array('controller'=>'Order', 'action'=>'init', 'join', $ual['teacher_lesson_id']),
+                                echo $this->Html->link('Join', array('controller'=>'Order', 'action'=>'init', 'join', $upcomingAvailableLesson['teacher_lesson_id']),
                                     array('class'=>'btn-color-gry move-right space35 centered space3'));
                                 ?>
 
                             </div>
                             <div class="space36">
-                                <p>Start : <?php echo $this->Time->niceShort($ual['datetime']); ?></p>
-                                <p>Current student <?php echo $ual['num_of_students']; ?> of <?php echo $ual['max_students']; ?></p>
-                                <?php echo $this->Html->link('Lesson page', array('controller'=>'Home', 'action'=>'teacherLesson', $ual['teacher_lesson_id']));  ?>
+                                <p>Start : <?php echo $this->Time->niceShort($upcomingAvailableLesson['datetime']); ?></p>
+                                <p>Current student <?php echo $upcomingAvailableLesson['num_of_students']; ?> of <?php echo $upcomingAvailableLesson['max_students']; ?></p>
+                                <?php echo $this->Html->link('Lesson page', array('controller'=>'Home', 'action'=>'teacherLesson', $upcomingAvailableLesson['teacher_lesson_id']));  ?>
                             </div>
                         </div>
                     </div>
@@ -66,9 +66,9 @@
         </div><!-- /lesson-box -->
 
 
-        <a class="more radius3 gradient2" data-toggle="modal" href="#myModal"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
+        <a class="more radius3 gradient2" data-toggle="modal" href="#upcoming"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
 
-        <div id="myModal" class="modal hide fade">
+        <div id="upcoming" class="modal hide fade">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h3>Join existing group lessons</h3>
@@ -77,43 +77,20 @@
                 <h5><a href="#">Why should i join existing lesson?</a><i class="iconSmall-info space20 space23"></i> </h5>
                 <?php
                 $i=0;
-                foreach($upcomingAvailableLessons AS $ual) {
-                    $ual = $ual['TeacherLesson'];
-                    ?>
-                    <div class="main-student fullwidth bod2<?php echo (!$i ? ' space6' : null) ?>">
-                        <div class="inner-spots-box">
-                            <div class="pull-right btn-width">
-                                <?php echo $this->Layout->priceTag($ual['1_on_1_price'], $ual['full_group_student_price'], 'space25 order-price'); ?>
-                                <?php
-                                echo $this->Html->link('Join', array('controller'=>'Order', 'action'=>'init', 'join', $ual['teacher_lesson_id']),
-                                    array('class'=>'btn-color-gry move-right space35 centered space3'));
-                                ?>
-                            </div>
-                            <div class="space36">
-                                <p class="pull-left fullwidth">Start <?php echo $this->Time->niceShort($ual['datetime']); ?></p>
-                                <p class="pull-left fullwidth">Current student <?php echo $ual['num_of_students']; ?> of <?php echo $ual['max_students']; ?></p>
-                                <?php echo $this->Html->link('Lesson page', array('controller'=>'Home', 'action'=>'teacherLesson', $ual['teacher_lesson_id']));  ?>
-                            </div>
-
-                        </div>
-                    </div>
-                    <?php
+                foreach($upcomingAvailableLessons AS $upcomingAvailableLesson) {
+                    $upcomingAvailableLesson = $upcomingAvailableLesson['TeacherLesson'];
+                    echo $this->element('Order/upcoming_lesson_div', array('upcomingAvailableLesson'=>$upcomingAvailableLesson, 'first'=>!++$i));
                 }
                 ?>
+            </div> <!-- /modal-body -->
 
+            <div class="modal-footer">
                 <div class="fullwidth pull-left">
-                    <div class="pagination popmargin">
-                        <ul>
-                            <li class="disabled"><a href="#">&lt; &lt; Prev</a></li>
-                            <li class="active"><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">Next &gt; &gt;</a></li>
-                        </ul>
+                    <div class="popmargin">
+                        <a href="#" class="more radius3 gradient2 space9 pull-left upcoming-lessons-for-subject"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
                     </div>
                 </div>
-            </div> <!-- /modal-body -->
+            </div> <!-- /modal-footer -->
         </div>
         <?php
     }

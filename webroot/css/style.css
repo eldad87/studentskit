@@ -1065,7 +1065,7 @@ footer h2{
 	color:#222222;
 }
 
-.sk-form input[type="text"], .sk-form input[type="password"]{
+.sk-form input[type="text"], .sk-form input[type="password"], .sk-form input[type="number"]{
 	height:33px;
 	font-size:14px;
 	background-color:#f0f0f0;

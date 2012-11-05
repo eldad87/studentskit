@@ -97,6 +97,10 @@ function initCopyIdLinks() {
     });
 }
 
+//Activate tooltip
+$(document).ready(function(){
+    $("[rel=tooltip]").tooltip();
+});
 ///////////////////////////////////////////// Login/registration management
 
 $(document).ready(function(){
@@ -155,7 +159,7 @@ $(document).ready(function(){
                     $.each(data['response']['validation_errors'], function(key, val) {
                         msg += val[0] + '<br />';
                     });
-                    showError('#login-form .modal-body', data['response']['description'][0], msg);
+                    showError('#register-form .modal-body', data['response']['description'][0], msg);
 
                 } else {
                     //Login Success
@@ -175,6 +179,107 @@ $(document).ready(function(){
     }
 });
 
+///////////////////////////////////////////// Make request popup
+//TODO: make it load by the element
+$(document).ready(function(){
+
+    //Make Full-group-student-price invisible until the user set max-students>1
+
+    //1. User change the value of 1on1 price
+    $('#Subject1On1Price').change(function(){
+        if($(this).val()>0 && $('#SubjectMaxStudents').val()>1) {
+            $('#fgspDiv').show();
+        } else {
+            $('#fgspDiv').hide();
+        }
+
+        //If there is no group price or group price is higher then 1 on 1 price
+        if($('#SubjectFullGroupStudentPrice').val()=='' || $('#SubjectFullGroupStudentPrice').val()>$(this).val()) {
+
+            //Set 1on1 price on group price
+            $('#SubjectFullGroupStudentPrice').val($(this).val());
+        }
+
+    });
+
+    //Make sure that the group price is equal or lower then 1on1 price
+    $('#SubjectFullGroupStudentPrice').change(function(){
+        if($(this).val()>$('#Subject1On1Price').val()) {
+            $(this).val($('#Subject1On1Price').val());
+        }
+    });
+
+    //Show/Hide student full group price - by max-students
+    $('#SubjectMaxStudents').change(function(){
+        //Show group student price
+        if($(this).val()>1 && $('#Subject1On1Price').val()>0) { //show it only if 1on1price>0
+            $('#fgspDiv').show();
+
+        //Hide it
+        } else {
+            $('#fgspDiv').hide();
+        }
+    });
+
+    //If lesson type is video, hide max students and full-group-price
+    $('#SubjectLessonType').change(function(){
+        if($(this).val()=='live') {
+            $('#msDiv').show();
+
+            //file max-students change
+            //$('#fgspDiv').show();
+            $('#SubjectMaxStudents').trigger('change');
+
+        } else {
+            $('#msDiv').hide();
+            $('#fgspDiv').hide();
+        }
+    });
+
+    //Handle form
+    //Registration form JS
+    $('#make-subject-request-form').submit(function() {
+        $.post(
+            '/Requests/makeRequest.json',
+            $(this).serialize(),
+            function(data){
+                if(data['response']['title'][0]=='Error') {
+                    //Show error
+                    var msg = '';
+                    $.each(data['response']['validation_errors'], function(key, val) {
+                        msg += val[0] + '<br />';
+                    });
+
+                    showError('#make-subject-request-form .modal-body', data['response']['description'][0], msg);
+
+                } else {
+                    $('#lesson-request-popup').modal('hide');
+                }
+            }
+        );
+
+        return false;
+    });
+});
+
+///////////////////////////////////////////// Order load more join lessons
+$(document).ready(function(){
+    /* Order join load more */
+
+    //Scroll
+    $('#upcoming .modal-body').slimScroll({
+        height: '200px',
+        start: 'top',
+        disableFadeOut: true
+    });
+
+    var url = '/Order/getUpcomingOpenLessonForSubject/{subject_id}/{limit}/{page}';
+    if(jsSettings['subject_id']) {
+        url = url + '/{subject_id}'
+    }
+
+    lmObj.loadMoreButton('.upcoming-lessons-for-subject', 'click', '#upcoming .modal-body', url, jsSettings, 'get', 3);
+});
 
 ///////////////////////////////////////////// Teacher/TeacherSubject page
 $(document).ready(function(){

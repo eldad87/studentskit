@@ -13,8 +13,10 @@ class RequestsController extends AppController {
 	}
 	
 	public function index() {
+
         $this->Subject->setLanguages($this->Session->read('languages_of_records'));
 	 	$newSubjects = $this->Subject->getNewest(false, SUBJECT_TYPE_REQUEST);
+
 		$this->set('newSubjects', $newSubjects);
 	}
 	
@@ -31,12 +33,12 @@ class RequestsController extends AppController {
 			$this->Subject->set($this->request->data);
 			if($this->Subject->save()) {
 				if($this->RequestHandler->isAjax()) {
-					return $this->success(1, array('subject_id'=>this));
+					return $this->success(1, array('subject_id'=>$this->Subject->id));
 				}
 				$this->Session->setFlash(__('Request saved, you can browse and manage it through the control panel'));
 				$this->redirect(array('action'=>'index'));
 			} else if($this->RequestHandler->isAjax()) {
-				return $this->error(1, array('validation_errros'=>$this->Subject->validationErrors));
+				return $this->error(1, array('validation_errors'=>$this->Subject->validationErrors));
 			}
 		}
 
@@ -157,6 +159,7 @@ class RequestsController extends AppController {
         }
     }
 
+    /* Replaced by offerSubject
 	public function	offerLesson($requestSubjectId, $year=null, $month=null) {
 		//Get subject data, students_amount
 		$subjectData = $this->Subject->findBySubjectId( $requestSubjectId );
@@ -236,7 +239,7 @@ class RequestsController extends AppController {
 		$this->set('studentUserData',		        $studentData['User']);
         $this->set('teacherSubjectsSuggestions',    $teacherSubjectsSuggestions);
         $this->set('teacherSubjectsData',           $teacherSubjectsData);
-	}
+	}*/
 	
 	
 
