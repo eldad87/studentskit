@@ -146,4 +146,11 @@ class LayoutHelper extends AppHelper {
         }
         return $vars;
     }
+
+    public function lessonRequestButton() {
+
+        return $this->_View->Html->link(__('Lesson Request'), '#lessonRequestPopup',
+                                            $this->requireLogin(array( 'class'=>'btns btn-black pull-right text-color index-blackbtn',
+                                            'data-toggle'=>'modal')));
+    }
 }

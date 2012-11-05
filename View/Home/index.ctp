@@ -6,8 +6,10 @@
         <div class="row">
             <div class="cont-span8">
                 <h2 class="pull-left"><i class="iconBig-about space1"></i>Newest subjects</h2>
-                <a data-toggle="modal" href="#myModal" class="btns btn-black pull-right text-color index-blackbtn">Lesson Requests</a>
-				<?php echo $this->element('Home/lesson_request');  ?>
+                <?php
+                    echo $this->Layout->lessonRequestButton();
+                    echo $this->element('Home/lesson_request');
+                ?>
                 <ul class="row">
                     <?php
                     if($newSubjects) {

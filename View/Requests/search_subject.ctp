@@ -13,8 +13,11 @@
                     }
                     ?>
                 </p>
-                <a data-toggle="modal" href="#myModal" class="btns btn-black pull-right text-color index-blackbtn">Lesson Requests</a>
-                <?php echo $this->element('Home/lesson_request');  ?>
+
+                <?php
+                echo $this->Layout->lessonRequestButton();
+                echo $this->element('Home/lesson_request');
+                ?>
                 <div class="pull-left space6">
                     <!-- category filter -->
                     <?php if($subjectsData) {
