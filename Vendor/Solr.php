@@ -223,7 +223,7 @@ class Solr {
             $urlParams['q'] = $query['search'];
         }
 
-
+        //var_dump($query['fq']); die;
         //Add filter query fields
         if(isSet($query['fq'])) {
             foreach($query['fq'] AS $f=>$q) {
@@ -231,6 +231,9 @@ class Solr {
                     //lang:(EN OR FR)^5
                     $urlParams['fq'][] = $f.':'.urlencode($q['value']).'^'.$q['boost'];
 
+                } else if(is_numeric($f)) {
+                    //{!raw f=categories}1,2"
+                    $urlParams['fq'][] = urlencode($q);
                 } else {
                     //lang:(EN OR FR)
                     $urlParams['fq'][] = $f.':'.urlencode($q);
