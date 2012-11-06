@@ -27,6 +27,26 @@ class LessonsController extends AppController {
 	}
 
     /**
+     * Give the teacher the option to manage his lesson
+     * @param $subjectId
+     */
+    public function subject($subjectId) {
+        //Make sure the lesson belongs to the user
+        $this->Subject->recursive = -1;
+        $subjectData = $this->Subject->findBySubjectId($subjectId);
+        if($subjectData['Subject']['user_id']!=$this->Auth->user('user_id')) {
+            $this->Session->setFlash(__('You cannot manage this subject'));
+            $this->redirect('/');
+        }
+
+        $this->set('meetingSettings', $this->Watchitoo->getSubjectMeetingSettings($subjectId));
+        $this->set('lessonName', $subjectData['Subject']['name']);
+        /*$this->set('fileSystem', $this->TeacherLesson->getFileSystem($teacherLessonId));
+        $this->set('tests', $this->TeacherLesson->getTests($teacherLessonId));*/
+        $this->render('common'.DS.'lesson');
+    }
+
+    /**
      * Live lesson page
      *
      * If lesson overdue - kick users away
@@ -102,7 +122,6 @@ class LessonsController extends AppController {
 
             if($enterLesson) {
                 //TODO: generate token
-                $this->set('meetingId', $this->Watchitoo->getMeetingId($teacherLessonId));
                 $this->set('meetingSettings', $this->Watchitoo->getMeetingSettings($teacherLessonId, $this->Auth->user('user_id')));
                 $this->set('fileSystem', $this->TeacherLesson->getFileSystem($teacherLessonId));
                 $this->set('tests', $this->TeacherLesson->getTests($teacherLessonId));
@@ -110,6 +129,8 @@ class LessonsController extends AppController {
 
             $this->set('datetime', $liveRequestStatus['datetime']);
             $this->set('is_teacher', $liveRequestStatus['is_teacher']);
+            $this->set('lessonName', $liveRequestStatus['lesson_name']);
+            $this->render('common'.DS.'lesson');
         }
     }
 
@@ -170,12 +191,14 @@ class LessonsController extends AppController {
         }
 
 
+        $this->set('lessonName', $canWatchData['lesson_name']);
         $this->set('subjectUrl', $this->TeacherLesson->getVideoUrl($subjectId));
         $this->set('showAds', ((!empty($canWatchData['end_datetime']) &&
                                 $this->TeacherLesson->toServerTime($canWatchData['end_datetime'])<=$this->TeacherLesson->timeExpression( 'now', false )) ||
                                 !$canWatchData['payment_needed']) );
         $this->set('fileSystem', $this->TeacherLesson->getFileSystem($canWatchData['teacher_lesson_id']));
 		$this->set('tests', $this->TeacherLesson->getTests($canWatchData['teacher_lesson_id']));
+        $this->render('common'.DS.'lesson');
     }
 
     public function invite() {
@@ -257,16 +280,6 @@ class LessonsController extends AppController {
                 $message .= Router::url(array('controller'=>'Home', 'action'=>'teacherSubject', $id), true); //Video lesson
                 break;
         }
-
-      /*  App::uses('CakeEmail', 'Network/Email');
-        $email = new CakeEmail();
-
-        foreach($emails AS $toEmail) {
-            $email->from(array('doNotReplay@universito.com' => 'Universito'));
-            $email->subject('Invitation for '.$name);
-            $email->to($toEmail);
-            $email->send($message);
-        }*/
     }
     private function sendLiveLessonsJoinRequestsByTeacher($emails, $teacherLessonId) {
         $this->TeacherLesson->recursive = -1;

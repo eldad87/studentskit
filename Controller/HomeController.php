@@ -39,7 +39,7 @@ class HomeController extends AppController {
        App::import('Vendor', 'Watchitoo'.DS.'Watchitoo');
         $wObj = new Watchitoo();
         echo '<pre>';
-        var_dump($wObj->getMeetingId(63));
+        var_dump($wObj->getMeetingSettings(63));
         var_dump($wObj->getMeetingSettings(63, 6)); //student
         //var_dump($wObj->getMeetingSettings(63, 4)); //teacher
         echo '</pre>';

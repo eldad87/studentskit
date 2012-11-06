@@ -34,7 +34,7 @@ class TeacherLessonEventListener implements CakeEventListener {
         //Create meeting on Watchitoo
         App::import('Vendor', 'Watchitoo'.DS.'Watchitoo');
         $wcObj = new Watchitoo();
-        return $wcObj->getMeetingId($event->data['teacher_lesson']['teacher_lesson_id']) ? true : false;
+        return $wcObj->getMeetingSettings($event->data['teacher_lesson']['teacher_lesson_id']) ? true : false;
     }
 }
 ?>

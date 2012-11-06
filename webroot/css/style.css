@@ -542,6 +542,10 @@ ul.row2 li.last{
 	border-right:1px solid #cccccc;
 	border-bottom:1px solid #cccccc;
 }
+.no-padding-and-border {
+    padding: 0px;
+    border: none;
+}
 
 .lesson-box-footer{
 	width:100%;

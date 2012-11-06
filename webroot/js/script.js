@@ -29,7 +29,7 @@ LoadMore.prototype.curlyBracketsVars = function(url, params) {
 
     return url;
 }
-LoadMore.prototype.loadMoreButton = function(buttonSelector, eventName, appendToSelector, url, params, type, limit) {
+LoadMore.prototype.loadMoreButton = function(buttonSelector, eventName, appendToSelector, url, params, type, limit, excludeGetParams) {
 
     var loadMoreObj = this;
 
@@ -37,8 +37,13 @@ LoadMore.prototype.loadMoreButton = function(buttonSelector, eventName, appendTo
 
         params['rnd'] = Math.random(); //to avoid cache
         params['limit'] = limit;
-
         params['page'] = loadMoreObj.getNextPage(buttonSelector);
+
+        if(excludeGetParams) {
+            for(i in excludeGetParams) {
+                delete params[excludeGetParams[i]];
+            }
+        }
 
         $.ajax({
             url: jQuery.nano(url, params), //loadMoreObj.curlyBracketsVars(url, params) + '.json',

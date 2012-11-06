@@ -21,6 +21,7 @@ class Subject extends AppModel {
 	public $useTable = 'subjects';
 	public $primaryKey = 'subject_id';
     public $actsAs = array(
+        'Lock',
         'LanguageFilter',
         'Uploader.Attachment' => array(
             'imageUpload'=>array(

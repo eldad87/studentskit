@@ -18,7 +18,6 @@ class WatchitooHelper extends AppHelper {
     public function initJS( $meetingId, $initParams=array() ) {
         return '
 
-    <script type="text/javascript">
 
         function OnWatchitooPlayerEvent(playerID,eventName,eventParams) {
 
@@ -59,7 +58,6 @@ class WatchitooHelper extends AppHelper {
             }
 
         }
-    </script>
 
 ';
     }

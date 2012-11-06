@@ -1258,6 +1258,7 @@ class UserLesson extends AppModel {
             'is_teacher'                =>($userId==$subjectData['user_id']),
             'teacher_lesson_id'         =>false,
             'subject_id'                =>$subjectId,
+            'lesson_name'               =>$subjectData['name'],
             'user_lesson_id'            =>false,
             'datetime'                  =>false,
             'end_datetime'              =>false,
@@ -1468,6 +1469,7 @@ class UserLesson extends AppModel {
             'is_teacher'                =>($userId==$tlData['teacher_user_id']),
             'teacher_lesson_id'         =>$teacherLessonId,
             'subject_id'                =>$tlData['subject_id'],
+            'lesson_name'               =>$tlData['name'],
             'user_lesson_id'            =>false,
             'datetime'                  =>$tlData['datetime'],
         );
