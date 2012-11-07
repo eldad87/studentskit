@@ -5,22 +5,35 @@
 class StudentController extends AppController {
 	public $name = 'Student';
 	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson', 'AdaptivePayment');
-	public $components = array('Utils.FormPreserver'=>array('directPost'=>true), 'Session', 'RequestHandler', 'Security', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),/* 'Security'*/);
+	public $components = array('Utils.FormPreserver'=>array('directPost'=>true), 'Session',  'RequestHandler'/*, 'Security'*/, 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),/* 'Security'*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
+
+    public function beforeFilter() {
+        parent::beforeFilter();
+
+        if($this->RequestHandler->isAjax()) {
+            $this->layout = false;
+        }
+
+
+    }
 
 	public function index() {
 		//Get lessons that about to start
-		$upcommingLessons= $this->UserLesson->getUpcomming($this->Auth->user('user_id'), 2, 1);
-					
+		$upcomingLessons = $this->UserLesson->getUpcomming($this->Auth->user('user_id'), 2, 1);
+
+
 		//Get student latest forum messages
         app::import('Model', 'Forum.Post');
         $postObj = new Post();
         $postObj->setLanguages($this->Session->read('languages_of_records'));
         $latestUpdatedTopics = $postObj->getGroupedLatestUpdatedTopicsByUser($this->Auth->user('user_id'), 3);
 
+
+
 		//TODO: get lesson suggestions
 					
-		$this->Set('upcommingLessons', $upcommingLessons);
+		$this->Set('upcomingLessons', $upcomingLessons);
 		$this->Set('latestUpdatedTopics', $latestUpdatedTopics);
 	}
 	

@@ -15,6 +15,18 @@ $config['Accounts.register.error.1.description'] = __('Validation errors');
 /*-------------------- Accounts.logout		--------------------*/
 $config['Accounts.logout.success.1.title'] = __('Success');
 $config['Accounts.logout.success.1.description'] = __('Logging success');
+/*-------------------- Accounts.changePassword		--------------------*/
+$config['Accounts.changePassword.success.1.title'] = __('Success');
+$config['Accounts.changePassword.success.1.description'] = __('Password changed');
+
+$config['Accounts.changePassword.error.1.title'] = __('Error');
+$config['Accounts.changePassword.error.1.description'] = __('Cannot change password');
+
+$config['Accounts.changePassword.error.2.title'] = __('Error');
+$config['Accounts.changePassword.error.2.description'] = __('Cannot change password');
+
+$config['Accounts.changePassword.error.3.title'] = __('Error');
+$config['Accounts.changePassword.error.3.description'] = __('Cannot change password');
 
 /*-------------------- Accounts.setTimezone		--------------------*/
 $config['Account.setTimezone.success.1.title'] = __('Success');

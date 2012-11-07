@@ -1,8 +1,200 @@
 // JavaScript Document
 
 
+/////////////////////////////////////////////////////////////// Helpers
+/**
+ * Used to post a form and replace its container with the (HTML) result
+ * @constructor
+ */
+function PostForm() {
+    this.forms = {};
+    this.callbacks = {before:{}, after:{}};
+}
+
+PostForm.prototype.setAppendCallback = function( formSelector, on, func ) {
+    this.callbacks[on][formSelector] = func;
+}
+PostForm.prototype.getAppendCallback = function( formSelector, on ) {
+    if(this.callbacks[on][formSelector]) {
+        return this.callbacks[on][formSelector];
+    }
+
+    return false;
+}
+
+/**
+
+ *
+ * Please note, on ajax pages (I.e student's profile). the loading JS command must exists in it:
+ *  pfObj.loadForm('#user-profile-form', '#main-area', 'post');
+ *  otherwise - the JS will word only for the first time.
+ *
+ * @param formSelector
+ * @param appendResultsSelector
+ * @param type
+ * @param params
+ */
+PostForm.prototype.loadForm = function( formSelector, appendResultsSelector, type, params ) {
+    var postForm = this;
+
+    $(formSelector).submit(function(event) {
+
+        beforeCallback = postForm.getAppendCallback(formSelector, 'before');
+        if(beforeCallback) {
+            if(!beforeCallback( data )) {
+                return false;
+            }
+        }
+
+        //Get form action (url)
+        url = $(this).attr('action');
+
+        $.ajax({
+            url: jQuery.nano(url, params),
+            type: type,
+            data: $(this).serialize(),
+            dataType: 'html'
+
+        }).done(function ( data ) {
+                beforeCallback = postForm.getAppendCallback(formSelector, 'before');
+                if(beforeCallback) {
+                    data = beforeCallback( data );
+                    if(!data) {
+                        return false;
+                    }
+                }
+
+                //replace the returned HTML with the current one
+                $(appendResultsSelector).html(data);
+
+                afterCallback = postForm.getAppendCallback(formSelector, 'after');
+                if(afterCallback) {
+                    afterCallback( data );
+                }
+            });
+
+        //Stop from from submitting itself
+        return false;
+    });
+}
 
 
+/**
+ * Used to post the form data, if any erros - append them
+ */
+
+function PostFormAPI() {
+    this.forms = {};
+    this.callbacks = {before:{}, after:{}};
+}
+
+PostFormAPI.prototype.setAppendCallback = function( formSelector, on, func ) {
+    this.callbacks[on][formSelector] = func;
+}
+PostFormAPI.prototype.getAppendCallback = function( formSelector, on ) {
+    if(this.callbacks[on][formSelector]) {
+        return this.callbacks[on][formSelector];
+    }
+
+    return false;
+}
+
+
+PostFormAPI.prototype.loadForm = function( formSelector, appendErrorsSelector, type, params ) {
+    var postFormAPI = this;
+
+    $(formSelector).submit(function(event) {
+
+        beforeCallback = postFormAPI.getAppendCallback(formSelector, 'before');
+        if(beforeCallback) {
+            if(!beforeCallback( data )) {
+                return false;
+            }
+        }
+
+        //Get form action (url)
+        url = $(this).attr('action');
+
+
+        $.ajax({
+            url: jQuery.nano(url, params),
+            type: type,
+            data: $(this).serialize(),
+            dataType: 'json'
+
+        }).done(function ( data ) {
+                beforeCallback = postFormAPI.getAppendCallback(formSelector, 'before');
+                if(beforeCallback) {
+                    data = beforeCallback( data );
+                    if(!data) {
+                        return false;
+                    }
+                }
+
+                if(data['response']['title'][0]=='Error') {
+                    //Show error
+                    var msg = '';
+                    $.each(data['response']['validation_errors'], function(key, val) {
+                        msg += val[0] + '<br />';
+                    });
+                    showError(appendErrorsSelector, data['response']['description'][0], msg);
+
+                }
+
+                afterCallback = postFormAPI.getAppendCallback(formSelector, 'after');
+                if(afterCallback) {
+                    afterCallback( data );
+                }
+            });
+
+        //Stop from from submitting itself
+        return false;
+    });
+}
+
+/////////////////////////////////////////////////////////////// panel
+
+/* Back office tabs */
+
+$(document).ready(function(){
+    $(".load").live("click",function(){
+        $(".loadpage").load("/ajax/"+$(this).attr('rel'));
+        $(".booking-nav li").removeClass("active");
+        $(this).parent("li").addClass("active");
+    });
+
+});
+
+//Old menu link
+$(document).ready(function(){
+    $(".load1").live("click",function(){
+        $("#main-area").load("/ajax/"+$(this).attr('rel'));
+        $(".right-menu li").removeClass("bg-active");
+        $(this).parent("li").addClass("bg-active");
+    });
+
+});
+
+
+
+
+var pfObj = new PostForm();
+var pfAPIObj = new PostFormAPI();
+
+
+
+
+/////////////////////////////////////////////////////////////// site
+
+//New menu links
+$(document).ready(function(){
+    $(".load2").live("click",function(){
+        $(".loadpage1").load($(this).attr('rel'));
+        $(".right-menu li").removeClass("bg-active");
+        $(this).parent("li").addClass("bg-active");
+    });
+
+});
 
 /*  live join subject page */
 function LoadMore() {
@@ -17,18 +209,7 @@ LoadMore.prototype.getNextPage = function(buttonSelector) {
     this.paginator[buttonSelector]++;
     return this.paginator[buttonSelector];
 }
-LoadMore.prototype.curlyBracketsVars = function(url, params) {
 
-    var curlyRe = /\{(.*?)}/g;
-    url = url.replace(curlyRe, function() {
-        if(!params[arguments[1]]) {
-            return '{' + arguments[1] + '}';
-        }
-        return params[arguments[1]];
-    });
-
-    return url;
-}
 LoadMore.prototype.loadMoreButton = function(buttonSelector, eventName, appendToSelector, url, params, type, limit, excludeGetParams) {
 
     var loadMoreObj = this;
@@ -432,67 +613,9 @@ $(document).ready(function(){
 
 
 
-/////////////////////////////////////// WTF?
-/* student subject page
+///////////////////////////////////////
 
-
- $(document).ready(function(){
- // For Search Selectbox
- $(document).ready(function(){
- $('.scorllbox').slimScroll({
- height: '300px',
- alwaysVisible: false,
- start: 'bottom',
- wheelStep: 10
- });
- $(".message-tm-more").click(function(){
- var ht=$(".temphtml").load("/ajax/more.html", function(response, status, xhr){;
- $('.scorllbox').append(response);
- $(".scorllbox").slimScroll({scroll: '50px' });
- });
- });
-
- });
- });*/
-
-/* loadign */
-
-$(document).ready(function(){
-
- hideLoading();
-$(".upload-icon").click( function(){
-$(".loadingbox").show();
-var t=setTimeout(" hideLoading();",5000);
-
-});
-
-});
-function hideLoading()
-{
-	$(".loadingbox").hide();
-}
-
-
-/* Ajax tab script */
-
-$(document).ready(function(){
-    $(".load").live("click",function(){
-        $(".loadpage").load("/ajax/"+$(this).attr('rel'));
-        $(".booking-nav li").removeClass("active");
-        $(this).parent("li").addClass("active");
-    });
-
-});
-$(document).ready(function(){
-    $(".load1").live("click",function(){
-        $(".loadpage1").load("/ajax/"+$(this).attr('rel'));
-        $(".right-menu li").removeClass("bg-active");
-        $(this).parent("li").addClass("bg-active");
-    });
-
-});
-
-/* tooltip script */
+/* Country, TZ, Lang script */
 $(document).ready(function(){
 
     $(".show-tip").live("click",function(event){
@@ -516,20 +639,8 @@ $(document).ready(function(){
         $(".alltip").hide();
     });
 });
-/* message notificatoin pressed */
 
-/* more thread notificaiton pressed page */
-
-$(document).ready(function(){
-
-    $(".more-btn1").live("click",function(){
-        setTimeout(function(){$("#more").load("assets/more.html");},300);
-
-    });
-
-});
-
-/* info tooltip */
+/* info tooltip
 
 $(document).ready(function(){
 
@@ -550,12 +661,13 @@ $(document).ready(function(){
     $("html").live("mouseover",function(){
         $(".info-pop").slideUp(0);
     });
-});
+});*/
 
 
 /* pager script */
 
-$(document).ready(function(){
+/*$(document).ready(function(){
+
     var currentpage=1;
     var maxpage=4;
     $(".load").click(function(){
@@ -627,4 +739,4 @@ $(document).ready(function(){
         }
     });
 
-});
+});*/

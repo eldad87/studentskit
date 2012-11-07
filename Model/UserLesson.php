@@ -1192,7 +1192,7 @@ class UserLesson extends AppModel {
 	}
 
 	public function getLessons($conditions, $time='>', $limit=null, $page=1, $stage=array(), $datetimeField='end_datetime', $timeExpression='now') {
-		
+
 		$find = 'all';
 		App::import('Model', 'Subject');
 		

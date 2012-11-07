@@ -28,7 +28,7 @@
     </div> <!-- /modal-body -->
 
     <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true"><?php echo __('Close'); ?></button>
         <button class="btn btn-primary"><?php echo __('Login'); ?></button>
     </div><!-- /modal-footer -->
 
@@ -90,7 +90,7 @@
     </div> <!-- /modal-body -->
 
     <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn" data-dismiss="modal" aria-hidden="true"><?php echo __('Close'); ?></button>
         <button class="btn btn-primary"><?php echo __('Register'); ?></button>
     </div><!-- /modal-footer -->
 

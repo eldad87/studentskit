@@ -222,4 +222,34 @@ class AccountsController extends AppController {
 	public function forgotten_password() {
 		$this->SignMeUp->forgottenPassword();
 	}
+
+    public function changePassword() {
+       //1. Check that all required fields provided
+        if(!isSet($this->request->data['User']['current_password']) || empty($this->request->data['User']['current_password'])) {
+            $this->User->invalidate('current_password', __('Invalid Current Password'));
+            return $this->error(1, array('validation_errors'=>$this->User->validationErrors));
+        }
+
+
+        //2. check if current password is matching the user input
+        $this->User->create(false);
+        $this->User->recursive = -1;
+        $userData = $this->User->find('first', array('fields'=>array('password'), 'conditions'=>array('user_id'=>$this->Auth->user('user_id'))));
+
+        //App::import('Component', 'Auth');
+        if($userData['User']['password']!=AuthComponent::password($this->request->data['User']['current_password'])) {
+            $this->User->invalidate('current_password', __('Wrong Current Password'));
+            return $this->error(2, array('validation_errors'=>$this->User->validationErrors));
+        }
+
+        //Try to update the user
+        $this->User->id = $this->Auth->user('id');
+        //$this->User->set(array('password'=>$this->request->data['password'], 'password2'=>$this->request->data['password2']));
+        if(!$this->User->save($this->request->data, true, array('password', 'password2'))) {
+            return $this->error(3, array('validation_errors'=>$this->User->validationErrors));
+        }
+
+        //Password changed!
+        return $this->success(1);
+    }
 }
