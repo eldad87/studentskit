@@ -20,7 +20,7 @@ class LockBehavior extends ModelBehavior {
         $lockTimeOut    = $model->schema( $this->getSetting($model, 'locking_time_out') );
 
         if(empty($lockField) || empty($lockEndsField) || empty($lockTimeOut)) {
-            throw new Exception(sprintf(__('Error in settings for Model %s'), $model['model']->name));
+            throw new Exception(sprintf(__('Error in settings for Model %s'), $model->alias));
         }
     }
 

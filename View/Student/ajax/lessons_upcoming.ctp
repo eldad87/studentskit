@@ -10,6 +10,10 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
 <div class="add-sub pull-left space3">
     <?php
     foreach($response['response']['upcomingLessons'] AS $upcomingLesson) {
+        $toTheLessonLink = $this->Html->link(__('Lesson page'), array('controller'=>'Lessons',
+                                                                'action'=>($upcomingLesson['UserLesson']['lesson_type']==LESSON_TYPE_LIVE ? 'index' : 'video'),
+                                                                $upcomingLesson['UserLesson']['teacher_lesson_id']));
+
         echo '<div class="lesson-box space2" id="user_lesson_id_'.$upcomingLesson['UserLesson']['user_lesson_id'].'">
                 <div class="head-back radius1">
                     <h1>'.$this->Time->niceShort($upcomingLesson['UserLesson']['datetime']).' -  <strong>'.$upcomingLesson['UserLesson']['name'].'</strong></h1>
@@ -18,9 +22,10 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                             <i class="iconSmall-drop-arrow"></i>
                         </a>
                         <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
-                            <li><a href="#" class="confirm-delete" data-id="'.$upcomingLesson['UserLesson']['user_lesson_id'].'">'.__('Cancel').'</a></li>
-                            <li><a href="#" class="msg-teacher" data-entity_type="lesson" data-entity_id="'.$upcomingLesson['UserLesson']['teacher_lesson_id'].'" data-to_user_id="'.$upcomingLesson['UserLesson']['teacher_user_id'].'">'.__('Message teacher').'</a></li>
+                            <li><a href="#" class="confirm-delete" data-cancel-prefix="user_lesson_id" data-id="'.$upcomingLesson['UserLesson']['user_lesson_id'].'">'.__('Cancel').'</a></li>
+                            <li><a href="#" class="msg-teacher" data-entity_type="lesson" data-entity_id="'.$upcomingLesson['UserLesson']['user_lesson_id'].'" data-to_user_id="'.$upcomingLesson['UserLesson']['teacher_user_id'].'">'.__('Message teacher').'</a></li>
                             <li><a href="#" class="invite" data-teacher_lesson_id="'.$upcomingLesson['UserLesson']['teacher_lesson_id'].'"> '.__('Invite friends').'</a></li>
+                            <li>'.$toTheLessonLink.'</li>
                         </ul>
                     </div>
 
@@ -32,9 +37,7 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                     <div class="usr-text2">
                         <h4>'.__('by').' '.$this->Html->link($upcomingLesson['Teacher']['username'], array('controller'=>'Home', 'action'=>'teacher', $upcomingLesson['UserLesson']['teacher_user_id'])).'</h4>
                         <p>'.$upcomingLesson['UserLesson']['description'].'</p>
-                        <p class="space23">'.$this->Html->link(__('To the lesson'), array('controller'=>'Lessons',
-                                                                                            'action'=>($upcomingLesson['UserLesson']['lesson_type']==LESSON_TYPE_LIVE ? 'index' : 'video'),
-                                                                                            $upcomingLesson['UserLesson']['teacher_lesson_id'])).'</p>
+                        <p class="space23">'.$toTheLessonLink.'</p>
                     </div>
                 </div>
                 <div class="lesson-box-footer radius2">

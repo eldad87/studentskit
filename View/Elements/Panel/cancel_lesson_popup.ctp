@@ -13,10 +13,9 @@
         $('<?php echo $buttonSelector; ?>').click(function(e){
             e.preventDefault();
 
-            //Get id from link
-            var id = $(this).data('id');
-            //Append id to popup
-            $('#cancel-upcoming-approved').data('id', id);
+            //Copy data-* and place it as hidden:input
+            $('#cancel-upcoming-approved').data($(this).data());
+
             //Show popup
             $('#cancel-upcoming-popup').modal('show');
         });
@@ -27,8 +26,10 @@
                 //Close popup
                 $('#cancel-upcoming-popup').modal('hide');
 
+
+                var divId = $('#cancel-upcoming-approved').data('cancel-prefix') + '_' + $('#cancel-upcoming-approved').data('id');
                 //Remove lesson box
-                $('#user_lesson_id_' + data['response']['results']['user_lesson_id'] ).hide();
+                $( '#' + divId ).hide();
             }
         });
     });

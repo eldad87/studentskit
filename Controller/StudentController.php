@@ -84,6 +84,7 @@ class StudentController extends AppController {
 	}
 	
 	public function cancelUserLesson( $userLessonId ) {
+
 		if(!$this->UserLesson->cancelRequest( $userLessonId, $this->Auth->user('user_id') )) {
 			return $this->error(1, array('results'=>array('user_lesson_id'=>$userLessonId, 'validation_errors'=>$this->UserLesson->validationErrors)));
 		}
@@ -126,7 +127,10 @@ class StudentController extends AppController {
             $isRestoredData = $this->FormPreserver->restore();
         }*/
 
+
+
         $userLessonData = $this->UserLesson->findByUserLessonId($userLessonId);
+        $this->set('lessonType', $userLessonData['UserLesson']['lesson_type']);
         if (empty($this->request->data)) {
             $this->request->data = $userLessonData;
         } else {
@@ -134,9 +138,10 @@ class StudentController extends AppController {
             $maxAmount = (isSet($this->request->data['UserLesson']['1_on_1_price']) ? $this->request->data['UserLesson']['1_on_1_price'] : null );
             $datetime = (isSet($this->request->data['UserLesson']['datetime']) ? $this->request->data['UserLesson']['datetime'] : null );
 
+
+            $paymentPage = array();
             //if done by the student - Check if preapproval is OK
             if($userLessonData['UserLesson']['student_user_id']==$this->Auth->user('user_id') && ($maxAmount || $datetime)) {
-
                 if($datetime) {
                     $datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
                     $datetime = $this->UserLesson->timeExpression($datetime, false);
@@ -151,31 +156,51 @@ class StudentController extends AppController {
                         //Create negotiation parameters
                         $params = Security::rijndael(json_encode($this->request->data['UserLesson']), Configure::read('Security.key'), 'encrypt');
 
+                        $paymentPage = array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId, '?'=>array('negotiate'=>$params));
 
                         if(isSet($this->params['ext'])) {
 
                             //Redirect to order
-                            return $this->error(1,  array('results'=>array('user_lesson_id'=>$userLessonId, 'orderURL'=>array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId, '?'=>array('negotiate'=>$params)))));
+                            return $this->error(1,  array('results'=>array('user_lesson_id'=>$userLessonId, 'orderURL'=>$paymentPage)));
                         }
                         //$this->FormPreserver->preserve($this->data);
-                        $this->redirect(array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId, '?'=>array('negotiate'=>$params)));
+                        //$this->redirect(array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId, '?'=>array('negotiate'=>$params)));
+                        $this->set('paymentPage', $paymentPage);
                     //}
                 }
             }
 
-            if(!$this->UserLesson->reProposeRequest($userLessonId, $this->Auth->user('user_id'), $this->request->data['UserLesson'])) {
-                if(isSet($this->params['ext'])) {
-                    return $this->error(1, array('results'=>array('validation_errors'=>$this->UserLesson->validationErrors)));
+            //No additional payment is needed
+            if(!$paymentPage) {
+                if(!$this->UserLesson->reProposeRequest($userLessonId, $this->Auth->user('user_id'), $this->request->data['UserLesson'])) {
+                    if(isSet($this->params['ext'])) {
+                        return $this->error(1, array('results'=>array('validation_errors'=>$this->UserLesson->validationErrors)));
+                    }
+                    $this->Session->setFlash(__('Error, cannot Re-Propose'));
+                } else {
+
+                    if(isSet($this->params['ext'])) {
+                        return $this->success(1, array('results'=>array('user_lesson_id'=>$userLessonId)));
+                    }
+                    //$this->Session->setFlash(__('Re-Propose sent'));
+
+                    //Success
+                    $this->set('success', true);
+
+                    //Need to refresh the tooltip info
+                    if(isSet($this->request->data['updateTooltipAfterNegotiate'])) {
+                        $this->set('updateTooltip', $this->request->data['updateTooltipAfterNegotiate']);
+                        $this->set('userLessonData', $this->request->data['UserLesson']);
+                    }
+                    if(isSet($this->request->data['removeElementAfterNegotiate'])) {
+                        $this->set('removeElement', $this->request->data['removeElementAfterNegotiate']);
+                    }
+
+
                 }
-                $this->Session->setFlash(__('Error, cannot Re-Propose'));
             }
-
-            if(isSet($this->params['ext'])) {
-                return $this->success(1, array('results'=>array('user_lesson_id'=>$userLessonId)));
-            }
-
-            $this->Session->setFlash(__('Re-Propose sent'));
         }
+
 
         //Group pricing
         if(	isSet($this->data['UserLesson']['1_on_1_price']) &&

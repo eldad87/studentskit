@@ -159,12 +159,13 @@ class UserLessonEventListener implements CakeEventListener {
 
         //Make sure it was done by the student
         if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id']) {
+
             //Make sure preapproval is OK
-            $maxAmount = (isSet($event->data['user_lesson']['update']['1_on_1_price']) ? $event->data['user_lesson']['update']['1_on_1_price'] : null );
-            $datetime = (isSet($event->data['user_lesson']['update']['datetime']) ? $event->data['user_lesson']['update']['datetime'] : null );
+            $maxAmount = (isSet($event->data['update']['1_on_1_price']) ? $event->data['update']['1_on_1_price'] : null );
+            $datetime = (isSet($event->data['update']['datetime']) ? $event->data['update']['datetime'] : null );
+
             return $this->adaptivePayment->isValidApproval($event->data['user_lesson']['user_lesson_id'], $maxAmount, $datetime);
         }
-
         return true;
     }
 
@@ -347,8 +348,8 @@ class UserLessonEventListener implements CakeEventListener {
         //Make sure it was done by the student
         if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id']) {
             //Make sure preapproval is OK
-            $maxAmount = (isSet($event->data['user_lesson']['update']['1_on_1_price']) ? $event->data['user_lesson']['update']['1_on_1_price'] : null );
-            $datetime = (isSet($event->data['user_lesson']['update']['datetime']) ? $event->data['user_lesson']['update']['datetime'] : null );
+            $maxAmount = (isSet($event->data['user_lesson']['1_on_1_price']) ? $event->data['user_lesson']['1_on_1_price'] : null );
+            $datetime = (isSet($event->data['user_lesson']['datetime']) ? $event->data['user_lesson']['datetime'] : null );
             if(!$this->adaptivePayment->isValidApproval($event->data['user_lesson']['user_lesson_id'], $maxAmount, $datetime)) {
                 return false;
             }

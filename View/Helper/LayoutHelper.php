@@ -156,8 +156,44 @@ class LayoutHelper extends AppHelper {
                                             'data-toggle'=>'modal')));
     }
 
-    public function toolTip($text, $class='space3') {
-        return '<a href="#" rel="tooltip" data-placement="left" data-title="'.$text.'"><i class="iconSmall-info '.$class.'"></i></a>';
+    public function toolTip($text, $iClass='space3', $aClass=null, $id=null) {
+        $attributes = array('data-placement'=>'left', 'rel'=>'#', 'data-title'=>$text);
+        if($aClass) {
+            $attributes['class'] = $aClass;
+            $aClass = ' class="'.$aClass.'"';
+        }
+        if($id) {
+            $attributes['id'] = $id;
+            $id = ' id="'.$id.'"';
+        }
+
+        return '<a href="#" '.$id.' rel="tooltip" data-placement="left" data-title="'.$text.'" '.$aClass.'><i class="iconSmall-info '.$iClass.'"></i></a>';
+
+    }
+
+    public function buildLessonTooltipHtml($data=array(), $lessonType=null) {
+        if(!$lessonType) {
+            $lessonType = $data['lesson_type'];
+        }
+        $fields = array('duration_minutes'=>__('Duration minutes'), '1_on_1_price'=>__('1 on 1 price'));
+
+        if($lessonType==LESSON_TYPE_LIVE) {
+            $fields2 = array( 'datetime'=>__('Datetime'), 'is_public'=>__('Is public'), 'max_students'=>__('Max students'), 'full_group_student_price'=>__('Full group price'));
+            $fields = am($fields, $fields2);
+        }
+
+        $return = '<div style=\'text-align: left;\'>';
+        foreach($fields AS $fieldKey=>$fieldName) {
+            if(!isSet($data[$fieldKey]) || empty($data[$fieldKey])) {
+                continue;
+            }
+
+            $return .= '<p><strong>'.$fieldName.'</strong> '.$data[$fieldKey].'</p>';
+        }
+
+        $return .= '</div>';
+
+        return $return;
     }
 
     public function styleForInput($extra=array()) {

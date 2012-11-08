@@ -49,6 +49,15 @@ PostForm.prototype.loadForm = function( formSelector, appendResultsSelector, typ
         //Get form action (url)
         url = $(this).attr('action');
 
+        if(!params) {
+            params = $(this).data();
+        }
+        //Append data-* as hidden:input
+        formData = $(this).data();
+        $.each(formData, function(key, val){
+            $('<input>').attr('type','hidden').attr('name', key).attr('value', val).appendTo(formSelector);
+        });
+
         $.ajax({
             url: jQuery.nano(url, params),
             type: type,
@@ -422,10 +431,13 @@ function initCopyIdLinks() {
     });
 }
 
+function initToolTips() {
+    $("[rel=tooltip]").tooltip({html: true});
+}
 
 $(document).ready(function(){
     //Activate tooltip
-    $("[rel=tooltip]").tooltip();
+    initToolTips();
 
     //Disable links anchor default <a href="#">..
     //Without it - the user screen will jump
@@ -441,7 +453,7 @@ $(document).ready(function(){
     $.ajaxSetup({
         error: function(event, request, options, error) {
             switch (event.status) {
-                case 403: //Forbidden - caused by users that not logged in
+                case 403: //Forb    idden - caused by users that not logged in
                     $('#login-popup').modal('show');
                 break;
             }

@@ -27,6 +27,18 @@ class LessonsController extends AppController {
 	}
 
     /**
+     * TODO:
+     *
+     * Download files
+     * Take tests
+     * Submit files to the teacher
+     * forum
+     *
+     * if $teacherLessonId is provided - check if there is an existing recording on watchitoo
+     * @param $subjectId
+     */
+
+    /**
      * Give the teacher the option to manage his lesson
      * @param $subjectId
      */

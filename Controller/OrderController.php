@@ -217,12 +217,12 @@ class OrderController extends AppController {
         $this->checkIfCanOrder($actionData);
 
         $viewParameters = array();
-        $viewParameters['name']         = $actionData['Subject']['name'];
-        $viewParameters['description']  = $actionData['Subject']['description'];
-        $viewParameters['lesson_type']  = $actionData['Subject']['lesson_type'];
-        $viewParameters['duration_minutes']  = $actionData['Subject']['duration_minutes'];
-        $viewParameters['datetime']     = $this->getOrderData('datetime');
-        $viewParameters['price']        = $this->getOrderData('price');
+        $viewParameters['name']             = $actionData['Subject']['name'];
+        $viewParameters['description']      = $actionData['Subject']['description'];
+        $viewParameters['lesson_type']      = $actionData['Subject']['lesson_type'];
+        $viewParameters['duration_minutes'] = $actionData['Subject']['duration_minutes'];
+        $viewParameters['datetime']         = $this->getOrderData('datetime');
+        $viewParameters['price']            = $this->getOrderData('price');
         if($actionData['Subject']['lesson_type']=='live') {
             $viewParameters['max_students']  = $actionData['Subject']['max_students'];
         }
@@ -255,6 +255,9 @@ class OrderController extends AppController {
                 }
                 $viewParameters['num_of_students']              = $actionData['TeacherLesson']['num_of_students'];
             break;
+        }
+        if($extra = $this->getOrderData('extra')) {
+            $viewParameters = am($viewParameters, $extra);
         }
 
 

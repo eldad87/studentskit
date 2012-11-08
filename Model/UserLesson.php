@@ -875,6 +875,7 @@ class UserLesson extends AppModel {
         }
 
 
+
         $event = new CakeEvent('Model.UserLesson.beforeReProposeRequest', $this, array('user_lesson'=>$userLessonData, 'update'=>$data, 'by_user_id'=>$byUserId));
         $this->getEventManager()->dispatch($event);
         if ($event->isStopped()) {
@@ -1551,6 +1552,7 @@ class UserLesson extends AppModel {
     }
 
     public function checkStage($userLessonData) {
+        $return = array();
         if(in_array($userLessonData['stage'], array(USER_LESSON_ACCEPTED,
             USER_LESSON_PENDING_RATING,
             USER_LESSON_PENDING_TEACHER_RATING,
