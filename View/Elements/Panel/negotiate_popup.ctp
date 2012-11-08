@@ -24,12 +24,12 @@
                 dataType: 'html'
 
             }).done(function ( data ) {
-                    //Append data into form
-                    $('#negotiate-form .modal-body').html(data);
+                //Append data into form
+                $('#negotiate-form .modal-body').html(data);
 
-                    //Show popup
-                    $('#negotiate-popup').modal('show');
-                });
+                //Show popup
+                $('#negotiate-popup').modal('show');
+            });
 
 
         });

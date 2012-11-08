@@ -93,28 +93,52 @@ class StudentController extends AppController {
 	}
 	
 	public function acceptUserLesson( $userLessonId ) {
-        //TODO: force POST
+        //force POST
 
         $userLessonData = $this->UserLesson->findByUserLessonId($userLessonId);
+        $this->set('lessonType', $userLessonData['UserLesson']['lesson_type']);
+        $this->set('userLessonData', $userLessonData['UserLesson']);
 
-        //if done by the student - Check if preapproval is OK
-        if($userLessonData['UserLesson']['student_user_id']==$this->Auth->user('user_id')) {
-            $maxAmount = (isSet($userLessonData['UserLesson']['1_on_1_price']) ? $userLessonData['UserLesson']['1_on_1_price'] : null );
-            $datetime = (isSet($userLessonData['UserLesson']['datetime']) ? $userLessonData['UserLesson']['datetime'] : null );
-            if(!$this->AdaptivePayment->isValidApproval($userLessonId, $maxAmount, $datetime)) {
-                if(isSet($this->params['ext'])) {
+        if($this->RequestHandler->isPost()) {
+            $paymentPage = array();
 
-                    //Redirect to order
-                    return $this->error(1,  array('results'=>array('user_lesson_id'=>$userLessonId, 'orderURL'=>array('controller'=>'Order', 'action'=>'init', 'accept', $userLessonId, '?'=>array('returnURL'=>urlencode(Router::url(null, true)))))));
+
+            //if done by the student - Check if preapproval is OK
+            if($userLessonData['UserLesson']['student_user_id']==$this->Auth->user('user_id')) {
+                $maxAmount = (isSet($userLessonData['UserLesson']['1_on_1_price']) ? $userLessonData['UserLesson']['1_on_1_price'] : null );
+                $datetime = (isSet($userLessonData['UserLesson']['datetime']) ? $userLessonData['UserLesson']['datetime'] : null );
+                if(!$this->AdaptivePayment->isValidApproval($userLessonId, $maxAmount, $datetime)) {
+                    $paymentPage = array('controller'=>'Order', 'action'=>'init', 'accept', $userLessonId, '?'=>array('returnURL'=>urlencode(Router::url(null, true))));
+
+                    if(isSet($this->params['ext'])) {
+                        //Redirect to order
+                        return $this->error(1,  array('results'=>array('user_lesson_id'=>$userLessonId, 'orderURL'=>$paymentPage)));
+                    }
+                    $this->set('paymentPage', $paymentPage);
                 }
-                $this->redirect(array('controller'=>'Order', 'action'=>'init', 'accept', $userLessonId));
+            }
+
+            //No payment needed
+            if(!$paymentPage) {
+
+                if(!$this->UserLesson->acceptRequest( $userLessonId, $this->Auth->user('user_id') )) {
+                    return $this->error(1, array('results'=>array('user_lesson_id'=>$userLessonId, 'validation_errors'=>$this->UserLesson->validationErrors)));
+                } else {
+
+                    if(isSet($this->params['ext'])) {
+                        //Redirect to order
+                        return $this->success(1, array('results'=>array('user_lesson_id'=>$userLessonId)));
+                    }
+
+                    //Success
+                    $this->set('success', true);
+
+                    if(isSet($this->request->data['removeElementAfterAccept'])) {
+                        $this->set('removeElement', $this->request->data['removeElementAfterAccept']);
+                    }
+                }
             }
         }
-
-		if(!$this->UserLesson->acceptRequest( $userLessonId, $this->Auth->user('user_id') )) {
-            return $this->error(1, array('results'=>array('user_lesson_id'=>$userLessonId, 'validation_errors'=>$this->UserLesson->validationErrors)));
-		}
-		return $this->success(1, array('results'=>array('user_lesson_id'=>$userLessonId)));
 	}
 
     public function reProposeRequest($userLessonId) {

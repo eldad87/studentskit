@@ -5,6 +5,7 @@ echo $this->element('panel/cancel_lesson_popup', array('buttonSelector'=>'.confi
                                                              'cancelUrl'=>array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')));
 echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
 echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate'));
+echo $this->element('panel/accept_lesson_popup', array('buttonSelector'=>'.confirm-accept'));
 ?>
 <script type="text/javascript">
     $(document).ready(function(){
@@ -37,7 +38,7 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
                             <i class="iconSmall-drop-arrow"></i>
                         </a>
                         <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
-                            <li><a href="#" class="confirm-accept" data-cancel-prefix="user_lesson_id" data-id="'.$lessonInvitation['UserLesson']['user_lesson_id'].'">'.__('Accept').'</a></li>
+                            <li><a href="#" class="confirm-accept" data-remove-element-after-accept="#user_lesson_id_'.$lessonInvitation['UserLesson']['user_lesson_id'].'" data-user_lesson_id="'.$lessonInvitation['UserLesson']['user_lesson_id'].'">'.__('Accept').'</a></li>
                             '.(empty($lessonInvitation['UserLesson']['teacher_lesson_id']) ? '<li><a href="#" class="negotiate" data-remove-element-after-negotiate="#user_lesson_id_'.$lessonInvitation['UserLesson']['user_lesson_id'].'" data-user_lesson_id="'.$lessonInvitation['UserLesson']['user_lesson_id'].'">'.__('Negotiate').'</a></li>' : null).'
                             <li><a href="#" class="confirm-deny" data-cancel-prefix="user_lesson_id" data-id="'.$lessonInvitation['UserLesson']['user_lesson_id'].'">'.__('Deny').'</a></li>
                             <li><a href="#" class="msg-teacher" data-entity_type="lesson" data-entity_id="'.$lessonInvitation['UserLesson']['user_lesson_id'].'" data-to_user_id="'.$lessonInvitation['UserLesson']['teacher_user_id'].'">'.__('Message teacher').'</a></li>

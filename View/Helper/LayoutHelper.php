@@ -182,6 +182,16 @@ class LayoutHelper extends AppHelper {
             $fields = am($fields, $fields2);
         }
 
+        if(isSet($data['1_on_1_price']) && $data['1_on_1_price']==0) {
+            $data['1_on_1_price'] = __('Free');
+
+            if(isSet($data['max_students']) && $data['max_students']>1) {
+                $data['full_group_student_price'] = $data['1_on_1_price'];
+            } else {
+                unset($data['full_group_student_price']);
+            }
+        }
+
         $return = '<div style=\'text-align: left;\'>';
         foreach($fields AS $fieldKey=>$fieldName) {
             if(!isSet($data[$fieldKey]) || empty($data[$fieldKey])) {
