@@ -11,8 +11,8 @@
                     </div> <!-- /student-main-box -->
 
                     <ul class="right-menu">
-                        <li class="bg-main bg-active"><a href="#tab1" class="load2" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'index')); ?>">User Management</a></li>
-                        <li class="bg-sub"><a href="#tab2" class="load1" rel="student-profile-um-lessons.html">Lessons</a></li>
+                        <li class="bg-main bg-active"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'index')); ?>">User Management</a></li>
+                        <li class="bg-sub"><a href="#" class="load2 " rel="<?php echo Router::url(array('controller'=>'Student','action'=>'lessons')); ?>">Lessons</a></li>
                         <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'profile')); ?>">Profile</a></li>
                         <li class="bg-sub"><a href="#" class="load1" rel="student-profile-um-rate-students-form.html">Rate (3)</a></li>
                         <li class="bg-main"><a href="#" class="load1" rel="student-profile-tm.html">Teacher Management</a></li>

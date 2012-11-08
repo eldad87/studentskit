@@ -83,15 +83,15 @@ PostForm.prototype.loadForm = function( formSelector, appendResultsSelector, typ
  * Used to post the form data, if any erros - append them
  */
 
-function PostFormAPI() {
+function PostAPI() {
     this.forms = {};
     this.callbacks = {before:{}, after:{}};
 }
 
-PostFormAPI.prototype.setAppendCallback = function( formSelector, on, func ) {
+PostAPI.prototype.setAppendCallback = function( formSelector, on, func ) {
     this.callbacks[on][formSelector] = func;
 }
-PostFormAPI.prototype.getAppendCallback = function( formSelector, on ) {
+PostAPI.prototype.getAppendCallback = function( formSelector, on ) {
     if(this.callbacks[on][formSelector]) {
         return this.callbacks[on][formSelector];
     }
@@ -100,26 +100,45 @@ PostFormAPI.prototype.getAppendCallback = function( formSelector, on ) {
 }
 
 
-PostFormAPI.prototype.loadForm = function( formSelector, appendErrorsSelector, type, params ) {
+PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSelector, type ) {
     var postFormAPI = this;
 
-    $(formSelector).submit(function(event) {
+    $(formSelector).on(onEvent, function(event) {
 
-        beforeCallback = postFormAPI.getAppendCallback(formSelector, 'before');
-        if(beforeCallback) {
-            if(!beforeCallback( data )) {
-                return false;
+
+        //Link data-* attributes will be used as data
+        urlParams = $(this).data();
+        dataParams = {};
+
+        //Check if this is a form
+        if($(this).attr('action')) {
+
+            //Convert the data-* into hidden inputs
+            if(urlParams) {
+                form = $(this);
+                $.each(urlParams, function(key, val){
+                    $('<input>').attr('type','hidden').attr('name', key).attr('value', val).appendTo(form);
+                });
             }
+
+
+            //Form inputs will be used as data
+            dataParams = $(this).serialize();
+
+            //Get form action - this will be used as url
+            url = $(this).attr('action');
+
+        } else {
+            //data-target
+            url = urlParams['target'];
+
+            dataParams = urlParams;
         }
 
-        //Get form action (url)
-        url = $(this).attr('action');
-
-
         $.ajax({
-            url: jQuery.nano(url, params),
+            url: jQuery.nano(url, urlParams),
             type: type,
-            data: $(this).serialize(),
+            data: dataParams,
             dataType: 'json'
 
         }).done(function ( data ) {
@@ -134,11 +153,19 @@ PostFormAPI.prototype.loadForm = function( formSelector, appendErrorsSelector, t
                 if(data['response']['title'][0]=='Error') {
                     //Show error
                     var msg = '';
-                    $.each(data['response']['validation_errors'], function(key, val) {
+
+                    var validationErrors = {};
+                    if(data['response']['validation_errors']!=undefined) {
+                        validationErrors = data['response']['validation_errors'];
+                    } else if(data['response']['results'] && data['response']['results']['validation_errors']!=undefined) {
+                        validationErrors = data['response']['results']['validation_errors'];
+                    }
+
+                    $.each(validationErrors, function(key, val) {
                         msg += val[0] + '<br />';
                     });
                     showError(appendErrorsSelector, data['response']['description'][0], msg);
-
+                    return false;
                 }
 
                 afterCallback = postFormAPI.getAppendCallback(formSelector, 'after');
@@ -156,16 +183,25 @@ PostFormAPI.prototype.loadForm = function( formSelector, appendErrorsSelector, t
 
 /* Back office tabs */
 
+//Old Tabs
 $(document).ready(function(){
     $(".load").live("click",function(){
         $(".loadpage").load("/ajax/"+$(this).attr('rel'));
         $(".booking-nav li").removeClass("active");
         $(this).parent("li").addClass("active");
     });
-
+});
+//New Tabs
+$(document).ready(function(){
+    $(".load3").live("click",function(){
+        $(".loadpage").load($(this).attr('rel'));
+        $(".booking-nav li").removeClass("active");
+        $(this).parent("li").addClass("active");
+    });
 });
 
-//Old menu link
+
+//Organizer - Old menu link
 $(document).ready(function(){
     $(".load1").live("click",function(){
         $("#main-area").load("/ajax/"+$(this).attr('rel'));
@@ -174,19 +210,7 @@ $(document).ready(function(){
     });
 
 });
-
-
-
-
-var pfObj = new PostForm();
-var pfAPIObj = new PostFormAPI();
-
-
-
-
-/////////////////////////////////////////////////////////////// site
-
-//New menu links
+//Organizer - New menu links
 $(document).ready(function(){
     $(".load2").live("click",function(){
         $(".loadpage1").load($(this).attr('rel'));
@@ -195,6 +219,108 @@ $(document).ready(function(){
     });
 
 });
+
+function initTabs() {
+
+    $(".tab-menu li").each(function(){
+        if($(this).hasClass("active")){
+            //	alert();
+            $(".loadpage").load($(this).children("a").attr("rel"));
+        }
+    });
+
+    return true;
+}
+
+$(document).ready(function(){
+    /* homepage - show latest board messages */
+
+    // For Search Selectbox
+    $(document).ready(function(){
+        $('.message-tm-stu').slimScroll({
+            height: '300px',
+            alwaysVisible: false,
+            start: 'bottom',
+            wheelStep: 10
+        });
+        $(".message-tm-more").click(function(){
+            var ht=$(".temphtml").load("/ajax/more.html", function(response, status, xhr){;
+                $('.message-tm-stu').append(response);
+                $(".message-tm-stu").slimScroll({scroll: '50px' });
+            });
+        });
+
+    });
+});
+
+
+//Boxes action buttons
+function ActionButtons() {
+    this.buttonSelectors = {};
+    this.callbacks = {before:{}, after:{}};
+}
+ActionButtons.prototype.setCallback = function( buttonSelector, on, func ) {
+    this.callbacks[on][buttonSelector] = func;
+}
+ActionButtons.prototype.getdCallback = function( buttonSelector, on ) {
+    if(this.callbacks[on][buttonSelector]) {
+        return this.callbacks[on][buttonSelector];
+    }
+
+    return false;
+}
+ActionButtons.prototype.loadButton = function(buttonSelector, url, type, params) {
+    var actionButton = this;
+
+    $(buttonSelector).click(function(event) {
+        event.preventDefault();
+
+        beforeCallback = postFormAPI.actionButton(buttonSelector, 'before');
+        if(beforeCallback) {
+            if(!beforeCallback( data )) {
+                return false;
+            }
+        }
+
+        $.ajax({
+            url: jQuery.nano(url, params),
+            type: type,
+            data: params,
+            dataType: 'json'
+
+        }).done(function ( data ) {
+
+                if(data['response']['title'][0]=='Error') {
+                    //Show error
+                    var msg = '';
+                    $.each(data['response']['validation_errors'], function(key, val) {
+                        msg += val[0] + '<br />';
+                    });
+                    showError(appendErrorsSelector, data['response']['description'][0], msg);
+
+                }
+
+                afterCallback = postFormAPI.getAppendCallback(buttonSelector, 'after');
+                if(afterCallback) {
+                    afterCallback( data );
+                }
+            });
+
+        //Stop from from submitting itself
+        return false;
+    });
+}
+
+
+var pfObj = new PostForm();
+var pAPIObj = new PostAPI();
+
+
+
+
+/////////////////////////////////////////////////////////////// site
+
+
 
 /*  live join subject page */
 function LoadMore() {
@@ -208,6 +334,18 @@ LoadMore.prototype.getNextPage = function(buttonSelector) {
 
     this.paginator[buttonSelector]++;
     return this.paginator[buttonSelector];
+}
+LoadMore.prototype.curlyBracketsVars = function(url, params) {
+
+    var curlyRe = /\{(.*?)}/g;
+    url = url.replace(curlyRe, function() {
+        if(!params[arguments[1]]) {
+            return '{' + arguments[1] + '}';
+        }
+        return params[arguments[1]];
+    });
+
+    return url;
 }
 
 LoadMore.prototype.loadMoreButton = function(buttonSelector, eventName, appendToSelector, url, params, type, limit, excludeGetParams) {
@@ -586,32 +724,6 @@ $(document).ready(function() {
 
     lmObj.loadMoreButton('a.more-btn1', 'click', 'ul.board-msg', '/Home/latestBoardPosts/{limit}/{page}', jsSettings, 'get', 5);
 });
-
-
-/////////////////////////////////////// Teacher/User panel
-$(document).ready(function(){
-    /* homepage - show latest board messages */
-
-    // For Search Selectbox
-    $(document).ready(function(){
-        $('.message-tm-stu').slimScroll({
-              height: '300px',
-              alwaysVisible: false,
-              start: 'bottom',
-              wheelStep: 10
-        });
-        $(".message-tm-more").click(function(){
-                var ht=$(".temphtml").load("/ajax/more.html", function(response, status, xhr){;
-                    $('.message-tm-stu').append(response);
-                    $(".message-tm-stu").slimScroll({scroll: '50px' });
-                });
-        });
-
-    });
-});
-
-
-
 
 ///////////////////////////////////////
 

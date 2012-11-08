@@ -665,7 +665,7 @@ class Subject extends AppModel {
             $this->bindTeacherOnLessonOffer();
         }
 		return $this->find('all', array('conditions'=>$conditions, 
-										'order'=>'created', 
+										//'order'=>'created', //It will get done by default order
 										'limit'=>$limit,
 										'page'=>$page
         ));

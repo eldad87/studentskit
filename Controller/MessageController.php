@@ -39,7 +39,14 @@ class MessageController extends AppController {
 			$results = $this->Thread->replayMessage($this->request->data['thread_id'], $this->Auth->user('user_id'), $this->request->data['message']);
 			
 		} else if(isSet($this->request->data['to_user_id']) && $this->request->data['to_user_id']) {
-			$results = $this->Thread->createThread($this->request->data['message'], $this->Auth->user('user_id'), $this->request->data['to_user_id']);
+            $entityType = $entityId = null;
+            if(isSet($this->request->data['entity_type']) && !empty($this->request->data['entity_type']) &&
+                isSet($this->request->data['entity_id']) && !empty($this->request->data['entity_id']) ) {
+                $entityType = $this->request->data['entity_type'];
+                $entityId = $this->request->data['entity_id'];
+            }
+
+			$results = $this->Thread->createThread($this->request->data['message'], $this->Auth->user('user_id'), $this->request->data['to_user_id'], $entityType, $entityId);
 			
 		} else {
 			return $this->error(2);

@@ -147,10 +147,12 @@ class LayoutHelper extends AppHelper {
         return $vars;
     }
 
-    public function lessonRequestButton() {
+    public function lessonRequestButton($settings=array()) {
+        $defaultSettings = array('name'=>__('Lesson Request'), 'class'=>'btns btn-black pull-right text-color index-blackbtn');
+        $settings = am($defaultSettings, $settings);
 
-        return $this->_View->Html->link(__('Lesson Request'), '#lesson-request-popup',
-                                            $this->requireLogin(array( 'class'=>'btns btn-black pull-right text-color index-blackbtn',
+        return $this->_View->Html->link($settings['name'], '#lesson-request-popup',
+                                            $this->requireLogin(array( 'class'=>$settings['class'],
                                             'data-toggle'=>'modal')));
     }
 

@@ -20,7 +20,7 @@ class StudentController extends AppController {
 
 	public function index() {
 		//Get lessons that about to start
-		$upcomingLessons = $this->UserLesson->getUpcomming($this->Auth->user('user_id'), 2, 1);
+		$upcomingLessons = $this->UserLesson->getUpcoming($this->Auth->user('user_id'), 2, 1);
 
 
 		//Get student latest forum messages
@@ -36,11 +36,14 @@ class StudentController extends AppController {
 		$this->Set('upcomingLessons', $upcomingLessons);
 		$this->Set('latestUpdatedTopics', $latestUpdatedTopics);
 	}
-	
-	public function lessons($limit=5, $page=1) {
-		//Get lessons that about to start - upcomming
-		$upcommingLessons = $this->UserLesson->getUpcomming($this->Auth->user('user_id'), $limit, $page);
-		$this->Set('upcommingLessons', $upcommingLessons);
+
+    public function lessons() {
+
+    }
+	/*public function lessons($limit=5, $page=1) {
+		//Get lessons that about to start - upcoming
+		$upcomingLessons = $this->UserLesson->getUpcoming($this->Auth->user('user_id'), $limit, $page);
+		$this->Set('upcomingLessons', $upcomingLessons);
 
         //Get lessons that are over - archive
         $archiveLessons = $this->UserLesson->getArchive($this->Auth->user('user_id'), $limit, $page);
@@ -57,11 +60,11 @@ class StudentController extends AppController {
 		//Get lesson requests - lesson offers
         $subjectRequests = $this->Subject->getOffersByStudent($this->Auth->user('user_id'), $limit, $page);
 		$this->Set('subjectRequests', $subjectRequests);
-	}
+	}*/
 
 	public function lessonsUpcoming($limit=5, $page=1) {
-		$upcommingLessons = $this->UserLesson->getUpcomming($this->Auth->user('user_id'), $limit, $page);
-		return $this->success(1, array('upcommingLessons'=>$upcommingLessons));
+        $upcomingLessons = $this->UserLesson->getUpcoming($this->Auth->user('user_id'), $limit, $page);
+		return $this->success(1, array('upcomingLessons'=>$upcomingLessons));
 	}
 	public function lessonsBooking($limit=5, $page=1) {
 		$bookingLessons = $this->UserLesson->getBooking($this->Auth->user('user_id'), $limit, $page);
@@ -191,8 +194,21 @@ class StudentController extends AppController {
 		if (empty($this->request->data)) {
 			$this->request->data = $this->User->findByUserId($this->Auth->user('user_id'));
 		} else {
-			  $this->User->set($this->request->data);
-			  $this->User->save();
+            $this->User->id = $this->Auth->user('user_id');
+		    $this->User->save($this->request->data, true, array('first_name', 'last_name', 'phone', 'student_about',
+                'imageUpload',
+                'image',
+                'image_source',
+                'image_resize',
+                'image_crop_38x38',
+                'image_crop_60x60',
+                'image_crop_63x63',
+                'image_crop_72x72',
+                'image_crop_78x78',
+                'image_crop_80x80',
+                'image_crop_100x100',
+                'image_crop_149x182',
+                'image_crop_200x210'));
 		}
 	}
 	

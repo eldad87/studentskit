@@ -118,7 +118,7 @@ msgid "Internal error"
 msgstr "שגיאה פנימית"
 
 #: Config\api.php:98;101
-msgid "Upcomming lessons and booking"
+msgid "Upcoming lessons and booking"
 msgstr "השיעורים הבאים ובוקינג"
 
 #: Config\api.php:104

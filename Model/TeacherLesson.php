@@ -599,7 +599,7 @@ class TeacherLesson extends AppModel {
 		));
 	}
 	
-	public function getUpcomming($teacherUserId, $subjectId=null, $limit=null, $page=1) {
+	public function getUpcoming($teacherUserId, $subjectId=null, $limit=null, $page=1) {
 		$this->Subject;
 		$conditions = array( 'teacher_user_id'=>$teacherUserId, 'is_deleted'=>0,
                 'OR'=>array(

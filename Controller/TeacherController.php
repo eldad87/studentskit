@@ -12,7 +12,7 @@ class TeacherController extends AppController {
     }
 	
 	public function index() {
-		$aboutToStartLessons = $this->TeacherLesson->getUpcomming($this->Auth->user('user_id'). null, 2, 1);
+		$aboutToStartLessons = $this->TeacherLesson->getUpcoming($this->Auth->user('user_id'). null, 2, 1);
 
         //Get student latest forum messages
         app::import('Model', 'Forum.Post');
@@ -113,8 +113,8 @@ class TeacherController extends AppController {
 	
 	//"upcoming", "archive", "booking requests", "invitations sent" and "proposed lessons"
 	public function lessons($limit=5, $page=1) {
-		$upcommingLessons = $this->TeacherLesson->getUpcomming($this->Auth->user('user_id'), null, $limit, $page);
-		$this->Set('upcommingLessons', $upcommingLessons);
+		$upcomingLessons = $this->TeacherLesson->getUpcoming($this->Auth->user('user_id'), null, $limit, $page);
+		$this->Set('upcomingLessons', $upcomingLessons);
 
         $archiveLessons = $this->TeacherLesson->getArchive($this->Auth->user('user_id'), null, $limit, $page);
         $this->Set('archiveLessons', $archiveLessons);
@@ -134,7 +134,7 @@ class TeacherController extends AppController {
 	}
 
 	public function lessonsUpcoming( $limit=6, $page=1, $subjectId=null ) {
-		$nextLessons = $this->TeacherLesson->getUpcomming($this->Auth->user('user_id'), $subjectId, $limit, $page);
+		$nextLessons = $this->TeacherLesson->getUpcoming($this->Auth->user('user_id'), $subjectId, $limit, $page);
 		return $this->success(1, array('upcoming_lessons'=>$nextLessons));
 	}
 	public function lessonBookingRequests($limit=6, $page=1) {

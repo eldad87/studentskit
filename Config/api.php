@@ -173,16 +173,18 @@ $config['Home.canWatchVideo.error.2.description'] = __('Internal error');
 /********************* Student - Start		******************************************/
 /*-------------------- Student.LessonsUpcoming	--------------------*/
 $config['Student.lessonsUpcoming.success.1.title'] = __('Success');
-$config['Student.lessonsUpcoming.success.1.description'] = __('Upcomming lessons and booking');
+$config['Student.lessonsUpcoming.success.1.description'] = __('Upcoming lessons and booking');
 /*-------------------- Student.getBooking	--------------------*/
 $config['Student.getBooking.success.1.title'] = __('Success');
-$config['Student.getBooking.success.1.description'] = __('Upcomming lessons and booking');
+$config['Student.getBooking.success.1.description'] = __('Upcoming lessons and booking');
 /*-------------------- Student.LessonsArchive	--------------------*/
 $config['Student.lessonsArchive.success.1.title'] = __('Success');
 $config['Student.lessonsArchive.success.1.description'] = __('Archive lessons');
 /*-------------------- Student.LessonsInvitations	--------------------*/
 $config['Student.lessonsInvitations.success.1.title'] = __('Success');
 $config['Student.lessonsInvitations.success.1.description'] = __('Lesson invitations');
+$config['Student.lessonsInvitations.success.2.title'] = __('Success');
+$config['Student.lessonsInvitations.success.2.description'] = __('Lesson invitations');
 /*-------------------- Student.SubjectRequests	--------------------*/
 $config['Student.subjectRequests.success.1.title'] = __('Success');
 $config['Student.subjectRequests.success.1.description'] = __('Subject requests');

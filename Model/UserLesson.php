@@ -1058,7 +1058,7 @@ class UserLesson extends AppModel {
 		return $this->find('all', array('conditions'=>$conditions));
 	}
 	
-	public function getUpcomming($studentUserId, $limit=null, $page=1) {
+	public function getUpcoming($studentUserId, $limit=null, $page=1) {
 		$this->Subject;
 		return $this->getLessons(array('UserLesson.student_user_id'=>$studentUserId, 'UserLesson.teacher_lesson_id IS NOT NULL'), '>', $limit, $page,
                                     array(USER_LESSON_ACCEPTED));

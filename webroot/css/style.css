@@ -576,6 +576,10 @@ ul.row2 li.last{
 .price-tag-free {
     background:url("../img/price-arw-right-free.png") no-repeat scroll top right;
 }
+.price-tag-panel {
+    margin: 6px;
+    float: right;
+}
 
 .price-tag span {
     background:url("../img/price-arw-left.png") no-repeat;
@@ -4035,8 +4039,8 @@ ul.popupcontent-box li{
 	text-shadow:none;
 	font-size:12px;
 	color:#444;
-	text-align:center;
-	padding:5px;
+	/*text-align:center;
+	padding:5px;*/
 }
 
 ul.popupcontent-box li a{
@@ -4044,7 +4048,8 @@ ul.popupcontent-box li a{
 }
 
 ul.popupcontent-box li a:hover{
-	color:#299fe0;
+    /*color:#299fe0;*/
+    color:#fff;
 }
 
 ul.popupcontent-box li a.popupactive{

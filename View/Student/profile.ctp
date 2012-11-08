@@ -3,8 +3,8 @@
     $(document).ready(function(){
         pfObj.loadForm('#user-profile-form', '#main-area', 'post');
 
-        pfAPIObj.loadForm('#change-password-form', '#change-password-form .modal-body', 'post');
-        pfAPIObj.setAppendCallback('#change-password-form', 'after', function(data){
+        pAPIObj.loadElement('#change-password-form', 'submit', '#change-password-form .modal-body', 'post');
+        pAPIObj.setAppendCallback('#change-password-form', 'after', function(data){
             if(data['response']['title'][0]=='Success') {
                 //Close popup
                 $('#change-password-popup').modal('hide');
@@ -30,7 +30,6 @@
                 </div>
                 <?php echo $this->Form->input('phone', $this->Layout->styleForInput(array('div'=>array('class'=>'control-group control2')))); ?>
                 <?php echo $this->Form->input('student_about', $this->Layout->styleForInput(array('div'=>array('class'=>'control-group control2')))); ?>
-                <?php echo $this->Form->input('last_name', $this->Layout->styleForInput(array('div'=>array('class'=>'control-group control2')  ))); ?>
                 <?php echo $this->Form->input('imageUpload', $this->Layout->styleForInput(array('div'=>array('class'=>'control-group control2'), 'type' => 'file'  ))); ?>
 
                 <div class="control-group control2">

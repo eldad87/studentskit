@@ -9,7 +9,7 @@
 class LessonsController extends AppController {
 	public $name = 'Lessons';
 	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
-	public $components = array('Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')), 'Security');
+	public $components = array('Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login'))/*, 'Security'*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 	public $helpers = array('Watchitoo');
 
@@ -54,6 +54,7 @@ class LessonsController extends AppController {
      * about to start - check if users need to do something in order to enter, if not - show counter. when get to 0 - refresh the page (client).
      */
     public function index($teacherLessonId) {
+
         $liveRequestStatus = $this->UserLesson->getLiveLessonStatus($teacherLessonId, $this->Auth->user('user_id'));
 
         if(!$liveRequestStatus) {
@@ -93,7 +94,22 @@ class LessonsController extends AppController {
 
             } else if( $liveRequestStatus['about_to_start'] ) {
 
-                if($liveRequestStatus['pending_teacher_approval']) {
+                if($liveRequestStatus['approved']) {
+                    //Show countdown
+
+                    if($liveRequestStatus['payment_needed']) {
+                        //Check payment - if did not pass, the user canceled his approval.
+                        App::import('Model', 'AdaptivePayment');
+                        $apObj = new AdaptivePayment();
+                        $enterLesson = $apObj->isPaid($liveRequestStatus['user_lesson_id']);
+                    } else {
+                        $enterLesson = true;
+                    }
+
+                } else if($liveRequestStatus['is_teacher']) {
+                    $enterLesson = true;
+
+                } else if($liveRequestStatus['pending_teacher_approval']) {
                     $this->Session->setFlash(__('Please wait for the teacher\'s approval first.'));
                     $this->redirect(array('controller'=>'Home', 'action'=>'teacherLesson', $liveRequestStatus['teacher_lesson_id']));
 
@@ -101,17 +117,6 @@ class LessonsController extends AppController {
                     $this->Session->setFlash(__('Please approve the lesson first'));
                     $this->redirect(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'invitations', $liveRequestStatus['user_lesson_id']));
 
-                } else if($liveRequestStatus['approved']) {
-                    //Show countdown
-                    $enterLesson = false;
-                    if($liveRequestStatus['payment_needed']) {
-                        //Check payment - if did not pass, the user canceled his approval.
-                        App::import('Model', 'AdaptivePayment');
-                        $apObj = new AdaptivePayment();
-                        $enterLesson = $apObj->isPaid($liveRequestStatus['user_lesson_id']);
-                    }
-                } else if($liveRequestStatus['is_teacher']) {
-                    $enterLesson = true;
                 }
 
                 if(!$enterLesson) {
@@ -201,11 +206,15 @@ class LessonsController extends AppController {
         $this->render('common'.DS.'lesson');
     }
 
-    public function invite() {
-        $this->request->data['teacher_lesson_id'] = 37;
+    public function invite($idKey=null, $id=null) {
+        if($idKey && $id) {
+            $this->request->data[$idKey] = $id;
+        }
+
+        /*$this->request->data['teacher_lesson_id'] = 37;
         //$this->request->data['subject_id'] = 1;
         $this->request->data['emails'] = 'sivaneshokol@gmail.com';
-        $this->request->data['message'] = 'My message';
+        $this->request->data['message'] = 'My message';*/
         $this->Subject; //init const
 
         if (!empty($this->request->data)) {
@@ -220,7 +229,7 @@ class LessonsController extends AppController {
             if(isSet($this->request->data['teacher_lesson_id']) && !empty($this->request->data['teacher_lesson_id'])) {
                 //Find teacher lesson
                 $this->TeacherLesson->recursive = -1;
-                $tlData = $this->TeacherLesson->find('first', array('teacher_lesson_id'=>$this->request->data['teacher_lesson_id']));
+                $tlData = $this->TeacherLesson->find('first', array('conditions'=>array('teacher_lesson_id'=>$this->request->data['teacher_lesson_id'])));
                 if(!$tlData) {
                     return $this->error(2);
                 }
@@ -244,6 +253,8 @@ class LessonsController extends AppController {
                     if($this->Auth->user('user_id')==$tlData['teacher_user_id']) {
                         $this->sendLiveLessonsJoinRequestsByTeacher($this->request->data['emails'], $this->request->data['teacher_lesson_id']);
                     }
+
+                    return $this->success(1);
                 } else {
                     $this->request->data['subject_id'] = $tlData['subject_id'];
                 }
@@ -264,9 +275,11 @@ class LessonsController extends AppController {
                 if($this->Auth->user('user_id')==$subjectData['user_id'] && $subjectData['type']==SUBJECT_TYPE_OFFER && $subjectData['lesson_type']==LESSON_TYPE_VIDEO) {
                     $this->sendVideoLessonsInvitationsByTeacher($this->request->data['emails'], $this->request->data['subject_id']);
                 }
+
+                return $this->success(2);
             }
 
-            return $this->success(1);
+
         }
     }
 

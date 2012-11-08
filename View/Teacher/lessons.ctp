@@ -1,31 +1,31 @@
 <?php echo $this->element('Panel/menu');  ?>
 
-<h3>Upcomming</h3>
+<h3>Upcoming</h3>
 <?php
 /*pr($bookingRequests);
 pr($archiveLessons);
 pr($lessonInvitations);
 pr($pendingProposedLessons);*/
-foreach($upcommingLessons AS $upcommingLesson) {
-	echo 'teacher_lesson_id: ',$upcommingLesson['TeacherLesson']['teacher_lesson_id'],'<br />';
-	echo 'datetime: ',$upcommingLesson['TeacherLesson']['datetime'],'<br />';
-	echo 'description: ',$upcommingLesson['TeacherLesson']['description'],'<br />';
-	echo 'language: ',$upcommingLesson['TeacherLesson']['language'],'<br />';
-	echo 'Num of students: ',$upcommingLesson['TeacherLesson']['num_of_students'],'<br />';
+foreach($upcomingLessons AS $upcomingLesson) {
+	echo 'teacher_lesson_id: ',$upcomingLesson['TeacherLesson']['teacher_lesson_id'],'<br />';
+	echo 'datetime: ',$upcomingLesson['TeacherLesson']['datetime'],'<br />';
+	echo 'description: ',$upcomingLesson['TeacherLesson']['description'],'<br />';
+	echo 'language: ',$upcomingLesson['TeacherLesson']['language'],'<br />';
+	echo 'Num of students: ',$upcomingLesson['TeacherLesson']['num_of_students'],'<br />';
 	echo '<br />';
 	
-	echo 'Rating: ',$upcommingLesson['Subject']['avarage_rating'],'<br />';
-	echo 'Max students: ',$upcommingLesson['TeacherLesson']['max_students'],'<br />';
-	echo 'Price for 1 on 1: ',$upcommingLesson['TeacherLesson']['1_on_1_price'],'<br />';
-	echo 'Price for student: ',$upcommingLesson['TeacherLesson']['full_group_student_price'],'<br />';
-	echo 'Price for full group: ',$upcommingLesson['TeacherLesson']['full_group_total_price'],'<br />';
+	echo 'Rating: ',$upcomingLesson['Subject']['avarage_rating'],'<br />';
+	echo 'Max students: ',$upcomingLesson['TeacherLesson']['max_students'],'<br />';
+	echo 'Price for 1 on 1: ',$upcomingLesson['TeacherLesson']['1_on_1_price'],'<br />';
+	echo 'Price for student: ',$upcomingLesson['TeacherLesson']['full_group_student_price'],'<br />';
+	echo 'Price for full group: ',$upcomingLesson['TeacherLesson']['full_group_total_price'],'<br />';
 	echo '<br />';
 	
-	echo 'Message: ',$upcommingLesson['TeacherLesson']['teacher_user_id'],'-',$upcommingLesson['TeacherLesson']['student_user_id'],'-',$upcommingLesson['TeacherLesson']['teacher_lesson_id'],'<br />';
+	echo 'Message: ',$upcomingLesson['TeacherLesson']['teacher_user_id'],'-',$upcomingLesson['TeacherLesson']['student_user_id'],'-',$upcomingLesson['TeacherLesson']['teacher_lesson_id'],'<br />';
 	
 	echo '<br />';
-	echo $this->Html->link('Cancel', array('controller'=>'Teacher','action'=>'cancelTeacherLesson', $upcommingLesson['TeacherLesson']['teacher_lesson_id'])),'<br />';
-	echo $this->Html->link('Manage', array('controller'=>'Teacher','action'=>'manageTeacherLesson', $upcommingLesson['TeacherLesson']['teacher_lesson_id']));
+	echo $this->Html->link('Cancel', array('controller'=>'Teacher','action'=>'cancelTeacherLesson', $upcomingLesson['TeacherLesson']['teacher_lesson_id'])),'<br />';
+	echo $this->Html->link('Manage', array('controller'=>'Teacher','action'=>'manageTeacherLesson', $upcomingLesson['TeacherLesson']['teacher_lesson_id']));
 	
 	
 	echo '<br /><br /><br />';

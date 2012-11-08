@@ -1,4 +1,4 @@
-<?php echo $this->element('js_settings', array('jsSettings'=>$jsSettings));  ?>
+<?php if(isSet($jsSettings)) { echo $this->element('js_settings', array('jsSettings'=>$jsSettings)); } ?>
 <?php echo $this->Html->docType('html5'); ?>
 <?php echo $this->Facebook->html(); ?>
 <head>
