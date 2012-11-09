@@ -188,6 +188,65 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
     });
 }
 
+/////////////////////////////////////////////////////////////// panel + site
+
+function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
+                         maxStudentsInputSelector, maxStudentsDivSelector,
+                         fullGroupStudentPriceDivSelector, fullGroupStudentPriceInputSelector) {
+
+    //Make Full-group-student-price invisible until the user set max-students>1
+    $(fullGroupStudentPriceDivSelector).hide();
+
+    //1. User change the value of 1on1 price
+    $(oneOnOnePriceInputSelector).change(function(){
+        if($(this).val()>0 && $(maxStudentsInputSelector).val()>1) {
+            $(fullGroupStudentPriceDivSelector).show();
+        } else {
+            $(fullGroupStudentPriceDivSelector).hide();
+        }
+
+        //If there is no group price or group price is higher then 1 on 1 price
+        if($(fullGroupStudentPriceInputSelector).val()=='' || $(fullGroupStudentPriceInputSelector).val()>$(this).val()) {
+
+            //Set 1on1 price on group price
+            $(fullGroupStudentPriceInputSelector).val($(this).val());
+        }
+
+    });
+
+    //Make sure that the group price is equal or lower then 1on1 price
+    $(fullGroupStudentPriceInputSelector).change(function(){
+        if($(this).val()>$(oneOnOnePriceInputSelector).val()) {
+            $(this).val($(oneOnOnePriceInputSelector).val());
+        }
+    });
+
+    //Show/Hide student full group price - by max-students
+    $(maxStudentsInputSelector).change(function(){
+        //Show group student price
+        if($(this).val()>1 && $(oneOnOnePriceInputSelector).val()>0) { //show it only if 1on1price>0
+            $(fullGroupStudentPriceDivSelector).show();
+
+            //Hide it
+        } else {
+            $(fullGroupStudentPriceDivSelector).hide();
+        }
+    });
+
+    //If lesson type is video, hide max students and full-group-price
+    $(lessonTypeInputSelector).change(function(){
+        if($(this).val()=='live') {
+            $(maxStudentsDivSelector).show();
+
+            //file max-students change
+            $(maxStudentsInputSelector).trigger('change');
+
+        } else {
+            $(maxStudentsDivSelector).hide();
+            $(fullGroupStudentPriceDivSelector).hide();
+        }
+    });
+}
 /////////////////////////////////////////////////////////////// panel
 
 /* Back office tabs */
@@ -527,58 +586,11 @@ $(document).ready(function(){
 //TODO: make it load by the element
 $(document).ready(function(){
 
-    //Make Full-group-student-price invisible until the user set max-students>1
 
-    //1. User change the value of 1on1 price
-    $('#Subject1On1Price').change(function(){
-        if($(this).val()>0 && $('#SubjectMaxStudents').val()>1) {
-            $('#fgspDiv').show();
-        } else {
-            $('#fgspDiv').hide();
-        }
+    initSubjectForm('#Subject1On1Price', '#SubjectLessonType',
+                    '#SubjectMaxStudents', '#msDiv',
+                    '#fgspDiv', '#SubjectFullGroupStudentPrice');
 
-        //If there is no group price or group price is higher then 1 on 1 price
-        if($('#SubjectFullGroupStudentPrice').val()=='' || $('#SubjectFullGroupStudentPrice').val()>$(this).val()) {
-
-            //Set 1on1 price on group price
-            $('#SubjectFullGroupStudentPrice').val($(this).val());
-        }
-
-    });
-
-    //Make sure that the group price is equal or lower then 1on1 price
-    $('#SubjectFullGroupStudentPrice').change(function(){
-        if($(this).val()>$('#Subject1On1Price').val()) {
-            $(this).val($('#Subject1On1Price').val());
-        }
-    });
-
-    //Show/Hide student full group price - by max-students
-    $('#SubjectMaxStudents').change(function(){
-        //Show group student price
-        if($(this).val()>1 && $('#Subject1On1Price').val()>0) { //show it only if 1on1price>0
-            $('#fgspDiv').show();
-
-        //Hide it
-        } else {
-            $('#fgspDiv').hide();
-        }
-    });
-
-    //If lesson type is video, hide max students and full-group-price
-    $('#SubjectLessonType').change(function(){
-        if($(this).val()=='live') {
-            $('#msDiv').show();
-
-            //file max-students change
-            //$('#fgspDiv').show();
-            $('#SubjectMaxStudents').trigger('change');
-
-        } else {
-            $('#msDiv').hide();
-            $('#fgspDiv').hide();
-        }
-    });
 
     //Handle form
     //Registration form JS
