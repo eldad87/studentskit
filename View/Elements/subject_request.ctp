@@ -11,7 +11,7 @@ echo $this->Html->link('<div class="lesson-box">
         '.$this->Layout->rating($avarageRating).'
         <div class="pull-right">
             '.$this->Layout->priceTag($oneOnOnePrice, $fullGroupStudentPrice).'
-            <a href="#"><i class="iconSmall-info space3"></i></a>
+            '.$this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($tooltipData)).'
         </div>
     </div>
 </div>', array('controller'=>'Requests', 'action'=>'offerSubject', $subjectId),

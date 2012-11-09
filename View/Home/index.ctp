@@ -27,6 +27,7 @@
                                                                     'oneOnOnePrice'         =>$newSubject['Subject']['1_on_1_price'],
                                                                     'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
                                                                     'imageSource'           =>$newSubject['Subject']['image_source'],
+                                                                    'tooltipData'           =>$newSubject['Subject'],
                             )), array('controller'=>'Home', 'action'=>'teacherSubject', $newSubject['Subject']['subject_id']), array('escape'=>false));
                             echo '</li>';
                         }

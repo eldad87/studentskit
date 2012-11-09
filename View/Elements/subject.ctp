@@ -19,8 +19,11 @@
     <div class="lesson-box-footer radius2">
         <?php echo $this->Layout->rating($avarageRating); ?>
         <div class="pull-right">
-            <?php echo$this->Layout->priceTag($oneOnOnePrice, $fullGroupStudentPrice); ?>
-            <a href="#"><i class="iconSmall-info space3"></i></a>
+            <?php
+                echo $this->Layout->priceTag($oneOnOnePrice, $fullGroupStudentPrice);
+                echo $this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($tooltipData));
+            ?>
+
         </div>
     </div>
 </div>
