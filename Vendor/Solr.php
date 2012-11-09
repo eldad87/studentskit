@@ -220,7 +220,7 @@ class Solr {
             $urlParams['q'] = implode(' ', $queryString);
         } else {
             //Build query like q=river naviga miles
-            $urlParams['q'] = $query['search'];
+            $urlParams['q'] = urlencode($query['search']); //To support Hebrew
         }
 
         //var_dump($query['fq']); die;
@@ -267,10 +267,13 @@ class Solr {
         }
         $postParams = substr($postParams, 0, -1); //Remove last &
 
+
+        $url .= '?'.$postParams;
         $ch = curl_init();
+
         curl_setopt($ch,CURLOPT_URL, $url);
-        curl_setopt($ch,CURLOPT_POST, count($postParams));
-        curl_setopt($ch,CURLOPT_POSTFIELDS, $postParams);
+        //curl_setopt($ch,CURLOPT_POST, count($postParams)); //To support hebrew
+        //curl_setopt($ch,CURLOPT_POSTFIELDS, $postParams);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 
         $resultsXML = curl_exec($ch);
