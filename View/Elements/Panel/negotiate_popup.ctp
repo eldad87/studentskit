@@ -44,7 +44,7 @@
         <h3><?php echo __('Negotiate'); ?></h3>
     </div>
     <?php echo $this->Form->create('UserLesson', array('class'=>'sk-form', 'id'=>'negotiate-form', 'method'=>'post',
-    'url'=>array('controller'=>'Student', 'action'=>'reProposeRequest', '{user_lesson_id}'))); ?>
+                                                            'url'=>array('controller'=>'Student', 'action'=>'reProposeRequest', '{user_lesson_id}'))); ?>
 
     <div class="modal-body">
 

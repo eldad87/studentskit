@@ -7,8 +7,8 @@
             <div class="cont-span8">
                 <h2 class="pull-left"><i class="iconBig-about space1"></i>Newest subjects</h2>
                 <?php
-                    echo $this->Layout->lessonRequestButton();
-                    echo $this->element('Home/lesson_request');
+                    echo $this->Layout->subjectRequestPopupButton();
+                    echo $this->element('Home/subject_request_popup');
                 ?>
                 <ul class="row">
                     <?php

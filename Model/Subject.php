@@ -376,7 +376,6 @@ class Subject extends AppModel {
             $update['last_modified']            = $subjectData['modified'] ? $subjectData['modified'] : $subjectData['created'];
 
             if($subjectData['subject_category_id'] && !empty($subjectData['subject_category_id'])) {
-                var_dump($subjectData['subject_category_id']);
                 App::import('Model', 'SubjectCategory');
                 $scObj = new SubjectCategory();
                 $update['categories']   = $scObj->getPathHierarchy($subjectData['subject_category_id'], true);

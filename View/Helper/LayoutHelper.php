@@ -147,13 +147,16 @@ class LayoutHelper extends AppHelper {
         return $vars;
     }
 
-    public function lessonRequestButton($settings=array()) {
+    public function subjectRequestPopupButton($settings=array()) {
         $defaultSettings = array('name'=>__('Lesson Request'), 'class'=>'btns btn-black pull-right text-color index-blackbtn');
         $settings = am($defaultSettings, $settings);
 
-        return $this->_View->Html->link($settings['name'], '#lesson-request-popup',
+        $settings['class'] .= ' lesson-request'; //JS recognize the button using this
+
+
+        return $this->_View->Html->link($settings['name'], '#',
                                             $this->requireLogin(array( 'class'=>$settings['class'],
-                                            'data-toggle'=>'modal')));
+                                            /*'data-toggle'=>'modal'*/)));
     }
 
     public function toolTip($text, $iClass='space3', $aClass=null, $id=null) {

@@ -22,23 +22,46 @@ class RequestsController extends AppController {
 	}
 	
 	//This method can be used via Ajax from HomeController or using a <form> from RequestsController
-	public function makeRequest() {
-		if (!empty($this->request->data)) {
-			App::import('Model', 'Subject');
-			unset($this->request->data['Subject']['subject_id']);
+	public function makeRequest($subjectId=null) {
+        unset($this->request->data['Subject']['subject_id']);
+
+        //Check that the user owns that subject
+        if($subjectId) {
+            $this->Subject->recursive = -1;
+            $subjectData = $this->Subject->findBySubjectId($subjectId);
+            if(!$subjectData || $subjectData['Subject']['user_id']!=$this->Auth->user('user_id')) {
+                return false;
+            }
+
+
+        }
+
+
+        if (empty($this->request->data)) {
+            if($subjectId) {
+                $this->request->data['Subject'] = $subjectData['Subject'];
+            }
+        } else {
+            $this->Subject->create(false);
+            $this->Subject->id = $subjectId;
+
 			$this->request->data['Subject']['is_enable'] = 1;
 			$this->request->data['Subject']['is_public'] = 1;
 			$this->request->data['Subject']['user_id'] = $this->Auth->user('user_id');
 			$this->request->data['Subject']['type'] = SUBJECT_TYPE_REQUEST;
 
-			$this->Subject->set($this->request->data);
-			if($this->Subject->save()) {
-				if($this->RequestHandler->isAjax()) {
+
+
+			//$this->Subject->set($this->request->data);
+			if($this->Subject->save($this->request->data)) {
+				if($this->params['ext']) {
 					return $this->success(1, array('subject_id'=>$this->Subject->id));
 				}
-				$this->Session->setFlash(__('Request saved, you can browse and manage it through the control panel'));
-				$this->redirect(array('action'=>'index'));
-			} else if($this->RequestHandler->isAjax()) {
+
+                $this->set('success', true);
+				//$this->Session->setFlash(__('Request saved, you can browse and manage it through the control panel'));
+				//$this->redirect(array('action'=>'index'));
+			} else if($this->params['ext']) {
 				return $this->error(1, array('validation_errors'=>$this->Subject->validationErrors));
 			}
 		}

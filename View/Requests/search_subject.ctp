@@ -15,8 +15,8 @@
                 </p>
 
                 <?php
-                echo $this->Layout->lessonRequestButton();
-                echo $this->element('Home/lesson_request');
+                echo $this->Layout->subjectRequestPopupButton();
+                echo $this->element('Home/subject_request_popup');
                 ?>
                 <div class="pull-left space6">
                     <!-- category filter -->

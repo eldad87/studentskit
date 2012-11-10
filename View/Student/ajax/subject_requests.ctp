@@ -1,7 +1,10 @@
 <p class="fontsize1 space8"><?php echo __('Here you can find lesson requests.'); ?></p>
 <?php
-    echo $this->Layout->lessonRequestButton(array('name'=>__('ADD'), 'class'=>'black-cent-butn2 add-blckbtn fontsize1 move-right'));
-    echo $this->element('Home/lesson_request');
+    echo $this->Layout->subjectRequestPopupButton(array('name'=>__('ADD'), 'class'=>'black-cent-butn2 add-blckbtn fontsize1 move-right'));
+    echo $this->element('Home/subject_request_popup');
+
+echo $this->element('panel/cancel_lesson_popup', array('buttonSelector'=>'.confirm-delete',
+    'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'disableSubject', '{id}')));
 ?>
 <script type="text/javascript">
     $(document).ready(function(){
@@ -18,11 +21,19 @@
         echo $this->Html->link('Cancel', array('controller'=>'Student','action'=>'cancelUserLesson', $upcomingLesson['UserLesson']['user_lesson_id']));
         */
 
-        echo '<div class="lesson-box space2">
+        echo '<div class="lesson-box space2" id="subject_id_'.$subjectRequest['Subject']['subject_id'].'">
                 <div class="head-back radius1">
                     <h1><strong>'.$subjectRequest['Subject']['name'].'</strong></h1>
-                    <a href="#" class=" pull-right"><i class="iconMedium-add-del"></i></a>
-                    <a href="#" class="pull-right"><i class="iconSmall-pencil  bot-pad"></i></a>
+                    <div class="dropdown pull-right">
+                        <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" href="#">
+                            <i class="iconSmall-drop-arrow"></i>
+                        </a>
+                        <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
+                            <li><a href="#" class="lesson-request" data-subject_id="'.$subjectRequest['Subject']['subject_id'].'">'.__('Edit').'</a></li>
+                            <li><a href="#" class="confirm-delete" data-cancel-prefix="subject_id" data-id="'.$subjectRequest['Subject']['subject_id'].'">'.__('Cancel').'</a></li>
+                        </ul>
+                    </div>
+
                 </div>
                 <div class="lesson-box-content">
                     <div class="user-pic2">'.$this->Html->image($this->Layout->image($subjectRequest['Subject']['image_source'], 72, 72), array('alt' => 'Lesson image'/*, 'class'=>'border1'*/)).'</div>
