@@ -122,7 +122,12 @@ class StudentController extends AppController {
             if(!$paymentPage) {
 
                 if(!$this->UserLesson->acceptRequest( $userLessonId, $this->Auth->user('user_id') )) {
-                    return $this->error(1, array('results'=>array('user_lesson_id'=>$userLessonId, 'validation_errors'=>$this->UserLesson->validationErrors)));
+
+                    if(isSet($this->params['ext'])) {
+                        return $this->error(1, array('results'=>array('user_lesson_id'=>$userLessonId, 'validation_errors'=>$this->UserLesson->validationErrors)));
+                    }
+
+                    $this->set('error', true);
                 } else {
 
                     if(isSet($this->params['ext'])) {
@@ -201,6 +206,7 @@ class StudentController extends AppController {
                         return $this->error(1, array('results'=>array('validation_errors'=>$this->UserLesson->validationErrors)));
                     }
                     $this->Session->setFlash(__('Error, cannot Re-Propose'));
+$this->set('error', true);
                 } else {
 
                     if(isSet($this->params['ext'])) {

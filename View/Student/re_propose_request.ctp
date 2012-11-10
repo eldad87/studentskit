@@ -8,6 +8,8 @@ if(isSet($paymentPage)) {
             <?php
                 if(isSet($success)) {
                     echo '$(\'#negotiate-popup\').modal(\'hide\');';
+                } else if(isSet($error)) {
+                    echo 'showError(\'#accept-popup .modal-body\',\''.__('Internal Error').'\', \'\')';
                 } else if($lessonType==LESSON_TYPE_LIVE) {
                     echo 'initSubjectForm(\'#UserLesson1On1Price\', \'#UserLessonLessonType\',
                                             \'#UserLessonMaxStudents\', \'#msDiv\',

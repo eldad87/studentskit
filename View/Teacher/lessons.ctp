@@ -1,12 +1,31 @@
-<?php echo $this->element('Panel/menu');  ?>
+<script type="text/javascript">
+    //Init tabs
+    $(document).ready(function(){
+        //initTabsOld();
+        initTabs();
+    });
+</script>
+<div class="cont-span6 ext-wid cbox-space">
+    <div class="search-all2 sort-mar">
+        <div class="black-line-approv"></div>
+        <ul class="booking-nav f-pad-norml um-upcoming f-pad-norml1 tab-menu">
+            <li class="active"><a href="#" class="load3" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'lessonsUpcoming')); ?>">Upcoming</a></li>
+            <li><a href="#"  class="load3" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'lessonsArchive')); ?>">Archive</a></li>
+            <li><a href="#" class="load3" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'lessonsBooking')); ?>">Booking</a></li>
+            <li class="c-mar3"><a href="#" class="load3" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'lessonsInvitations')); ?>">Invitations</a></li>
+        </ul>
+    </div>
+    <div class="clear"></div>
+    <div class="fullwidth loadpage">
+
+    </div> <!-- /fullwidth -->
+</div> <!-- /cont-span6 -->
+
+<?php /*echo $this->element('Panel/menu');  */?><!--
 
 <h3>Upcoming</h3>
 <?php
-/*pr($bookingRequests);
-pr($archiveLessons);
-pr($lessonInvitations);
-pr($pendingProposedLessons);*/
-foreach($upcomingLessons AS $upcomingLesson) {
+/*foreach($upcomingLessons AS $upcomingLesson) {
 	echo 'teacher_lesson_id: ',$upcomingLesson['TeacherLesson']['teacher_lesson_id'],'<br />';
 	echo 'datetime: ',$upcomingLesson['TeacherLesson']['datetime'],'<br />';
 	echo 'description: ',$upcomingLesson['TeacherLesson']['description'],'<br />';
@@ -30,11 +49,11 @@ foreach($upcomingLessons AS $upcomingLesson) {
 	
 	echo '<br /><br /><br />';
 }
-?>
+*/?>
 
 <h3>Booking requests</h3>
-<?php 
-foreach($bookingRequests AS $bookingRequest) {
+<?php
+/*foreach($bookingRequests AS $bookingRequest) {
 	echo 'user_lesson_id: ',$bookingRequest['UserLesson']['user_lesson_id'],'<br />';
 	echo 'datetime: ',$bookingRequest['UserLesson']['datetime'],'<br />';
 	echo 'Name: ',$bookingRequest['UserLesson']['name'],'<br />';
@@ -62,11 +81,11 @@ foreach($bookingRequests AS $bookingRequest) {
 	
 	echo '<br /><br /><br />';
 }
-?>
+*/?>
 
 <h3>Archive</h3>
-<?php 
-foreach($archiveLessons AS $archiveLesson) {
+<?php
+/*foreach($archiveLessons AS $archiveLesson) {
 	echo 'teacher_lesson_id: ',$archiveLesson['TeacherLesson']['teacher_lesson_id'],'<br />';
 	echo 'datetime: ',$archiveLesson['TeacherLesson']['datetime'],'<br />';
 	echo 'Name: ',$archiveLesson['TeacherLesson']['name'],'<br />';
@@ -83,11 +102,11 @@ foreach($archiveLessons AS $archiveLesson) {
 	
 	echo '<br /><br /><br />';
 }
-?>
+*/?>
 
 <h3>Invitations sent</h3>
-<?php 
-foreach($lessonInvitations AS $lessonInvitation) {
+--><?php
+/*foreach($lessonInvitations AS $lessonInvitation) {
 	echo 'user_lesson_id: ',$lessonInvitation['UserLesson']['user_lesson_id'],'<br />';
 	echo 'Is offer: ',(empty($lessonInvitation['UserLesson']['request_subject_id']) ? 'Offer' : 'Request'),'<br />';
 	
@@ -115,32 +134,4 @@ foreach($lessonInvitations AS $lessonInvitation) {
 	echo $this->Html->link('Cancel', array('controller'=>'Student','action'=>'cancelUserLesson', $lessonInvitation['UserLesson']['user_lesson_id']));
 	echo '<br /><br /><br />';
 }
-?>
-
-<?php
-//<h3>Proposed Lessons (pending student approval)</h3>
-/*foreach($pendingProposedLessons AS $pendingProposedLesson) {
-	echo 'SubjectId: ',$pendingProposedLesson['UserLesson']['subject_id'],'<br />';
-	echo 'Name: ',$pendingProposedLesson['UserLesson']['name'],'<br />';
-	echo 'description: ',$pendingProposedLesson['UserLesson']['description'],'<br />';
-	echo 'language: ',$pendingProposedLesson['UserLesson']['language'],'<br />';
-	echo '<br />';
-	
-	//echo 'Rating: ',$pendingProposedLesson['UserLesson']['avarage_rating'],'<br />';
-	echo 'Max students: ',$pendingProposedLesson['UserLesson']['max_students'],'<br />';
-	echo 'Price for 1 on 1: ',$pendingProposedLesson['UserLesson']['1_on_1_price'],'<br />';
-	echo 'Price for student: ',$pendingProposedLesson['UserLesson']['full_group_student_price'],'<br />';
-	echo 'Price for full group: ',$pendingProposedLesson['UserLesson']['full_group_total_price'],'<br />';
-	echo '<br />';
-
-    echo 'Message: ',$pendingProposedLesson['UserLesson']['teacher_user_id'],'-',$pendingProposedLesson['UserLesson']['student_user_id'],'-',$pendingProposedLesson['UserLesson']['user_lesson_id'],'<br />';
-
-	echo '<br />';
-    if(empty($pendingProposedLesson['UserLesson']['teacher_lesson_id'])) {
-        echo $this->Html->link('Re-Propose', array('controller'=>'Student','action'=>'reProposeRequest', $pendingProposedLesson['UserLesson']['user_lesson_id'])),'<br />';
-    }
-	echo $this->Html->link('Cancel', array('controller'=>'Teacher','action'=>'cancelUserLesson', $pendingProposedLesson['UserLesson']['user_lesson_id'])),'<br />';
-	
-	echo '<br /><br /><br />';
-}*/
-?>
+*/?>

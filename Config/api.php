@@ -204,9 +204,9 @@ $config['Student.acceptUserLesson.error.1.description'] = __('Cannot accept less
 /*-------------------- Teacher.lessonsUpcoming	--------------------*/
 $config['Teacher.lessonsUpcoming.success.1.title'] = __('Success');
 $config['Teacher.lessonsUpcoming.success.1.description'] = __('Upcoming lessons');
-/*-------------------- Teacher.lessonBookingRequests	--------------------*/
-$config['Teacher.lessonBookingRequests.success.1.title'] = __('Success');
-$config['Teacher.lessonBookingRequests.success.1.description'] = __('Booking lesson requests');
+/*-------------------- Teacher.lessonsBooking	--------------------*/
+$config['Teacher.lessonsBooking.success.1.title'] = __('Success');
+$config['Teacher.lessonsBooking.success.1.description'] = __('Booking lesson requests');
 /*-------------------- Teacher.lessonsArchive	--------------------*/
 $config['Teacher.lessonsArchive.success.1.title'] = __('Success');
 $config['Teacher.lessonsArchive.success.1.description'] = __('Lessons archive');

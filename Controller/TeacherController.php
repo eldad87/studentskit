@@ -12,15 +12,15 @@ class TeacherController extends AppController {
     }
 	
 	public function index() {
-		$aboutToStartLessons = $this->TeacherLesson->getUpcoming($this->Auth->user('user_id'). null, 2, 1);
-
+        $upcomingLessons = $this->TeacherLesson->getUpcoming($this->Auth->user('user_id'), null, 2, 1);
+//pr($upcomingLessons);
         //Get student latest forum messages
         app::import('Model', 'Forum.Post');
         $postObj = new Post();
         $postObj->setLanguages($this->Session->read('languages_of_records'));
         $latestUpdatedTopics = $postObj->getGroupedLatestUpdatedTopicsByUser($this->Auth->user('user_id'), 3);
 					
-		$this->Set('aboutToStartLessons', $aboutToStartLessons);
+		$this->Set('upcomingLessons', $upcomingLessons);
         $this->Set('latestUpdatedTopics', $latestUpdatedTopics);
 	}
 
@@ -135,19 +135,20 @@ class TeacherController extends AppController {
 
 	public function lessonsUpcoming( $limit=6, $page=1, $subjectId=null ) {
 		$nextLessons = $this->TeacherLesson->getUpcoming($this->Auth->user('user_id'), $subjectId, $limit, $page);
-		return $this->success(1, array('upcoming_lessons'=>$nextLessons));
+		return $this->success(1, array('upcomingLessons'=>$nextLessons));
 	}
-	public function lessonBookingRequests($limit=6, $page=1) {
-		$bookingRequests = $this->UserLesson->getWaitingForTeacherApproval($this->Auth->user('user_id'), $limit, $page);
-		return $this->success(1, array('booking_requests'=>$bookingRequests));
+	public function lessonsBooking($limit=6, $page=1, $subjectId=null) {
+		$bookingRequests = $this->UserLesson->getWaitingForTeacherApproval($this->Auth->user('user_id'), $subjectId, $limit, $page);
+		return $this->success(1, array('bookingRequests'=>$bookingRequests));
 	}
 	public function lessonsArchive($limit=6, $page=1) {
+        $this->Subject; //Init const
 		$archiveLessons = $this->TeacherLesson->getArchive($this->Auth->user('user_id'), null, $limit, $page);
-		return $this->success(1, array('archive_lessons'=>$archiveLessons));
+		return $this->success(1, array('archiveLessons'=>$archiveLessons));
 	}
-	public function lessonsInvitations($limit=6, $page=1) {
-		$lessonInvitations = $this->UserLesson->getTeacherInvitations($this->Auth->user('user_id'), null, $limit, $page);
-		return $this->success(1, array('lesson_invitaions'=>$lessonInvitations));
+	public function lessonsInvitations($limit=6, $page=1,$subjectId=null) {
+		$lessonInvitations = $this->UserLesson->getTeacherInvitations($this->Auth->user('user_id'), $subjectId, $limit, $page);
+		return $this->success(1, array('lessonInvitations'=>$lessonInvitations));
 	}
 	/*public function lessonsProposed($limit=6, $page=1) {
 		$pendingProposedLessons = $this->UserLesson->getPendingProposedLessons($this->Auth->user('user_id'), null, $limit, $page);

@@ -591,7 +591,7 @@ class TeacherLesson extends AppModel {
 			'is_deleted'=>1
 		);
 
-        $this->recursive = -1;
+        //$this->recursive = -1;
 		return $this->find('all', array(
 			'conditions'=>$conditions,
 			'page'=>$page,
@@ -615,7 +615,7 @@ class TeacherLesson extends AppModel {
 		if($subjectId) {
 			$conditions['TeacherLesson.subject_id'] = $subjectId;
 		}
-		
+
 		return $this->find('all', array(
 			'conditions'=>$conditions,
 			'page'=>$page,

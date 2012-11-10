@@ -8,6 +8,8 @@ if(isSet($paymentPage)) {
             <?php
                 if(isSet($success)) {
                     echo '$(\'#accept-popup\').modal(\'hide\');';
+                } else if(isSet($error)) {
+                    echo 'showError(\'#accept-popup .modal-body\',\''.__('Internal Error').'\', \'\')';
                 }
 
 
@@ -23,7 +25,10 @@ if(isSet($paymentPage)) {
     ?>
         <fieldset>
             <div class="booking-nagotiat">
-                <h6 class="pull-left fullwidth head-textcolor"><!--<i class="iconSmall-info space10"></i>--> Modified Setting</h6>
+                <h6 class="pull-left fullwidth head-textcolor"><?php echo  ($userLessonData['stage']==USER_LESSON_RESCHEDULED_BY_STUDENT ||
+                                                                            $userLessonData['stage']==USER_LESSON_RESCHEDULED_BY_TEACHER) ?
+                                                                                __('Modified Settings') : __('Original Settings')
+                    ?></h6>
                 <ul>
                     <li>
                         <label><!--<i class="iconSmall-info space10"></i>--><?php echo __('Datetime'); ?>:</label>
