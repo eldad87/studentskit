@@ -18,7 +18,7 @@
                         <li class="bg-main"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'index')); ?>">Teacher Management</a></li>
                         <li class="bg-sub"><a href="#" class="load1" rel="student-profile-tm-mysubjects.html">My Subjects</a></li>
                         <li class="bg-sub"><a href="#" class="load2" rel=<?php echo Router::url(array('controller'=>'Teacher','action'=>'lessons')); ?>>Lessons</a></li>
-                        <li class="bg-sub"><a href="#" class="load1" rel="student-profile-tm-profile.html">Profile</a></li>
+                        <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'profile')); ?>">Profile</a></li>
                         <li class="bg-sub"><a href="#" class="load1" rel="student-profile-tm-rate-form.html">Rate</a></li>
                         <li class="bg-main"><a href="#" class="load1" rel="student-profile-billinginfo.html">Billing Info</a></li>
                         <li class="bg-main"><a href="#" class="load1" rel="student-profile-calender.html">Calender</a></li>

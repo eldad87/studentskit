@@ -1,7 +1,10 @@
 <p class="fontsize1 space8"><?php echo __('Here you can find all invitations that still pending for your approval.'); ?></p>
 
 <?php
-echo $this->element('panel/cancel_lesson_popup', array('buttonSelector'=>'.confirm-deny',
+echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-deny',
+                                                        'title'=>__('Cancel an invitation'),
+                                                        'description'=>__('This procedure may be irreversible.
+                                                                                Do you want to proceed?'),
                                                              'cancelUrl'=>array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')));
 echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
 echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate'));

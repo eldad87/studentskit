@@ -196,8 +196,8 @@ class TeacherController extends AppController {
 		if (empty($this->request->data)) {
 			$this->request->data = $userData;
 		} else {
-			  $this->User->set($this->request->data);
-			  $this->User->save();
+            $this->User->id = $this->Auth->user('user_id');
+            $this->User->save($this->request->data, true, array('teacher_about', 'teacher_address', 'teacher_zipcode'));
 		}
 
         $this->set('userData', $userData);
@@ -207,16 +207,48 @@ class TeacherController extends AppController {
      * Add a certification to the Teacher's profile
      * @return array
      */
-    public function addCertificate() {
-        if (!empty($this->request->data)) {
+    public function certificate($teacherCertificateId=null) {
+        unset( $this->request->data['TeacherCertificate']['teacher_certificate_id']);
+        //pr( $this->request->data['updateExistingCertificateId']); die;
+        ////pr($this->request->data); die;
+        if($teacherCertificateId) {
+            $certificateData = $this->getCertificate($teacherCertificateId);
+            if(!$certificateData || $certificateData['TeacherCertificate']['teacher_user_id']!=$this->Auth->user('user_id')) {
+                return $this->error(1);
+            }
+        }
+
+        if (empty($this->request->data)) {
+            if(isSet($certificateData)) {
+                $this->request->data  = $certificateData;
+            }
+        } else {
+
+            if($teacherCertificateId) {
+                $this->request->data['TeacherCertificate']['teacher_certificate_id']  = $teacherCertificateId;
+            }
             $this->request->data['TeacherCertificate']['teacher_user_id'] = $this->Auth->user('user_id');
-            if(!$this->User->TeacherCertificate->save($this->request->data)) {
-                return $this->error(1, array('results'=>$this->User->TeacherCertificate->validationErrors));
+            if($this->User->TeacherCertificate->save($this->request->data)) {
+                $this->set('success', true);
+
+                $certificateData = $this->getCertificate($teacherCertificateId);
+                $this->set('certificateData', $certificateData['TeacherCertificate']);
+                if(isSet($this->request->data['updateExistingCertificateId'])) {
+                    $this->set('updateExisting', $this->request->data['updateExistingCertificateId']);
+                }
+                if(isSet($this->request->data['updateNewCertificateId'])) {
+                    $this->set('updateNew', $this->request->data['updateNewCertificateId']);
+                }
             }
 
-            return $this->success(1, array('results'=>array('teacher_certificate_id'=>$this->User->TeacherCertificate->id)));
+            //return $this->error(2, array('results'=>$this->User->TeacherCertificate->validationErrors));
         }
     }
+    private function getCertificate($teacherCertificateId) {
+        $this->User->TeacherCertificate->recursive = -1;
+        return $certificateData = $this->User->TeacherCertificate->findByTeacherCertificateId($teacherCertificateId);
+    }
+
     public function removeCertificate($teacherCertificateId) {
         //Find record
         $this->User->TeacherCertificate->recursive = -1;

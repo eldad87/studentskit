@@ -2,8 +2,11 @@
 
 
 <?php
-echo $this->element('panel/cancel_lesson_popup', array('buttonSelector'=>'.confirm-cancel',
-                                                                'cancelUrl'=>array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')));
+echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-cancel',
+                                                        'title'=>__('Cancel your booking request'),
+                                                        'description'=>__('This procedure may be irreversible.
+                                                        Do you want to proceed?'),
+                                                        'cancelUrl'=>array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')));
 echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
 echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate'));
 ?>

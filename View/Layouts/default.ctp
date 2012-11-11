@@ -38,6 +38,7 @@
 										'custom-form-elements',
                                         //'jquery-ui-1.9.1.custom.min',
                                         'jquery-ui/jquery-ui-1.9.1.custom',
+										'jquery.form',
 										'nano',
 										'script',
                                         'bootstrap',

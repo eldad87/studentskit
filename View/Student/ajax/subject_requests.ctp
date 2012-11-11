@@ -3,7 +3,9 @@
     echo $this->Layout->subjectRequestPopupButton(array('name'=>__('ADD'), 'class'=>'black-cent-butn2 add-blckbtn fontsize1 move-right'));
     echo $this->element('Home/subject_request_popup');
 
-echo $this->element('panel/cancel_lesson_popup', array('buttonSelector'=>'.confirm-delete',
+echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
+    'title'=>__('Cancel your subject request'),
+    'description'=>__('Do you want to proceed?'),
     'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'disableSubject', '{id}')));
 ?>
 <script type="text/javascript">
