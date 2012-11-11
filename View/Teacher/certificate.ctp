@@ -17,16 +17,16 @@
         }
     ?>
         initCertificateJS();
-        initCancelJS('.confirm-remove-certificate');
+        initCancelJS('.confirm-remove-certificate', 1);
     });
 </script>
 <?php
 $this->Form->create('TeacherCertificate', array('type' => 'file'));
     echo '<fieldset>';
-        echo $this->Form->input('name');
-        echo $this->Form->input('description');
-        echo $this->Form->input('imageUpload', array('type' => 'file'));
-        echo $this->Form->input('date');
+        echo $this->Form->input('name', $this->Layout->styleForInput());
+        echo $this->Form->input('description', $this->Layout->styleForInput());
+        echo $this->Form->input('imageUpload', $this->Layout->styleForInput(array('type'=>'file')));
+        echo $this->Form->input('datetime', $this->Layout->styleForInput(array('type'=>'datetime', 'class'=>false)));
     echo '</fieldset>';
 $this->Form->end();
 ?>

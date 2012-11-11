@@ -7,9 +7,15 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+        //Unbind existing events
+        $(<?php echo $buttonSelector; ?>).unbind();
+        $('#invitation-form').unbind();
 
         $('<?php echo $buttonSelector; ?>').click(function(e){
             e.preventDefault();
+
+            //Reset form's data-*
+            resetData('#invitation-form');
 
             //Copy data-* and place it as hidden:input
             $('#invite-form').data($(this).data());

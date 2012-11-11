@@ -13,7 +13,7 @@ class TeacherCertificate extends AppModel {
                 'dbColumn'              => 'image_source',
                 'transforms' => array(
                     array('method'=>'resize','width'=> 100,  'height'=>100,  'append'=>'_resize',   'overwrite'=>true, 'dbColumn'=>'image_resize', 'aspect'=>true, 'mode'=>Uploader::MODE_HEIGHT, 'setAsTransformationSource'=>true),
-                    array('method'=>'crop', 'width' => 78,   'height'=>78,   'append'=>'_80x80',    'overwrite'=>true, 'dbColumn'=>'image_crop_80x80'),
+                    array('method'=>'crop', 'width' => 80,   'height'=>80,   'append'=>'_80x80',    'overwrite'=>true, 'dbColumn'=>'image_crop_80x80'),
                 )
             )
         ),

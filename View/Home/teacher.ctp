@@ -84,14 +84,14 @@
                         <div class="box-subject2 radius3 fix-height">
                     <?php
                             $tcCount = count($teacherData['TeacherCertificate']);
-                            foreach($teacherData['TeacherCertificate'] AS $cert) {
+                            foreach($teacherData['TeacherCertificate'] AS $video) {
                                 echo '<div class="main-student',($tcCount-- ? null : ' bod2'),'">
                                 <div class="left-student-box">
-                                    ',$this->Html->image($this->Layout->image($cert['image_source'], 78, 78), array('alt' => 'Certificate image', 'class'=>'border1')),'
+                                    ',$this->Html->image($this->Layout->image($video['image_source'], 78, 78), array('alt' => 'Certificate image', 'class'=>'border1')),'
                                 </div>
                                 <div class="right-student-box">
-                                    <div class="pad8"><h6 class="pull-left space10"><strong>',$cert['name'],'</strong></h6><em class="fontsize1">',($cert['date'] ? $cert['date'] : null),'</em></div>
-                                    <p>',$cert['description'],'</p>
+                                    <div class="pad8"><h6 class="pull-left space10"><strong>',$video['name'],'</strong></h6><em class="fontsize1">',($video['date'] ? $video['date'] : null),'</em></div>
+                                    <p>',$video['description'],'</p>
                                 </div>
                             </div>';
                             }

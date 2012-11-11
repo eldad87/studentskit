@@ -7,9 +7,16 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+        //Unbind existing events
+        $(<?php echo $buttonSelector; ?>).unbind();
+        $('#msg-form').unbind();
+
 
         $('<?php echo $buttonSelector; ?>').click(function(e){
             e.preventDefault();
+
+            //Reset form's data-*
+            resetData('#msg-form');
 
             //Copy data-* and place it as hidden:input
             $('#msg-form').data($(this).data());

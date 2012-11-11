@@ -247,6 +247,12 @@ function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
         }
     });
 }
+
+function resetData(elementSelector) {
+    $.each($(elementSelector).data(), function(key, val){
+        $(elementSelector).removeData(key);
+    });
+}
 /////////////////////////////////////////////////////////////// panel
 
 /* Back office tabs */

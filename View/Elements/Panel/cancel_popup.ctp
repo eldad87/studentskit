@@ -6,57 +6,57 @@
  *
  * $cancelUrl - the url of the cancel API request: array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')
  */
-
-//This helps to overcome a situation when more then 1 cancel popup is needed
-if(!function_exists('cancelCounter')) {
-    function cancelCounter() {
-        static $count = 1;
-        return $count++;
-    }
+if(!isSet($appendId)) {
+    $appendId = 1;
 }
-$count = cancelCounter();
-$popupId = 'cancel-popup_'.$count;
-$buttonId = 'cancel-approved_'.$count;
+$popupId = 'cancel-popup_'.$appendId;
+$buttonId = 'cancel-approved_'.$appendId;
 
 ?>
 <script type="text/javascript">
-    var cancelPopupsCount = <?php echo $count; ?>;
 
-    function initCancelJS(buttonSelector) {
-        for(var i=1; i<=cancelPopupsCount; i++) {
-            buttonId =  'cancel-approved_' + i;
-            popupId =  'cancel-popup_' + i;
+    function initCancelJS(buttonSelector, i) {
 
-            $(buttonSelector).click(function(e){
-                e.preventDefault();
+        buttonId =  'cancel-approved_' + i;
+        popupId =  'cancel-popup_' + i;
 
-                //Copy data-* and place it as hidden:input
-                $('#'+buttonId).data($(this).data());
+        //Unbind existing events
+        $(buttonSelector).unbind();
+        $('#'+buttonId).unbind();
 
-                //Show popup
-                $('#' + popupId).modal('show');
-            });
+        $(buttonSelector).click(function(e){
+            e.preventDefault();
 
-            pAPIObj.loadElement('#'+buttonId, 'click', '#' + popupId + ' .modal-body', 'post');
-            pAPIObj.setAppendCallback('#'+buttonId, 'after', function(data){
-                if(data['response']['title'][0]=='Success') {
-                    //Close popup
-                    $('#' + popupId).modal('hide');
+            //resetData('#'+buttonId);
 
 
-                    if($('#'+buttonId).data('cancel-prefix')) {
-                        var divId = $('#'+buttonId).data('cancel-prefix') + '_' + $('#'+buttonId).data('id');
-                        //Remove lesson box
-                        $( '#' + divId ).hide();
-                    }
+            //Copy data-*
+            $('#'+buttonId).data($(this).data());
+
+            //Show popup
+            $('#' + popupId).modal('show');
+        });
+
+        pAPIObj.loadElement('#'+buttonId, 'click', '#' + popupId + ' .modal-body', 'post');
+        pAPIObj.setAppendCallback('#'+buttonId, 'after', function(data){
+            if(data['response']['title'][0]=='Success') {
+                //Close popup
+                $('#' + popupId).modal('hide');
+
+
+                if($('#'+buttonId).data('cancel-prefix')) {
+                    var divId = $('#'+buttonId).data('cancel-prefix') + '_' + $('#'+buttonId).data('id');
+                    //Remove lesson box
+                    $( '#' + divId ).hide();
                 }
-            });
-    }
+            }
+        });
+
 
     }
 
     $(document).ready(function() {
-        <?php echo 'initCancelJS(\'',$buttonSelector,'\');'; ?>
+        <?php echo 'initCancelJS(\'',$buttonSelector,'\', ',$appendId,');'; ?>
     });
 </script>
 <div id="<?php echo $popupId; ?>" class="modal hide fade">

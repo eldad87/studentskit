@@ -9,8 +9,16 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+
+        //Unbind existing events
+        $(<?php echo $buttonSelector; ?>).unbind();
+        $('#accept-form').unbind();
+
         $('<?php echo $buttonSelector; ?>').click(function(e){
             e.preventDefault();
+
+            //Reset form's data-*
+            resetData('#accept-form');
 
             //Copy data-* and place it as hidden:input
             $('#accept-form').data($(this).data());

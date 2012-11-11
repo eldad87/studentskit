@@ -231,7 +231,7 @@ class TeacherController extends AppController {
             if($this->User->TeacherCertificate->save($this->request->data)) {
                 $this->set('success', true);
 
-                $certificateData = $this->getCertificate($teacherCertificateId);
+                $certificateData = $this->getCertificate($this->User->TeacherCertificate->id);
                 $this->set('certificateData', $certificateData['TeacherCertificate']);
                 if(isSet($this->request->data['updateExistingCertificateId'])) {
                     $this->set('updateExisting', $this->request->data['updateExistingCertificateId']);
@@ -258,7 +258,7 @@ class TeacherController extends AppController {
         }
 
         if(!$this->User->TeacherCertificate->delete($teacherCertificateId)) {
-            return $this->error(2, array('results'=>array('teacher_certificate_id'=>$teacherCertificateId)));
+            return $this->error(2, array('results'=>array('teacher_certificate_id'=>$teacherCertificateId, 'validation_errors'=>$this->User->TeacherCertificate->validationErrors )));
         }
 
         return $this->success(1, array('results'=>array('teacher_certificate_id'=>$teacherCertificateId)));
@@ -267,22 +267,47 @@ class TeacherController extends AppController {
      * Add a certification to the Teacher's profile
      * @return array
      */
-    public function addAboutVideo() {
+    public function aboutVideo($teacherAboutVideoId=null) {
+        if($teacherAboutVideoId) {
+            $aboutData = $this->getAboutVideo($teacherAboutVideoId);
+
+            if(!$aboutData || $aboutData['TeacherAboutVideo']['teacher_user_id']!=$this->Auth->user('user_id')) {
+                return $this->error(1);
+            }
+        }
 
 
-        if (!empty($this->request->data)) {
+        if (empty($this->request->data)) {
+            if(isSet($aboutData)) {
+                $this->request->data  = $aboutData;
+            }
+        } else  {
             $this->request->data['TeacherAboutVideo']['teacher_user_id'] = $this->Auth->user('user_id');
-            if(!$this->User->TeacherAboutVideo->save($this->request->data)) {
-                return $this->error(1, array('results'=>$this->User->TeacherAboutVideo->validationErrors));
+            if($teacherAboutVideoId) {
+                $this->request->data['TeacherAboutVideo']['teacher_about_video_id'] = $teacherAboutVideoId;
             }
 
-            return $this->success(1, array('results'=>array('teacher_about_video_id'=>$this->User->TeacherAboutVideo->id)));
-        } else {
-            App::uses('Languages', 'Utils.Lib');
-            $lang = new Languages();
-            $this->set('languages', $lang->lists('locale'));
+            if($this->User->TeacherAboutVideo->save($this->request->data)) {
+                $this->set('success', true);
+
+                $aboutVideoData = $this->getAboutVideo($this->User->TeacherAboutVideo->id);
+                $this->set('aboutVideoData', $aboutVideoData['TeacherAboutVideo']);
+
+                if(isSet($this->request->data['updateExistingId'])) {
+                    $this->set('updateExisting', $this->request->data['updateExistingId']);
+                }
+                if(isSet($this->request->data['updateNewId'])) {
+                    $this->set('updateNew', $this->request->data['updateNewId']);
+                }
+            }
         }
+
+        App::uses('Languages', 'Utils.Lib');
+        $lang = new Languages();
+        $this->set('languages', $lang->lists('locale'));
+        $this->set('lang', $lang);
     }
+
     public function removeAboutVideo($teacherCertificateId) {
         //Find record
         $this->User->TeacherAboutVideo->recursive = -1;
@@ -292,11 +317,15 @@ class TeacherController extends AppController {
         }
 
         $this->User->TeacherCertificate->recursive = -1;
-        if(!$this->User->TeacherCertificate->delete($teacherCertificateId)) {
-            return $this->error(2, array('results'=>array('teacher_about_video_id'=>$teacherCertificateId)));
+        if(!$this->User->TeacherAboutVideo->delete($teacherCertificateId, false)) {
+            return $this->error(2, array('results'=>array('teacher_about_video_id'=>$teacherCertificateId, 'validation_errors'=>$this->User->TeacherCertificate->validationErrors )));
         }
 
         return $this->success(1, array('results'=>array('teacher_about_video_id'=>$teacherCertificateId)));
+    }
+    private function getAboutVideo($teacherAboutVideoId) {
+        $this->User->TeacherAboutVideo->recursive = -1;
+        return $certificateData = $this->User->TeacherAboutVideo->findByTeacherAboutVideoId($teacherAboutVideoId);
     }
 
 	public function awaitingReview() {

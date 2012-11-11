@@ -6,21 +6,24 @@ if(!empty($userData['TeacherAboutVideo'])) {
         echo $this->Html->link('Remove About Video', array('controller'=>'Teacher', 'action'=>'removeAboutVideo', $av['teacher_about_video_id']));
     }
 }
-
-echo $this->Html->link('Add Certificate', array('controller'=>'Teacher', 'action'=>'addCertificate'));
-if(!empty($userData['TeacherCertificate'])) {
-    foreach($userData['TeacherCertificate'] AS $cert) {
-        pr($cert);
-        echo $this->Html->link('Remove Certificate', array('controller'=>'Teacher', 'action'=>'removeCertificate', $cert['teacher_certificate_id']));
-    }
-}*/
+*/
 
 echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-remove-certificate',
+                                                'appendId'=>1,
                                                 'title'=>__('Remove your certificate'),
                                                 'description'=>__('Do you want to proceed?'),
                                                 'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'removeCertificate', '{id}')));
 
+
 echo $this->element('panel/certificate_popup', array('buttonSelector'=>'.add-edit-certificate'));
+
+echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-remove-teacher-about-video',
+                                                                    'appendId'=>2,
+                                                                    'title'=>__('Remove your about video'),
+                                                                    'description'=>__('Do you want to proceed?'),
+                                                                    'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'removeAboutVideo', '{id}')));
+
+echo $this->element('panel/teacher_about_video_popup', array('buttonSelector'=>'.add-edit-teacher-about-video'));
 ?>
 
 <script type="text/javascript">
@@ -56,14 +59,30 @@ echo $this->element('panel/certificate_popup', array('buttonSelector'=>'.add-edi
 
             <ul class="certificate-container" id="certificate_container">
                 <?php
-                    foreach($userData['TeacherCertificate'] AS $cert) {
-                        echo $this->element('Panel/Profile/certificate', array('cert'=>$cert, 'li'=>true));
+                foreach($userData['TeacherCertificate'] AS $cert) {
+                    echo $this->element('Panel/Profile/certificate', array('cert'=>$cert, 'li'=>true));
 
-                        //echo $this->Html->link('Remove Certificate', array('controller'=>'Teacher', 'action'=>'removeCertificate', $cert['teacher_certificate_id']));
-                    }
+                    //echo $this->Html->link('Remove Certificate', array('controller'=>'Teacher', 'action'=>'removeCertificate', $cert['teacher_certificate_id']));
+                }
                 ?>
             </ul>
             <button class="btn-blue pull-right add-edit-certificate" data-update-new-certificate-id="#certificate_container" type="Save">Add</button>
         </div>
+
+
+        <div class="fullwidth pull-left space6">
+            <h5 class="fullwidth pull-left space8"><?php echo __('About video'); ?></h5>
+
+            <ul class="certificate-container" id="about_video_container">
+                <?php
+                foreach($userData['TeacherAboutVideo'] AS $av) {
+                    echo $this->element('Panel/Profile/teacher_about_video', array('video'=>$av, 'li'=>true));
+                    /*echo $this->Html->link('Remove About Video', array('controller'=>'Teacher', 'action'=>'removeAboutVideo', $av['teacher_about_video_id']));*/
+                }
+                ?>
+            </ul>
+            <button class="btn-blue pull-right add-edit-teacher-about-video" data-update-new-id="#about_video_container" type="Save">Add</button>
+        </div>
+
     </div> <!-- /cpull-left space7 -->
 </div> <!-- /cont-span6 -->

@@ -10,8 +10,16 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+
+        //Unbind existing events
+        $(<?php echo $buttonSelector; ?>).unbind();
+        $('#negotiate-form').unbind();
+
         $('<?php echo $buttonSelector; ?>').click(function(e){
             e.preventDefault();
+
+            //Reset form's data-*
+            resetData('#negotiate-form');
 
             //Copy data-* and place it as hidden:input
             $('#negotiate-form').data($(this).data());
