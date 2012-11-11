@@ -13,9 +13,17 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
 
     <?php
     foreach($response['response']['archiveLessons'] AS $archiveLessons) {
-        $toTheLessonLink = $this->Html->link(__('Lesson page'), array('controller'=>'Lessons',
-                                                                'action'=>($archiveLessons['UserLesson']['lesson_type']==LESSON_TYPE_LIVE ? 'index' : 'video'),
-                                                                $archiveLessons['UserLesson']['teacher_lesson_id']));
+
+        $toTheLessonLink = false;
+
+        //Lesson took place
+        if(in_array($archiveLessons['UserLesson']['stage'], array(USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING,
+                                                                    USER_LESSON_PENDING_STUDENT_RATING, USER_LESSON_DONE,
+                                                                    USER_LESSON_ACCEPTED))) {
+            $toTheLessonLink = $this->Html->link(__('Lesson page'), array('controller'=>'Lessons',
+                                                        'action'=>($archiveLessons['UserLesson']['lesson_type']==LESSON_TYPE_LIVE ? 'index' : 'video'),
+                                                        $archiveLessons['UserLesson']['teacher_lesson_id']));
+        }
 
         echo '<div class="lesson-box space2">
                 <div class="head-back radius1">
@@ -27,7 +35,7 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                         <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
                             <li>'.$this->Html->link(__('Download Receipt'), array('controller'=>'Billing', 'action'=>'downloadReceipt', $archiveLessons['UserLesson']['user_lesson_id'])).'</li>
                             <li><a href="#" class="msg-teacher" data-entity_type="lesson" data-entity_id="'.$archiveLessons['UserLesson']['user_lesson_id'].'" data-to_user_id="'.$archiveLessons['UserLesson']['teacher_user_id'].'">'.__('Message teacher').'</a></li>
-                            <li>'.$toTheLessonLink.'</li>
+                            '.($toTheLessonLink ? '<li>'.$toTheLessonLink.'</li>' : null).'
                         </ul>
                     </div>
                 </div>
@@ -36,7 +44,7 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                     <div class="usr-text2">
                         <h4>'.__('by').' '.$this->Html->link($archiveLessons['Teacher']['username'], array('controller'=>'Home', 'action'=>'teacher', $archiveLessons['UserLesson']['teacher_user_id'])).'</h4>
                         <p>'.$archiveLessons['UserLesson']['description'].'</p>
-                        <p class="space23">'.$toTheLessonLink.'</p>
+                        '.($toTheLessonLink ? '<p class="space23">'.$toTheLessonLink.'</p>' : null).'
                     </div>
                 </div>
                 <div class="lesson-box-footer radius2">

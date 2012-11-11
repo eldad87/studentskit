@@ -10,9 +10,15 @@
 
     <?php
     foreach($response['response']['archiveLessons'] AS $archiveLessons) {
-        $toTheLessonLink = $this->Html->link(__('Lesson page'), array('controller'=>'Lessons',
-                                                                'action'=>($archiveLessons['TeacherLesson']['lesson_type']==LESSON_TYPE_LIVE ? 'index' : 'video'),
-                                                                $archiveLessons['TeacherLesson']['teacher_lesson_id']));
+
+        $toTheLessonLink = false;
+
+        //Lesson took place
+        if($archiveLessons['TeacherLesson']['is_deleted']==1) {
+            $toTheLessonLink = $this->Html->link(__('Lesson page'), array('controller'=>'Lessons',
+                                                                            'action'=>($archiveLessons['TeacherLesson']['lesson_type']==LESSON_TYPE_LIVE ? 'index' : 'video'),
+                                                                            $archiveLessons['TeacherLesson']['teacher_lesson_id']));
+        }
 
         echo '<div class="lesson-box space2">
                 <div class="head-back radius1">
@@ -21,16 +27,14 @@
                         <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" href="#">
                             <i class="iconSmall-drop-arrow"></i>
                         </a>
-                        <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
-                            <li>'.$toTheLessonLink.'</li>
-                        </ul>
+                        '.($toTheLessonLink ? '<ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel"><li>'.$toTheLessonLink.'</li></ul>' : null).'
                     </div>
                 </div>
                 <div class="lesson-box-content">
                     <div class="user-pic2">'.$this->Html->image($this->Layout->image($archiveLessons['TeacherLesson']['image_source'], 72, 72), array('alt' => 'Lesson image'/*, 'class'=>'border1'*/)).'</div>
                     <div class="usr-text2">
                         <p>'.$archiveLessons['TeacherLesson']['description'].'</p>
-                        <p class="space23">'.$toTheLessonLink.'</p>
+                        '.($toTheLessonLink ? '<p class="space23">'.$toTheLessonLink.'</p>' : null).'
                     </div>
                 </div>
                 <div class="lesson-box-footer radius2">
