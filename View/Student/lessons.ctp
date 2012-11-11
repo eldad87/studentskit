@@ -5,7 +5,7 @@
         initTabs();
     });
 </script>
-<div class="cont-span6 ext-wid cbox-space">
+<div class="cont-span15 cbox-space cbox-space">
     <div class="search-all2 sort-mar">
         <div class="black-line-approv"></div>
         <ul class="booking-nav f-pad-norml um-upcoming f-pad-norml1 tab-menu">

@@ -387,7 +387,7 @@ class UserLesson extends AppModel {
      * @param $datetime
      * @return bool|mixed
      */
-    public function lessonOffer($teacherOfferSubjectId, $studentRequestSubjectId, $datetime) {
+    public function lessonOffer($teacherOfferSubjectId, $studentRequestSubjectId, $datetime, $extra=array()) {
         //Find the teacher subject
         App::import('Model', 'Subject');
         $subjectObj = new Subject();
@@ -398,8 +398,9 @@ class UserLesson extends AppModel {
             return false;
         }
         $subjectData = $subjectData['Subject'];
+        $extra['request_subject_id'] = $studentRequestSubjectId;
 
-        return $this->lessonRequest($teacherOfferSubjectId, $subjectData['user_id'], $datetime, true, array('request_subject_id'=>$studentRequestSubjectId));
+        return $this->lessonRequest($teacherOfferSubjectId, $subjectData['user_id'], $datetime, true, $extra);
     }
 
 
@@ -1129,7 +1130,7 @@ class UserLesson extends AppModel {
 
     //Get lesson requests that waiting for the teacher approval
 	public function  getWaitingForTeacherApproval($teacherUserId, $subjectId=null, $limit=null, $page=1) {
-		$this->unbindModel(array('belongsTo'=>array('Teacher', 'TeacherLesson')));
+		$this->unbindModel(array('belongsTo'=>array('Teacher')));
 		
 		$conditions = array('UserLesson.teacher_user_id'=>$teacherUserId/*, 'UserLesson.teacher_lesson_id IS NULL'*/);
 		if($subjectId) {

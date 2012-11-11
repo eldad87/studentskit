@@ -205,8 +205,8 @@ class StudentController extends AppController {
                     if(isSet($this->params['ext'])) {
                         return $this->error(1, array('results'=>array('validation_errors'=>$this->UserLesson->validationErrors)));
                     }
-                    $this->Session->setFlash(__('Error, cannot Re-Propose'));
-$this->set('error', true);
+                    //$this->Session->setFlash(__('Error, cannot Re-Propose'));
+                    $this->set('error', true);
                 } else {
 
                     if(isSet($this->params['ext'])) {

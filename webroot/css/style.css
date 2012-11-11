@@ -4194,7 +4194,7 @@ ul.requestfill-box li label select{
 
 .left-student-box2 ul, .left-student-box2 ul li{
 	float:left;
-	width:100%;
+	/*width:100%;*/
 }
 
 .refresingbox{

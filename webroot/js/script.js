@@ -37,6 +37,9 @@ PostForm.prototype.getAppendCallback = function( formSelector, on ) {
 PostForm.prototype.loadForm = function( formSelector, appendResultsSelector, type, params ) {
     var postForm = this;
 
+    //Remove all event binding
+    $(formSelector).unbind();
+
     $(formSelector).submit(function(event) {
 
         beforeCallback = postForm.getAppendCallback(formSelector, 'before');
@@ -111,6 +114,9 @@ PostAPI.prototype.getAppendCallback = function( formSelector, on ) {
 
 PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSelector, type ) {
     var postFormAPI = this;
+
+    //Remove all event binding
+    $(formSelector).unbind();
 
     $(formSelector).on(onEvent, function(event) {
 

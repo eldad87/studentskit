@@ -149,7 +149,7 @@ class RequestsController extends AppController {
                                                         $requestSubjectData['user_id'],
                                                         $this->Auth->user('user_id'),
                                                         null,
-                                                        array('request_subject_id'=>$requestSubjectId)); //Send invitation
+                                                        array('request_subject_id'=>$requestSubjectId, 'offer_message'=>$this->request->data['UserLesson']['offer_message'])); //Send invitation
 
                 if(!$res) {
                     return $this->error(5, array('validation_errros'=>$this->UserLesson->validationErrors));
@@ -173,7 +173,8 @@ class RequestsController extends AppController {
 
 
 
-            if($this->UserLesson->lessonOffer($this->request->data['UserLesson']['subject_id'], $requestSubjectId, $datetime)) {
+            if($this->UserLesson->lessonOffer($this->request->data['UserLesson']['subject_id'], $requestSubjectId, $datetime,
+                                                array('offer_message'=>$this->request->data['UserLesson']['offer_message']))) {
                 return $this->success(2, array('results'=>array(    'user_lesson_id'=>$this->UserLesson->id,
                                                                     'subject_id'=>$this->request->data['UserLesson']['subject_id'],
                                                                     'request_subject_id'=>$requestSubjectId)));

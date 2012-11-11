@@ -263,7 +263,7 @@ class LessonsController extends AppController {
                     $this->emailUsers($this->request->data['emails'], $tlData['name'], $this->request->data['message'], 'TeacherLesson', $this->request->data['teacher_lesson_id']);
 
                     if($this->Auth->user('user_id')==$tlData['teacher_user_id']) {
-                        $this->sendLiveLessonsJoinRequestsByTeacher($this->request->data['emails'], $this->request->data['teacher_lesson_id']);
+                        $this->sendLiveLessonsJoinRequestsByTeacher($this->request->data['emails'], $this->request->data['teacher_lesson_id'], $this->request->data['message']);
                     }
 
                     return $this->success(1);
@@ -285,7 +285,7 @@ class LessonsController extends AppController {
 
                 //OIts a video offer, and it's the teacher
                 if($this->Auth->user('user_id')==$subjectData['user_id'] && $subjectData['type']==SUBJECT_TYPE_OFFER && $subjectData['lesson_type']==LESSON_TYPE_VIDEO) {
-                    $this->sendVideoLessonsInvitationsByTeacher($this->request->data['emails'], $this->request->data['subject_id']);
+                    $this->sendVideoLessonsInvitationsByTeacher($this->request->data['emails'], $this->request->data['subject_id'], $this->request->data['message']);
                 }
 
                 return $this->success(2);
@@ -306,7 +306,7 @@ class LessonsController extends AppController {
                 break;
         }
     }
-    private function sendLiveLessonsJoinRequestsByTeacher($emails, $teacherLessonId) {
+    private function sendLiveLessonsJoinRequestsByTeacher($emails, $teacherLessonId, $offerMessage) {
         $this->TeacherLesson->recursive = -1;
         $tlData = $this->TeacherLesson->find('first', array('teacher_lesson_id'=>$teacherLessonId));
 
@@ -318,18 +318,18 @@ class LessonsController extends AppController {
             $user = $user['User'];
             unset($emailAsKeys[$user['email']]); //Remove user from emailing list
 
-            $this->UserLesson->joinRequest($teacherLessonId, $user['user_id'], $tlData['TeacherLesson']['teacher_user_id']); //Send invitation
+            $this->UserLesson->joinRequest($teacherLessonId, $user['user_id'], $tlData['TeacherLesson']['teacher_user_id'], null, array('offer_message'=>$offerMessage)); //Send invitation
         }
         return array_flip($emailAsKeys);
     }
-    private function sendVideoLessonsInvitationsByTeacher($emails, $subjectId) {
+    private function sendVideoLessonsInvitationsByTeacher($emails, $subjectId, $offerMessage) {
         $this->User->recursive = -1;
         $users = $this->User->find('all', array('conditions'=>array('email'=>$emails)));
         $emailAsKeys = array_flip($emails);
         foreach($users AS $user) {
             $user = $user['User'];
             unset($emailAsKeys[$user['email']]); //Remove user from emailing list
-            $this->UserLesson->lessonRequest($subjectId, $user['user_id'], $this->UserLesson->toClientTime('now'), true); //Send invitation
+            $this->UserLesson->lessonRequest($subjectId, $user['user_id'], $this->UserLesson->toClientTime('now'), true, array('offer_message'=>$offerMessage)); //Send invitation
         }
         return array_flip($emailAsKeys);
     }

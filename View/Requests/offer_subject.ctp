@@ -11,6 +11,12 @@
             $('#offer-teacher-lesson-group').hide();
             $('#offer-datetime-group').hide();
 
+            //Remove events - so we won't submit offers more then once
+            $('#show-offer-datetime-group').unbind();
+            $('#show-offer-teacher-lesson-group').unbind();
+            $('#offer-form').unbind();
+            $('#offer-subject').unbind();
+
             /* Toggle Datetime - to - TeacherLessons */
             $('#show-offer-datetime-group').click(function(){
                 showError('#makeOffer .modal-body'); //Remove old alert msg
@@ -143,7 +149,7 @@
                 });
 
             }
-        })
+        });
 
 
     });
@@ -160,6 +166,12 @@ echo $this->Form->input('request_subject_id',  array('type'=>'hidden', 'id'=>'re
         <label class="control-label" for="offer-subject"><?php echo __('Select a subject'); ?> :</label>
         <div class="control control1">
             <?php echo $this->Form->input('subject_id',  array('label' => false, 'class'=>'x-large2', 'id'=>'offer-subject', 'div'=>false, 'options'=>$teacherSubjectsSuggestions)); ?>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="offer-message"><?php echo __('Write a message'); ?> :</label>
+        <div class="control control1">
+            <?php echo $this->Form->input('offer_message',  array('label' => false, 'class'=>'x-large2', 'id'=>'offer-message', 'div'=>false)); ?>
         </div>
     </div>
 

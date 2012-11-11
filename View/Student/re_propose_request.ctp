@@ -35,6 +35,8 @@ if(isSet($paymentPage)) {
         echo '<fieldset>';
             echo $this->Form->hidden('user_lesson_id');
 
+            echo $this->Form->input('offer_message', $this->Layout->styleForInput());
+
             //Only for live lessons
             if($lessonType==LESSON_TYPE_LIVE) {
                 echo $this->Form->input('datetime', $this->Layout->styleForInput(array('type'=>'datetime', 'class'=>false)));
@@ -45,6 +47,7 @@ if(isSet($paymentPage)) {
 
 
             echo $this->Form->input('1_on_1_price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0)));
+
 
             //Only for live lessons
             if($lessonType==LESSON_TYPE_LIVE) {
