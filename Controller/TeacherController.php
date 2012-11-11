@@ -186,6 +186,7 @@ class TeacherController extends AppController {
 		
 		//TODO: add student amount of lessons, FS and Tests managment
 		$this->set('teacherLesson', $teacherLessonData['TeacherLesson']);
+		$this->set('subjectData', $teacherLessonData['Subject']);
 		$this->set('allStudents',	 $students);
 	}
 	

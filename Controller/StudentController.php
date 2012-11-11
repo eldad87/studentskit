@@ -126,7 +126,6 @@ class StudentController extends AppController {
                     if(isSet($this->params['ext'])) {
                         return $this->error(1, array('results'=>array('user_lesson_id'=>$userLessonId, 'validation_errors'=>$this->UserLesson->validationErrors)));
                     }
-
                     $this->set('error', true);
                 } else {
 
@@ -140,6 +139,10 @@ class StudentController extends AppController {
 
                     if(isSet($this->request->data['removeElementAfterAccept'])) {
                         $this->set('removeElement', $this->request->data['removeElementAfterAccept']);
+                    }
+                    if(isSet($this->request->data['moveElementAfterAccept']) && isSet($this->request->data['moveToElementAfterAccept'])) {
+                        $this->set('moveElement', $this->request->data['moveElementAfterAccept']);
+                        $this->set('moveToElement', $this->request->data['moveToElementAfterAccept']);
                     }
                 }
             }

@@ -13,6 +13,8 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
     $(document).ready(function(){
         //Activate tooltip
         initToolTips();
+
+        initMenuLinks();
     });
 </script>
 
@@ -31,9 +33,10 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                             <i class="iconSmall-drop-arrow"></i>
                         </a>
                         <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
-                            <li><a href="#" class="confirm-delete" data-cancel-prefix="teacher_lesson_id" data-id="'.$upcomingLesson['TeacherLesson']['teacher_lesson_id'].'">'.__('Cancel').'</a></li>
+                            <li><a href="#" class="manage load2" rel="'.Router::url(array('controller'=>'Teacher','action'=>'manageTeacherLesson', $upcomingLesson['TeacherLesson']['teacher_lesson_id'])).'"> '.__('Manage students').'</a></li>
                             <li><a href="#" class="invite" data-teacher_lesson_id="'.$upcomingLesson['TeacherLesson']['teacher_lesson_id'].'"> '.__('Invite friends').'</a></li>
                             <li>'.$toTheLessonLink.'</li>
+                            <li><a href="#" class="confirm-delete" data-cancel-prefix="teacher_lesson_id" data-id="'.$upcomingLesson['TeacherLesson']['teacher_lesson_id'].'">'.__('Cancel').'</a></li>
                         </ul>
                     </div>
 

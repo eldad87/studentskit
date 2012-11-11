@@ -31,10 +31,10 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                             <i class="iconSmall-drop-arrow"></i>
                         </a>
                         <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
-                            <li><a href="#" class="confirm-delete" data-cancel-prefix="user_lesson_id" data-id="'.$upcomingLesson['UserLesson']['user_lesson_id'].'">'.__('Cancel').'</a></li>
                             <li><a href="#" class="msg-teacher" data-entity_type="lesson" data-entity_id="'.$upcomingLesson['UserLesson']['user_lesson_id'].'" data-to_user_id="'.$upcomingLesson['UserLesson']['teacher_user_id'].'">'.__('Message teacher').'</a></li>
                             <li><a href="#" class="invite" data-teacher_lesson_id="'.$upcomingLesson['UserLesson']['teacher_lesson_id'].'"> '.__('Invite friends').'</a></li>
                             <li>'.$toTheLessonLink.'</li>
+                            <li><a href="#" class="confirm-delete" data-cancel-prefix="user_lesson_id" data-id="'.$upcomingLesson['UserLesson']['user_lesson_id'].'">'.__('Cancel').'</a></li>
                         </ul>
                     </div>
 

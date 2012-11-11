@@ -294,13 +294,16 @@ $(document).ready(function(){
 
 });
 //Organizer - New menu links
-$(document).ready(function(){
+function initMenuLinks() {
+    $(".load2").unbind();
     $(".load2").live("click",function(){
         $(".loadpage1").load($(this).attr('rel'));
         $(".right-menu li").removeClass("bg-active");
         $(this).parent("li").addClass("bg-active");
     });
-
+}
+$(document).ready(function(){
+    initMenuLinks();
 });
 
 function initTabs() {

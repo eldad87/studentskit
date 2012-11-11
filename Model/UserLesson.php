@@ -747,7 +747,8 @@ class UserLesson extends AppModel {
 	public function acceptRequest( $userLessonId, $byUserId, $version=null ) {
 		//Find user lesson
 		$userLessonData = $this->findByUserLessonId($userLessonId);
-		if( !$userLessonData ) {
+        //Check that user lesson found + there is enough room int the TeacherLesson
+		if( !$userLessonData || $userLessonData['TeacherLesson']['max_students']<=$userLessonData['TeacherLesson']['num_of_students'] ) {
 			return false;
 		}
 		$userLessonData = $userLessonData['UserLesson'];

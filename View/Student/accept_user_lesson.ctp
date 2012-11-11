@@ -12,7 +12,9 @@ if(isSet($paymentPage)) {
                     echo 'showError(\'#accept-popup .modal-body\',\''.__('Internal Error').'\', \'\')';
                 }
 
-
+                if(isSet($moveElement) && isSet($moveToElement)) {
+                    echo '$(\''.$moveElement.'\').appendTo(\''.$moveToElement.'\');';
+                }
 
                 if(isSet($removeElement)) {
                     echo '$(\''.$removeElement.'\').hide();';

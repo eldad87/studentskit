@@ -124,7 +124,9 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
                             <?php
                             if(!empty($bookingLesson['UserLesson']['teacher_lesson_id'])) {
                                 echo '<span class="pull-left space22 space3">',sprintf(__('Students %d of %d'), $bookingLesson['TeacherLesson']['num_of_students']
-                                    , $bookingLesson['TeacherLesson']['max_students']),'</span>';
+                                                                                                                , $bookingLesson['TeacherLesson']['max_students']),'</span>';
+                            } else if($bookingLesson['UserLesson']['lesson_type']==LESSON_TYPE_LIVE) {
+                                echo '<span class="pull-left space22 space3">',sprintf(__('Max students %d '), $bookingLesson['UserLesson']['max_students']),'</span>';
                             }
                             ?>
                         </div><!-- /lesson-box-footer -->

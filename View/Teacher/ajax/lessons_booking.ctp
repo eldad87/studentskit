@@ -127,7 +127,9 @@ echo $this->element('panel/accept_lesson_popup', array('buttonSelector'=>'.confi
                         <?php
                             if(!empty($bookingRequest['UserLesson']['teacher_lesson_id'])) {
                                 echo '<span class="pull-left space22 space3">',sprintf(__('Students %d of %d'), $bookingRequest['TeacherLesson']['num_of_students']
-                                                                                                            , $bookingRequest['TeacherLesson']['max_students']),'</span>';
+                                                                                                                , $bookingRequest['TeacherLesson']['max_students']),'</span>';
+                            } else if($bookingRequest['UserLesson']['lesson_type']==LESSON_TYPE_LIVE) {
+                                echo '<span class="pull-left space22 space3">',sprintf(__('Max students %d '), $bookingRequest['UserLesson']['max_students']),'</span>';
                             }
                         ?>
                     </div><!-- /lesson-box-footer -->
