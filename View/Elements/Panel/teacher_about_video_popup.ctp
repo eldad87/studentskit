@@ -10,7 +10,7 @@
     function initTeacherAboutVideoJS() {
 
         //Unbind existing events
-        $(<?php echo $buttonSelector; ?>).unbind();
+        $('<?php echo $buttonSelector; ?>').unbind();
         $('#teacher-about-video-form').unbind();
 
         $('<?php echo $buttonSelector; ?>').click(function(e){

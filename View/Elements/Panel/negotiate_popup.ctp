@@ -12,7 +12,7 @@
     $(document).ready(function() {
 
         //Unbind existing events
-        $(<?php echo $buttonSelector; ?>).unbind();
+        $('<?php echo $buttonSelector; ?>').unbind();
         $('#negotiate-form').unbind();
 
         $('<?php echo $buttonSelector; ?>').click(function(e){

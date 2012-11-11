@@ -249,9 +249,12 @@ function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
 }
 
 function resetData(elementSelector) {
-    $.each($(elementSelector).data(), function(key, val){
-        $(elementSelector).removeData(key);
-    });
+    if($(elementSelector).data()) {
+        //console.log($(elementSelector).data());
+        $.each($(elementSelector).data(), function(key, val){
+            $(elementSelector).removeData(key);
+        });
+    }
 }
 /////////////////////////////////////////////////////////////// panel
 
