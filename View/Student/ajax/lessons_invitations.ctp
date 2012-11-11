@@ -114,7 +114,7 @@ echo $this->element('panel/accept_lesson_popup', array('buttonSelector'=>'.confi
 
                             <div class="pull-right">
                                 <?php
-                                echo $this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($lessonInvitation['UserLesson']), null, 'pull-right space23', 'tooltip_'.$lessonInvitation['UserLesson']['user_lesson_id']);
+                                echo $this->Layout->toolTip($this->Layout->buildLessonTooltipHtml(am($lessonInvitation['TeacherLesson'], $lessonInvitation['UserLesson'])), null, 'pull-right space23', 'tooltip_'.$lessonInvitation['UserLesson']['user_lesson_id']);
                                 echo $this->Layout->priceTag($lessonInvitation['UserLesson']['1_on_1_price'], $lessonInvitation['UserLesson']['full_group_student_price'], 'price-tag-panel');
                                 ?>
                             </div>

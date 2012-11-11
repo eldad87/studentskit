@@ -181,7 +181,7 @@ class LayoutHelper extends AppHelper {
         $fields = array('duration_minutes'=>__('Duration minutes'), '1_on_1_price'=>__('1 on 1 price'));
 
         if($lessonType==LESSON_TYPE_LIVE) {
-            $fields2 = array( 'datetime'=>__('Datetime'), 'is_public'=>__('Is public'), 'max_students'=>__('Max students'), 'full_group_student_price'=>__('Full group price'));
+            $fields2 = array( 'datetime'=>__('Datetime'), 'is_public'=>__('Is public'), 'max_students'=>__('Max students'), 'num_of_students'=>__('Num of students'), 'full_group_student_price'=>__('Full group price'));
             $fields = am($fields, $fields2);
         }
 
@@ -197,7 +197,7 @@ class LayoutHelper extends AppHelper {
 
         $return = '<div style=\'text-align: left;\'>';
         foreach($fields AS $fieldKey=>$fieldName) {
-            if(!isSet($data[$fieldKey]) || empty($data[$fieldKey])) {
+            if(!isSet($data[$fieldKey]) || (empty($data[$fieldKey]) && $data[$fieldKey]!=0 )) {
                 continue;
             }
 

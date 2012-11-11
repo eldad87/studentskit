@@ -117,7 +117,7 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
 
                             <div class="pull-right">
                                 <?php
-                                echo $this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($bookingLesson['UserLesson']), null, 'pull-right space23', 'tooltip_'.$bookingLesson['UserLesson']['user_lesson_id']);
+                                echo $this->Layout->toolTip($this->Layout->buildLessonTooltipHtml(am($bookingLesson['TeacherLesson'], $bookingLesson['UserLesson'])), null, 'pull-right space23', 'tooltip_'.$bookingLesson['UserLesson']['user_lesson_id']);
                                 echo $this->Layout->priceTag($bookingLesson['UserLesson']['1_on_1_price'], $bookingLesson['UserLesson']['full_group_student_price'], 'price-tag-panel');
                                 ?>
                             </div>
