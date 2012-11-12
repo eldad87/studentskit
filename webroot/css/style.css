@@ -102,7 +102,7 @@ section{
 }
 
 .searchbox-bg, .searchbox-bg input[type="text"], ul.board-msg li, a.more-btn1, .lesson-box h3, .lesson-box-content, .lesson-box-footer, .c-box, .c-box-header, .c-box-inner, .c-box-footer, .student-main-box, ul.right-menu li, input.x-large, select.large, textarea.x-large, .heading-box, .box-subject, .stu-box, .student-main-box2, .sec-main-box, .icon-box-social, .student-main-box3, .box-subject2, a.more, .order-math, .inner-box-step, .inner-spots-box, .lesson3-box, ul.message-tm-stu li,a.message-tm-more, ul.message-tm-stu, .message-tm-left, .message-tm-right, .message-tm-main, tr.table-heading, tr.table-heading2, 
-.table-heading2 td, .table-main2, .control-group.c-mar-cntrol2, .x-small3, .right-student-box2, .form-main-teacher, .x-small4, select.small2, .x-large2, .text-are1, .cont-span19.extra-wid, .cont-span21,.control-group.c-mar-cntrol3 , .control-group.c-mar-cntrol4, .x-large3, .x-small7, .upr-file-box, ul.file-box-all, .list-box-file, .control.stu-pro-reqest, .upr-heading-form, .first-tex-in-box, .first-tex-in-box2, .first-tex-in-box3, .tech-first-box, .tech-sec-box, .tech-thir-box, .box-upr-header, .head-back, .cont-span25, .btn-group.dropdown-toggle, ul.popupcontent-box li, .sk-form textarea.lite-textarea, .file-iconheader, ul.file-iconlist li, ul.messagebar, ul.messagebar li, .commentbox-container textarea, ul.action-dropdown li,ul.action-dropdown li a, .search-wrapper input[type="text"].search-box, .search-wrapper, ul.mesage-bar li, .booking-orignal-setting ul li, a.subject-lessonbtn, .head-countrybar, ul.right-menu li a, .table-main{
+.table-heading2 td, .table-main2, .control-group.c-mar-cntrol2, .x-small3, .right-student-box2, .form-main-teacher, .x-small4, select.small2, .x-large2, .text-are1, .cont-span19.extra-wid, .cont-span21,.control-group.c-mar-cntrol3 , .control-group.c-mar-cntrol4, .x-large3, .x-small7, .upr-file-box, ul.file-box-all, .list-box-file, .control.stu-pro-reqest, .upr-heading-form, .first-tex-in-box, .first-tex-in-box2, .first-tex-in-box3, first-tex-in-box4, .tech-first-box, .tech-sec-box, .tech-thir-box, .box-upr-header, .head-back, .cont-span25, .btn-group.dropdown-toggle, ul.popupcontent-box li, .sk-form textarea.lite-textarea, .file-iconheader, ul.file-iconlist li, ul.messagebar, ul.messagebar li, .commentbox-container textarea, ul.action-dropdown li,ul.action-dropdown li a, .search-wrapper input[type="text"].search-box, .search-wrapper, ul.mesage-bar li, .booking-orignal-setting ul li, a.subject-lessonbtn, .head-countrybar, ul.right-menu li a, .table-main{
 
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -3084,9 +3084,17 @@ select.in-large4 {
 
 .first-tex-in-box3{
 	float:left;
-	width:35%;
+	width:33%;
 	height:auto;
 	padding:8px 10px;
+
+}
+.first-tex-in-box4{
+	float:left;
+	width:4%;
+	height:auto;
+	padding:8px 10px;
+    border-left:1px solid #cccccc;
 }
 
 .tech-first-box{
@@ -3094,6 +3102,7 @@ select.in-large4 {
 	width:35%;
 	height:auto;
 	padding-right:10px;
+    padding-bottom: 1px;
 }
 
 .tech-pic{
@@ -3111,6 +3120,7 @@ select.in-large4 {
 	width:24%;
 	height:auto;
 	padding-right:10px;
+    padding-bottom: 1px;
 }
 
 /*.star-box{
@@ -3121,10 +3131,18 @@ select.in-large4 {
 }*/
 
 .tech-thir-box{
-	float:left;
-	width:37%;
-	height:auto;
-	padding-left:10px;
+    float:left;
+    width:33%;
+    height:auto;
+    padding-right:10px;
+    padding-bottom: 1px;
+}
+.tech-fourth-box{
+    float:left;
+    width:6%;
+    height:auto;
+    padding-right:10px;
+    padding-bottom: 1px;
 }
 
 .pad-cheak{

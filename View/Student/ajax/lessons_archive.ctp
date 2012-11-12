@@ -40,7 +40,7 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                     </div>
                 </div>
                 <div class="lesson-box-content">
-                    <div class="user-pic2">'.$this->Html->image($this->Layout->image($archiveLessons['UserLesson']['image_source'], 72, 72), array('alt' => 'Lesson image'/*, 'class'=>'border1'*/)).'</div>
+                    <div class="user-pic2">'.$this->Html->image($this->Layout->image($archiveLessons['UserLesson']['image_source'], 72, 72), array('alt' => 'Lesson image')).'</div>
                     <div class="usr-text2">
                         <h4>'.__('by').' '.$this->Html->link($archiveLessons['Teacher']['username'], array('controller'=>'Home', 'action'=>'teacher', $archiveLessons['UserLesson']['teacher_user_id'])).'</h4>
                         <p>'.$archiveLessons['UserLesson']['description'].'</p>

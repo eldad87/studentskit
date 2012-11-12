@@ -271,28 +271,32 @@ class StudentController extends AppController {
 	}
 	
 	public function awaitingReview() {
-		$awaitingReviews = $this->UserLesson->waitingStudentReview($this->Auth->user('user_id'));
-		$this->set('awaitingReviews', $awaitingReviews);
+        $reviews = $this->UserLesson->waitingStudentReview($this->Auth->user('user_id'));
+		$this->set('reviews', $reviews);
 		
 		$userData = $this->User->findByUserId($this->Auth->user('user_id'));
-		$this->set('studentAvarageRating', $userData['User']['student_avarage_rating']);
+		$this->set('avarageRating', $userData['User']['student_avarage_rating']);
 	}
 	public function setReview($userLessonId) {
-		if (!empty($this->request->data)) {
-			if($this->UserLesson->rate(	$userLessonId, $this->Auth->user('user_id'), 
-			  							$this->request->data['UserLesson']['rating_by_student'], 
-			  							$this->request->data['UserLesson']['comment_by_student'])) {
-				$this->redirect(array('action'=>'awaitingReview'));
-			}
-			 
-		}
-		$setReview = $this->UserLesson->getLessons(array('student_user_id'=>$this->Auth->user('user_id')), $userLessonId);
-		$this->Set('setReview', $setReview);
+		if (empty($this->request->data)) {
+            return $this->error(1);
+        }
+
+        if(!$this->UserLesson->rate(	$userLessonId, $this->Auth->user('user_id'),
+                                        $this->request->data['rating'],
+                                        $this->request->data['review'])) {
+
+            return $this->error(2, array('results'=>array('user_lesson_id'=>$userLessonId, 'validation_errors'=>$this->UserLesson->validationErrors)));
+        }
+
+        return $this->success(1);
 	}
 	
 	public function myReviews() {
-		//Get students comments for that teacher
-		$studentReviews = $this->UserLesson->getStudentReviews( $this->Auth->user('user_id'), 10 );
-		$this->Set('studentReviews', $studentReviews);
+        $reviews = $this->UserLesson->getStudentReviews( $this->Auth->user('user_id'), 10 );
+		$this->Set('reviews', $reviews);
+
+        $userData = $this->User->findByUserId($this->Auth->user('user_id'));
+        $this->set('avarageRating', $userData['User']['student_avarage_rating']);
 	}
 }

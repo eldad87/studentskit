@@ -159,10 +159,32 @@ class UserLesson extends AppModel {
 					'message' 		=> 'Error, rating must be numeric'
 				),
 				'blank' => array(
-					'rule'			=> array('range', 0, 5),
+					'rule'			=> array('range', 0, 6),
 					'on'			=> 'update',
 					'allowEmpty'	=> false,
-					'message' 		=> 'Please enter a number between %d and %d'
+					'message' 		=> 'Please rate'
+				),
+			),
+            'comment_by_teacher' => array(
+				'between' => array(
+					'rule'			=> array('between', 15, 255),
+					'on'			=> 'update',
+					'allowEmpty'	=> false,
+					'message' 		=> 'Please write a review with %d-%d characters'
+				)
+			),
+			'rating_by_teacher' => array(
+				'numeric' => array(
+					'rule'			=> 'numeric',
+					'on'			=> 'update',
+					'allowEmpty'	=> false,
+					'message' 		=> 'Error, rating must be numeric'
+				),
+				'blank' => array(
+					'rule'			=> array('range', 0, 6),
+					'on'			=> 'update',
+					'allowEmpty'	=> false,
+					'message' 		=> 'Please rate'
 				),
 			),
 		);
@@ -901,48 +923,79 @@ class UserLesson extends AppModel {
 			return false;
 		}
 		$userLessonData = $userLessonData['UserLesson'];
-		
-		
-		$dataSource = $this->getDataSource();
-		$this->Subject;
+
+
+
+
+        //Init const
+        $this->Subject;
 		
 		
 		App::import('Model', 'User');
 		$userObj = new User();
-		
-		$userType = '';
-		if($userLessonData['teacher_user_id']==$byUserId) {
-			//Check if teacher can set rating
-			if( $userLessonData['lesson_type']!=LESSON_TYPE_LIVE || ($userLessonData['stage']!=USER_LESSON_PENDING_RATING && $userLessonData['stage']!=USER_LESSON_PENDING_TEACHER_RATING) ) {
-				return false;
-			}
-			$userType = 'teacher';
-			$newStage = ($userLessonData['stage']==USER_LESSON_PENDING_RATING) ? USER_LESSON_PENDING_STUDENT_RATING : USER_LESSON_DONE;
-			
-			//Start transaction
-			$dataSource->begin();
-			
+
+        //Find the new lesson stage + rating user type (teacher|student)
+        if($userLessonData['teacher_user_id']==$byUserId) {
+            //Check if teacher can set rating
+            if( $userLessonData['lesson_type']!=LESSON_TYPE_LIVE || ($userLessonData['stage']!=USER_LESSON_PENDING_RATING && $userLessonData['stage']!=USER_LESSON_PENDING_TEACHER_RATING) ) {
+                return false;
+            }
+
+            $userType = 'teacher';
+            $newStage = ($userLessonData['stage']==USER_LESSON_PENDING_RATING) ? USER_LESSON_PENDING_STUDENT_RATING : USER_LESSON_DONE;
+
+        } else if($userLessonData['student_user_id']==$byUserId) {
+            //Check if student can set rating
+            if($userLessonData['stage']!=USER_LESSON_PENDING_RATING && $userLessonData['stage']!=USER_LESSON_PENDING_STUDENT_RATING ) {
+                return false;
+            }
+
+            $userType = 'student';
+            $newStage = ($userLessonData['stage']==USER_LESSON_PENDING_RATING) ?
+                ( $userLessonData['lesson_type']!=LESSON_TYPE_LIVE ? USER_LESSON_PENDING_TEACHER_RATING : USER_LESSON_DONE ) : //teacher can rate only live lessons, otherwise don't let him
+                USER_LESSON_DONE;
+        } else {
+            //This is not the teacher/student
+            return false;
+        }
+
+        //Start transaction
+        $dataSource = $this->getDataSource();
+        $dataSource->begin();
+
+
+        //Update user lesson
+        $updateUserLesson = array(	'rating_by_'.$userType	=>$rating,
+                                    'comment_by_'.$userType	=>$comment,
+                                    'stage'					=>$newStage);
+
+        $event = new CakeEvent('Model.UserLesson.beforeRate', $this, array('user_lesson'=>$userLessonData, 'data'=>$updateUserLesson, 'by_user_id'=>$byUserId));
+        $this->getEventManager()->dispatch($event);
+        if ($event->isStopped()) {
+            $dataSource->rollback();
+            return false;
+        }
+
+        $this->id = $userLessonId;
+        $this->set($updateUserLesson);
+        if(!$this->save()) {
+            $dataSource->rollback();
+            return false;
+        }
+
+
+        //Update the related models
+		if($userType=='teacher') {
+
 			//Update student rating
 			if(!$userObj->setRating($userLessonData['student_user_id'], $rating, 'student')) {
 				$dataSource->rollback();
 				return false;
 			}
 
-		} else if($userLessonData['student_user_id']==$byUserId) {
-			//Check if student can set rating
-			if($userLessonData['stage']!=USER_LESSON_PENDING_RATING && $userLessonData['stage']!=USER_LESSON_PENDING_STUDENT_RATING ) {
-				return false;
-			}
-			
-			$userType = 'student';
-			$newStage = ($userLessonData['stage']==USER_LESSON_PENDING_RATING) ?
-                            ( $userLessonData['lesson_type']!=LESSON_TYPE_LIVE ? USER_LESSON_PENDING_TEACHER_RATING : USER_LESSON_DONE ) : //teacher can rate only live lessons, otherwise don't let him
-                        USER_LESSON_DONE;
+		} else if($userType=='student') {
 
 
-			//Start transaction
-			$dataSource->begin();
-			
 			//Update subject
 			App::import('Model', 'Subject');
 			$subObj = new Subject();
@@ -956,31 +1009,11 @@ class UserLesson extends AppModel {
 				$dataSource->rollback();
 				return false;
 			}
-		} else {
-			//This is not the student or the teacher
-			return false;
 		}
 		
 		
-		//Update user lesson
-		$updateUserLesson = array(	'rating_by_'.$userType	=>$rating,
-									'comment_by_'.$userType	=>$comment,
-									'stage'					=>$newStage);
-		
-		$event = new CakeEvent('Model.UserLesson.beforeRate', $this, array('user_lesson'=>$userLessonData, 'data'=>$updateUserLesson, 'by_user_id'=>$byUserId));
-		$this->getEventManager()->dispatch($event);
-		if ($event->isStopped()) {
-			$dataSource->rollback();
-			return false;
-		}
-		
-		$this->id = $userLessonId;
-		$this->set($updateUserLesson);
-		if(!$this->save()) {
-			$dataSource->rollback();
-			return false;
-		}
-		
+
+
 		$dataSource->commit();
 
         $event = new CakeEvent('Model.UserLesson.afterRate', $this, array('user_lesson'=>$userLessonData, 'data'=>$updateUserLesson, 'by_user_id'=>$byUserId));
@@ -1153,12 +1186,12 @@ class UserLesson extends AppModel {
         $ulObj = new UserLesson();
         $conditions = array('UserLesson.teacher_user_id'=>$teacherUserId, 'stage'=>array(USER_LESSON_PENDING_TEACHER_RATING, USER_LESSON_DONE));
 
-        $ulObj->recursive = 2;
+        $ulObj->recursive = 1;
         $ulObj->unbindAll(array('belongsTo'=>array('Student')));
         $ulObj->Student->unbindAll();
 
         return $ulObj->find('all', array(	'conditions'=>$conditions,
-            'fields'=>array('student_user_id', 'rating_by_student', 'comment_by_student', 'datetime'),
+            //'fields'=>array('student_user_id', 'rating_by_student', 'comment_by_student', 'datetime'),
             'limit'=>$limit,
             'page'=>$page));
 
@@ -1177,12 +1210,10 @@ class UserLesson extends AppModel {
         $conditions = array('UserLesson.student_user_id'=>$studentUserId, 'stage'=>array(USER_LESSON_PENDING_STUDENT_RATING, USER_LESSON_DONE));
 
 
-        $ulObj->recursive = 2;
-        $ulObj->unbindAll(array('belongsTo'=>array('Teacher')));
+        $ulObj->recursive = 1;
         $ulObj->Teacher->unbindAll();
 
         return $ulObj->find('all', array(	'conditions'=>$conditions,
-            'fields'=>array('teacher_user_id', 'rating_by_teacher', 'comment_by_teacher', 'image', 'datetime'),
             'limit'=>$limit,
             'page'=>$page));
 

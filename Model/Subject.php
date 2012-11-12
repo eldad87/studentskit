@@ -692,12 +692,22 @@ class Subject extends AppModel {
 						);
 	}
 	
-	public function setRating( $subectId, $rating ) {
+	public function setRating( $subjectId, $rating ) {
+/*
+        value=CASE
+WHEN value+1>100 THEN 100
+ELSE value+1 END
+WHERE value_enabled<>0;
+  */
 		$update = array(
-			'avarage_rating'=>'((raters_amount*avarage_rating)+'.$rating.')/(raters_amount+1)',
-			'raters_amount'	=>'raters_amount+1'
+            'avarage_rating'=>$this->getDataSource()->expression('CASE WHEN raters_amount=0 THEN '.$rating.'
+                                                                    ELSE ((raters_amount*avarage_rating)+'.$rating.')/(raters_amount+1) END'),
+			//'avarage_rating'=>$this->getDataSource()->expression('((raters_amount*avarage_rating)+'.$rating.')/(raters_amount+1)'),
+			'raters_amount'	=>$this->getDataSource()->expression('raters_amount +1')
 		);
-		$this->id = $subectId;
+
+
+		$this->id = $subjectId;
 		$this->set($update);
 		return $this->save();
 	}

@@ -229,11 +229,11 @@
             <h1><?php echo $this->Html->link('Universito', '/', array('title'=>'Home', 'escape'=>false)); ?></h1>
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li<?php echo $navButtonSelection['home']       ? ' class="active"' : null; ?>><?php echo $this->Html->link('Home', '/', array('title'=>'Home', 'escape'=>false)); ?></li>
-                    <li<?php echo $navButtonSelection['board']      ? ' class="active"' : null; ?>><?php echo $this->Html->link('<span>Board</span>', array('controller'=>'forum', 'action'=>'/'), array('title'=>'Board', 'escape'=>false)); ?></li>
-                    <li<?php echo $navButtonSelection['account']    ? ' class="active"' : null; ?>><?php echo $this->Html->link('<span>Account</span>', array('controller'=>'Student', 'action'=>'/'), $this->Layout->requireLogin(array('title'=>'Account', 'escape'=>false)) ); ?></li>
-                    <li<?php echo $navButtonSelection['request']    ? ' class="active"' : null; ?>><?php echo $this->Html->link('<span>Lesson request</span>', array('controller'=>'Requests', 'action'=>'/'), array('title'=>'Account', 'escape'=>false)); ?></li>
-                    <li<?php echo $navButtonSelection['howItWorks'] ? ' class="active"' : null; ?>><a href="#" title="">How it Works</a></li>
+                    <li<?php echo $navButtonSelection['home']       ? ' class="active"' : null; ?>><?php echo $this->Html->link(__('Home'), '/', array('title'=>'Home', 'escape'=>false)); ?></li>
+                    <li<?php echo $navButtonSelection['board']      ? ' class="active"' : null; ?>><?php echo $this->Html->link('<span>'.__('Board').'</span>', array('controller'=>'forum', 'action'=>'/'), array('title'=>'Board', 'escape'=>false)); ?></li>
+                    <li<?php echo $navButtonSelection['account']    ? ' class="active"' : null; ?>><?php echo $this->Html->link('<span>'.__('Account').'</span>', array('controller'=>'Organizer', 'action'=>'/'), $this->Layout->requireLogin(array('title'=>'Account', 'escape'=>false)) ); ?></li>
+                    <li<?php echo $navButtonSelection['request']    ? ' class="active"' : null; ?>><?php echo $this->Html->link('<span>'.__('Lesson Requests').'<span>', array('controller'=>'Requests', 'action'=>'/'), array('title'=>'Account', 'escape'=>false)); ?></li>
+                    <li<?php echo $navButtonSelection['howItWorks'] ? ' class="active"' : null; ?>><a href="#" title=""><?php echo __('How it Works'); ?></a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>

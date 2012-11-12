@@ -198,6 +198,13 @@ $config['Student.acceptUserLesson.success.1.title'] = __('Success');
 $config['Student.acceptUserLesson.success.1.description'] = __('Lesson accepted');
 $config['Student.acceptUserLesson.error.1.title'] = __('Error');
 $config['Student.acceptUserLesson.error.1.description'] = __('Cannot accept lesson');
+/*-------------------- Student.setReview	--------------------*/
+$config['Student.setReview.success.1.title'] = __('Success');
+$config['Student.setReview.success.1.description'] = __('Rating set');
+$config['Student.setReview.error.1.title'] = __('Error');
+$config['Student.setReview.error.1.description'] = __('Cannot set rating');
+$config['Student.setReview.error.2.title'] = __('Error');
+$config['Student.setReview.error.2.description'] = __('Cannot set rating');
 /********************* Student - End		******************************************/
 
 /********************* Teacher - Start		******************************************/

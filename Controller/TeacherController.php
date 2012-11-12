@@ -331,31 +331,22 @@ class TeacherController extends AppController {
 
 	public function awaitingReview() {
 		$awaitingReviews = $this->UserLesson->waitingTeacherReview($this->Auth->user('user_id'));
-		$this->set('awaitingReviews', $awaitingReviews);
+		$this->set('reviews', $awaitingReviews);
 		
 		$userData = $this->User->findByUserId($this->Auth->user('user_id'));
-		$this->set('teacherAvarageRating', $userData['User']['teacher_avarage_rating']);
-	}
-	public function setReview($userLessonId) {
-		if (!empty($this->request->data)) {
-			if($this->UserLesson->rate(	$userLessonId, $this->Auth->user('user_id'),
-			  							$this->request->data['UserLesson']['rating_by_teacher'], 
-			  							$this->request->data['UserLesson']['comment_by_teacher'])) {
-				$this->redirect(array('action'=>'awaitingReview'));
-			}
-			 
-		}
-		
-		$setReview = $this->UserLesson->getLessons(array('teacher_user_id'=>$this->Auth->user('user_id')), $userLessonId);
-		$this->Set('setReview', $setReview);
+		$this->set('avarageRating', $userData['User']['teacher_avarage_rating']);
 	}
 	
 	public function myReviews() {
-        //Ajax - Home.getTeacherRatingByStudents
+        //Ajax - Home.getTeacherRating
+        $this->Subject; //Init const
 
 		//Get students comments for that teacher
-		$teacherReviews = $this->UserLesson->getTeacherReviews( $this->Auth->user('user_id'), 10 );
-		$this->Set('teacherReviews', $teacherReviews);
+        $reviews = $this->UserLesson->getTeacherReviews( $this->Auth->user('user_id'), 10 );
+		$this->Set('reviews', $reviews);
+
+        $userData = $this->User->findByUserId($this->Auth->user('user_id'));
+        $this->set('avarageRating', $userData['User']['teacher_avarage_rating']);
 	}
 
     public function getLiveLessonMeeting($teacherLessonId) {

@@ -11,18 +11,20 @@
                     </div> <!-- /student-main-box -->
 
                     <ul class="right-menu">
-                        <li class="bg-main"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'index')); ?>">User Management</a></li>
-                        <li class="bg-sub"><a href="#" class="load2 " rel="<?php echo Router::url(array('controller'=>'Student','action'=>'lessons')); ?>">Lessons</a></li>
-                        <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'profile')); ?>">Profile</a></li>
-                        <li class="bg-sub"><a href="#" class="load1" rel="student-profile-um-rate-students-form.html">Rate (3)</a></li>
-                        <li class="bg-main"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'index')); ?>">Teacher Management</a></li>
-                        <li class="bg-sub"><a href="#" class="load1" rel="student-profile-tm-mysubjects.html">My Subjects</a></li>
-                        <li class="bg-sub"><a href="#" class="load2" rel=<?php echo Router::url(array('controller'=>'Teacher','action'=>'lessons')); ?>>Lessons</a></li>
-                        <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'profile')); ?>">Profile</a></li>
-                        <li class="bg-sub"><a href="#" class="load1" rel="student-profile-tm-rate-form.html">Rate</a></li>
-                        <li class="bg-main"><a href="#" class="load1" rel="student-profile-billinginfo.html">Billing Info</a></li>
-                        <li class="bg-main"><a href="#" class="load1" rel="student-profile-calender.html">Calender</a></li>
-                        <li class="bg-main"><a href="#" class="load1" rel="student-profile-tm-credits.html">Credit</a></li>
+                        <li class="bg-main"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'index')); ?>"><?php echo __('User Management'); ?></a></li>
+                        <li class="bg-sub"><a href="#" class="load2 " rel="<?php echo Router::url(array('controller'=>'Student','action'=>'lessons')); ?>"><?php echo __('Lessons'); ?></a></li>
+                        <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'profile')); ?>"><?php echo __('Profile'); ?></a></li>
+                        <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'awaitingReview')); ?>"><?php echo __('Rate'); ?></a></li>
+
+                        <li class="bg-main"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'index')); ?>"><?php echo __('Teacher Management'); ?></a></li>
+                        <li class="bg-sub"><a href="#" class="load1" rel="student-profile-tm-mysubjects.html"><?php echo __('My Subjects'); ?></a></li>
+                        <li class="bg-sub"><a href="#" class="load2" rel=<?php echo Router::url(array('controller'=>'Teacher','action'=>'lessons')); ?>><?php echo __('Lessons'); ?></a></li>
+                        <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'profile')); ?>"><?php echo __('Profile'); ?></a></li>
+                        <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'awaitingReview')); ?>"><?php echo __('Rate'); ?></a></li>
+
+                        <li class="bg-main"><a href="#" class="load1" rel="student-profile-billinginfo.html"><?php echo __('Billing Info'); ?></a></li>
+                        <li class="bg-main"><a href="#" class="load1" rel="student-profile-calender.html"><?php echo __('Calender'); ?></a></li>
+                        <li class="bg-main"><a href="#" class="load1" rel="student-profile-tm-credits.html"><?php echo __('Credit'); ?></a></li>
                     </ul> <!-- /right-menu -->
                 </div> <!-- /cont-span3 -->
                 <div class="cont-span15 c-mar-message loadpage1" id="main-area">
