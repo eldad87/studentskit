@@ -210,16 +210,16 @@ select.styled2{
 
 .navbar h1 a{
 	width:230px;
-	height:41px;
+	height:54px;
 	text-indent:999999;
 	background:url(../img/logo.png) no-repeat;
 	float:left;
 	font-size:0px;
-	margin:22px 0px;
+	margin:13px 0px 22px 0px;
 }
 	
 ul.nav{
-	padding:27px 0px;
+	padding:30px 0px 27px 0px;
 }
 
 ul.nav li{
