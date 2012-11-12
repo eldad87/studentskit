@@ -39,7 +39,7 @@
                             <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $userData['student_total_lessons']; ?></span><br />Lessons</p>
                             <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $userData['student_raters_amount']; ?></span><br>Reviews</p>
                             <a href="#" class="log2 btn-black radius3"><?php
-                                echo $this->Html->image($this->Layout->rating($userData['student_avarage_rating'], false), array('alt' => 'User rating'));
+                                echo $this->Layout->ratingNew($userData['student_avarage_rating'], false, 'space20 centered');
                                 ?><br />Rating</a>
 
                         </div>

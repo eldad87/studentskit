@@ -51,7 +51,7 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                 </div>
                 <div class="lesson-box-footer radius2">
                     <div class="pull-left star">
-                        '.$this->Html->image($this->Layout->rating($upcomingLesson['UserLesson']['rating_by_student'], false), array('alt' => 'User rating')).'
+                        '.$this->Layout->ratingNew($upcomingLesson['UserLesson']['rating_by_student'], false, 'pull-left pad8').'
                     </div>
                     <div class="pull-right space21 right-i-mar">
                         '.$this->Layout->toolTip($this->Layout->buildLessonTooltipHtml(am($upcomingLesson['TeacherLesson'], $upcomingLesson['UserLesson'])), null, 'pull-right space23', 'tooltip_'.$upcomingLesson['UserLesson']['user_lesson_id']).'

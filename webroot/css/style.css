@@ -3113,12 +3113,12 @@ select.in-large4 {
 	padding-right:10px;
 }
 
-.star-box{
+/*.star-box{
 	float:left;
 	padding:0px 7px 5px;
 	background-color:#f7f7f7;
 	border:1px solid #cccccc;
-}
+}*/
 
 .tech-thir-box{
 	float:left;
@@ -5330,4 +5330,37 @@ p.head-countrytext{
 }
 .fullwidth {
     width:100%;
+}
+
+.centered {
+    margin: 0 auto;
+}
+
+/* start box */
+.ratingstar {
+    width: 75px;
+}
+
+.star-box{
+    width:15px;
+    height:15px;
+    float:left;
+    background:url(../img/blank-star.png) no-repeat;
+    cursor:pointer;
+
+}
+
+
+.star-box.dynamic:hover, .star-box.dynamic:active{
+    background:url(../img/filled-star.png) no-repeat;
+}
+.star-active
+{background:url(../img/filled-star.png) no-repeat;
+}
+.star-active1
+{background:url(../img/filled-star.png) no-repeat;
+}
+
+img.star-student{
+    margin:0px;
 }

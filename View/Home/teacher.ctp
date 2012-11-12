@@ -38,7 +38,7 @@
                             <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_total_lessons']; ?></span><br />Lessons</p>
                             <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_students_amount']; ?></span><br />Students</p>
                             <a class="log2 btn-black radius3" href="#"><?php
-                                echo $this->Html->image($this->Layout->rating($teacherData['User']['teacher_avarage_rating'], false), array('alt' => 'Teacher rating'));
+                                echo $this->Layout->ratingNew($teacherData['User']['teacher_avarage_rating'], false, 'space20 centered');
                                 ?><br />(<?php echo $teacherData['User']['teacher_avarage_rating']; ?>/<?php echo $teacherData['User']['teacher_raters_amount']; ?> Reviews)</a>
                         </div>
                     </div> <!-- /student-main-box -->

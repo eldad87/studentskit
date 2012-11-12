@@ -39,7 +39,7 @@
                 </div>
                 <div class="lesson-box-footer radius2">
                     <div class="pull-left star">
-                        '.$this->Html->image($this->Layout->rating($archiveLessons['Subject']['avarage_rating'], false), array('alt' => 'User rating')).'
+                        '.$this->Layout->ratingNew($archiveLessons['Student']['avarage_rating'], false, 'pull-left pad8').'
                     </div>
                     <div class="pull-right space21 right-i-mar">
                         '.$this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($archiveLessons['TeacherLesson']), null, 'pull-right space23', 'tooltip_'.$archiveLessons['TeacherLesson']['teacher_lesson_id']).'

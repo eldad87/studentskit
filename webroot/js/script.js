@@ -1,5 +1,38 @@
 // JavaScript Document
 
+/* star rating */
+
+$(document).ready(function(){
+    $('.star-box.dynamic').live("mouseover",function(){
+        $(this).addClass('star-active');
+        $(this).prevAll().addClass('star-active');
+    });
+    $('.star-box.dynamic').live("mouseout",function(){
+        $(this).removeClass('star-active');
+        $(this).prevAll().removeClass('star-active');
+
+
+    });
+    $('.star-box.dynamic').live("click", function(){
+        if ($(this).hasClass('star-active1'))
+        {
+            if(($(this).attr("id"))==1){
+                if(!$(this).nextAll().hasClass('star-active1'))
+                {
+
+                    $(this).removeClass('star-active1');
+                }
+            }
+            $(this).nextAll().removeClass('star-active1');
+        }
+        else
+        {
+            $(this).addClass('star-active1');
+            $(this).prevAll().addClass('star-active1');
+        }
+    });
+
+});
 
 /////////////////////////////////////////////////////////////// Helpers
 /**

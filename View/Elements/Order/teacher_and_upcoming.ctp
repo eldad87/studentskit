@@ -24,7 +24,7 @@
         </div>
         <div class="log-box c-pad">
             <?php
-            echo $this->Html->image($this->Layout->rating($teacherData['teacher_avarage_rating'], false), array('alt' => 'Teacher rating'));
+            echo $this->Layout->ratingNew($teacherData['teacher_avarage_rating'], false, 'pull-left pad8');
             ?>
             <p>(<?php echo $teacherData['teacher_avarage_rating'].'/'.$teacherData['teacher_raters_amount']; ?> Reviews)</p>
         </div>

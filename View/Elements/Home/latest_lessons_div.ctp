@@ -3,7 +3,7 @@
     <div class="left-student-box">
         <?php
         echo $this->Html->image($this->Layout->image($archiveLesson['UserLesson']['image_source'], 58, 58), array('alt' => 'Lesson image', 'class'=>'border1'));
-        echo $this->Html->image($this->Layout->rating($archiveLesson['UserLesson']['rating_by_teacher'], false), array('alt' => 'User lesson rating'));
+        echo $this->Layout->ratingNew($archiveLesson['UserLesson']['rating_by_teacher'], false, 'pull-left pad8');
         ?>
     </div>
     <div class="right-student-box">

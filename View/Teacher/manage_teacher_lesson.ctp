@@ -56,7 +56,8 @@ echo $this->element('panel/accept_lesson_popup', array('buttonSelector'=>'.confi
                 </div>
                 <div class="lesson-box-footer radius2">
                     <div class="pull-left star">
-                    <?php echo $this->Html->image($this->Layout->rating($subjectData['avarage_rating'], false), array('alt' => 'Subject rating')); ?>
+                    <?php
+                        echo $this->Layout->ratingNew($subjectData['avarage_rating'], false, 'pull-left pad8'); ?>
                     </div>
                 </div><!-- /lesson-box-footer -->
             </div><!-- /lesson-box -->

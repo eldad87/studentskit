@@ -17,7 +17,10 @@
         </div>
     </div>
     <div class="lesson-box-footer radius2">
-        <?php echo $this->Layout->rating($avarageRating); ?>
+        <?php
+         echo $this->Layout->ratingNew($avarageRating, false, 'pull-left space3');
+        ?>
+
         <div class="pull-right">
             <?php
                 echo $this->Layout->priceTag($oneOnOnePrice, $fullGroupStudentPrice);

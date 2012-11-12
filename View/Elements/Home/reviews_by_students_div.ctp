@@ -5,7 +5,7 @@
             $this->Layout->image($ratingByStudent['Student']['image_source'], 78, 78),
             array('alt' => 'User image', 'class'=>'border1'));
 
-        echo $this->Html->image($this->Layout->rating($ratingByStudent['UserLesson']['rating_by_student'], false), array('alt' => 'User rating'));
+        echo $this->Layout->ratingNew($ratingByStudent['UserLesson']['rating_by_student'], false);
         ?>
     </div>
     <div class="right-student-box">

@@ -8,6 +8,22 @@
  */
 
 class LayoutHelper extends AppHelper {
+    public function ratingNew($rating, $allowChange=true, $class='') {
+
+        $rating = round($rating);
+        $changeableClass = '';
+        if($allowChange) {
+            $changeableClass = ' dynamic';
+        }
+
+        return '<div class="ratingstar '.$class.'">
+                    <div class="star-box'.$changeableClass.($rating>0 ? ' star-active' : null).'" id="1"></div>
+                    <div class="star-box'.$changeableClass.($rating>1 ? ' star-active' : null).'"></div>
+                    <div class="star-box'.$changeableClass.($rating>2 ? ' star-active' : null).'"></div>
+                    <div class="star-box'.$changeableClass.($rating>3 ? ' star-active' : null).'"></div>
+                    <div class="star-box'.$changeableClass.($rating>4 ? ' star-active' : null).'"></div>
+                </div>';
+    }
     public function rating($rating, $fullHTML=true) {
         if(!$fullHTML) {
             return '/img/star.png';

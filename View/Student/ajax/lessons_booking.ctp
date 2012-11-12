@@ -79,7 +79,7 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
                         </div>
 
                         <div class="lesson-box-footer radius2">
-                            <div class="pull-left star"><?php echo $this->Html->image($this->Layout->rating($bookingLesson['Teacher']['teacher_avarage_rating'], false), array('alt' => 'teacher avarage rating')); ?></div>
+                            <div class="pull-left star"><?php echo $this->Layout->ratingNew($bookingLesson['Teacher']['teacher_avarage_rating'], false, 'pull-left pad8'); ?></div>
                         </div><!-- /lesson-box-footer -->
 
                     </div><!-- /lesson-box  -->
@@ -113,7 +113,8 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
 
 
                         <div class="lesson-box-footer radius2">
-                            <div class="pull-left star"><?php echo $this->Html->image($this->Layout->rating($bookingLesson['Student']['student_avarage_rating'], false), array('alt' => 'Student avarage rating')); ?></div>
+                            <div class="pull-left star"><?php
+                                echo $this->Layout->ratingNew($bookingLesson['Student']['student_avarage_rating'], false, 'pull-left pad8'); ?></div>
 
                             <div class="pull-right">
                                 <?php

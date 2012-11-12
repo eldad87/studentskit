@@ -43,7 +43,7 @@
                             <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $subjectData['raters_amount'] ?></span><br/>Reviews</p>
 
                             <a href="#" class="log2 btn-black radius3"><?php
-                            echo $this->Html->image($this->Layout->rating($subjectData['avarage_rating'], false), array('alt' => 'Topic rating'));
+                                echo $this->Layout->ratingNew($subjectData['avarage_rating'], false, 'space20 centered');
                             ?><br/>Rating</a>
                         </div>
                     </div> <!-- /student-main-box -->
@@ -80,6 +80,14 @@
                                         <!--<span class="fontsize1 pad6 pull-left">Expert Math Teacher</span>-->
                                         <p class="pull-left"><?php echo $teacherData['teacher_about']; ?></p>
                                     </div> <!-- /head-text3-->
+
+
+
+                                    <div class="space22 clear-left pull-left">
+                                        <?php
+                                            echo $this->Layout->ratingNew($teacherData['teacher_avarage_rating'], false, 'space3 space22');
+                                        ?>
+                                    </div>
                                 </div> <!-- /student-main-box -->
                             </div> <!-- /pic-butn-box -->
                         </li>

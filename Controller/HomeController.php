@@ -654,7 +654,6 @@ $id = $scObj->id;
 
 
 
-
         //Video lesson, show order button if no request already made
         //else show play button
         if($subjectData['lesson_type']=='video') {

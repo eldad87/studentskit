@@ -8,7 +8,7 @@ echo $this->Html->link('<div class="lesson-box">
         </div>
     </div>
     <div class="lesson-box-footer radius2">
-        '.$this->Layout->rating($avarageRating).'
+        '.$this->Layout->ratingNew($avarageRating, false, 'pull-left space3').'
         <div class="pull-right">
             '.$this->Layout->priceTag($oneOnOnePrice, $fullGroupStudentPrice).'
             '.$this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($tooltipData)).'
