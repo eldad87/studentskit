@@ -1,7 +1,18 @@
 <script type="text/javascript">
     //Student profile page
     $(document).ready(function(){
-        pfObj.loadForm('#user-profile-form', '#main-area', 'post');
+
+        $('#user-profile-form').ajaxForm({
+            // target identifies the element(s) to update with the server response
+            target: '#main-area',
+
+            // success identifies the function to invoke when the server response
+            // has been received; here we apply a fade-in effect to the new content
+            success: function() {
+                $('#main-area').fadeIn('slow');
+            }
+        });
+
 
         pAPIObj.loadElement('#change-password-form', 'submit', '#change-password-form .modal-body', 'post');
         pAPIObj.setAppendCallback('#change-password-form', 'after', function(data){
