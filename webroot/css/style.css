@@ -560,8 +560,8 @@ ul.row2 li.last{
 	
 .star{
 	padding:7px 0px 7px 0px;
-	}	
-	
+}
+
 .price-tag {
     background:url("../img/price-arw-right.png") no-repeat scroll top right;
     display: block;
@@ -575,6 +575,9 @@ ul.row2 li.last{
 }
 .price-tag-free {
     background:url("../img/price-arw-right-free.png") no-repeat scroll top right;
+}
+.price-tag-float-right {
+    float: right;
 }
 .price-tag-panel {
     margin: 6px;
@@ -4017,7 +4020,7 @@ a.addplus-icon{
 
 .dragingmedia-wrapper{
 	width:100%;
-	float:lef;
+	float:left;
 	height:auto;
 }
 
@@ -4124,7 +4127,7 @@ td#para20:hover .time-tooltip-box{
 .time-tooltip{
 	display:block;
 	position:relative
-	border:solid 1px #cccccc;
+	border: solid 1px #cccccc;
 	float:left;
 	background:#fff;
 	box-shadow:0px 1px 4px #cccccc;
@@ -5393,4 +5396,15 @@ label.infield  {
 .commentbox-container label.infield {
     margin-top: 6px;
     margin-left: 12px;
+}
+
+img.lesson-type {
+    /*margin: 9px 10px 8px 0px;
+    float: right;*/
+    margin-bottom: 2px;
+    margin-right: 2px;
+}
+
+.no-margin-right {
+    margin-right: 0px;
 }

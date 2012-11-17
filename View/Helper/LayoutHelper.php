@@ -247,4 +247,10 @@ class LayoutHelper extends AppHelper {
 
         return $style;
     }
+
+    public function lessonTypeIcon($lessonType, $class='') {
+        $class .= ' lesson-type';
+
+        return $this->_View->Html->image('icons/'.$lessonType.'.png', array('class'=>$class));
+    }
 }

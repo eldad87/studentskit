@@ -5,7 +5,7 @@
         <ul class="subject-box">
             <?php
                 foreach($teacherSubjects AS $teacherSubject) {
-                    echo $this->element('Home/other_subject_li', array('teacherSubject'=>$teacherSubject['Subject']));
+                    echo $this->element('Home/other_subject_li', array('teacherSubject'=>$teacherSubject['Subject'], 'lessonType'=>$teacherSubject['Subject']['lesson_type']));
                 }
             ?>
         </ul>

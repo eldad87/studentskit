@@ -96,7 +96,8 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
 
                     <div class="lesson-box space2 right-student-box2 right-student-newbox2">
                         <h3 class="radius1">
-                            <?php echo $this->Time->niceShort($lessonInvitation['UserLesson']['datetime']).' -  <strong>'.$lessonInvitation['UserLesson']['name'].'</strong>'; ?>
+                            <?php echo $this->Layout->lessonTypeIcon($lessonInvitation['UserLesson']['lesson_type']).
+                                    $this->Time->niceShort($lessonInvitation['UserLesson']['datetime']).' -  <strong>'.$lessonInvitation['UserLesson']['name'].'</strong>'; ?>
                         </h3>
                         <div class="lesson-box-content">
                             <div class="user-pic2"><?php echo $this->Html->image($this->Layout->image($lessonInvitation['UserLesson']['image_source'], 72, 72), array('alt' => 'Subject image')); ?></div>

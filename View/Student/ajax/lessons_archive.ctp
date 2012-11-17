@@ -27,7 +27,7 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
 
         echo '<div class="lesson-box space2">
                 <div class="head-back radius1">
-                    <h1>'.$this->Time->niceShort($archiveLessons['UserLesson']['datetime']).' -  <strong>'.$archiveLessons['UserLesson']['name'].'</strong></h1>
+                    <h1>'.$this->Layout->lessonTypeIcon($archiveLessons['UserLesson']['lesson_type']).$this->Time->niceShort($archiveLessons['UserLesson']['datetime']).' -  <strong>'.$archiveLessons['UserLesson']['name'].'</strong></h1>
                     <div class="dropdown pull-right">
                         <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" href="#">
                             <i class="iconSmall-drop-arrow"></i>

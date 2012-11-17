@@ -16,7 +16,11 @@
     ?>
     <div class="<?php echo ($i%2==0 ? 'message-tm-right' : 'message-tm-left'); ?> space8">
         <div class="lesson-box">
-            <h3 class="radius1"><strong><?php echo $lessonData['name']; ?></strong></h3>
+
+            <div class="radius1">
+                <h3><?php echo $this->Layout->lessonTypeIcon($lessonData['lesson_type']); ?> <strong><?php echo $lessonData['name']; ?></strong></h3>
+            </div>
+
             <div class="lesson-box-content">
                 <div class="user-pic2"><?php echo $this->Html->image($this->Layout->image($lessonData['image_source'], 72, 72),
                                                                         array('alt'=>'Lesson Image')); ?></div>

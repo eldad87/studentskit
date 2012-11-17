@@ -25,7 +25,7 @@ echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-dele
 
         echo '<div class="lesson-box space2" id="subject_id_'.$subjectRequest['Subject']['subject_id'].'">
                 <div class="head-back radius1">
-                    <h1><strong>'.$subjectRequest['Subject']['name'].'</strong></h1>
+                    <h1>'.$this->Layout->lessonTypeIcon($subjectRequest['Subject']['lesson_type']).'<strong>'.$subjectRequest['Subject']['name'].'</strong></h1>
                     <div class="dropdown pull-right">
                         <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" href="#">
                             <i class="iconSmall-drop-arrow"></i>

@@ -1,5 +1,7 @@
 <div class="lesson-box">
-    <h3 class="radius1"><strong><?php
+    <h3 class="radius1">
+        <?php echo $this->Layout->lessonTypeIcon($lessonType); ?>
+        <strong><?php
         //Create a string - max 37 chars, camelize each word -> Abcd eFg -> Abcd Efg
         echo String::truncate(
                                 $this->Layout->formatTitle($name),
