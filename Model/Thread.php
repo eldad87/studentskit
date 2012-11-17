@@ -23,7 +23,7 @@ class Thread extends AppModel {
 			'by_user_unread_messages'	=>0,
 			'to_user_id'				=>$toUserId,
 			'to_user_unread_messages'	=>1,
-            title					    =>_('Message'),
+            //title					    =>null,
 			'messages'					=>json_encode(array()),
 		);
 		if($entityType && $entityId) {

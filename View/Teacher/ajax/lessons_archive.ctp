@@ -23,13 +23,23 @@
         echo '<div class="lesson-box space2">
                 <div class="head-back radius1">
                     <h1>'.$this->Layout->lessonTypeIcon($archiveLessons['TeacherLesson']['lesson_type']).
-                        $this->Time->niceShort($archiveLessons['TeacherLesson']['datetime']).' -  <strong>'.$archiveLessons['TeacherLesson']['name'].'</strong></h1>
-                    <div class="dropdown pull-right">
-                        <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" href="#">
-                            <i class="iconSmall-drop-arrow"></i>
-                        </a>
-                        '.($toTheLessonLink ? '<ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel"><li>'.$toTheLessonLink.'</li></ul>' : null).'
-                    </div>
+                        $this->Time->niceShort($archiveLessons['TeacherLesson']['datetime']).' -  <strong>'.$archiveLessons['TeacherLesson']['name'].'</strong></h1>';
+
+
+                  if($toTheLessonLink) {
+                    ?>
+                      <div class="dropdown pull-right">
+                          <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" href="#">
+                              <i class="iconSmall-drop-arrow"></i>
+                          </a>
+                          <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
+                            <li><?php echo $toTheLessonLink ?></li>
+                          </ul>
+                      </div>
+                      <?php
+                  }
+
+            echo '
                 </div>
                 <div class="lesson-box-content">
                     <div class="user-pic2">'.$this->Html->image($this->Layout->image($archiveLessons['TeacherLesson']['image_source'], 72, 72), array('alt' => 'Lesson image')).'</div>

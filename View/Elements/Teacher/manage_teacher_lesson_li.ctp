@@ -20,7 +20,7 @@ $toTheLessonLink = $this->Html->link(__('User page'), array('controller'=>'Home'
                                             data-user_lesson_id="'.$student['UserLesson']['user_lesson_id'].'">'.__('Accept').'</a></li>';
                                 }
                             ?>
-                            <li><a href="#" class="msg-student" data-entity_type="lesson" data-entity_id="<?php echo $student['UserLesson']['user_lesson_id']; ?>" data-to_user_id="<?php echo $student['UserLesson']['student_user_id']; ?>"><?php echo __('Message student'); ?></a></li>
+                            <li><a href="#" class="msg-student" data-entity_type="user_lesson" data-entity_id="<?php echo $student['UserLesson']['user_lesson_id']; ?>" data-to_user_id="<?php echo $student['UserLesson']['student_user_id']; ?>"><?php echo __('Message student'); ?></a></li>
                             <li><?php echo $toTheLessonLink; ?></li>
                             <li><a href="#" class="confirm-delete" data-cancel-prefix="user_lesson_id" data-id="<?php echo $student['UserLesson']['user_lesson_id']; ?>"><?php echo __('Cancel'); ?></a></li>
                         </ul>

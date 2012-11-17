@@ -34,7 +34,7 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                         </a>
                         <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
                             <li>'.$this->Html->link(__('Download Receipt'), array('controller'=>'Billing', 'action'=>'downloadReceipt', $archiveLessons['UserLesson']['user_lesson_id'])).'</li>
-                            <li><a href="#" class="msg-teacher" data-entity_type="lesson" data-entity_id="'.$archiveLessons['UserLesson']['user_lesson_id'].'" data-to_user_id="'.$archiveLessons['UserLesson']['teacher_user_id'].'">'.__('Message teacher').'</a></li>
+                            <li><a href="#" class="msg-teacher" data-entity_type="user_lesson" data-entity_id="'.$archiveLessons['UserLesson']['user_lesson_id'].'" data-to_user_id="'.$archiveLessons['UserLesson']['teacher_user_id'].'">'.__('Message teacher').'</a></li>
                             '.($toTheLessonLink ? '<li>'.$toTheLessonLink.'</li>' : null).'
                         </ul>
                     </div>

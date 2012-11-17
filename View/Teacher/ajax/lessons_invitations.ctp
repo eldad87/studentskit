@@ -54,7 +54,7 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
                                     <i class="iconSmall-drop-arrow"></i>
                                 </a>
                                 <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
-                                    <li><a href="#" class="msg-student" data-entity_type="lesson" data-entity_id="<?php echo $lessonInvitation['UserLesson']['user_lesson_id']; ?>" data-to_user_id="<?php echo $lessonInvitation['UserLesson']['student_user_id']; ?>"><?php echo __('Message student'); ?></a></li>
+                                    <li><a href="#" class="msg-student" data-entity_type="user_lesson" data-entity_id="<?php echo $lessonInvitation['UserLesson']['user_lesson_id']; ?>" data-to_user_id="<?php echo $lessonInvitation['UserLesson']['student_user_id']; ?>"><?php echo __('Message student'); ?></a></li>
                                     <?php
                                         if(empty($lessonInvitation['UserLesson']['teacher_lesson_id'])) {
                                             echo '<li><a href="#" class="negotiate" data-user_lesson_id="'.$lessonInvitation['UserLesson']['user_lesson_id'].'">'.__('Negotiate').'</a></li>';

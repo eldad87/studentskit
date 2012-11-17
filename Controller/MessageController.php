@@ -68,6 +68,9 @@ class MessageController extends AppController {
 
             //Check there is an existing thread that match the user criteria
             if($existingThreadId = $this->Thread->getThreadId($this->Auth->user('user_id'), $this->request->data['to_user_id'], $entityType, $entityId)) {
+            //pr($existingThreadId); die;
+
+                $this->Thread->id = $existingThreadId;
                 $results = $this->Thread->replayMessage($existingThreadId, $this->Auth->user('user_id'), $this->request->data['message']);
             } else {
                 //Create a new thread

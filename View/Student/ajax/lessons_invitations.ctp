@@ -60,7 +60,7 @@ echo $this->element('panel/accept_lesson_popup', array('buttonSelector'=>'.confi
                                         }
                                     ?>
                                     <li><a href="#" class="confirm-deny" data-cancel-prefix="user_lesson_id" data-id="<?php echo $lessonInvitation['UserLesson']['user_lesson_id']; ?>"><?php echo __('Deny'); ?></a></li>
-                                    <li><a href="#" class="msg-teacher" data-entity_type="lesson" data-entity_id="<?php echo $lessonInvitation['UserLesson']['user_lesson_id']; ?>" data-to_user_id="<?php echo $lessonInvitation['UserLesson']['teacher_user_id']; ?>"><?php echo __('Message teacher'); ?></a></li>
+                                    <li><a href="#" class="msg-teacher" data-entity_type="user_lesson" data-entity_id="<?php echo $lessonInvitation['UserLesson']['user_lesson_id']; ?>" data-to_user_id="<?php echo $lessonInvitation['UserLesson']['teacher_user_id']; ?>"><?php echo __('Message teacher'); ?></a></li>
                                     <li><?php echo $toTheLessonLink; ?></li>
                                 </ul>
                             </div>

@@ -1,3 +1,6 @@
+<?php
+    echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
+?>
 <!-- Containeer
 ================================================== -->
 <Section class="container">
@@ -13,7 +16,7 @@
                             ?>
                             </a>
                             <p class="onliestatus">
-                                <i class="iconMedium-mail pull-left"></i>
+                                <a href="#" class="msg-teacher" data-to_user_id="<?php echo $teacherData['User']['user_id']; ?>"><i class="iconMedium-mail pull-left"></i></a>
                                 <i class="iconSmall-green-dot pull-left space23"></i>
                                 <span class="pull-left online">Online</span>
                             </p>
