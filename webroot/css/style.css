@@ -4642,14 +4642,14 @@ ul.messagebar li{
 	width:100%;
 	border-top:solid 1px #ccc;
 	float:left;
-	padding:10px 0px;
+	padding:10px;
 }
 
-ul.messagebar li:last-child{
+ul.messagebar .replay{
 	border-top:solid 2px #171717;
-	margin-top:20px;
-	background:#9a9a9a;
-	padding:40px;
+	/*margin-top:20px;*/
+	background:#CCC;
+	/*padding:40px;*/
 }
 
 .msg-user-imgbox{
@@ -4709,10 +4709,10 @@ ul.messagebar li:last-child{
 
 .commentbox-container textarea{
 	width:100%;
-	height:26px;
+	/*height:26px;*/
 	margin-top:3px;
 	resize:none;
-	border:1px solid #555555;
+	/*border:1px solid #555555;*/
 	border-radius:3px;
 	-webkit-border-radius:3px;
 	-o-border-radius:3px;
@@ -5381,4 +5381,15 @@ p.head-countrytext{
 
 img.star-student{
     margin:0px;
+}
+
+/* infield jQuery plugin */
+div.infield { position:relative }
+label.infield  {
+    position:absolute; top:0; left:0
+}
+/* Replay message box */
+.commentbox-container label.infield {
+    margin-top: 6px;
+    margin-left: 12px;
 }

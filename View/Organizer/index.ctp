@@ -22,6 +22,9 @@
                         <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'profile')); ?>"><?php echo __('Profile'); ?></a></li>
                         <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'awaitingReview')); ?>"><?php echo __('Rate'); ?></a></li>
 
+                        <li class="bg-main"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Message','action'=>'index')); ?>"><?php echo __('Messages'); ?></a></li>
+                        <li class="bg-main"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Message','action'=>'viewThread', 1)); ?>"><?php echo __('Messages viewThread'); ?></a></li>
+
                         <li class="bg-main"><a href="#" class="load1" rel="student-profile-billinginfo.html"><?php echo __('Billing Info'); ?></a></li>
                         <li class="bg-main"><a href="#" class="load1" rel="student-profile-calender.html"><?php echo __('Calender'); ?></a></li>
                         <li class="bg-main"><a href="#" class="load1" rel="student-profile-tm-credits.html"><?php echo __('Credit'); ?></a></li>

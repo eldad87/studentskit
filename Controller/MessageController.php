@@ -4,30 +4,46 @@ class MessageController extends AppController {
 	public $uses = array('Thread', 'User');
 	public $components = array('Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),/* 'Security'*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
-	
-	public function index() {
+
+    /**
+     * Show user main message list
+     * @return array
+     */
+    public function index() {
 		$threads = $this->Thread->getUserThreadsLastMessage($this->Auth->user('user_id'));
-		return $this->success(1, array('threads'=>$threads));
+        $this->set('threads', $threads);
+        //pr($threads);
+        //return $this->success(1, array('threads'=>$threads));
 	}
+
+    public function viewThread($threadId) {
+        $thread = $this->Thread->getThreadMessages($threadId, $this->Auth->user('user_id'));
+
+        //make the thread as read.
+        $this->Thread->setAsRead($threadId, $this->Auth->user('user_id'));
+
+        $this->set('thread', $thread);
+    }
+
+    /**
+     * Make the thread is invisible for a given user
+     * @param $threadId
+     */
+    public function deleteThread($threadId) {
+        $this->Thread->markThreadAsInvisibleToUser($threadId, $this->Auth->user('user_id'));
+    }
+
 
     public function getUnreadThreadCount() {
         $unreadCount = $this->Thread->getUnreadCount($this->Auth->user('user_id'));
         return $this->success(1, array('unreadCount'=>$unreadCount));
     }
 	
-	public function findThread() {
+	public function findThread($byUserId, $toUserId, $entityType=null, $entityId=null) {
 		//TODO: find by subject/lesson id, including from/to
 	}
 	
-	public function getThread($thread) {
-		$thread = $this->Thread->getThread($thread, $this->Auth->user('user_id'));
-        //TODO: make the thread as read.
 
-		if(!$thread) {
-			return $this->error(1);
-		}
-		return $this->success(1, array('thread'=>$thread));
-	}
 	
 	public function sendMessage() {
 		if(!isSet($this->request->data['message']) || !$this->request->data['message']) {
@@ -46,7 +62,13 @@ class MessageController extends AppController {
                 $entityId = $this->request->data['entity_id'];
             }
 
-			$results = $this->Thread->createThread($this->request->data['message'], $this->Auth->user('user_id'), $this->request->data['to_user_id'], $entityType, $entityId);
+            //Check there is an existing thread that match the user criteria
+            if($existingThreadId = $this->Thread->getThreadId($this->Auth->user('user_id'), $this->request->data['to_user_id'], $entityType, $entityId)) {
+                $results = $this->Thread->replayMessage($existingThreadId, $this->Auth->user('user_id'), $this->request->data['message']);
+            } else {
+                //Create a new thread
+			    $results = $this->Thread->createThread($this->request->data['message'], $this->Auth->user('user_id'), $this->request->data['to_user_id'], $entityType, $entityId);
+            }
 			
 		} else {
 			return $this->error(2);

@@ -91,11 +91,11 @@ $config['Message.getUnreadThreadCount.success.1.title'] = __('Success');
 $config['Message.getUnreadThreadCount.success.1.description'] = __('Unread Threads');
 
 /*-------------------- Message.getThread	--------------------*/
-$config['Message.getThread.success.1.title'] = __('Success');
-$config['Message.getThread.success.1.description'] = __('Thread messages');
+$config['Message.viewThread.success.1.title'] = __('Success');
+$config['Message.viewThread.success.1.description'] = __('Thread messages');
 
-$config['Message.getThread.error.1.title'] = __('Error');
-$config['Message.getThread.error.1.description'] = __('Wrong thread ID');
+$config['Message.viewThread.error.1.title'] = __('Error');
+$config['Message.viewThread.error.1.description'] = __('Wrong thread ID');
 /*-------------------- Message.sendMessage	--------------------*/
 $config['Message.sendMessage.success.1.title'] = __('Success');
 $config['Message.sendMessage.success.1.description'] = __('Message sent');

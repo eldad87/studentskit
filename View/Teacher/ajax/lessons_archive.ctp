@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <div class="lesson-box-content">
-                    <div class="user-pic2">'.$this->Html->image($this->Layout->image($archiveLessons['TeacherLesson']['image_source'], 72, 72), array('alt' => 'Lesson image'/*, 'class'=>'border1'*/)).'</div>
+                    <div class="user-pic2">'.$this->Html->image($this->Layout->image($archiveLessons['TeacherLesson']['image_source'], 72, 72), array('alt' => 'Lesson image')).'</div>
                     <div class="usr-text2">
                         <p>'.$archiveLessons['TeacherLesson']['description'].'</p>
                         '.($toTheLessonLink ? '<p class="space23">'.$toTheLessonLink.'</p>' : null).'
