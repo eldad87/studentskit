@@ -42,15 +42,17 @@
 
         <div class="top-right">
             <div class="top-right">
-                <?php if(!$user) {
-                echo '<div class="label-txt pull-left space5">
-                            <a data-toggle="modal" data-target="#login-popup">
-                            Login/Register
-                            <i class="iconMedium-sign"></i>
-                            </a>
-                    </div>';
+                <?php
+                if(!$user) {
+                    echo '<div class="label-txt pull-left space5">
+                                <a data-toggle="modal" data-target="#login-popup">
+                                Login/Register
+                                <i class="iconMedium-sign"></i>
+                                </a>
+                        </div>';
+                }
+
                 echo $this->element('login_register');
-            }
                 ?>
             </div> <!-- /pull-right -->
 
