@@ -141,7 +141,7 @@ class Thread extends AppModel {
 														'OR'=>array(array('by_user_id'=>$userId, 'by_user_visible'=>1),
                                                                     array('to_user_id'=>$userId, 'to_user_visible'=>1))
 													),
-													'order'=>'modified'
+													'order'=>'modified DESC'
 											)
 		);
 		
@@ -263,7 +263,7 @@ class Thread extends AppModel {
     }
 	
 	
-	private function createMessage($byUserId, $message, $timestamp=null) {
+	public function createMessage($byUserId, $message, $timestamp=null) {
 		if(!$timestamp) {
 			$timestamp = time();
 		}

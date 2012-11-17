@@ -1,6 +1,17 @@
+<script type="text/javascript">
+    $(document).ready(function(){
+        initMenuLinks();
+
+        pAPIObj.loadElement('.cancelThread', 'click', '#mainMessages', 'post');
+        pAPIObj.setAppendCallback('.cancelThread', 'after', function(data){
+            $('#thread_' + data['response']['thread_id']).hide();
+        });
+    });
+</script>
 <div class="cont-span15 cbox-space">
-    <div class="fullwidth pull-left">
+    <div class="fullwidth pull-left" id="mainMessages">
         <h2 class="pull-left">Messages</h2>
+        <div></div>
         <!--<div class="pull-right skmsg-headerbtn skmsg-headerbtn1">
             <a class="btn-blue long-wid2 fontsize1 text-color pull-left msg-blubtn" href="#"><i class="iconSmall-white-add pull-left"></i>
                 <p class="newmsg-btntext">New Message</p></a>
@@ -14,19 +25,27 @@
                 <ul class="messagebar msgpage">
 <?php
     foreach($threads AS $thread) {
+        $threadLink = Router::url(array('controller'=>'Message', 'action'=>'viewThread', $thread['thread_id']));
 ?>
-        <li <?php echo ( $thread['unread_messages'] ? ' class="msg-active"' : null); ?>>
-            <div class="msg-user-imgbox"><?php
+        <li id="thread_<?php echo $thread['thread_id']; ?>" <?php echo ( $thread['unread_messages'] ? ' class="msg-active a-black"' : 'class="a-black"'); ?>>
 
-                echo $this->Html->image($this->Layout->image($thread['other_user']['image_source'], 60, 60), array('alt' => 'User image'))
-                ?></div>
-            <div class="msg-textbox">
-                <div class="msg-textheaderbox pad8">
-                    <h5><?php echo ($thread['title'] ? $thread['title'] : sprintf(__('Conversation with %s'), $thread['other_user']['username'])); ?></h5>
-                    <span><?php echo $this->Time->niceShort($thread['last_message']['timestamp']); ?> <!--<a href="#"><i class="iconSmall-dotted-pencil"></i></a>--></span>
+            <a class="load2" href="#" rel="<?php echo $threadLink; ?>">
+                <div class="msg-user-imgbox">
+                    <?php echo $this->Html->image($this->Layout->image($thread['other_user']['image_source'], 60, 60), array('alt' => 'User image')) ?>
                 </div>
-                <p class="fullwidth"><?php echo $thread['last_message']['message']; ?></p>
-                <p class="msgbottom-text"><a href="#"><i class="iconSmall-red-cross"></i></a></p>
+            </a>
+            <div class="msg-textbox">
+                <a class="load2" href="#" rel="<?php echo $threadLink; ?>">
+                    <div class="msg-textheaderbox pad8">
+                        <h5><?php echo ($thread['title'] ? $thread['title'] : sprintf(__('Conversation with %s'), $thread['other_user']['username'])); ?></h5>
+                        <span><?php echo $this->Time->niceShort($thread['last_message']['timestamp']); ?> <!--<a href="#"><i class="iconSmall-dotted-pencil"></i></a>--></span>
+                    </div>
+                    <p class="fullwidth"><?php echo $thread['last_message']['message']; ?></p>
+                </a>
+
+
+                <p class="msgbottom-text"><a href="#" data-target="<?php echo Router::url(array('controller'=>'Message', 'action'=>'deleteThread', $thread['thread_id']));
+                    ?>" class="cancelThread"><i class="iconSmall-red-cross"></i></a></p>
             </div>
         </li>
 <?php

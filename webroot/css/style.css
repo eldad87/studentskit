@@ -4588,12 +4588,13 @@ p.test-option{
 /* studentkit-message-innerpage */
 
 .skmsg-headerbtn{
-	width:187px;
+
 	position:relative;
 	line-height:0px;
+    /*width:187px;
 	 -bracket-:hack[;
         width:191px;
-    ];
+    ];*/
 }
 
 .skmsg-headerbtn {

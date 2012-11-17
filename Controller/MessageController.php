@@ -81,8 +81,8 @@ class MessageController extends AppController {
 		if(!$results) {
 			return $this->error(3);
 		}
-		
-		return $this->success(1, array('thread_id'=>$this->Thread->id));
+
+		return $this->success(1, array('results'=>array('thread_id'=>$this->Thread->id, 'message'=>$this->Thread->createMessage($this->Auth->user('user_id'), $this->request->data['message']))));
 	}
 
 }

@@ -41,7 +41,7 @@ $(document).ready(function(){
  */
 function PostForm() {
     this.forms = {};
-    this.callbacks = {before:{}, after:{}};
+    this.callbacks = {before:{}, after:{}, beforeAjax:{}};
 }
 
 PostForm.prototype.setAppendCallback = function( formSelector, on, func ) {
@@ -75,12 +75,6 @@ PostForm.prototype.loadForm = function( formSelector, appendResultsSelector, typ
 
     $(formSelector).submit(function(event) {
 
-        beforeCallback = postForm.getAppendCallback(formSelector, 'before');
-        if(beforeCallback) {
-            if(!beforeCallback( data )) {
-                return false;
-            }
-        }
 
         //Get form action (url)
         url = $(this).attr('action');
@@ -93,6 +87,15 @@ PostForm.prototype.loadForm = function( formSelector, appendResultsSelector, typ
         $.each(formData, function(key, val){
             $('<input>').attr('type','hidden').attr('name', key).attr('value', val).appendTo(formSelector);
         });
+
+        //Before we call Ajax
+        beforeAjaxCallback = postForm.getAppendCallback(formSelector, 'beforeAjax');
+        if(beforeAjaxCallback) {
+            data = beforeAjaxCallback( data );
+            if(!data) {
+                return false;
+            }
+        }
 
         $.ajax({
             url: jQuery.nano(url, params),
@@ -130,7 +133,7 @@ PostForm.prototype.loadForm = function( formSelector, appendResultsSelector, typ
 
 function PostAPI() {
     this.forms = {};
-    this.callbacks = {before:{}, after:{}};
+    this.callbacks = {before:{}, after:{}, beforeAjax:{}};
 }
 
 PostAPI.prototype.setAppendCallback = function( formSelector, on, func ) {
@@ -181,6 +184,14 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
             url = urlParams['target'];
 
             dataParams = urlParams;
+        }
+
+        beforeAjaxCallback = postFormAPI.getAppendCallback(formSelector, 'beforeAjax');
+        if(beforeAjaxCallback) {
+            data = beforeAjaxCallback( data );
+            if(!data) {
+                return false;
+            }
         }
 
         $.ajax({

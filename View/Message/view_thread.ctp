@@ -1,20 +1,39 @@
 <?php
     echo $this->Html->script('jquery.infieldlabel.min');
-    echo $this->Html->scriptBlock('
+?>
+
+<script type="text/javascript">
     $(document).ready(function(){
         $("label.infield").inFieldLabels();
+        initMenuLinks();
+
+        pfObj.loadForm('#replay-form', '#replay-form', 'post');
+        pfObj.setAppendCallback('.cancelThread', 'beforeAjax', function(data){
+            //Find textarea, if no value - cancel
+            return true;
+        });
+
+        pfObj.setAppendCallback('#replay-form', 'before', function(data){
+            //Append new message
+            $('#messageList').append(data);
+
+            //Clear textarea
+            $('#replay').val('');
+            $('#replay').blur();
+
+            return false; //So it won't replace the replay form
+        });
+
     });
-    ');
-
-//pr($thread);
-
-?>
+</script>
 <div class="cont-span6 ext-wid cbox-space">
     <div class="fullwidth pull-left">
         <h2 class="pull-left"><?php echo ($thread['title'] ? $thread['title'] : sprintf(__('Conversation with %s'), $thread['other_user']['username'])); ?></h2>
-        <!--<div class="pull-right skmsg-headerbtn">
-            <a class="btn-blue long-wid2 fontsize1 text-color" href="#"><i class="iconSmall-sidearrow sidearrow"></i>Message</a>
-            <a class="btn-blue long-wid2 fontsize1 text-color show-tip" id="action-blue" href="#">
+        <div class="pull-right skmsg-headerbtn">
+           <a class="btn-blue long-wid2 fontsize1 text-color load2" href="#" rel="<? echo Router::url(array('controller'=>'Message', 'action'=>'index')); ?>">
+               <i class="iconSmall-sidearrow sidearrow" />Message
+           </a>
+           <!--<a class="btn-blue long-wid2 fontsize1 text-color show-tip" id="action-blue" href="#">
                 <i class="iconSmall-small-tool action-icon"></i><span class="actin">Action</span> <i class="iconSmall-drop-arrow action-icon"></i></a>
             <ul class="action-dropdown alltip" id="action-blue-tip" style="display: none; ">
                 <li><a href="#">Mark as Unread</a></li>
@@ -26,37 +45,16 @@
                 <li><a href="#">Report Conversation...</a></li>
                 <li class="line"><hr></li>
                 <li><a href="#">Move to other</a></li>
-            </ul>
-        </div>-->
+            </ul>-->
+        </div>
     </div>
     <div class="fullwidth pull-left">
 
-        <ul class="messagebar">
+        <ul class="messagebar" id="messageList">
 
             <?php
                 foreach($thread['messages'] AS $message) {
-            ?>
-                <li>
-                    <div class="msg-user-imgbox"><?php
-                        if($message['user_id']==$user['user_id']) {
-                            echo $this->Html->image($this->Layout->image($user['image_source'], 60, 60), array('alt' => 'User image'));
-                        } else {
-                            echo $this->Html->image($this->Layout->image($thread['other_user']['image_source'], 60, 60), array('alt' => 'User image'));
-                        }
-                    ?></div>
-                    <div class="msg-textbox">
-                        <div class="msg-textheaderbox pad8">
-                            <h5><?php
-                                echo $message['user_id']==$user['user_id'] ? $user['username'] : $thread['other_user']['username'];
-                                ?></h5>
-                            <span><?php echo $this->Time->niceShort($message['timestamp']); ?></span>
-                        </div>
-                        <p class="fullwidth"><?php echo $message['message']; ?></p>
-                       <!-- <p class="msgbottom-text"><a href="#" class="rly">Reply</a><a href="#" class="trash">Trash</a></p>-->
-                    </div>
-                </li>
-
-            <?php
+                    echo $this->element('Panel/Message/replay_li', array('message'=>$message, 'other_user'=>$thread['other_user']));
                 }
             ?>
         </ul>
@@ -65,14 +63,16 @@
             <li class="replay">
                 <div class="fullwidth pull-left">
                     <div>
-                        <form>
-                            <button class="btn-blue pull-right">Reply</button>
+                        <form id="replay-form" action="<?php echo Router::url(array('controller'=>'Message', 'action'=>'sendMessage')); ?>">
+                            <button id="replayButton" class="btn-blue pull-right">Reply</button>
                             <div class="commentbox-container">
                                 <div class="fullwidth">
                                     <div class="infield">
                                     <label class="infield" for="replay"><?php echo __('your message goes here....'); ?></label>
                                     </div>
-                                    <textarea id="replay" class="fullwidth" required="required"></textarea>
+                                    <textarea id="replay" name="message" class="fullwidth" required="required"></textarea>
+
+                                    <input type="hidden" name="thread_id" value="<?php echo $thread['thread_id']; ?>" />
                                 </div>
                                 <div class="fullwidth space23">
                                     <!--<a href="#"><i class="iconSmall-clip pull-left"></i></a>
