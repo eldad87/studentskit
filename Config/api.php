@@ -96,6 +96,12 @@ $config['Message.viewThread.success.1.description'] = __('Thread messages');
 
 $config['Message.viewThread.error.1.title'] = __('Error');
 $config['Message.viewThread.error.1.description'] = __('Wrong thread ID');
+/*-------------------- Message.deleteThread	--------------------*/
+$config['Message.deleteThread.success.1.title'] = __('Success');
+$config['Message.deleteThread.success.1.description'] = __('Thread deleted');
+
+$config['Message.deleteThread.error.1.title'] = __('Error');
+$config['Message.deleteThread.error.1.description'] = __('Cannot delete thread');
 /*-------------------- Message.sendMessage	--------------------*/
 $config['Message.sendMessage.success.1.title'] = __('Success');
 $config['Message.sendMessage.success.1.description'] = __('Message sent');

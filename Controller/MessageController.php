@@ -30,7 +30,11 @@ class MessageController extends AppController {
      * @param $threadId
      */
     public function deleteThread($threadId) {
-        $this->Thread->markThreadAsInvisibleToUser($threadId, $this->Auth->user('user_id'));
+        if($this->Thread->markThreadAsInvisibleToUser($threadId, $this->Auth->user('user_id'))) {
+            return $this->success(1, array('thread_id'=>$threadId));
+        }
+
+        return $this->error(1, array('results'=>array('thread_id'=>$threadId, 'validation_errors'=>$this->Thread->validationErrors)));
     }
 
 
