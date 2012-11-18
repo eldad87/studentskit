@@ -3,17 +3,17 @@
 /* star rating */
 
 $(document).ready(function(){
-    $('.star-box.dynamic').live("mouseover",function(){
+    $('.star-box.dynamic').mouseover(function(){
         $(this).addClass('star-active');
         $(this).prevAll().addClass('star-active');
     });
-    $('.star-box.dynamic').live("mouseout",function(){
+    $('.star-box.dynamic').mouseout(function(){
         $(this).removeClass('star-active');
         $(this).prevAll().removeClass('star-active');
 
 
     });
-    $('.star-box.dynamic').live("click", function(){
+    $('.star-box.dynamic').click( function(){
         if ($(this).hasClass('star-active1'))
         {
             if(($(this).attr("id"))==1){
@@ -312,7 +312,7 @@ function resetData(elementSelector) {
 
 //Old Tabs
 $(document).ready(function(){
-    $(".load").live("click",function(){
+    $(".load").click(function(){
         $(".loadpage").load("/ajax/"+$(this).attr('rel'));
         $(".booking-nav li").removeClass("active");
         $(this).parent("li").addClass("active");
@@ -320,7 +320,7 @@ $(document).ready(function(){
 });
 //New Tabs
 $(document).ready(function(){
-    $(".load3").live("click",function(){
+    $(".load3").click(function(){
         $(".loadpage").load($(this).attr('rel'));
         $(".booking-nav li").removeClass("active");
         $(this).parent("li").addClass("active");
@@ -330,7 +330,7 @@ $(document).ready(function(){
 
 //Organizer - Old menu link
 $(document).ready(function(){
-    $(".load1").live("click",function(){
+    $(".load1").click(function(){
         $("#main-area").load("/ajax/"+$(this).attr('rel'));
         $(".right-menu li").removeClass("bg-active");
         $(this).parent("li").addClass("bg-active");
@@ -340,7 +340,7 @@ $(document).ready(function(){
 //Organizer - New menu links
 function initMenuLinks() {
     $(".load2").unbind();
-    $(".load2").live("click",function(){
+    $(".load2").click(function(e){
         $(".loadpage1").load($(this).attr('rel'));
         $(".right-menu li").removeClass("bg-active");
         $(this).parent("li").addClass("bg-active");
@@ -780,7 +780,7 @@ $(document).ready(function() {
 /* Country, TZ, Lang script */
 $(document).ready(function(){
 
-    $(".show-tip").live("click",function(event){
+    $(".show-tip").click(function(event){
         var id=$(this).attr("id");
         var visi=$("#"+id+"-tip").is(":visible");
         $(".alltip").hide();
@@ -796,7 +796,7 @@ $(document).ready(function(){
     $(".alltip").children().click(function(event){
         event.stopPropagation();
     });
-    $("html").live("click",function(ev){
+    $("html").click(function(ev){
         //alert(ev.target.attr('class'));
         $(".alltip").hide();
     });
