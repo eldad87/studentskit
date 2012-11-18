@@ -40,6 +40,7 @@
 											'oneOnOnePrice'         =>$newSubject['Subject']['1_on_1_price'],
 											'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
 											'imageSource'           =>$newSubject['Subject']['image_source'],
+                                            'lessonType'            =>$newSubject['Subject']['lesson_type'],
                                             'tooltipData'           =>$newSubject['Subject'],
 										));
 										echo '</li>';
