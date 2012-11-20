@@ -214,6 +214,36 @@ $config['Student.setReview.error.2.description'] = __('Cannot set rating');
 /********************* Student - End		******************************************/
 
 /********************* Teacher - Start		******************************************/
+/*-------------------- Teacher.subjects	--------------------*/
+$config['Teacher.subjects.success.1.title'] = __('Success');
+$config['Teacher.subjects.success.1.description'] = __('Teacher subjects');
+/*-------------------- Teacher.subject	--------------------*/
+$config['Teacher.subject.success.1.title'] = __('Success');
+$config['Teacher.subject.success.1.description'] = __('Teacher subject saved');
+$config['Teacher.subject.success.2.title'] = __('Success');
+$config['Teacher.subject.success.2.description'] = __('Teacher subject');
+
+$config['Teacher.subject.error.1.title'] = __('Error');
+$config['Teacher.subject.error.1.description'] = __('Permission error');
+$config['Teacher.subject.error.2.title'] = __('Error');
+$config['Teacher.subject.error.2.description'] = __('Error, cannot save subject');
+
+/*-------------------- Teacher.subjectMeeting	--------------------*/
+$config['Teacher.subjectMeeting.success.1.title'] = __('Success');
+$config['Teacher.subjectMeeting.success.1.description'] = __('Subject meeting');
+
+$config['Teacher.subjectMeeting.error.1.title'] = __('Error');
+$config['Teacher.subjectMeeting.error.1.description'] = __('Missing parameter');
+$config['Teacher.subjectMeeting.error.2.title'] = __('Error');
+$config['Teacher.subjectMeeting.error.2.description'] = __('Internal error');
+
+/*-------------------- Teacher.setSubjectCreationStage	--------------------*/
+$config['Teacher.setSubjectCreationStage.success.1.title'] = __('Success');
+$config['Teacher.setSubjectCreationStage.success.1.description'] = __('Subject creation stage changed');
+
+$config['Teacher.setSubjectCreationStage.error.1.title'] = __('Error');
+$config['Teacher.setSubjectCreationStage.error.1.description'] = __('Internal error');
+
 /*-------------------- Teacher.lessonsUpcoming	--------------------*/
 $config['Teacher.lessonsUpcoming.success.1.title'] = __('Success');
 $config['Teacher.lessonsUpcoming.success.1.description'] = __('Upcoming lessons');

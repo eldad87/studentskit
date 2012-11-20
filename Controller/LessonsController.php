@@ -47,14 +47,26 @@ class LessonsController extends AppController {
         $this->Subject->recursive = -1;
         $subjectData = $this->Subject->findBySubjectId($subjectId);
         if($subjectData['Subject']['user_id']!=$this->Auth->user('user_id')) {
+
+            if(!empty($this->request->params['requested'])) {
+                return false;
+            }
+
             $this->Session->setFlash(__('You cannot manage this subject'));
             $this->redirect('/');
         }
 
-        $this->set('meetingSettings', $this->Watchitoo->getSubjectMeetingSettings($subjectId));
+        $meetingSettings = $this->Watchitoo->getSubjectMeetingSettings($subjectId);
+        if(!empty($this->request->params['requested'])) {
+            return array('meeting_settings'=>$meetingSettings, 'name'=>$subjectData['Subject']['name']);
+        }
+
+
+        $this->set('meetingSettings', $meetingSettings);
         $this->set('lessonName', $subjectData['Subject']['name']);
-        /*$this->set('fileSystem', $this->TeacherLesson->getFileSystem($teacherLessonId));
-        $this->set('tests', $this->TeacherLesson->getTests($teacherLessonId));*/
+
+        $this->set('blank', true); //Draw only the flash
+
         $this->render('common'.DS.'lesson');
     }
 

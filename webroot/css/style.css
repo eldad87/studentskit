@@ -2663,6 +2663,14 @@ ul.booking-nav li.active{
 	background-color:#333333;
 }
 
+/** Disable tab **/
+ul.booking-nav li.disable, ul.booking-nav li.disable:hover{
+    background-color:#CCC;
+}
+ul.booking-nav li.disable a {
+    cursor: default;
+}
+
 .black-line-approv{
 	float:left;
 	width:100%;

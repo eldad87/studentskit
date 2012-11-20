@@ -242,7 +242,8 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
 
 function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
                          maxStudentsInputSelector, maxStudentsDivSelector,
-                         fullGroupStudentPriceDivSelector, fullGroupStudentPriceInputSelector) {
+                         fullGroupStudentPriceDivSelector, fullGroupStudentPriceInputSelector,
+                        durationDivSelector) {
 
     //Make Full-group-student-price invisible until the user set max-students>1
     $(fullGroupStudentPriceDivSelector).hide();
@@ -287,12 +288,14 @@ function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
     $(lessonTypeInputSelector).change(function(){
         if($(this).val()=='live') {
             $(maxStudentsDivSelector).show();
+            $(durationDivSelector).show();
 
             //file max-students change
             $(maxStudentsInputSelector).trigger('change');
 
         } else {
             $(maxStudentsDivSelector).hide();
+            $(durationDivSelector).hide();
             $(fullGroupStudentPriceDivSelector).hide();
         }
     });
@@ -319,13 +322,30 @@ $(document).ready(function(){
     });
 });
 //New Tabs
-$(document).ready(function(){
+function initTabs() {
     $(".load3").click(function(){
+        //If the parent have class of .disable - ignore it
+        if($(this).parent().hasClass('disable')) {
+            return false;
+        }
+        //If element have class of .disable - ignore it
+        if($(this).hasClass('disable')) {
+            return false;
+        }
+
         $(".loadpage").load($(this).attr('rel'));
         $(".booking-nav li").removeClass("active");
         $(this).parent("li").addClass("active");
     });
-});
+
+    //Load the first tab
+    $(".tab-menu li").each(function(){
+        if($(this).hasClass("active")){
+            //	alert();
+            $(".loadpage").load($(this).children("a").attr("rel"));
+        }
+    });
+}
 
 
 //Organizer - Old menu link
@@ -350,17 +370,7 @@ $(document).ready(function(){
     initMenuLinks();
 });
 
-function initTabs() {
 
-    $(".tab-menu li").each(function(){
-        if($(this).hasClass("active")){
-            //	alert();
-            $(".loadpage").load($(this).children("a").attr("rel"));
-        }
-    });
-
-    return true;
-}
 
 $(document).ready(function(){
     /* homepage - show latest board messages */

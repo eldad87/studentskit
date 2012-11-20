@@ -14,6 +14,16 @@ define('SUBJECT_IS_ENABLE_TRUE', 1);
 define('SUBJECT_IS_PUBLIC_FALSE', 0);
 define('SUBJECT_IS_PUBLIC_TRUE', 1);
 
+
+
+define('CREATION_STAGE_NEW', 0);
+define('CREATION_STAGE_SUBJECT', 1);
+define('CREATION_STAGE_MEETING', 2);
+define('CREATION_STAGE_FILES', 3);
+define('CREATION_STAGE_TESTS', 4);
+define('CREATION_STAGE_PUBLISH', 5);
+
+
 App::import('Model', 'AppModel');
 App::import('Model', 'User'); //for IMAGE_SUBJECT
 class Subject extends AppModel {

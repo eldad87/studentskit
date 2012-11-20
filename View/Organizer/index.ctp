@@ -17,6 +17,7 @@
                         <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'awaitingReview')); ?>"><?php echo __('Rate'); ?></a></li>
 
                         <li class="bg-main"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'index')); ?>"><?php echo __('Teacher Management'); ?></a></li>
+                        <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'subjects')); ?>"><?php echo __('Subjects'); ?></a></li>
                         <li class="bg-sub"><a href="#" class="load1" rel="student-profile-tm-mysubjects.html"><?php echo __('My Subjects'); ?></a></li>
                         <li class="bg-sub"><a href="#" class="load2" rel=<?php echo Router::url(array('controller'=>'Teacher','action'=>'lessons')); ?>><?php echo __('Lessons'); ?></a></li>
                         <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'profile')); ?>"><?php echo __('Profile'); ?></a></li>

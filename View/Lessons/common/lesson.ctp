@@ -1,9 +1,10 @@
-<?php
-    //$showAds
-    $this->Html->scriptBlock($this->Watchitoo->initJS($meetingSettings['meeting_id'], $meetingSettings), array('inline'=>false, 'safe'=>false));
-?>
 <section class="container">
     <div class="container-inner">
+<?php
+    //$showAds
+    echo $this->Html->scriptBlock($this->Watchitoo->initJS($meetingSettings['meeting_id'], $meetingSettings), array('inline'=>(isSet($blank)), 'safe'=>false));
+?>
+
         <div class="row">
             <div class="lesson-box pull-left">
                 <h3 class="radius1"><!--5:30 - --><strong><?php echo $lessonName; ?></strong></h3>
@@ -11,6 +12,10 @@
                     <?php echo $this->Watchitoo->embedMeetingJS($meetingSettings['meeting_id'], $meetingSettings); ?>
                 </div>
             </div>
+
+<?php
+    if(!isSet($blank) || !$blank) {
+?>
 
             <div class="search-all2 file-linkinput-bar">
                 <div class="black-line-approv wid-one"></div>
@@ -62,7 +67,9 @@
                     </form>
                 </div> <!-- /modal-body -->
             </div>
-            </div>
+<?php
+    }
+?>
         </div>
     </div>
 </section>

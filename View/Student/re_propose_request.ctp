@@ -13,7 +13,7 @@ if(isSet($paymentPage)) {
                 } else if($lessonType==LESSON_TYPE_LIVE) {
                     echo 'initSubjectForm(\'#UserLesson1On1Price\', \'#UserLessonLessonType\',
                                             \'#UserLessonMaxStudents\', \'#msDiv\',
-                                            \'#fgspDiv\', \'#UserLessonFullGroupStudentPrice\');';
+                                            \'#fgspDiv\', \'#UserLessonFullGroupStudentPrice\', \'#durationDiv\');';
                 }
 
 
@@ -41,7 +41,7 @@ if(isSet($paymentPage)) {
             if($lessonType==LESSON_TYPE_LIVE) {
                 echo $this->Form->input('datetime', $this->Layout->styleForInput(array('type'=>'datetime', 'class'=>false)));
                 echo $this->Form->input('is_public', $this->Layout->styleForInput(array('options'=>array(SUBJECT_IS_PUBLIC_TRUE=>__('Yes'), SUBJECT_IS_PUBLIC_FALSE=>__('No')))));
-                echo $this->Form->input('duration_minutes', $this->Layout->styleForInput(array('type'=>'number', 'min'=>10)));
+                echo $this->Form->input('duration_minutes', $this->Layout->styleForInput(array('type'=>'number', 'min'=>10, 'div'=>array('id'=>'durationDiv', 'class'=>'control-group'))));
             }
             echo $this->Form->input('lesson_type', $this->Layout->styleForInput(array('type'=>'hidden')));
 

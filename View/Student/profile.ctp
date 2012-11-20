@@ -46,7 +46,7 @@
                 <div class="control-group control2">
                     <label class="control-label"></label>
                     <div class="control">
-                        <button class="btn-blue pull-right" type="Save">Save</button>
+                        <button class="btn-blue pull-right" type="Save"><?php echo __('Save'); ?></button>
                     </div>
                 </div>
                 <div class="control-group control2">

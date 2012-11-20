@@ -26,13 +26,34 @@ class TeacherController extends AppController {
 
 	public function subjects($limit=5, $page=1) {
 		$subjects = $this->Subject->getOffersByTeacher($this->Auth->user('user_id'), true, null, $page, $limit);
-		$this->Set('teacherImage', $this->Auth->user('image'));
+		//$this->Set('teacherImage', $this->Auth->user('image'));
 		$this->Set('subjects', $subjects);
+
+        return $this->success(1, array('subjects'=>$subjects));
 	}
+
+    public function manageSubject($subjectId=null) {
+        $this->Subject; //Init const
+        $this->set('subjectId', $subjectId);
+
+        $currentCreationStage = CREATION_STAGE_NEW;
+        if($subjectId) {
+            $this->Subject->recursive = -1;
+            $subjectData = $this->Subject->findBySubjectId($subjectId);
+            $currentCreationStage = $subjectData['Subject']['creation_stage'];
+        }
+        $this->set('creationStage', $currentCreationStage);
+
+    }
 	
 	public function subject( $subjectId=null ) {
         if($subjectId) {
+            //Make sure that the viewer is the owner
             if(!$this->verifyOwnership('subject', $subjectId)) {
+                if($this->RequestHandler->isAjax()) {
+                    return $this->error(1);
+                }
+
                 $this->Session->setFlash(__('Cannot view this subject'));
                 $this->redirect($this->referer());
             }
@@ -40,65 +61,116 @@ class TeacherController extends AppController {
 
 
 
-        //Not posted yet
-        if (!empty($this->request->data)) {
-            App::import('Model', 'Subject');
-            $this->request->data['Subject']['user_id'] = $this->Auth->user('user_id');
-            $this->request->data['Subject']['type'] = SUBJECT_TYPE_OFFER;
-            $this->Subject->set($this->request->data);
-
-            if($this->Subject->save($this->request->data)) {
-                $this->Session->setFlash(__('Subject saved'));
-                $this->redirect(array('action'=>'subjects'));
-            }
-
-        //Edit - load default data
-        } else if($subjectId) {
-            //Default subject data
-            if (empty($this->request->data)) {
-                $this->request->data = $this->Subject->findBySubjectId($subjectId);
-
-            }
-        //New "add" form, set default language
-        } else {
-            $this->request->data['Subject']['language'] = Configure::read('Config.language');
-        }
-
-
-        //Set additional subject info
+        /*//Set additional subject info
         if($subjectId) {
-            $this->set('subjectId', $subjectId);
             $this->set('fileSystem', $this->Subject->getFileSystem($subjectId));
             $this->set('tests', $this->Subject->getTests($subjectId));
-        }
+        }*/
 
+        $this->set('subjectId', $subjectId);
 
-
-
-
-        //Get subejct categories
+        //Get subject categories
         App::Import('Model', 'SubjectCategory');
         $scObj = new SubjectCategory();
         $subjectCategories = $scObj->getAllCategoriesOptions();
         $this->set('subjectCategories', $subjectCategories);
 
-		//Group pricing
-		if(	isSet($this->data['Subject']['1_on_1_price']) && 
-			isSet($this->data['Subject']['full_group_student_price']) && !empty($this->data['Subject']['full_group_student_price']) &&
-			isSet($this->data['Subject']['max_students']) && $this->data['Subject']['max_students']>1) {
-			/*$groupPrice = $this->Subject->calcStudentFullGroupPrice(	$this->data['Subject']['1_on_1_price'], $this->data['Subject']['full_group_total_price'],
-															$this->data['Subject']['max_students'], $this->data['Subject']['max_students']);*/
-            $groupPrice = $this->Subject->calcStudentPriceAfterDiscount(	$this->data['Subject']['1_on_1_price'],
-															                $this->data['Subject']['max_students'], $this->data['Subject']['max_students'],
-                                                                            $this->data['Subject']['full_group_student_price']);
-			$this->set('groupPrice', $groupPrice);
-		}
+        //Group pricing
+        if(	isSet($this->data['Subject']['1_on_1_price']) &&
+            isSet($this->data['Subject']['full_group_student_price']) && !empty($this->data['Subject']['full_group_student_price']) &&
+            isSet($this->data['Subject']['max_students']) && $this->data['Subject']['max_students']>1) {
 
+            $groupPrice = $this->Subject->calcStudentPriceAfterDiscount(	$this->data['Subject']['1_on_1_price'],
+                $this->data['Subject']['max_students'], $this->data['Subject']['max_students'],
+                $this->data['Subject']['full_group_student_price']);
+            $this->set('groupPrice', $groupPrice);
+        }
+
+        //Set language
         App::uses('Languages', 'Utils.Lib');
         $lang = new Languages();
         $this->set('languages', $lang->lists('locale'));
 
+        $this->Subject; //Init const
+        $currentCreationStage = CREATION_STAGE_NEW;
+        if($subjectId) {
+            $this->Subject->recursive = -1;
+            $subjectData = $this->Subject->findBySubjectId($subjectId);
+            $currentCreationStage = $subjectData['Subject']['creation_stage'];
+        }
+        $this->set('creationStage', $currentCreationStage);
+
+
+        //Post
+        if (!empty($this->request->data)) {
+            App::import('Model', 'Subject');
+
+            //Set new creation_stage if needed
+            $this->request->data['Subject']['creation_stage'] = $currentCreationStage > CREATION_STAGE_SUBJECT ? $currentCreationStage : CREATION_STAGE_SUBJECT;
+            $this->request->data['Subject']['user_id'] = $this->Auth->user('user_id');
+            $this->request->data['Subject']['type'] = SUBJECT_TYPE_OFFER;
+            $this->Subject->set($this->request->data);
+
+            if($this->Subject->save($this->request->data)) {
+                if($this->RequestHandler->isAjax()) {
+                    $this->set('subjectId', $this->Subject->id);
+
+                    //Will enable the next set using JS in view
+                    if($this->request->data['Subject']['creation_stage']==CREATION_STAGE_SUBJECT) {
+                        $this->set('enableNextStep', true);
+                    }
+                    return $this->success(1);
+                }
+                $this->Session->setFlash(__('Subject saved'));
+                $this->redirect(array('action'=>'subjects'));
+            }
+            return $this->error(2);
+
+        //Edit - load default data
+        } else if($subjectId) {
+            //Default subject data
+            $this->request->data = $subjectData;
+
+        //New "add" form, set default language
+        } else {
+            $this->request->data['Subject']['language'] = Configure::read('Config.language');
+        }
+
+        return $this->success(2);
 	}
+
+    public function subjectMeeting($subjectId) {
+        if(!$subjectId) {
+            return $this->error(1);
+        }
+
+        $settings = $this->requestAction(array('controller'=>'Lessons', 'action'=>'subject', $subjectId));
+        if(!$settings) {
+            return $this->error(2);
+        }
+
+        $this->set('meetingSettings', $settings['meeting_settings']);
+        $this->set('lessonName', $settings['name']);
+        $this->set('subjectId', $subjectId);
+
+        $this->success(1, array('results'=>$settings));
+    }
+
+    public function setSubjectCreationStage($subjectId, $newCurrentCreationStage) {
+        //Check user ownership
+        $this->Subject; //Init const
+
+        $this->Subject->recursive = -1;
+        $subjectData = $this->Subject->findBySubjectId($subjectId);
+
+        //Validate step
+        $currentCreationStage = $subjectData['Subject']['creation_stage'];
+        if($newCurrentCreationStage!=$currentCreationStage+1) { //Make sure we move to the next set only
+            return $this->error(1);
+        }
+
+        return $this->success(1, array('current_creation_stage'=>$newCurrentCreationStage));
+    }
 	
 	public function disableSubject($subjectId) {
 		if(!$this->verifyOwnership('subject', $subjectId)) {

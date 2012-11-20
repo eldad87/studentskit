@@ -46,7 +46,7 @@ echo $this->element('panel/teacher_about_video_popup', array('buttonSelector'=>'
                 <div class="control-group control2">
                     <label class="control-label"></label>
                     <div class="control">
-                        <button class="btn-blue pull-right" type="submit">Save</button>
+                        <button class="btn-blue pull-right" type="submit"><?php echo __('Save'); ?></button>
                     </div>
                 </div>
             </fieldset>
@@ -66,7 +66,7 @@ echo $this->element('panel/teacher_about_video_popup', array('buttonSelector'=>'
                 }
                 ?>
             </ul>
-            <button class="btn-blue pull-right add-edit-certificate" data-update-new-certificate-id="#certificate_container" type="Save">Add</button>
+            <button class="btn-blue pull-right add-edit-certificate" data-update-new-certificate-id="#certificate_container" type="Save"><?php echo __('Add'); ?></button>
         </div>
 
 
