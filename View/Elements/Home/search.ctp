@@ -22,7 +22,7 @@
     ?>
 <Section class="searchbar">
     <div class="searchbar-inner">
-        <h2>Search Here</h2>
+        <!--<h2>Search Here</h2>-->
         <div class="searchbox-bg">
             <?php echo $this->Form->create(false, array('url'=>array('controller'=>(isSet($controller) ? $controller : 'Home'), 'action'=>'searchSubject'), 'id'=>'search_form', 'type'=>'get')); ?>
             <div class="search-fullwidth">
@@ -51,6 +51,6 @@
             </div>
             <?php echo $this->Form->end(); ?>
         </div>
-        <small>*Try your fav. subjects</small>
+        <!--<small>*Try your fav. subjects</small>-->
     </div>
 </Section>
