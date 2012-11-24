@@ -754,6 +754,36 @@ WHERE value_enabled<>0;
         return $testObj->getTests('subject', $subjectId);
     }
 
+    public function getUserRelationToSubject($subjectId, $userId) {
+        $this->recursive = -1;
+        $subjectData = $this->findBySubjectId($subjectId);
+
+        if(!$subjectData) {
+            return false;
+        }
+
+        if($subjectData['Subject']['user_id']==$userId) {
+            return 'teacher';
+        }
+
+        //Check if the user learned this lesson
+        App::import('Model', 'userLesson');
+        $ulObj = new userLesson();
+        $ulObj->recursive = -1;
+
+        $userLessonData = $ulObj->find('first', array('conditions'=>array(
+            'student_user_id'=>$userId,
+            'stage'=>array(USER_LESSON_ACCEPTED, USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING,
+                            USER_LESSON_PENDING_STUDENT_RATING, USER_LESSON_DONE)
+        )));
+
+        if($userLessonData) {
+            return 'student';
+        }
+
+        return false;
+    }
+
 
 }
 ?>

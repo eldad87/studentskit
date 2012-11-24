@@ -4,7 +4,14 @@ class FileSystem extends AppModel {
     public $useTable = 'file_system';
     public $primaryKey = 'file_system_id';
 
-    public $actsAs = array('Tree');
+    public $actsAs = array('Tree',
+                            'Uploader.Attachment' => array(
+                                'fileUpload'=>array(
+                                    'uploadDir'	            => 'file_system/',
+                                    'dbColumn'              => 'file_source',
+                                ),
+                            ),
+                        );
 
     public function getFS($entityType, $entityId) {
 

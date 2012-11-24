@@ -161,10 +161,76 @@ class TeacherController extends AppController {
             $this->set('tests', $this->Subject->getTests($subjectId));
         }*/
         $fs = $this->Subject->getFileSystem($subjectId);
-
         $this->set('fileSystem', $this->Subject->getFileSystem($subjectId));
 
+        $this->set('subjectId', $subjectId);
+
         return $this->success(1);
+    }
+
+    public function uploadSubjectFile($subjectId) {
+
+
+        $userRelation = $this->Subject->getUserRelationToSubject($subjectId, $this->Auth->user('user_id'));
+
+        if(!$userRelation) {
+            echo json_encode(array('success' => false, 'data' => array()));
+        } else {
+
+            /**
+             * HACK STARTs
+             * AttachmentBehavior doesn't know how to handle ajax files.
+             * The code below, transform the ajax upload into regular FORM upload and add it to $this->request->data
+             */
+            $ajaxField = 'fileUpload';
+
+            $name = $_GET[$ajaxField];
+            $mime = Uploader::mimeType($name);
+            if ($mime) {
+                $input = fopen("php://input", "r");
+                $temp = tmpfile();
+
+                $this->request->data[$ajaxField] = array(
+                    'name'      => $name,
+                    'type'      => $mime,
+                    'stream'    => true,
+                    'tmp_name'  => $temp,
+                    'error'     => 0,
+                    'size'      => stream_copy_to_stream($input, $temp)
+                );
+
+                fclose($input);
+            }
+            /**
+             * HACK ENDs
+             */
+
+            App::import('Model', 'FileSystem');
+            $fsObj = new FileSystem();
+
+            $this->request->data['entity_id']   = $subjectId;
+            $this->request->data['entity_type'] = 'subject';
+            $this->request->data['type']        = 'file';
+            $this->request->data['name']        = $name;
+            $this->request->data['size_kb']     = $this->request->data[$ajaxField]['size'];
+            $this->request->data['parent_id']   = isSet($this->request->query['path']) ? $this->request->query['path'][count($this->request->query['path'])-1] : 0;
+
+            if(!$fsObj->save( $this->request->data )) {
+                echo json_encode(array('success' => false, 'data' => array()));
+            } else {
+                echo json_encode(array('success' => true, 'data' => array(
+                   'file_system_id' =>$fsObj->id,
+                   'name'           =>$name,
+                   'type'           =>'file',
+                   'size_kb'        =>$this->request->data[$ajaxField]['size'],
+                   'extension'      =>Uploader::ext($name),
+                   'path'           =>isSet($this->request->query['path']) ? $this->request->query['path'] : array()
+                )));
+            }
+        }
+
+        die;
+
     }
 
     public function FSRename($fileSystemId) {

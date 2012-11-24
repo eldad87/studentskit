@@ -45,7 +45,7 @@
                     var elementData = $(this).data();
 
                     if(elementData['type']=='folder') {
-                        self.fileSystem('show', id);
+                        self.fileSystem('nav', id);
                         //File, download it
                     } else {
 //TODO:
@@ -126,13 +126,48 @@
                 }
                 resources[resource['file_system_id']] = resource;
 
+                $(this).fileSystem('render');
 
+                return $(this);
+            },
+
+            render: function() {
                 //Clear existing records
                 $(this).fileSystem('_clear');
 
                 //re-render current view
                 $(this).fileSystem('_showResources', $(this).data('path') );
+            },
 
+
+            /**
+             * show all elements in path
+             * @param path undefined - show root, '..' - show upper level, 'string' - go deeper
+             */
+            nav : function( path ) {
+
+                //Show root
+                if(path==undefined) {
+                    $(this).data('path', []);
+
+                    //Show upper level
+                } else if(path=='..') {
+
+                    var p = $(this).data('path');
+                    p.pop();
+                    $(this).data('path', p);
+
+                    //Go deeper
+                } else {
+                    var p = $(this).data('path');
+                    p.push(path);
+                    $(this).data('path', p);
+
+                }
+
+                $(this).trigger('pathChange', {path: $(this).data('path')} );
+
+                $(this).fileSystem('render');
 
                 return $(this);
             },
@@ -152,51 +187,19 @@
                         if(settings['goUpInPath']) {
                             var self = $(this);
                             settings['goUpInPath'].click(function(){
-                                self.fileSystem('show', '..');
+                                self.fileSystem('nav', '..');
                             });
                         }
                     }
 
                 //});
-            },
 
-            /**
-             * show all elements in path
-             * @param path undefined - show root, '..' - show upper level, 'string' - go deeper
-             */
-            show : function( path ) {
-
-                //Show root
-                if(path==undefined) {
-                    $(this).data('path', []);
-
-                //Show upper level
-                } else if(path=='..') {
-
-                    var p = $(this).data('path');
-                    p.pop();
-                    $(this).data('path', p);
-
-                //Go deeper
-                } else {
-                    var p = $(this).data('path');
-                    p.push(path);
-                    $(this).data('path', p);
-
-                }
-
-                //Clear existing records
-                $(this).fileSystem('_clear');
-
-
-                //Trigger an event - that the path is about to change
-                $(this).trigger('pathChange', {path: $(this).data('path')});
-
-                //show records
-                $(this).fileSystem('_showResources', $(this).data('path') );
+                //Set global events
+                $(this).fileSystem('nav');
 
                 return $(this);
             }
+
         };
 
         $.fn.fileSystem = function( method ) {
@@ -210,6 +213,7 @@
                 $.error( 'Method ' +  method + ' does not exist on jQuery.tooltip' );
             }
 
+            return this;
         };
 
     })( jQuery );
@@ -220,47 +224,6 @@
 
     $(document).ready(function(){
 
-
-
-
-
-        $('#bootstrapped-fine-uploader').fineUploader({
-            button: $('#fileUpload'),
-            request: {
-                endpoint: '/Upload/ajax_upload'
-            },
-            template:   '<div class="qq-uploader span12 pull-left">' +
-                            '<pre class="qq-upload-drop-area span12 qq-uploader span12"><span>{dragZoneText}</span></pre>' +
-                            //'<div class="qq-upload-button btn btn-success" style="width: auto;">{uploadButtonText}</div>' +
-                            '<ul class="qq-upload-list" id="uploadList" style="margin-top: 10px; text-align: center;"></ul>' +
-                        '</div>',
-            classes: {
-                success: 'alert alert-success',
-                fail: 'alert alert-error'
-            },
-            debug: true
-        }).on('complete', function(event, id, filename, reason) {
-                if(event.type='complete') {
-
-                    //1. remove the success files indication.
-                    $('#uploadList').find('li.alert-success').remove();
-
-                    //2. add new resource
-                    $('#file-list').fileSystem( 'addResource', {path: reason['data']['path'],
-                                                                resource: {
-                                                                    file_system_id: reason['data']['file_system_id'],
-                                                                    type:           'file',
-                                                                    name:           reason['data']['name'],
-                                                                    size_kb:        reason['data']['size'],
-                                                                    extension:      reason['data']['ext']
-                                                                }
-                                                });
-
-                }
-
-                return true;
-        });
-
         //init FS
         var fs = jQuery.parseJSON('<?php echo json_encode($fileSystem) ?>');
         $('#file-list').fileSystem( fs, {
@@ -269,13 +232,59 @@
             renameAction: 'url',
             deleteAction: 'url',
             downloadAction: 'url'
-        } );
-
-        $('#file-list').fileSystem( 'show' )
+        } )
             //When path changes, apply the changes to the fineUploader
             .on('pathChange', function(e, data){
+                //Set the new path, will be used for uploading new files
                 $('#bootstrapped-fine-uploader').fineUploader('setParams', data);
+
+                //Remove all upload status records
+                $('#uploadList').find('li.alert-success').remove();
             });
+
+
+            $('#bootstrapped-fine-uploader').fineUploader({
+                button: $('#fileUpload'),
+                request: {
+                    endpoint: '<?php echo Router::url(array('controller'=>'Teacher', 'action'=>'uploadSubjectFile', $subjectId)); ?>',
+                    //endpoint: '/Upload/ajax_upload',
+                    inputName: 'fileUpload'
+                },
+                template:   '<div class="qq-uploader span12 pull-left">' +
+                                '<pre class="qq-upload-drop-area span12 qq-uploader span12"><span>{dragZoneText}</span></pre>' +
+                                //'<div class="qq-upload-button btn btn-success" style="width: auto;">{uploadButtonText}</div>' +
+                                '<ul class="qq-upload-list" id="uploadList" style="margin-top: 10px; text-align: center;"></ul>' +
+                            '</div>',
+                classes: {
+                    success: 'alert alert-success',
+                    fail: 'alert alert-error'
+                },
+                debug: true
+            })
+            //Add events
+            .fineUploader().on('complete', function(event, id, filename, reason) {
+                if(event.type='complete') {
+
+                    //1. remove the success files indication.
+                    $('#uploadList').find('li.alert-success').remove();
+
+                    //2. add new resource
+                    $('#file-list').fileSystem( 'addResource', {path: reason['data']['path'],
+                        resource: {
+                            file_system_id: reason['data']['file_system_id'],
+                            type:           'file',
+                            name:           reason['data']['name'],
+                            size_kb:        reason['data']['size'],
+                            extension:      reason['data']['ext']
+                        }
+                    });
+
+                }
+
+                return true;
+            });
+
+
     });
 </script>
 
