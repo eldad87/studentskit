@@ -3028,13 +3028,27 @@ ul.file-box-all{
 	float:left;
 	width:100%;
 	height: auto;
-	padding:10px;
+	/*padding:10px;*/
 }
 
 ul.file-box-all li{
-	margin-bottom:3px;
+	/*margin-bottom:3px;*/
+    padding: 5px 0px;
+    float: left;
+    clear: both;
+    width: 100%;
 }
 
+ul.file-box-all li:hover {
+    background: #ccc;
+}
+
+ul.file-box-all li span {
+    margin-top: 4px;
+}
+ul.file-box-all li .actionButton {
+    margin: 5px 7px 0 3px;
+}
 ul.file-box-all li input[type="checkbox"]{
 	margin:-6px 5px 0px 0px;
 }

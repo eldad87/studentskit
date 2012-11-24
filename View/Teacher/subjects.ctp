@@ -9,7 +9,7 @@
 <br />
 
 <h3>Subjects</h3>
-<?php 
+<?php
 foreach($subjects AS $subject) {
 	$subject = $subject['Subject'];
 	

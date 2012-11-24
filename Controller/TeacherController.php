@@ -59,14 +59,6 @@ class TeacherController extends AppController {
             }
         }
 
-
-
-        /*//Set additional subject info
-        if($subjectId) {
-            $this->set('fileSystem', $this->Subject->getFileSystem($subjectId));
-            $this->set('tests', $this->Subject->getTests($subjectId));
-        }*/
-
         $this->set('subjectId', $subjectId);
 
         //Get subject categories
@@ -156,6 +148,78 @@ class TeacherController extends AppController {
         $this->success(1, array('results'=>$settings));
     }
 
+    public function subjectFileSystem($subjectId) {
+        if(!$subjectId) {
+            return $this->error(1);
+        }
+        if(!$this->verifyOwnership('subject', $subjectId)) {
+            return $this->error(2);
+        }
+
+        //Set additional subject info
+        /*if($subjectId) {
+            $this->set('tests', $this->Subject->getTests($subjectId));
+        }*/
+        $fs = $this->Subject->getFileSystem($subjectId);
+
+        $this->set('fileSystem', $this->Subject->getFileSystem($subjectId));
+
+        return $this->success(1);
+    }
+
+    public function FSRename($fileSystemId) {
+        App::import('Model', 'FileSystem');
+        $fsObj = new FileSystem();
+
+        //Find the subject
+        $fsObj->recursive = -1;
+        $fsData = $fsObj->findByFileSystemId($fileSystemId);
+
+        if(!$fsData) {
+            return $this->error(1);
+        }
+
+        if(!$this->verifyOwnership($fsData['FileSystem']['entity_type'], $fsData['FileSystem']['entity_id'])) {
+            return $this->error(2);
+        }
+
+        if(!$fsObj->rename($fileSystemId, $this->data['FileSystem']['name'])) {
+            return $this->error(3);
+        }
+
+        return $this->success(1);
+    }
+
+    /*public function testFS() {
+        $subjectId = 106;
+        $subjectType = 'subject';
+
+        App::import('Model', 'FileSystem');
+        $fsObj = new FileSystem();
+
+        $fsObj->addFolder($subjectType, $subjectId, 'Main folder');
+        $id = $fsObj->id;
+
+            $fsObj->addFolder($subjectType, $subjectId, 'Sub 1', $id);
+            $fsObj->addFolder($subjectType, $subjectId, 'Sub 2', $id);
+
+            $fsObj->addFolder($subjectType, $subjectId, 'Sub 3', $id);
+            $id = $fsObj->id;
+
+                $fsObj->addFolder($subjectType, $subjectId, 'Sub Sub 1', $id);
+                $fsObj->addFolder($subjectType, $subjectId, 'Sub Sub 2', $id);
+
+
+
+        $fsObj->addFolder($subjectType, $subjectId, 'Main folder 2');
+        $id = $fsObj->id;
+
+            $fsObj->addFolder($subjectType, $subjectId, 'Sub 3', $id);
+            $fsObj->addFolder($subjectType, $subjectId, 'Sub 4', $id);
+
+
+    }*/
+
     public function setSubjectCreationStage($subjectId, $newCurrentCreationStage) {
         //Check user ownership
         $this->Subject; //Init const
@@ -167,6 +231,18 @@ class TeacherController extends AppController {
         $currentCreationStage = $subjectData['Subject']['creation_stage'];
         if($newCurrentCreationStage!=$currentCreationStage+1) { //Make sure we move to the next set only
             return $this->error(1);
+        }
+
+        //validate owner
+        if($subjectData['Subject']['user_id']!=$this->Auth->user('user_id')) {
+            return $this->error(2);
+        }
+
+        //Update subject
+        $this->Subject->id = $subjectId;
+        $this->Subject->set(array('creation_stage'=>$newCurrentCreationStage));
+        if(!$this->Subject->save()) {
+            return $this->error(3);
         }
 
         return $this->success(1, array('current_creation_stage'=>$newCurrentCreationStage));

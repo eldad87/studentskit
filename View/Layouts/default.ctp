@@ -14,7 +14,7 @@
 
 
     <!-- styles -->
-    <?php echo $this->Html->css(array('basic', 'style-responsive', 'bootstrap', 'bootstrap-responsive', 'jquery-ui/ui-lightness/jquery-ui-1.9.1.custom', 'style'));
+    <?php echo $this->Html->css(array('basic', 'style-responsive', 'bootstrap', 'bootstrap-responsive', 'jquery-ui/ui-lightness/jquery-ui-1.9.1.custom', 'fineuploader', 'style'));
     echo $this->fetch('css');?>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -55,7 +55,8 @@
                                         'bootstrap-carousel',
                                         'bootstrap-typeahead',*/
                                         //'application',
-										'slimScroll'));
+										'slimScroll',
+                                        'jquery.fineuploader-3.0'));
         echo $this->fetch('script');
     ?>
 

@@ -1,3 +1,14 @@
+<?php
+if(!isSet($navButtonSelection)) {
+    $navButtonSelection = array(
+        'home'=>true,
+        'board'=>false,
+        'account'=>false,
+        'request'=>false,
+        'howItWorks'=>false,
+    );
+}
+?>
 <header>
 
     <!-- Navbar

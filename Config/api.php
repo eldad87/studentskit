@@ -237,12 +237,26 @@ $config['Teacher.subjectMeeting.error.1.description'] = __('Missing parameter');
 $config['Teacher.subjectMeeting.error.2.title'] = __('Error');
 $config['Teacher.subjectMeeting.error.2.description'] = __('Internal error');
 
+/*-------------------- Teacher.subjectFileSystem	--------------------*/
+$config['Teacher.subjectFileSystem.success.1.title'] = __('Success');
+$config['Teacher.subjectFileSystem.success.1.description'] = __('Subject file system');
+
+$config['Teacher.subjectFileSystem.error.1.title'] = __('Error');
+$config['Teacher.subjectFileSystem.error.1.description'] = __('Missing parameter');
+$config['Teacher.subjectFileSystem.error.2.title'] = __('Error');
+$config['Teacher.subjectFileSystem.error.2.description'] = __('Internal error');
+
 /*-------------------- Teacher.setSubjectCreationStage	--------------------*/
 $config['Teacher.setSubjectCreationStage.success.1.title'] = __('Success');
 $config['Teacher.setSubjectCreationStage.success.1.description'] = __('Subject creation stage changed');
 
 $config['Teacher.setSubjectCreationStage.error.1.title'] = __('Error');
 $config['Teacher.setSubjectCreationStage.error.1.description'] = __('Internal error');
+
+$config['Teacher.setSubjectCreationStage.error.2.title'] = __('Error');
+$config['Teacher.setSubjectCreationStage.error.2.description'] = __('Internal error');
+$config['Teacher.setSubjectCreationStage.error.3.title'] = __('Error');
+$config['Teacher.setSubjectCreationStage.error.3.description'] = __('Internal error');
 
 /*-------------------- Teacher.lessonsUpcoming	--------------------*/
 $config['Teacher.lessonsUpcoming.success.1.title'] = __('Success');
