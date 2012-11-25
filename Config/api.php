@@ -237,6 +237,28 @@ $config['Teacher.subjectMeeting.error.1.description'] = __('Missing parameter');
 $config['Teacher.subjectMeeting.error.2.title'] = __('Error');
 $config['Teacher.subjectMeeting.error.2.description'] = __('Internal error');
 
+/*-------------------- Teacher.FSRename	--------------------*/
+$config['Teacher.FSRename.success.1.title'] = __('Success');
+$config['Teacher.FSRename.success.1.description'] = __('Rename success');
+
+$config['Teacher.FSRename.error.1.title'] = __('Error');
+$config['Teacher.FSRename.error.1.description'] = __('Cannot find resource');
+$config['Teacher.FSRename.error.2.title'] = __('Error');
+$config['Teacher.FSRename.error.2.description'] = __('Permission error');
+$config['Teacher.FSRename.error.3.title'] = __('Error');
+$config['Teacher.FSRename.error.3.description'] = __('Internal error');
+
+/*-------------------- Teacher.FSDelete	--------------------*/
+$config['Teacher.FSDelete.success.1.title'] = __('Success');
+$config['Teacher.FSDelete.success.1.description'] = __('Remove success');
+
+$config['Teacher.FSDelete.error.1.title'] = __('Error');
+$config['Teacher.FSDelete.error.1.description'] = __('Cannot find resource');
+$config['Teacher.FSDelete.error.2.title'] = __('Error');
+$config['Teacher.FSDelete.error.2.description'] = __('Permission error');
+$config['Teacher.FSDelete.error.3.title'] = __('Error');
+$config['Teacher.FSDelete.error.3.description'] = __('Internal error');
+
 /*-------------------- Teacher.subjectFileSystem	--------------------*/
 $config['Teacher.subjectFileSystem.success.1.title'] = __('Success');
 $config['Teacher.subjectFileSystem.success.1.description'] = __('Subject file system');

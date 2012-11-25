@@ -169,8 +169,6 @@ class TeacherController extends AppController {
     }
 
     public function uploadSubjectFile($subjectId) {
-
-
         $userRelation = $this->Subject->getUserRelationToSubject($subjectId, $this->Auth->user('user_id'));
 
         if(!$userRelation) {
@@ -230,7 +228,6 @@ class TeacherController extends AppController {
         }
 
         die;
-
     }
 
     public function FSRename($fileSystemId) {
@@ -253,7 +250,29 @@ class TeacherController extends AppController {
             return $this->error(3);
         }
 
-        return $this->success(1);
+        return $this->success(1, array('results'=>array('file_system_id'=>$fileSystemId, 'name'=>$this->data['FileSystem']['name'])));
+    }
+    public function FSDelete($fileSystemId) {
+        App::import('Model', 'FileSystem');
+        $fsObj = new FileSystem();
+
+        //Find the subject
+        $fsObj->recursive = -1;
+        $fsData = $fsObj->findByFileSystemId($fileSystemId);
+
+        if(!$fsData) {
+            return $this->error(1);
+        }
+
+        if(!$this->verifyOwnership($fsData['FileSystem']['entity_type'], $fsData['FileSystem']['entity_id'])) {
+            return $this->error(2);
+        }
+
+        if(!$fsObj->remove($fileSystemId)) {
+            return $this->error(3);
+        }
+
+        return $this->success(1, array('results'=>array('file_system_id'=>$fileSystemId)));
     }
 
     /*public function testFS() {
