@@ -234,16 +234,9 @@ class TeacherController extends AppController {
         App::import('Model', 'FileSystem');
         $fsObj = new FileSystem();
 
-        //Find the subject
-        $fsObj->recursive = -1;
-        $fsData = $fsObj->findByFileSystemId($fileSystemId);
-
-        if(!$fsData) {
-            return $this->error(1);
-        }
-
-        if(!$this->verifyOwnership($fsData['FileSystem']['entity_type'], $fsData['FileSystem']['entity_id'])) {
-            return $this->error(2);
+        $res = $this->_validateFS($fsObj, $fileSystemId);
+        if($res!==true) {
+            return $res;
         }
 
         if(!$fsObj->rename($fileSystemId, $this->data['FileSystem']['name'])) {
@@ -256,6 +249,37 @@ class TeacherController extends AppController {
         App::import('Model', 'FileSystem');
         $fsObj = new FileSystem();
 
+        $res = $this->_validateFS($fsObj, $fileSystemId);
+        if($res!==true) {
+            return $res;
+        }
+
+        if(!$fsObj->remove($fileSystemId)) {
+            return $this->error(3);
+        }
+
+        return $this->success(1, array('results'=>array('file_system_id'=>$fileSystemId)));
+    }
+
+
+    public function FSDownload($fileSystemId) {
+        App::import('Model', 'FileSystem');
+        $fsObj = new FileSystem();
+
+        $res = $this->_validateFS($fsObj, $fileSystemId);
+        if($res!==true) {
+            return $res;
+        }
+
+        //Find the subject
+        $fsObj->recursive = -1;
+        $fsData = $fsObj->findByFileSystemId($fileSystemId);
+
+        $this->redirect($fsData['FileSystem']['file_source']);
+
+    }
+
+    private function _validateFS($fsObj,$fileSystemId) {
         //Find the subject
         $fsObj->recursive = -1;
         $fsData = $fsObj->findByFileSystemId($fileSystemId);
@@ -268,12 +292,9 @@ class TeacherController extends AppController {
             return $this->error(2);
         }
 
-        if(!$fsObj->remove($fileSystemId)) {
-            return $this->error(3);
-        }
-
-        return $this->success(1, array('results'=>array('file_system_id'=>$fileSystemId)));
+        return true;
     }
+
 
     /*public function testFS() {
         $subjectId = 106;

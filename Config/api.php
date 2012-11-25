@@ -258,6 +258,11 @@ $config['Teacher.FSDelete.error.2.title'] = __('Error');
 $config['Teacher.FSDelete.error.2.description'] = __('Permission error');
 $config['Teacher.FSDelete.error.3.title'] = __('Error');
 $config['Teacher.FSDelete.error.3.description'] = __('Internal error');
+/*-------------------- Teacher.FSDownload	--------------------*/
+$config['Teacher.FSDownload.error.1.title'] = __('Error');
+$config['Teacher.FSDownload.error.1.description'] = __('Cannot find resource');
+$config['Teacher.FSDownload.error.2.title'] = __('Error');
+$config['Teacher.FSDownload.error.2.description'] = __('Permission error');
 
 /*-------------------- Teacher.subjectFileSystem	--------------------*/
 $config['Teacher.subjectFileSystem.success.1.title'] = __('Success');

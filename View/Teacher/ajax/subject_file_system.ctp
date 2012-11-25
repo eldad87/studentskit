@@ -70,7 +70,10 @@
 
                     //File, download it
                     } else {
-//TODO: onClick - download files, open path folder
+                        //Get settings
+                        var downloadSettings = self.fileSystem('_getSetting', 'downloadAction');
+                        var downloadUrl = jQuery.nano(downloadSettings['url'], {id: id});
+                        window.open( downloadUrl );
                     }
                 });
 
@@ -299,7 +302,7 @@
             goUpInPath: $('#goUpInPath'),
             renameAction: {model: '#rename-popup', nameField: '#newName', url: '<?php echo Router::url(array('controller'=>'Teacher', 'action'=>'FSRename', '{id}')); ?>'},
             deleteAction: {url: '<?php echo Router::url(array('controller'=>'Teacher', 'action'=>'FSDelete', '{id}')); ?>', errorElement: '#errorElement'},
-            downloadAction: 'url'
+            downloadAction: {url: '<?php echo Router::url(array('controller'=>'Teacher', 'action'=>'FSDownload', '{id}')); ?>'}
 
 
         //When path changes, apply the changes to the fineUploader
@@ -321,7 +324,6 @@
             },
             template:   '<div class="qq-uploader span12 pull-left">' +
                             '<pre class="qq-upload-drop-area span12 qq-uploader span12"><span>{dragZoneText}</span></pre>' +
-                            //'<div class="qq-upload-button btn btn-success" style="width: auto;">{uploadButtonText}</div>' +
                             '<ul class="qq-upload-list" id="uploadList" style="margin-top: 10px; text-align: center;"></ul>' +
                         '</div>',
             classes: {

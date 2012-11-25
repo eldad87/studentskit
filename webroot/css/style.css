@@ -3037,6 +3037,7 @@ ul.file-box-all li{
     float: left;
     clear: both;
     width: 100%;
+    cursor: pointer;
 }
 
 ul.file-box-all li:hover {
