@@ -126,10 +126,18 @@
                 resource['class'] = (resource['type']=='folder' ? 'norm' : 'black');
 
                 //Build element
-                var element = '<li id="{file_system_id}" data-type="{type}"><i class="iconMedium-folder-{class} pull-left space20"></i><span class="pull-left">{name}</span>' +
-                    '<div class="pull-right"><i class="iconSmall-pencil pencilicon actionButton" id="rename_{file_system_id}"></i>' +
-                    '<i class="iconSmall-red-cross redcross actionButton" id="delete_{file_system_id}"></i></div>' +
-                    '</li>';
+                var element = '<li id="{file_system_id}" data-type="{type}">' +
+                                    '<i class="iconMedium-folder-{class} pull-left space20"></i>' +
+                                    '<span class="pull-left">{name}</span>' +
+                                    '<div class="pull-right">';
+                if(resource['type']=='folder') {
+                    //Rename is available only for folders
+                    element +=          '<i class="iconSmall-pencil pencilicon actionButton" id="rename_{file_system_id}"></i>';
+                }
+                element +=              '<i class="iconSmall-red-cross redcross actionButton" id="delete_{file_system_id}"></i>' +
+                                    '</div>' +
+                                '</li>';
+
                 element = jQuery.nano(element, resource);
 
                 //Append element
@@ -373,7 +381,7 @@
 
                 <div class="control-group">
                     <div class="control m-none-left">
-                        <input type="text" class="x-large8" name="" value="/" id="pathDisplay" />
+                        <input type="text" class="x-large8" name="" value="/" id="pathDisplay" disabled="disabled" />
                     </div>
                 </div>
                 <div class="list-box-file radius3">
