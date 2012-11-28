@@ -185,7 +185,7 @@ define('FORUM_USER', 'User'); //Forum user DB
 //Configure::write('Config.languages', array('eng'=>'English', 'heb'=>'Hebrew'));
 
 CakePlugin::loadAll(array(
-        //'Utils',
+        'Utils',
         'Utility',
         'SignMeUp',
         'Forum'=>array('bootstrap'=>true, 'routes'=>true),
