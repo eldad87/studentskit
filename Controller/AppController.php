@@ -156,15 +156,18 @@ class AppController extends Controller {
         $language /*= $locale */= null;
         if($this->Session->read('language')) {
             $language = $this->Session->read('language');
-            $locale = $localize->map($this->Session->read('language'));
+            //$locale = $localize->map($this->Session->read('language'));
             //$language = $this->Session->read('language');
         } else {
             //Get language from browser
             $locale = $localize->get();
 
             $language = $localize->catalog($locale);
-            $language = $localize->map($language['localeFallback']);
+            //$language = $localize->map($language['localeFallback']); //en
+            $language = $language['localeFallback']; //eng
+
         }
+
         Configure::write('Config.language', $language);
 
         //pr(($this->Session->read('timezone'))); die;

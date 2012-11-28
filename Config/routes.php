@@ -41,6 +41,11 @@ Router::connect('/activate/:activation_code', array('controller' => 'Accounts', 
 Router::connect('/forgotten_password/:password_reset', array('controller' => 'Accounts', 'action' => 'forgotten_password', 'plugin'=>false), array('pass' => 'password_reset_code'));
 Router::connect('/login', array('controller' => 'Accounts', 'action' => 'login', 'plugin'=>false));
 Router::connect('/logout', array('controller' => 'Accounts', 'action' => 'logout', 'plugin'=>false));
+
+Router::connect('/Upload', array('controller' => 'Upload', 'plugin'=>'Upload'));
+Router::connect(
+    '/Upload/:action/*', array('controller' => 'Upload', 'plugin'=>'Upload')
+);
 ////////////
 
 ////////////
