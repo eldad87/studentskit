@@ -192,7 +192,6 @@ CakePlugin::loadAll(array(
         'facebook',
         'DebugKit',
         'Uploader',
-        //'Upload',
     )
 );
 App::import('Vendor', 'Uploader.Uploader');
