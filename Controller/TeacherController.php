@@ -156,10 +156,6 @@ class TeacherController extends AppController {
             return $this->error(2);
         }
 
-        //Set additional subject info
-        /*if($subjectId) {
-            $this->set('tests', $this->Subject->getTests($subjectId));
-        }*/
         $fs = $this->Subject->getFileSystem($subjectId);
         $this->set('fileSystem', $this->Subject->getFileSystem($subjectId));
 
@@ -230,6 +226,25 @@ class TeacherController extends AppController {
         die;
     }
 
+    public function FSAddFolder($parentFileSystemId=0) {
+        App::import('Model', 'FileSystem');
+        $fsObj = new FileSystem();
+
+        $res = $this->_validateFS($fsObj, $parentFileSystemId);
+        if($res!==true) {
+            return $res;
+        }
+
+        //Find the subject
+        $fsObj->recursive = -1;
+        $fsData = $fsObj->findByFileSystemId($parentFileSystemId);
+
+        if(!$fsObj->addFolder($fsData['FileSystem']['entity_type'], $fsData['FileSystem']['entity_id'], $this->data['FileSystem']['name'], $parentFileSystemId)) {
+            return $this->error(3);
+        }
+
+        return $this->success(1, array('results'=>array('file_system_id'=>$fsObj->id, 'name'=>$this->data['FileSystem']['name'], 'type'=>'folder')));
+    }
     public function FSRename($fileSystemId) {
         App::import('Model', 'FileSystem');
         $fsObj = new FileSystem();

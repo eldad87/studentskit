@@ -264,6 +264,17 @@ $config['Teacher.FSDownload.error.1.description'] = __('Cannot find resource');
 $config['Teacher.FSDownload.error.2.title'] = __('Error');
 $config['Teacher.FSDownload.error.2.description'] = __('Permission error');
 
+/*-------------------- Teacher.FSDownload	--------------------*/
+$config['Teacher.FSAddFolder.success.1.title'] = __('Success');
+$config['Teacher.FSAddFolder.success.1.description'] = __('Remove success');
+
+$config['Teacher.FSAddFolder.error.1.title'] = __('Error');
+$config['Teacher.FSAddFolder.error.1.description'] = __('Cannot find resource');
+$config['Teacher.FSAddFolder.error.2.title'] = __('Error');
+$config['Teacher.FSAddFolder.error.2.description'] = __('Permission error');
+$config['Teacher.FSAddFolder.error.3.title'] = __('Error');
+$config['Teacher.FSAddFolder.error.3.description'] = __('Internal error');
+
 /*-------------------- Teacher.subjectFileSystem	--------------------*/
 $config['Teacher.subjectFileSystem.success.1.title'] = __('Success');
 $config['Teacher.subjectFileSystem.success.1.description'] = __('Subject file system');
