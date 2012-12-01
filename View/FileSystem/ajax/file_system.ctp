@@ -1,27 +1,3 @@
-<?php
-//echo $this->Html->script('filesystem');
-?>
-<style>
-        /* Fine Uploader
-       -------------------------------------------------- */
-    .qq-upload-list {
-        text-align: left;
-    }
-
-        /* For the bootstrapped demos */
-    li.alert-success {
-        background-color: #DFF0D8;
-    }
-
-    li.alert-error {
-        background-color: #F2DEDE;
-    }
-
-    .alert-error .qq-upload-failed-text {
-        display: inline;
-    }
-</style>
-
 <script type="text/javascript">
 
     $(document).ready(function(){

@@ -38,6 +38,16 @@ class FileSystem extends AppModel {
 
     }
 
+    /*public function getFSBySubjectId($subjectId) {
+        App::import('Model', 'Subject');
+        $subjectObj = new Subject();
+
+        $subjectObj->recursive = -1;
+        $subjectData = $this->Subject->find('first', array('conditions'=>array('subject_id'=>$subjectId)));
+
+        return $this->getFS( $subjectData['Subject']['root_file_system_id'] );
+    }*/
+
     public function getFS($fileSystemId) {
 
         //Find root

@@ -8,7 +8,7 @@
  */
 class LessonsController extends AppController {
 	public $name = 'Lessons';
-	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
+	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson', 'FileSystem');
 	public $components = array('Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login'))/*, 'Security'*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 	public $helpers = array('Watchitoo');
@@ -152,8 +152,14 @@ class LessonsController extends AppController {
             if($enterLesson) {
                 //TODO: generate token
                 $this->set('meetingSettings', $this->Watchitoo->getMeetingSettings($teacherLessonId, $this->Auth->user('user_id')));
-                $this->set('fileSystem', $this->TeacherLesson->getFileSystem($teacherLessonId));
-                $this->set('tests', $this->TeacherLesson->getTests($teacherLessonId));
+                /*$this->set('fileSystem', $this->FileSystem->getFS('subject', $liveRequestStatus['subject_id']));
+                $this->set('tests', $this->TeacherLesson->getTests($teacherLessonId));*/
+
+                if($liveRequestStatus['is_teacher']) {
+                    $this->set('FS', array('entity_type'=>'subject', 'entity_id'=>$liveRequestStatus['subject_id']));
+                } else {
+                    $this->set('FS', array('entity_type'=>'user_lesson', 'entity_id'=>$liveRequestStatus['user_lesson_id']));
+                }
             }
 
             $this->set('datetime', $liveRequestStatus['datetime']);
@@ -225,8 +231,10 @@ class LessonsController extends AppController {
         $this->set('showAds', ((!empty($canWatchData['end_datetime']) &&
                                 $this->TeacherLesson->toServerTime($canWatchData['end_datetime'])<=$this->TeacherLesson->timeExpression( 'now', false )) ||
                                 !$canWatchData['payment_needed']) );
-        $this->set('fileSystem', $this->TeacherLesson->getFileSystem($canWatchData['teacher_lesson_id']));
-		$this->set('tests', $this->TeacherLesson->getTests($canWatchData['teacher_lesson_id']));
+
+        $this->set('userLessonId', $canWatchData['user_lesson_id']);
+        /*$this->set('fileSystem', $this->FileSystem->getFS('subject', $canWatchData['subject_id']));
+		$this->set('tests', $this->TeacherLesson->getTests($canWatchData['teacher_lesson_id']));*/
         $this->render('common'.DS.'lesson');
     }
 
