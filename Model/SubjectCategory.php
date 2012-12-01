@@ -9,14 +9,14 @@ class SubjectCategory extends AppModel {
 
     public function __construct($id = false, $table = null, $ds = null) {
         parent::__construct($id, $table, $ds);
-        static $eventListenterAttached = false;
+        static $eventListenerAttached = false;
 
-        if(!$eventListenterAttached) {
+        if(!$eventListenerAttached) {
             //Connect the event manager of this model
             App::import( 'Event', 'ForumEventListener');
             $fel = new ForumEventListener();
             CakeEventManager::instance()->attach($fel);
-            $eventListenterAttached = true;
+            $eventListenerAttached = true;
         }
     }
 

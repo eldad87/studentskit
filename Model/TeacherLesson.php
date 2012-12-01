@@ -133,14 +133,14 @@ class TeacherLesson extends AppModel {
     public function __construct($id = false, $table = null, $ds = null) {
 
         parent::__construct($id, $table, $ds);
-        static $eventListenterAttached = false;
+        static $eventListenerAttached = false;
 
-        if(!$eventListenterAttached) {
+        if(!$eventListenerAttached) {
             //Connect the event manager of this model
             App::import( 'Event', 'TeacherLessonEventListener');
             $tlel =& TeacherLessonEventListener::getInstance();
             CakeEventManager::instance()->attach($tlel);
-            $eventListenterAttached = true;
+            $eventListenerAttached = true;
         }
     }
 
@@ -264,7 +264,7 @@ class TeacherLesson extends AppModel {
             $teacherLessonData = $this->findByTeacherLessonId(isSet($this->data['TeacherLesson'][$this->primaryKey]) ? $this->data['TeacherLesson'][$this->primaryKey] : $this->id);
             $lessonType = $teacherLessonData['TeacherLesson']['lesson_type'];
 
-            if($lessonType==LESSON_TYPE_LIVE && $teacherLessonData['num_of_students']>0) { //Live lesson with students
+            if($lessonType==LESSON_TYPE_LIVE && $teacherLessonData['TeacherLesson']['num_of_students']>0) { //Live lesson with students
                 //Set datetime so it will get checked
                 $this->data['TeacherLesson']['datetime'] = $teacherLessonData['TeacherLesson']['datetime'];
             }

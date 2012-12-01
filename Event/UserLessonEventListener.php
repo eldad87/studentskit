@@ -391,6 +391,52 @@ class UserLessonEventListener implements CakeEventListener {
         $byUserId = $event->data['by_user_id'];
 
 
+
+        //Add FS
+        if(!$event->data['user_lesson']['root_file_system_id']) {
+
+            //Check if we already have root for this subject, perhaps from a different UL that was accepted
+            $event->subject()->recursive = -1;
+            $ulData = $event->subject()->find('first', array('conditions'=>array('subject_id'=>$event->data['user_lesson']['subject_id'],
+                                                                            $event->subject()->getDataSource()->expression('root_file_system_id IS NOT NULL')
+                 )));
+
+
+            $update = array();
+            if($ulData) {
+                $update['root_file_system_id'] = $ulData['UserLesson']['root_file_system_id'];
+
+
+            //Create a new user folder
+            } else {
+                ///Load student data
+                $event->subject()->Student->recursive = -1;
+                $studentData = $event->subject()->Student->find('first', array('conditions'=>array('user_id'=>$event->data['user_lesson']['student_user_id'])));
+
+                //Load subject data
+                $event->subject()->Subject->recursve = -1;
+                $subjectData = $event->subject()->Subject->findBySubjectId($event->data['user_lesson']['subject_id']);
+                $subjectData = $subjectData['Subject'];
+
+                //Create User folder
+                App::import('Model', 'FileSystem');
+                $fsObj = new FileSystem();
+                $fsObj->createFS('subject', $subjectData['subject_id'], $event->data['user_lesson']['student_user_id'],
+                                    $subjectData['user_upload_root_file_system_id'], $studentData['Student']['username']);
+
+                $update['root_file_system_id'] = $fsObj->id;
+            }
+
+            //Update UL with new upload folder
+            $event->subject()->create(false);
+            $event->subject()->id = $event->data['user_lesson']['user_lesson_id'];
+            $event->subject()->set($update);
+            if(!$event->subject()->save()) {
+                return false;
+            }
+        }
+
+
         if($event->data['user_lesson']['teacher_user_id']==$byUserId) {
             $toUserId = $event->data['user_lesson']['student_user_id'];
             if(empty($event->data['user_lesson']['request_subject_id'])) {

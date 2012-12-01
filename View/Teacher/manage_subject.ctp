@@ -95,7 +95,7 @@
         <ul class="booking-nav f-pad-norml um-upcoming f-pad-norml1 tab-menu">
             <li class="<?php echo $classes['subject']; ?>" id="subjectTab"><a href="#" class="load3" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'subject', $subjectId)); ?>"><?php echo __('Subject'); ?></a></li>
             <li class="<?php echo $classes['meeting']; ?>" id="meetingTab"><a href="#"  class="load3" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'subjectMeeting', $subjectId)); ?>"><?php echo __('Meeting'); ?></a></li>
-            <li class="<?php echo $classes['files']; ?>" id="filesTab"><a href="#"  class="load3" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'subjectFileSystem', $subjectId)); ?>"><?php echo __('Files'); ?></a></li>
+            <li class="<?php echo $classes['files']; ?>" id="filesTab"><a href="#"  class="load3" rel="<?php echo Router::url(array('controller'=>'FileSystem','action'=>'fileSystem', 'subject', $subjectId)); ?>"><?php echo __('Files'); ?></a></li>
             <li class="<?php echo $classes['test']; ?>" id="testsTab"><a href="#"  class="load3" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'subjectTests', $subjectId)); ?>"><?php echo __('Tests'); ?></a></li>
 
             <?php

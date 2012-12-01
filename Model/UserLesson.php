@@ -191,14 +191,14 @@ class UserLesson extends AppModel {
 
     public function __construct($id = false, $table = null, $ds = null) {
         parent::__construct($id, $table, $ds);
-        static $eventListenterAttached = false;
+        static $eventListenerAttached = false;
 
-        if(!$eventListenterAttached) {
+        if(!$eventListenerAttached) {
             //Connect the event manager of this model
             App::import( 'Event', 'UserLessonEventListener');
             $ulel =& UserLessonEventListener::getInstance();
             CakeEventManager::instance()->attach($ulel);
-            $eventListenterAttached = true;
+            $eventListenerAttached = true;
         }
     }
     public function isFutureDatetime($datetime) {
@@ -770,7 +770,9 @@ class UserLesson extends AppModel {
 		//Find user lesson
 		$userLessonData = $this->findByUserLessonId($userLessonId);
         //Check that user lesson found + there is enough room int the TeacherLesson
-		if( !$userLessonData || $userLessonData['TeacherLesson']['max_students']<=$userLessonData['TeacherLesson']['num_of_students'] ) {
+		if( !$userLessonData ||
+            ($userLessonData['TeacherLesson']['max_students'] && //Make sure this UL already bind to a TK
+                $userLessonData['TeacherLesson']['max_students']<=$userLessonData['TeacherLesson']['num_of_students']) ) {
 			return false;
 		}
 		$userLessonData = $userLessonData['UserLesson'];
@@ -800,6 +802,7 @@ class UserLesson extends AppModel {
         if(isSet($event->result['teacher_lesson_id'])) {
             $updateUserLesson['teacher_lesson_id'] = $event->result['teacher_lesson_id'];
         }
+
 
 		$this->updateAll($updateUserLesson, array('UserLesson.user_lesson_id'=>$userLessonId));
 

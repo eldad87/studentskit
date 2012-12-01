@@ -8,7 +8,6 @@ class TeacherController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow(	'subject');
     }
 	
 	public function index() {
@@ -148,167 +147,7 @@ class TeacherController extends AppController {
         $this->success(1, array('results'=>$settings));
     }
 
-    public function subjectFileSystem($subjectId) {
-        if(!$subjectId) {
-            return $this->error(1);
-        }
-        if(!$this->verifyOwnership('subject', $subjectId)) {
-            return $this->error(2);
-        }
 
-        $fs = $this->Subject->getFileSystem($subjectId);
-        $this->set('fileSystem', $this->Subject->getFileSystem($subjectId));
-
-        $this->set('subjectId', $subjectId);
-
-        return $this->success(1);
-    }
-
-    public function uploadSubjectFile($subjectId) {
-        $userRelation = $this->Subject->getUserRelationToSubject($subjectId, $this->Auth->user('user_id'));
-
-        if(!$userRelation) {
-            echo json_encode(array('success' => false, 'data' => array()));
-        } else {
-
-            /**
-             * HACK STARTs
-             * AttachmentBehavior doesn't know how to handle ajax files.
-             * The code below, transform the ajax upload into regular FORM upload and add it to $this->request->data
-             */
-            $ajaxField = 'fileUpload';
-
-            $name = $_GET[$ajaxField];
-            $mime = Uploader::mimeType($name);
-            if ($mime) {
-                $input = fopen("php://input", "r");
-                $temp = tmpfile();
-
-                $this->request->data[$ajaxField] = array(
-                    'name'      => $name,
-                    'type'      => $mime,
-                    'stream'    => true,
-                    'tmp_name'  => $temp,
-                    'error'     => 0,
-                    'size'      => stream_copy_to_stream($input, $temp)
-                );
-
-                fclose($input);
-            }
-            /**
-             * HACK ENDs
-             */
-
-            App::import('Model', 'FileSystem');
-            $fsObj = new FileSystem();
-
-            $this->request->data['entity_id']   = $subjectId;
-            $this->request->data['entity_type'] = 'subject';
-            $this->request->data['type']        = 'file';
-            $this->request->data['name']        = $name;
-            $this->request->data['size_kb']     = $this->request->data[$ajaxField]['size'];
-            $this->request->data['parent_id']   = isSet($this->request->query['path']) ? $this->request->query['path'][count($this->request->query['path'])-1] : 0;
-
-            if(!$fsObj->save( $this->request->data )) {
-                echo json_encode(array('success' => false, 'data' => array()));
-            } else {
-                echo json_encode(array('success' => true, 'data' => array(
-                   'file_system_id' =>$fsObj->id,
-                   'name'           =>$name,
-                   'type'           =>'file',
-                   'size_kb'        =>$this->request->data[$ajaxField]['size'],
-                   'extension'      =>Uploader::ext($name),
-                   'path'           =>isSet($this->request->query['path']) ? $this->request->query['path'] : array()
-                )));
-            }
-        }
-
-        die;
-    }
-
-    public function FSAddFolder($parentFileSystemId=0) {
-        App::import('Model', 'FileSystem');
-        $fsObj = new FileSystem();
-
-        $res = $this->_validateFS($fsObj, $parentFileSystemId);
-        if($res!==true) {
-            return $res;
-        }
-
-        //Find the subject
-        $fsObj->recursive = -1;
-        $fsData = $fsObj->findByFileSystemId($parentFileSystemId);
-
-        if(!$fsObj->addFolder($fsData['FileSystem']['entity_type'], $fsData['FileSystem']['entity_id'], $this->data['FileSystem']['name'], $parentFileSystemId)) {
-            return $this->error(3);
-        }
-
-        return $this->success(1, array('results'=>array('file_system_id'=>$fsObj->id, 'name'=>$this->data['FileSystem']['name'], 'type'=>'folder')));
-    }
-    public function FSRename($fileSystemId) {
-        App::import('Model', 'FileSystem');
-        $fsObj = new FileSystem();
-
-        $res = $this->_validateFS($fsObj, $fileSystemId);
-        if($res!==true) {
-            return $res;
-        }
-
-        if(!$fsObj->rename($fileSystemId, $this->data['FileSystem']['name'])) {
-            return $this->error(3);
-        }
-
-        return $this->success(1, array('results'=>array('file_system_id'=>$fileSystemId, 'name'=>$this->data['FileSystem']['name'])));
-    }
-    public function FSDelete($fileSystemId) {
-        App::import('Model', 'FileSystem');
-        $fsObj = new FileSystem();
-
-        $res = $this->_validateFS($fsObj, $fileSystemId);
-        if($res!==true) {
-            return $res;
-        }
-
-        if(!$fsObj->remove($fileSystemId)) {
-            return $this->error(3);
-        }
-
-        return $this->success(1, array('results'=>array('file_system_id'=>$fileSystemId)));
-    }
-
-
-    public function FSDownload($fileSystemId) {
-        App::import('Model', 'FileSystem');
-        $fsObj = new FileSystem();
-
-        $res = $this->_validateFS($fsObj, $fileSystemId);
-        if($res!==true) {
-            return $res;
-        }
-
-        //Find the subject
-        $fsObj->recursive = -1;
-        $fsData = $fsObj->findByFileSystemId($fileSystemId);
-
-        $this->redirect($fsData['FileSystem']['file_source']);
-
-    }
-
-    private function _validateFS($fsObj,$fileSystemId) {
-        //Find the subject
-        $fsObj->recursive = -1;
-        $fsData = $fsObj->findByFileSystemId($fileSystemId);
-
-        if(!$fsData) {
-            return $this->error(1);
-        }
-
-        if(!$this->verifyOwnership($fsData['FileSystem']['entity_type'], $fsData['FileSystem']['entity_id'])) {
-            return $this->error(2);
-        }
-
-        return true;
-    }
 
 
     /*public function testFS() {
@@ -626,12 +465,15 @@ class TeacherController extends AppController {
 		$foundRecord = false;
 		switch($entityType) {
 			case 'subject':
+                $this->Subject->recursive = -1;
 				$foundRecord = $this->Subject->find('first', array('conditions'=>array('subject_id'=>$entityId, 'user_id'=>$this->Auth->user('user_id'))));
 			break;
 			case 'teacher_lesson':
+                $this->TeacherLesson->recursive = -1;
 				$foundRecord = $this->TeacherLesson->find('first', array('conditions'=>array('teacher_lesson_id'=>$entityId, 'teacher_user_id'=>$this->Auth->user('user_id'))));
 			break;
 			case 'user_lesson':
+                $this->UserLesson->recursive = -1;
 				$foundRecord = true; //TODO
 			break;
 		}

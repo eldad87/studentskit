@@ -212,13 +212,19 @@
 
             //Show root
             if(path==undefined) {
-                $(this).data('path', []);
+                var resources = $(this).data('fileSystem');
+                //Append the first folder as root
+                $(this).data('path', [Object.keys(resources)[0]]);
 
                 //Show upper level
             } else if(path=='..') {
 
                 var p = $(this).data('path');
-                p.pop();
+                var pop = p.pop();
+                //If there are no more items, bring back user to root
+                if(p.length==0) {
+                    p.push(pop);
+                }
                 $(this).data('path', p);
 
                 //Go deeper
@@ -277,7 +283,7 @@
 
             //});
 
-            //Set global events
+            //Go into root folder, user does not need to see it
             $(this).fileSystem('nav');
 
             return $(this);

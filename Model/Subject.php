@@ -69,6 +69,7 @@ class Subject extends AppModel {
         )
     );
 
+
     public function formatImageName($name, $field, $file) {
         return String::uuid();
     }
@@ -396,9 +397,32 @@ class Subject extends AppModel {
 
             App::import('Vendor', 'Solr');
             $SolrObj = new Solr($subjectData['type']);
-            return $SolrObj->addDocument($update);
-
+            if(!$SolrObj->addDocument($update)) {
+                return false;
+            }
         }
+
+
+        //Set file system
+        if($created && $this->data['Subject']['lesson_type']!=LESSON_TYPE_VIDEO) {
+            App::import('Model', 'FileSystem');
+            $fsObj = new FileSystem();
+
+            //Create root filesystem
+            $fsObj->createFS('subject', $this->id, 0, 0, $this->data['Subject']['name']);
+            $rootFS = $fsObj->id;
+
+            //Create users upload root dir
+            $fsObj->addFolder($rootFS, __('Users uploads'));
+            $usersUploadRoot = $fsObj->id;
+
+            $this->set(array('root_file_system_id'=>$rootFS, 'user_upload_root_file_system_id'=>$usersUploadRoot));
+            if(!$this->save()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static function calcStudentPriceAfterDiscount( $onOnOnePrice, $maxStudents, $currentStudents, $fullGroupStudentPrice ) {
@@ -739,13 +763,14 @@ WHERE value_enabled<>0;
 	}*/
 
 
-    public function getFileSystem($subjectId) {
-
+    /*public function getFileSystem($subjectId, $inPath=null) {
+        $this->recursive = -1;
+        $subjectData = $this->findBySubjectId($subjectId);
         App::import('Model', 'FileSystem');
         $fsObj = new FileSystem();
-        return $fsObj->getFS('subject', $subjectId);
+        return $fsObj->getFS($subjectData['Subject']['root_file_system_id']);
 
-    }
+    }*/
 
     public function getTests($subjectId) {
         //Get subject tests

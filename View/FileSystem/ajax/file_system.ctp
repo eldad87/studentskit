@@ -28,7 +28,7 @@
         $('#bootstrapped-fine-uploader').fineUploader({
             button: $('#fileUpload'),
             request: {
-                endpoint: '<?php echo Router::url(array('controller'=>'Teacher', 'action'=>'uploadSubjectFile', $subjectId)); ?>',
+                endpoint: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'uploadFile')); ?>',
                 //endpoint: '/Upload/ajax_upload',
                 inputName: 'fileUpload'
             },
@@ -81,10 +81,10 @@
         $('#file-list').fileSystem( fs, {
             pathDisplay: $('#pathDisplay'),
             goUpInPath: $('#goUpInPath'),
-            newFolderAction: {button: '#new-folder',model: '#rename-popup', nameField: '#newName', url: '<?php echo Router::url(array('controller'=>'Teacher', 'action'=>'FSAddFolder', '{id}')); ?>'},
-            renameAction: {model: '#rename-popup', nameField: '#newName', url: '<?php echo Router::url(array('controller'=>'Teacher', 'action'=>'FSRename', '{id}')); ?>'},
-            deleteAction: {url: '<?php echo Router::url(array('controller'=>'Teacher', 'action'=>'FSDelete', '{id}')); ?>', errorElement: '#errorElement'},
-            downloadAction: {url: '<?php echo Router::url(array('controller'=>'Teacher', 'action'=>'FSDownload', '{id}')); ?>'}
+            newFolderAction: {button: '#new-folder',model: '#rename-popup', nameField: '#newName', url: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'addFolder', '{id}')); ?>'},
+            renameAction: {model: '#rename-popup', nameField: '#newName', url: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'rename', '{id}')); ?>'},
+            deleteAction: {url: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'delete', '{id}')); ?>', errorElement: '#errorElement'},
+            downloadAction: {url: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'download', '{id}')); ?>'}
         });
 
 

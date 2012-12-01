@@ -33,6 +33,10 @@ App::uses('Model', 'Model');
 class AppModel extends Model {
     public $actsAs = array('Time');
 
+    public function isExists() {
+        return $this->exists(!empty($this->data[$this->alias][$this->primaryKey]) ? $this->data[$this->alias][$this->primaryKey] : $this->id);
+    }
+
     public function resetRelationshipFields() {
         foreach($this->associations() AS $relationName) {
             if(isSet($this->$relationName) && is_array($this->$relationName) && $this->$relationName) {

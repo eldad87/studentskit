@@ -30,9 +30,9 @@ class AccountsController extends AppController {
 
     public function __construct($request = null, $response = null) {
         parent::__construct($request, $response);
-        static $eventListenterAttached = false;
+        static $eventListenerAttached = false;
 
-        if(!$eventListenterAttached) {
+        if(!$eventListenerAttached) {
             //Connect the event manager of this model
             App::import( 'Event', 'ForumEventListener');
             $fel = new ForumEventListener();
@@ -41,7 +41,7 @@ class AccountsController extends AppController {
             App::import( 'Event', 'LoginEventListener');
             $lel = new LoginEventListener();
             CakeEventManager::instance()->attach($lel);
-            $eventListenterAttached = true;
+            $eventListenerAttached = true;
         }
     }
 	

@@ -175,6 +175,73 @@ $config['Home.canWatchVideo.error.2.title'] = __('Error');
 $config['Home.canWatchVideo.error.2.description'] = __('Internal error');
 /********************* Home - End		******************************************/
 
+/********************* FileSystem - Start		******************************************/
+
+/*-------------------- FileSystem.rename	--------------------*/
+$config['FileSystem.rename.success.1.title'] = __('Success');
+$config['FileSystem.rename.success.1.description'] = __('Rename success');
+
+$config['FileSystem.rename.error.1.title'] = __('Error');
+$config['FileSystem.rename.error.1.description'] = __('Cannot find resource');
+$config['FileSystem.rename.error.2.title'] = __('Error');
+$config['FileSystem.rename.error.2.description'] = __('Permission error');
+$config['FileSystem.rename.error.3.title'] = __('Error');
+$config['FileSystem.rename.error.3.description'] = __('Permission error');
+$config['FileSystem.rename.error.4.title'] = __('Error');
+$config['FileSystem.rename.error.4.description'] = __('Internal error');
+
+/*-------------------- FileSystem.uploadFile	--------------------*/
+$config['FileSystem.uploadFile.error.1.title'] = __('Error');
+$config['FileSystem.uploadFile.error.1.description'] = __('Cannot find resource');
+$config['FileSystem.uploadFile.error.2.title'] = __('Error');
+$config['FileSystem.uploadFile.error.2.description'] = __('Permission error');
+$config['FileSystem.uploadFile.error.3.title'] = __('Error');
+$config['FileSystem.uploadFile.error.3.description'] = __('Permission error');
+
+/*-------------------- FileSystem.delete	--------------------*/
+$config['FileSystem.delete.success.1.title'] = __('Success');
+$config['FileSystem.delete.success.1.description'] = __('Remove success');
+
+$config['FileSystem.delete.error.1.title'] = __('Error');
+$config['FileSystem.delete.error.1.description'] = __('Cannot find resource');
+$config['FileSystem.delete.error.2.title'] = __('Error');
+$config['FileSystem.delete.error.2.description'] = __('Permission error');
+$config['FileSystem.delete.error.3.title'] = __('Error');
+$config['FileSystem.delete.error.3.description'] = __('Permission error');
+$config['FileSystem.delete.error.4.title'] = __('Error');
+$config['FileSystem.delete.error.4.description'] = __('Internal error');
+/*-------------------- FileSystem.download	--------------------*/
+$config['FileSystem.download.error.1.title'] = __('Error');
+$config['FileSystem.download.error.1.description'] = __('Cannot find resource');
+$config['FileSystem.download.error.2.title'] = __('Error');
+$config['FileSystem.download.error.2.description'] = __('Permission error');
+$config['FileSystem.download.error.3.title'] = __('Error');
+$config['FileSystem.download.error.3.description'] = __('Permission error');
+
+/*-------------------- FileSystem.addFolder	--------------------*/
+$config['FileSystem.addFolder.success.1.title'] = __('Success');
+$config['FileSystem.addFolder.success.1.description'] = __('Remove success');
+
+$config['FileSystem.addFolder.error.1.title'] = __('Error');
+$config['FileSystem.addFolder.error.1.description'] = __('Cannot find resource');
+$config['FileSystem.addFolder.error.2.title'] = __('Error');
+$config['FileSystem.addFolder.error.2.description'] = __('Permission error');
+$config['FileSystem.addFolder.error.3.title'] = __('Error');
+$config['FileSystem.addFolder.error.3.description'] = __('Permission error');
+$config['FileSystem.addFolder.error.4.title'] = __('Error');
+$config['FileSystem.addFolder.error.4.description'] = __('Internal error');
+
+/*-------------------- FileSystem.fileSystem	--------------------*/
+$config['FileSystem.fileSystem.success.1.title'] = __('Success');
+$config['FileSystem.fileSystem.success.1.description'] = __('Subject file system');
+
+$config['FileSystem.fileSystem.error.1.description'] = __('Cannot find resource');
+$config['FileSystem.fileSystem.error.2.title'] = __('Error');
+$config['FileSystem.fileSystem.error.2.description'] = __('Permission error');
+$config['FileSystem.fileSystem.error.3.title'] = __('Error');
+$config['FileSystem.fileSystem.error.3.description'] = __('Permission error');
+/********************* FileSystem - End		******************************************/
+
 
 /********************* Student - Start		******************************************/
 /*-------------------- Student.LessonsUpcoming	--------------------*/
@@ -236,53 +303,6 @@ $config['Teacher.subjectMeeting.error.1.title'] = __('Error');
 $config['Teacher.subjectMeeting.error.1.description'] = __('Missing parameter');
 $config['Teacher.subjectMeeting.error.2.title'] = __('Error');
 $config['Teacher.subjectMeeting.error.2.description'] = __('Internal error');
-
-/*-------------------- Teacher.FSRename	--------------------*/
-$config['Teacher.FSRename.success.1.title'] = __('Success');
-$config['Teacher.FSRename.success.1.description'] = __('Rename success');
-
-$config['Teacher.FSRename.error.1.title'] = __('Error');
-$config['Teacher.FSRename.error.1.description'] = __('Cannot find resource');
-$config['Teacher.FSRename.error.2.title'] = __('Error');
-$config['Teacher.FSRename.error.2.description'] = __('Permission error');
-$config['Teacher.FSRename.error.3.title'] = __('Error');
-$config['Teacher.FSRename.error.3.description'] = __('Internal error');
-
-/*-------------------- Teacher.FSDelete	--------------------*/
-$config['Teacher.FSDelete.success.1.title'] = __('Success');
-$config['Teacher.FSDelete.success.1.description'] = __('Remove success');
-
-$config['Teacher.FSDelete.error.1.title'] = __('Error');
-$config['Teacher.FSDelete.error.1.description'] = __('Cannot find resource');
-$config['Teacher.FSDelete.error.2.title'] = __('Error');
-$config['Teacher.FSDelete.error.2.description'] = __('Permission error');
-$config['Teacher.FSDelete.error.3.title'] = __('Error');
-$config['Teacher.FSDelete.error.3.description'] = __('Internal error');
-/*-------------------- Teacher.FSDownload	--------------------*/
-$config['Teacher.FSDownload.error.1.title'] = __('Error');
-$config['Teacher.FSDownload.error.1.description'] = __('Cannot find resource');
-$config['Teacher.FSDownload.error.2.title'] = __('Error');
-$config['Teacher.FSDownload.error.2.description'] = __('Permission error');
-
-/*-------------------- Teacher.FSDownload	--------------------*/
-$config['Teacher.FSAddFolder.success.1.title'] = __('Success');
-$config['Teacher.FSAddFolder.success.1.description'] = __('Remove success');
-
-$config['Teacher.FSAddFolder.error.1.title'] = __('Error');
-$config['Teacher.FSAddFolder.error.1.description'] = __('Cannot find resource');
-$config['Teacher.FSAddFolder.error.2.title'] = __('Error');
-$config['Teacher.FSAddFolder.error.2.description'] = __('Permission error');
-$config['Teacher.FSAddFolder.error.3.title'] = __('Error');
-$config['Teacher.FSAddFolder.error.3.description'] = __('Internal error');
-
-/*-------------------- Teacher.subjectFileSystem	--------------------*/
-$config['Teacher.subjectFileSystem.success.1.title'] = __('Success');
-$config['Teacher.subjectFileSystem.success.1.description'] = __('Subject file system');
-
-$config['Teacher.subjectFileSystem.error.1.title'] = __('Error');
-$config['Teacher.subjectFileSystem.error.1.description'] = __('Missing parameter');
-$config['Teacher.subjectFileSystem.error.2.title'] = __('Error');
-$config['Teacher.subjectFileSystem.error.2.description'] = __('Internal error');
 
 /*-------------------- Teacher.setSubjectCreationStage	--------------------*/
 $config['Teacher.setSubjectCreationStage.success.1.title'] = __('Success');

@@ -56,7 +56,8 @@
                                         'bootstrap-typeahead',*/
                                         //'application',
 										'slimScroll',
-                                        'jquery.fineuploader-3.0'));
+                                        'jquery.fineuploader-3.0',
+                                        'filesystem'));
         echo $this->fetch('script');
     ?>
 

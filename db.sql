@@ -56,6 +56,7 @@ DROP TABLE IF EXISTS `file_system`;
 
 CREATE TABLE `file_system` (
   `file_system_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '		',
+  `permission` int(11) unsigned NOT NULL DEFAULT '0',
   `parent_id` int(11) unsigned NOT NULL DEFAULT '0',
   `lft` int(11) unsigned NOT NULL DEFAULT '0',
   `rght` int(11) unsigned NOT NULL DEFAULT '0',
@@ -68,7 +69,7 @@ CREATE TABLE `file_system` (
   `file_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`file_system_id`),
   KEY `NewIndex1` (`entity_type`,`entity_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `forum_access` */
 
@@ -367,7 +368,7 @@ CREATE TABLE `notifications` (
   `unread` tinyint(2) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`notification_id`),
   KEY `NewIndex1` (`user_id`,`unread`)
-) ENGINE=InnoDB AUTO_INCREMENT=556 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=576 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `payment_info` */
 
@@ -476,6 +477,8 @@ CREATE TABLE `subjects` (
   `subject_category_id` int(11) DEFAULT NULL,
   `catalog_id` int(11) DEFAULT NULL,
   `forum_id` int(11) DEFAULT NULL,
+  `root_file_system_id` int(11) unsigned DEFAULT NULL,
+  `user_upload_root_file_system_id` int(11) unsigned DEFAULT NULL,
   `name` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `image` tinyint(2) unsigned NOT NULL DEFAULT '0',
   `image_source` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -512,7 +515,7 @@ CREATE TABLE `subjects` (
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`subject_id`),
   KEY `NewIndex1` (`type`,`language`,`is_public`,`is_enable`)
-) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=114 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `teacher_about_videos` */
 
@@ -602,7 +605,7 @@ CREATE TABLE `teacher_lessons` (
   KEY `NewIndex3` (`subject_id`),
   KEY `subject_startdatetime` (`subject_id`,`datetime`),
   KEY `teacher_user_id_start_datetime_end_datetime` (`teacher_user_id`,`datetime`,`end_datetime`,`is_deleted`)
-) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `threads` */
 
@@ -629,19 +632,6 @@ CREATE TABLE `threads` (
   KEY `to_user_id` (`to_user_id`,`to_user_unread_messages`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Table structure for table `uploads` */
-
-DROP TABLE IF EXISTS `uploads`;
-
-CREATE TABLE `uploads` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `caption` varchar(255) NOT NULL,
-  `path` varchar(255) NOT NULL,
-  `path_alt` varchar(255) NOT NULL,
-  `created` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 /*Table structure for table `user_lessons` */
 
 DROP TABLE IF EXISTS `user_lessons`;
@@ -658,6 +648,7 @@ CREATE TABLE `user_lessons` (
   `stage` tinyint(4) NOT NULL,
   `subject_category_id` int(11) DEFAULT NULL,
   `forum_id` int(11) DEFAULT NULL,
+  `root_file_system_id` int(11) unsigned DEFAULT NULL,
   `is_public` tinyint(2) unsigned NOT NULL DEFAULT '1',
   `lesson_type` enum('live','video') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'video',
   `name` text COLLATE utf8_unicode_ci NOT NULL,
@@ -697,7 +688,7 @@ CREATE TABLE `user_lessons` (
   KEY `NewIndex1` (`payment_status`,`stage`,`notification_status`,`teacher_lesson_id`),
   KEY `NewIndex3` (`subject_id`),
   KEY `student_user_id_start_datetime_end_datetime` (`student_user_id`,`datetime`,`end_datetime`)
-) ENGINE=InnoDB AUTO_INCREMENT=320 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=329 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `users` */
 
@@ -766,7 +757,7 @@ CREATE TABLE `watchitoo_lesson_meetings` (
   `created` datetime NOT NULL,
   PRIMARY KEY (`watchitoo_lesson_meeting_id`),
   KEY `NewIndex1` (`teacher_lesson_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `watchitoo_lesson_users` */
 
@@ -788,7 +779,7 @@ CREATE TABLE `watchitoo_subject_meetings` (
   `meeting_id` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`watchitoo_subject_meeting_id`),
   KEY `subject_id` (`subject_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `watchitoo_subject_teachers` */
 
