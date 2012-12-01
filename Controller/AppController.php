@@ -91,6 +91,7 @@ class AppController extends Controller {
             case 'message':
             case 'teacher':
             case 'student':
+            case 'organizer':
                 $navButtons['account']=true;
                 break;
             case 'requests':
