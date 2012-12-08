@@ -4572,6 +4572,25 @@ ul.file-iconlist li:first-child{
 }
 
 /* studentkit-lesson-page-taking-test */
+/* List of tests on Teacher panel */
+.test-list li {
+    cursor: pointer;
+    padding: 10px;
+}
+.test-list li:hover {
+    background: #ccc;
+}
+.test-list .actionButton {
+    margin: 0 5px;
+}
+/* List of questions on Teacher panel */
+.question-list li {
+    /*margin-top: 30px;*/
+}
+
+.question-list .actionButton {
+    margin: 8px 0 0 4px;
+}
 
 .test-startbtn{
 	position:absolute;

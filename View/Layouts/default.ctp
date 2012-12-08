@@ -57,7 +57,8 @@
                                         //'application',
 										'slimScroll',
                                         'jquery.fineuploader-3.0',
-                                        'filesystem'));
+                                        'filesystem',
+                                        'test-creator'));
         echo $this->fetch('script');
     ?>
 
