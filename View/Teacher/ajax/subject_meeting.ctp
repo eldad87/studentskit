@@ -20,6 +20,9 @@
             ?>
             </p>
     </div>
+<?php
+    if(isSet($creationStage) && $creationStage) {
+?>
     <div class="cont-span6 cbox-space">
             <div class="control-group control2">
                 <label class="control-label"></label>
@@ -28,4 +31,7 @@
                 </div>
             </div>
     </div>
+<?php
+    }
+?>
 </div>
