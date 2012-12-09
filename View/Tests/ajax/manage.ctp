@@ -2,27 +2,40 @@
 
 
     $(document).ready(function() {
-        $('#quiz-builder').quizBuilder();
+        $('#quiz-builder').quizBuilder({
+            save: {
+                buttonSelector: '.save-quiz',
+                errorSelector: '#quiz-builder',
+                fields: [
+                    'name',
+                    'description',
+                    'subject_id'
+                ]
+            },
+            data: jQuery.parseJSON('<?php echo $testData['questions']; ?>')
+        });
         initTabs(false);
     });
+
 </script>
 <?php
-echo $this->Html->link('reload',
+/*echo $this->Html->link('reload',
     '#',
     array( 'class'=>'pull-left load3',
-        'rel'=>Router::url(array('controller'=>'Tests', 'action'=>'manage', 106))));
+        'rel'=>Router::url(array('controller'=>'Tests', 'action'=>'manage', $subjectId))));*/
 ?>
 <br />
 <div class="cont-span19 cbox-space">
     <div id="quiz-builder">
 
         <form class="sk-form">
+            <input type="hidden" name="subject_id" id="subject_id" value="<?php echo $subjectId; ?>" />
             <fieldset>
                 <!--Name-->
                 <div class="control-group">
                     <label class="control-label" for="name"><?php echo __('Name') ?> :</label>
                     <div class="control">
-                        <input type="text" class="x-large2" name="name" value="" id="name">
+                        <input type="text" class="x-large2" name="name" value="<?php echo $testData['name']; ?>" id="name">
                     </div>
                 </div>
 
@@ -30,7 +43,7 @@ echo $this->Html->link('reload',
                 <div class="control-group">
                     <label class="control-label" for="description"><?php echo __('Description') ?> :</label>
                     <div class="control">
-                        <textarea type="text" class="x-large2" rows="3" name="description" value="" id="description"></textarea>
+                        <textarea type="text" class="x-large2" rows="3" name="description" id="description"><?php echo $testData['description']; ?></textarea>
                     </div>
                 </div>
 
@@ -92,7 +105,7 @@ echo $this->Html->link('reload',
                 <div class="control-group">
                     <label class="control-label"></label>
                     <div class="control">
-                        <button type="button" class="btn-blue save-quiz"><?php echo __('Save'); ?></button>
+                        <button type="button" class="btn-blue save-quiz" data-target="<?php echo Router::url(array('controller'=>'Tests', 'action'=>'save', $testId)); ?>"><?php echo __('Save'); ?></button>
                     </div>
                 </div>
             </fieldset>

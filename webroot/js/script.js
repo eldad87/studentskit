@@ -1,7 +1,4 @@
-// JavaScript Document
-
 /* star rating */
-
 $(document).ready(function(){
     $('.star-box.dynamic').mouseover(function(){
         $(this).addClass('star-active');
@@ -158,8 +155,8 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
 
 
         //Link data-* attributes will be used as data
-        urlParams = $(this).data();
-        dataParams = {};
+        var urlParams = $(this).data();
+        var dataParams = {};
 
         //Check if this is a form
         if($(this).attr('action')) {
@@ -188,8 +185,8 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
 
         beforeAjaxCallback = postFormAPI.getAppendCallback(formSelector, 'beforeAjax');
         if(beforeAjaxCallback) {
-            data = beforeAjaxCallback( data );
-            if(!data) {
+            dataParams = beforeAjaxCallback( dataParams );
+            if(!dataParams) {
                 return false;
             }
         }
@@ -322,7 +319,11 @@ $(document).ready(function(){
     });
 });
 //New Tabs
-function initTabs() {
+function initTabs(loadActive) {
+    if(loadActive==undefined) {
+        loadActive = true;
+    }
+
     $(".load3").click(function(){
         //If the parent have class of .disable - ignore it
         if($(this).parent().hasClass('disable')) {
@@ -338,13 +339,15 @@ function initTabs() {
         $(this).parent("li").addClass("active");
     });
 
-    //Load the first tab
-    $(".tab-menu li").each(function(){
-        if($(this).hasClass("active")){
-            //	alert();
-            $(".loadpage").load($(this).children("a").attr("rel"));
-        }
-    });
+    if(loadActive) {
+        //Load the first tab
+        $(".tab-menu li").each(function(){
+            if($(this).hasClass("active")){
+                //	alert();
+                $(".loadpage").load($(this).children("a").attr("rel"));
+            }
+        });
+    }
 }
 
 

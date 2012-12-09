@@ -175,6 +175,20 @@ $config['Home.canWatchVideo.error.2.title'] = __('Error');
 $config['Home.canWatchVideo.error.2.description'] = __('Internal error');
 /********************* Home - End		******************************************/
 
+/********************* Tests - Start		******************************************/
+
+/*-------------------- FileSystem.rename	--------------------*/
+$config['Tests.save.success.1.title'] = __('Success');
+$config['Tests.save.success.1.description'] = __('Save success');
+
+$config['Tests.save.error.1.title'] = __('Error');
+$config['Tests.save.error.1.description'] = __('Cannot find resource');
+$config['Tests.save.error.2.title'] = __('Error');
+$config['Tests.save.error.2.description'] = __('Permission error');
+$config['Tests.save.error.3.title'] = __('Error');
+$config['Tests.save.error.3.description'] = __('Validation error');
+/********************* Tests - End		******************************************/
+
 /********************* FileSystem - Start		******************************************/
 
 /*-------------------- FileSystem.rename	--------------------*/

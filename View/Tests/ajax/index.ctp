@@ -18,7 +18,12 @@
                                 echo $this->Html->link('<i class="iconSmall-pencil pencilicon actionButton""></i>',
                                                         '#',
                                                         array( 'class'=>'pull-left load3',
-                                                        'rel'=>Router::url(array('controller'=>'Tests', 'action'=>'manage', $response['response']['results']['subject_id'], $test['test_id']))));
+                                                            'rel'=>Router::url(
+                                                                array('controller'=>'Tests', 'action'=>'manage', $response['response']['results']['subject_id'], $test['test_id'])
+                                                            ),
+                                                            'escape'=>false
+                                                        )
+                                );
                             ?>
                             <i class="iconSmall-red-cross redcross actionButton" id="delete_{file_system_id}"></i>
                         </div>

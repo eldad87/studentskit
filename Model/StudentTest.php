@@ -11,16 +11,7 @@ class StudentTest extends AppModel {
 		foreach($testsData AS $testData) {
 			$tests[] = new TestManager($testData['Test']['test_id']);
 		}
-		
-		/*if($entityType=='lesson') {
-			//Add the subject lessons
-			App::import('Model', 'UserLesson');
-			$ulObj = new UserLesson();
-			$ulData = $ulObj->findByUserLessonId($entityId);
-			
-			$sTest = $this->getTests('subject', $ulData['UserLesson']['subject_id']);
-			$tests = am($tests, $sTest);
-		}*/
+
 		
 		return $tests;
 	}

@@ -168,10 +168,28 @@
             });
 
             //Init add question
-            $(this).find('.save-quiz').click(function(){
-                //TODO:
+            //$(this).find('.save-quiz').click(function() {
+                var settings = self.data('quizBuilder');
+
+                pAPIObj.loadElement(settings.save.buttonSelector, 'click', settings.save.errorSelector, 'post');
+                pAPIObj.setAppendCallback(settings.save.buttonSelector, 'beforeAjax', function(data){
+                    self.quizBuilder('_loadHTMLValues');
+
+                    var returnData = {
+                        questions: settings.data
+                    };
+                    $.each(settings.save.fields, function(index, value) {
+                        returnData[value] = $('#' + value).val()
+                    });
+
+                    return returnData
+                });
+
+                /*pAPIObj.setAppendCallback(settings.save.buttonSelector, 'after', function(data){
+
+                });*/
                 return false;
-            });
+            //});
         },
 
         /**
