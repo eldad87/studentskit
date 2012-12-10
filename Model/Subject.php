@@ -222,6 +222,44 @@ class Subject extends AppModel {
             unset($this->data[$this->name]['lesson_type']);
         }
 
+
+        /**
+         * Default settings for is_public (in case not provided).
+         * Based on creation_stage value
+         */
+        //Subject request
+        if(isSet($this->data[$this->name]['type']) &&
+                $this->data[$this->name]['type']==SUBJECT_TYPE_REQUEST) {
+
+            unset($this->data['Subject']['creation_stage']); //Just in case, you cannot change this value for subject-request
+
+            //New record - set creation_stage
+            if( !$exists ) {
+                $this->data['Subject']['creation_stage'] = CREATION_STAGE_PUBLISH;
+
+                //No is_public - set default
+                if(!isSet($this->data['Subject']['is_public'])) {
+                    $this->data['Subject']['is_public'] = SUBJECT_IS_PUBLIC_TRUE;
+                }
+            }
+
+
+        //Creation stage is provided - override is_public accordingly
+        } else if(isSet($this->data['Subject']['creation_stage'])) {
+            //This is based on the fact that you cannot downgrade the creation stage.
+            if($this->data['Subject']['creation_stage']==CREATION_STAGE_PUBLISH) {
+                if(!isSet($this->data['Subject']['is_public'])) {
+                    $this->data['Subject']['is_public'] = SUBJECT_IS_PUBLIC_TRUE;
+                }
+            } else {
+                $this->data['Subject']['is_public'] = SUBJECT_IS_PUBLIC_FALSE;
+            }
+
+        } else if(!$exists) {
+            //New subject-offer record, and no creation-stage, set is_public to default
+            $this->data['Subject']['is_public'] = SUBJECT_IS_PUBLIC_FALSE;
+        }
+
         //Existing subject - having a subject image
         if( $exists && isSet($this->data['Subject']['image']) && $this->data['Subject']['image']==IMAGE_SUBJECT ) {
             App::uses('Sanitize', 'Utility');

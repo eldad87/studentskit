@@ -1,6 +1,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
         initTabs(false);
+        initNextButton();
     });
 </script>
 <div class="cont-span6 cbox-space">
@@ -34,12 +35,24 @@
         </ul>
 
 
-        <div class="fullwidth pull-left space6">
+        <div class="cbox-space">
             <?php
-                echo $this->Html->link('ADD', '#', array( 'class'=>'btn-blue extra-pad space11 pull-left load3',
+                echo $this->Html->link(__('Create'), '#', array( 'class'=>'btn-blue pull-left load3',
                     'rel'=>Router::url(array('controller'=>'Tests', 'action'=>'manage', $response['response']['results']['subject_id']))));
             ?>
 
+
+
+
+            <?php
+            if( $creationStage && $creationStage < CREATION_STAGE_TESTS ) {
+                echo $this->Html->link(__('Next'), '#', array( 'class'=>'btn-blue pull-right nextButton',
+                                                            'data-creation-stage'=>CREATION_STAGE_TESTS,
+                                                            'data-subject-id'=>$subjectId
+                                                        )
+                );
+            }
+            ?>
         </div>
     </div> <!-- /fullwidth -->
 </div>

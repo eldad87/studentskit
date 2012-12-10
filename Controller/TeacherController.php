@@ -100,6 +100,10 @@ class TeacherController extends AppController {
             $this->request->data['Subject']['creation_stage'] = $currentCreationStage > CREATION_STAGE_SUBJECT ? $currentCreationStage : CREATION_STAGE_SUBJECT;
             $this->request->data['Subject']['user_id'] = $this->Auth->user('user_id');
             $this->request->data['Subject']['type'] = SUBJECT_TYPE_OFFER;
+            $this->Subject->create(false);
+            if($subjectId) {
+                $this->Subject->id = $subjectId;
+            }
             $this->Subject->set($this->request->data);
 
             if($this->Subject->save($this->request->data)) {
@@ -206,6 +210,16 @@ class TeacherController extends AppController {
         }
 
         return $this->success(1, array('current_creation_stage'=>$newCurrentCreationStage));
+    }
+
+    public function subjectPublish($subjectId) {
+
+        $this->Subject->recursive = -1;
+        $subjectData = $this->Subject->findBySubjectId($subjectId);
+        $this->set('subjectId', $subjectId);
+        $this->set('creationStage', $subjectData['Subject']['creation_stage']);
+
+        return $this->success(1);
     }
 	
 	public function disableSubject($subjectId) {

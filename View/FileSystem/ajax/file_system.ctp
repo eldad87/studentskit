@@ -112,16 +112,21 @@
             <span><?php echo __('Upload file'); ?></span>
         </a>
     </div>
-
 </div>
-<div class="cont-span6 cbox-space">
-    <div class="control-group control2">
-        <label class="control-label"></label>
-        <div class="control">
-            <button class="btn-blue pull-right nextButton" data-creation-stage="<?php echo CREATION_STAGE_FILES; ?>" data-subject-id="<?php echo $subjectId; ?>" type="Save"><?php echo __('Next'); ?></button>
-        </div>
-    </div>
-</div>
+    <?php
+        if( $creationStage && $creationStage < CREATION_STAGE_FILES ) {
+    ?>
+            <div class="cont-span6 cbox-space">
+                <div class="control-group control2">
+                    <label class="control-label"></label>
+                    <div class="control">
+                        <button class="btn-blue pull-right nextButton" data-creation-stage="<?php echo CREATION_STAGE_FILES; ?>" data-subject-id="<?php echo $subjectId; ?>" type="Save"><?php echo __('Next'); ?></button>
+                    </div>
+                </div>
+            </div>
+    <?php
+        }
+    ?>
 </div>
 
 

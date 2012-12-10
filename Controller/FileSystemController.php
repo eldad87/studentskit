@@ -14,7 +14,7 @@ class FileSystemController extends AppController {
         }
     }
 
-    public function fileSystem($entityType, $entityId, $creationStage=null) {
+    public function fileSystem($entityType, $entityId) {
         $subjectId = $entityId;
 
         //If UserLesson - Load UL data
@@ -61,7 +61,7 @@ class FileSystemController extends AppController {
 
         $this->set('fileSystem', $fs);
         $this->set('subjectId', $subjectId);
-        $this->set('creationStage', $creationStage);
+        $this->set('creationStage', $subjectData['creation_stage']);
 
         return $this->success(1);
     }

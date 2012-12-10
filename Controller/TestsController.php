@@ -28,6 +28,11 @@ class TestsController extends AppController {
             }
         }
 
+        $this->Subject->recursive = -1;
+        $subjectData = $this->Subject->findBySubjectId($subjectId);
+        $this->set('creationStage', $subjectData['Subject']['creation_stage']);
+        $this->set('subjectId', $subjectId);
+
         return $this->success(1, array('results'=>array('tests'=>$tests, 'subject_id'=>$subjectId)));
     }
 
@@ -46,8 +51,6 @@ class TestsController extends AppController {
                 'questions'=>json_encode(array())
             );
         }
-
-        $this->set('testData', $testData);
 
         return $this->success(1);
     }

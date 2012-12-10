@@ -64,7 +64,7 @@
         <div class="control-group control2">
             <label class="control-label"></label>
             <div class="control">
-                <button class="btn-blue pull-right" type="Save"><?php echo __('Save &amp; Next'); ?></button>
+                <button class="btn-blue pull-right" type="Save"><?php echo ($creationStage==CREATION_STAGE_NEW ? __('Save &amp; Next') : __('Save')); ?></button>
             </div>
         </div>
         <?php
