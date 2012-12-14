@@ -51,6 +51,7 @@ class TestsController extends AppController {
                 'questions'=>json_encode(array())
             );
         }
+        $this->set('testData', $testData);
 
         return $this->success(1);
     }
