@@ -27,7 +27,7 @@
             <div class="black-line-approv"></div>
             <ul class="booking-nav f-pad-norml um-upcoming f-pad-norml1 tab-menu">
                 <li class="active" id="filesTab"><a href="#"  class="load3" rel="<?php echo Router::url(array('controller'=>'FileSystem','action'=>'fileSystem', $FS['entity_type'], $FS['entity_id'])); ?>"><?php echo __('Files'); ?></a></li>
-                <li class="" id="testsTab"><a href="#"  class="load3" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'subjectTests')); ?>"><?php echo __('Tests'); ?></a></li>
+                <li class="" id="testsTab"><a href="#"  class="load3" rel="<?php echo Router::url(array('controller'=>'Tests','action'=>'index', $subjectId)); ?>"><?php echo __('Tests'); ?></a></li>
 
 
             </ul>

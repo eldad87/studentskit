@@ -1,7 +1,10 @@
 <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
     $(document).ready(function(){
         initTabs(false);
-        initNextButton();
+        if(jQuery.isFunction('initNextButton') ) {
+            initNextButton();
+        }
+        preventNullLinks();
     });
 </script>
 <?php

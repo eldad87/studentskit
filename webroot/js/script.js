@@ -569,15 +569,19 @@ function initToolTips() {
     $("[rel=tooltip]").tooltip({html: true});
 }
 
-$(document).ready(function(){
-    //Activate tooltip
-    initToolTips();
-
+function preventNullLinks() {
     //Disable links anchor default <a href="#">..
     //Without it - the user screen will jump
     $('a[href="#"]').click(function(e) {
         e.preventDefault();
     });
+}
+
+$(document).ready(function(){
+    //Activate tooltip
+    initToolTips();
+
+    preventNullLinks();
 });
 ///////////////////////////////////////////// Login/registration management
 

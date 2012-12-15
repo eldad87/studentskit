@@ -65,6 +65,7 @@ class LessonsController extends AppController {
         $this->set('meetingSettings', $meetingSettings);
         $this->set('lessonName', $subjectData['Subject']['name']);
 
+        $this->set('subjectId', $subjectId);
         $this->set('blank', true); //Draw only the flash
 
         $this->render('common'.DS.'lesson');
@@ -162,6 +163,7 @@ class LessonsController extends AppController {
                 }
             }
 
+            $this->set('subjectId', $liveRequestStatus['subject_id']);
             $this->set('datetime', $liveRequestStatus['datetime']);
             $this->set('is_teacher', $liveRequestStatus['is_teacher']);
             $this->set('lessonName', $liveRequestStatus['lesson_name']);
@@ -232,6 +234,7 @@ class LessonsController extends AppController {
                                 $this->TeacherLesson->toServerTime($canWatchData['end_datetime'])<=$this->TeacherLesson->timeExpression( 'now', false )) ||
                                 !$canWatchData['payment_needed']) );
 
+        $this->set('subjectId', $canWatchData['subject_id']);
         $this->set('userLessonId', $canWatchData['user_lesson_id']);
         /*$this->set('fileSystem', $this->FileSystem->getFS('subject', $canWatchData['subject_id']));
 		$this->set('tests', $this->TeacherLesson->getTests($canWatchData['teacher_lesson_id']));*/

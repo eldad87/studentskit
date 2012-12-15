@@ -1,9 +1,7 @@
 <script type="text/javascript">
 
     $(document).ready(function(){
-        $(document).ready(function(){
-            initNextButton();
-        });
+
 
         $('#bootstrapped-fine-uploader').fineUploader({
             button: $('#fileUpload'),
@@ -67,8 +65,12 @@
             downloadAction: {url: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'download', '{id}')); ?>'}
         });
 
-
+        if(jQuery.isFunction('initNextButton') ) {
+            initNextButton();
+        }
     });
+
+
 </script>
 
 <div class="fullwidth pull-left">
