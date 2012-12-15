@@ -10,9 +10,12 @@
                     'name',
                     'description',
                     'subject_id'
-                ]
+                ],
+                afterSuccess: function(data) {
+                    $('#testsTab a').click();
+                }
             },
-            data: jQuery.parseJSON('<?php echo $testData['questions']; ?>')
+            data: jQuery.parseJSON('<?php echo str_ireplace('\'', '\\\'', $testData['questions']); ?>')
         });
         initTabs(false);
     });

@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script type="text/javascript" xmlns="http://www.w3.org/1999/html">
     $(document).ready(function(){
         initTabs(false);
         initNextButton();
@@ -13,8 +13,23 @@
                 foreach($response['response']['results']['tests'] AS $test) {
             ?>
                     <li>
-                        <strong><?php echo $test['name']; ?></strong> - <?php echo $test['description']; ?>
+                        <span>
+                            <strong><?php echo $test['name']; ?></strong> - <?php echo $test['description']; ?>
+                        </span>
                         <div class="pull-right">
+
+                            <?php
+                            echo $this->Html->link( __('Start').'<i class="iconSmall-add-arrow"></i>',
+                                '#',
+                                array( 'class'=>'btn-blue text-color pull-left load3 space25',
+                                    'rel'=>Router::url(
+                                        array('controller'=>'Tests', 'action'=>'take', $test['test_id'])
+                                    ),
+                                    'escape'=>false
+                                )
+                            );
+                            ?>
+
                             <?php
                                 echo $this->Html->link('<i class="iconSmall-pencil pencilicon actionButton""></i>',
                                                         '#',
@@ -26,7 +41,10 @@
                                                         )
                                 );
                             ?>
-                            <i class="iconSmall-red-cross redcross actionButton" id="delete_{file_system_id}"></i>
+
+                            <a class="pull-left load3">
+                                <i class="iconSmall-red-cross redcross actionButton" id="delete_{file_system_id}"></i>
+                            </a>
                         </div>
                     </li>
             <?php

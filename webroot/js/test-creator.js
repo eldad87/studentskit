@@ -167,29 +167,29 @@
                 return false;
             });
 
-            //Init add question
-            //$(this).find('.save-quiz').click(function() {
-                var settings = self.data('quizBuilder');
 
-                pAPIObj.loadElement(settings.save.buttonSelector, 'click', settings.save.errorSelector, 'post');
-                pAPIObj.setAppendCallback(settings.save.buttonSelector, 'beforeAjax', function(data){
-                    self.quizBuilder('_loadHTMLValues');
+            //Init save question
+            var settings = self.data('quizBuilder');
 
-                    var returnData = {
-                        questions: settings.data
-                    };
-                    $.each(settings.save.fields, function(index, value) {
-                        returnData[value] = $('#' + value).val()
-                    });
+            pAPIObj.loadElement(settings.save.buttonSelector, 'click', settings.save.errorSelector, 'post');
+            pAPIObj.setAppendCallback(settings.save.buttonSelector, 'beforeAjax', function(data){
+                self.quizBuilder('_loadHTMLValues');
 
-                    return returnData
+                var returnData = {
+                    questions: settings.data
+                };
+                $.each(settings.save.fields, function(index, value) {
+                    returnData[value] = $('#' + value).val()
                 });
 
-                /*pAPIObj.setAppendCallback(settings.save.buttonSelector, 'after', function(data){
+                return returnData
+            });
 
-                });*/
-                return false;
-            //});
+            if(settings.save.afterSuccess) {
+                pAPIObj.setAppendCallback(settings.save.buttonSelector, 'after', settings.save.afterSuccess);
+            }
+            return false;
+
         },
 
         /**
@@ -213,13 +213,13 @@
 
             //Add new question
             var questionId = settings.data.length;
-            var questionData = {
+            settings.data[questionId] = {
                 qId: questionId,
                 q: null,
                 a: [],
                 ra: null
             };
-            settings.data[questionId] = questionData;
+            //settings.data[questionId] = questionData;
             $(this).data('quizBuilder', settings);
 
             $(this).quizBuilder('_renderQuestionBlock', questionId);
@@ -296,6 +296,114 @@
         } else {
             $.error( 'Method ' +  method + ' does not exist on jQuery.tooltip' );
         }
+    };
+
+})( jQuery );
+
+
+
+
+
+
+
+(function( $ ){
+
+    var methods = {
+
+        _showQuestion: function(pos, speed) {
+            if(speed==undefined) {
+                speed = 'slow';
+            }
+
+            var settings = $(this).data('quizRun');
+
+            $(this).find(settings.questionsSelector).hide(speed).removeClass('show').addClass('hide');
+            $(this).find(settings.questionsSelector + ':eq( ' +  pos + ')').show(speed).removeClass('hide').addClass('show');
+
+            settings.shownQuestion = pos;
+            $(this).data('quizRun', settings);
+        },
+
+        _showScore: function() {
+            var settings = $(this).data('quizRun');
+
+            //Hide questions
+            $(this).find(settings.questionsContainer).hide();
+
+
+
+            //Count all right answers
+            var rightAnswerCount = 0;
+            $(this).find("input:checked").each(function(index, value) {
+                //User selected the right answer
+                if($(this).data('ra')==true) {
+                    rightAnswerCount++;
+                }
+            });
+
+            var score = 100/settings.questionsCount*rightAnswerCount;
+
+            //Set score data
+            $(this).find('.rightAnswerCount').html(rightAnswerCount);
+            $(this).find('.questionsCount').html(settings.questionsCount);
+            //Show score
+            $(this).find('.score').show();
+
+
+            //Show back to tests list
+            //reset
+        },
+
+        _next: function() {
+            var settings = $(this).data('quizRun');
+
+            if(settings.shownQuestion >= (settings.questionsCount-1)) {
+                return $(this).quizRun('_showScore');
+            }
+
+            //Show next question
+            $(this).quizRun('_showQuestion', settings.shownQuestion+1);
+        },
+
+        init : function( settings ) {
+
+            return this.each(function(){
+
+                var $this = $(this),
+                    data = $this.data('quizRun');
+
+
+
+                if ( ! data ) {
+                    //Get question count
+                    settings['questionsCount'] = $(this).find(settings.questionsSelector).length;
+                    $(this).data('quizRun', settings);
+                }
+
+                //Hide score
+                $(this).find('.score').hide();
+
+                //Show the first question only
+                $(this).quizRun('_showQuestion', 0, null);
+
+                //Init next button
+                $(this).find(settings.nextSelector).click(function(e){
+                    $this.quizRun('_next');
+                });
+            });
+        }
+    };
+
+    $.fn.quizRun = function( method ) {
+
+        if ( methods[method] ) {
+            return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
+        } else if ( typeof method === 'object' || ! method ) {
+            return methods.init.apply( this, arguments );
+        } else {
+            $.error( 'Method ' +  method + ' does not exist on jQuery.quizRun' );
+        }
+
     };
 
 })( jQuery );

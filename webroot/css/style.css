@@ -4567,6 +4567,7 @@ ul.file-iconlist li{
 	padding:5px 10px;
 }
 
+
 ul.file-iconlist li:first-child{
 	margin-top:10px;
 }
@@ -4575,14 +4576,23 @@ ul.file-iconlist li:first-child{
 /* List of tests on Teacher panel */
 .test-list li {
     cursor: pointer;
-    padding: 10px;
+    float: left;
+    width: 100%;
+    padding: 2px 10px;
 }
 .test-list li:hover {
     background: #ccc;
 }
 .test-list .actionButton {
-    margin: 0 5px;
+    margin: 4px 5px;
 }
+
+.test-list li span {
+    margin-top: 5px;
+    display: block;
+    float: left;
+}
+
 /* List of questions on Teacher panel */
 .question-list li {
     /*margin-top: 30px;*/
@@ -4602,7 +4612,9 @@ ul.file-iconlist li:first-child{
 .sk-form ol.testform{
 	float:left;
 	list-style:lower-roman;
-	width:92%;
+	width: 100%;
+    margin: 0px;
+    padding: 0px;
 }
 
 .sk-form ol.testform li{
@@ -4613,10 +4625,6 @@ ul.file-iconlist li:first-child{
 
 .sk-form ol.testform li ul li{
 	margin:0px 0px 0px 0px;
-}
-
-.sk-form ol.testform li:first-child{
-	margin-top:0px;
 }
 
 .sk-form ol.testform input[type="radio"]{

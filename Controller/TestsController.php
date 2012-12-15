@@ -67,6 +67,17 @@ class TestsController extends AppController {
         return $this->success(1, array('results'=>array('test_id'=>$this->Test->id)));
     }
 
+    public function take( $testId ) {
+        $this->set('testId', $testId);
+
+        $this->Test->recursive = -1;
+        $testData = $this->Test->findByTestId($testId);
+        $testData = $testData['Test'];
+
+
+        return $this->success(1, array('results'=>array('test_id'=>$testId, 'subject_id'=>$testData['subject_id'], 'questions'=>json_decode($testData['questions'], true))));
+    }
+
     public function delete($testId) {
         $this->Test->delete($testId);
         return $this->success(1, array('results'=>array('test_id'=>$this->Test->id)));
