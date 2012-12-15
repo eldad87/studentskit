@@ -33,6 +33,9 @@ class TestsController extends AppController {
         $this->set('creationStage', $subjectData['Subject']['creation_stage']);
         $this->set('subjectId', $subjectId);
 
+        //Check if this is the teacher
+        $this->set('isTeacher', ($subjectData['Subject']['user_id']==$this->Auth->user('user_id')) );
+
         return $this->success(1, array('results'=>array('tests'=>$tests, 'subject_id'=>$subjectId)));
     }
 
@@ -52,6 +55,7 @@ class TestsController extends AppController {
             );
         }
         $this->set('testData', $testData);
+
 
         return $this->success(1);
     }
@@ -86,8 +90,45 @@ class TestsController extends AppController {
 
 
     private function _validateTest($action, $params) {
-        //error 1 - not found
-        //error 2 - permission denied
+        $subjectId = null;
+        switch($action) {
+            case 'manage':
+                //Make sure the test belongs to the subject
+                if(isSet($params[1])) {
+                    $this->Test->recursive = -1;
+                    $testData = $this->Test->findByTestId($params[1]);
+                    if($testData || $testData['Test']['subject_id']!=$params[0]) {
+                        return $this->error(2);
+                    }
+                }
+
+
+            case 'delete':
+                $this->Test->recursive = -1;
+                $testData = $this->Test->findByTestId($params[0]);
+                if($testData) {
+                    return $this->error(2);
+                }
+                $subjectId = $testData['Test']['subject_id'];
+                break;
+            case 'index':
+            case 'take':
+                return true; //TODO:
+                break;
+            case 'save':
+                if(!isSet($this->data['subject_id'])) {
+                    return $this->error(2);
+                }
+                $subjectId = $this->data['subject_id'];
+                break;
+        }
+
+        $this->Subject->recursive = -1;
+        $subjectData = $this->Subject->findBySubjectId($subjectId);
+        if(!$subjectData || $subjectData['Subject']['user_id']!=$this->Auth->user('user_id')) {
+            return $this->error(3);
+        }
+
         return true;
     }
 

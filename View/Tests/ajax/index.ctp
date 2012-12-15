@@ -41,20 +41,24 @@ echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-dele
                             ?>
 
                             <?php
-                                echo $this->Html->link('<i class="iconSmall-pencil pencilicon actionButton""></i>',
-                                                        '#',
-                                                        array( 'class'=>'pull-left load3',
-                                                            'rel'=>Router::url(
-                                                                array('controller'=>'Tests', 'action'=>'manage', $response['response']['results']['subject_id'], $test['test_id'])
-                                                            ),
-                                                            'escape'=>false
-                                                        )
-                                );
-                            ?>
+                            if($isTeacher) {
+                                    echo $this->Html->link('<i class="iconSmall-pencil pencilicon actionButton""></i>',
+                                                            '#',
+                                                            array( 'class'=>'pull-left load3',
+                                                                'rel'=>Router::url(
+                                                                    array('controller'=>'Tests', 'action'=>'manage', $response['response']['results']['subject_id'], $test['test_id'])
+                                                                ),
+                                                                'escape'=>false
+                                                            )
+                                    );
+                                ?>
 
-                            <a class="pull-left confirm-delete" href="#"  data-cancel-prefix="quiz" data-id="<?php echo $test['test_id']; ?>">
-                                <i class="iconSmall-red-cross redcross actionButton"></i>
-                            </a>
+                                <a class="pull-left confirm-delete" href="#"  data-cancel-prefix="quiz" data-id="<?php echo $test['test_id']; ?>">
+                                    <i class="iconSmall-red-cross redcross actionButton"></i>
+                                </a>
+                            <?php
+                            }
+                            ?>
                         </div>
                     </li>
             <?php
@@ -65,8 +69,10 @@ echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-dele
 
         <div class="cbox-space">
             <?php
-                echo $this->Html->link(__('Create'), '#', array( 'class'=>'btn-blue pull-left load3',
-                    'rel'=>Router::url(array('controller'=>'Tests', 'action'=>'manage', $response['response']['results']['subject_id']))));
+                if($isTeacher) {
+                    echo $this->Html->link(__('Create'), '#', array( 'class'=>'btn-blue pull-left load3',
+                        'rel'=>Router::url(array('controller'=>'Tests', 'action'=>'manage', $response['response']['results']['subject_id']))));
+                }
             ?>
 
 
