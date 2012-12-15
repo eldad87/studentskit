@@ -79,6 +79,7 @@ class TestsController extends AppController {
     }
 
     public function delete($testId) {
+
         $this->Test->delete($testId);
         return $this->success(1, array('results'=>array('test_id'=>$this->Test->id)));
     }

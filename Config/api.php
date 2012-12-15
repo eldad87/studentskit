@@ -187,6 +187,17 @@ $config['Tests.save.error.2.title'] = __('Error');
 $config['Tests.save.error.2.description'] = __('Permission error');
 $config['Tests.save.error.3.title'] = __('Error');
 $config['Tests.save.error.3.description'] = __('Validation error');
+
+/*-------------------- FileSystem.delete	--------------------*/
+$config['Tests.delete.success.1.title'] = __('Success');
+$config['Tests.delete.success.1.description'] = __('Delete success');
+
+$config['Tests.delete.error.1.title'] = __('Error');
+$config['Tests.delete.error.1.description'] = __('Cannot find resource');
+$config['Tests.delete.error.2.title'] = __('Error');
+$config['Tests.delete.error.2.description'] = __('Permission error');
+$config['Tests.delete.error.3.title'] = __('Error');
+$config['Tests.delete.error.3.description'] = __('Cannot delete');
 /********************* Tests - End		******************************************/
 
 /********************* FileSystem - Start		******************************************/

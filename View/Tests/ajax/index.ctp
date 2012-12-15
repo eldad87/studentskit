@@ -4,6 +4,13 @@
         initNextButton();
     });
 </script>
+<?php
+echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
+    'title'=>__('Delete a test'),
+    'description'=>__('This procedure may be irreversible.
+                       Do you want to proceed?'),
+    'cancelUrl'=>array('controller'=>'Tests', 'action'=>'delete', '{id}')));
+?>
 <div class="cont-span6 cbox-space">
     <div class="fullwidth pull-left">
         <h5 class=" pull-left space2"><strong>Tests</strong></h5><div class="clear"></div>
@@ -12,7 +19,7 @@
             <?php
                 foreach($response['response']['results']['tests'] AS $test) {
             ?>
-                    <li>
+                    <li id="quiz_<?php echo $test['test_id']; ?>">
                         <span>
                             <strong><?php echo $test['name']; ?></strong> - <?php echo $test['description']; ?>
                         </span>
@@ -42,8 +49,8 @@
                                 );
                             ?>
 
-                            <a class="pull-left load3">
-                                <i class="iconSmall-red-cross redcross actionButton" id="delete_{file_system_id}"></i>
+                            <a class="pull-left confirm-delete" href="#"  data-cancel-prefix="quiz" data-id="<?php echo $test['test_id']; ?>">
+                                <i class="iconSmall-red-cross redcross actionButton"></i>
                             </a>
                         </div>
                     </li>
