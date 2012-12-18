@@ -396,6 +396,7 @@ $(document).ready(function(){
     });
 });
 
+/*
 
 //Boxes action buttons
 function ActionButtons() {
@@ -453,6 +454,7 @@ ActionButtons.prototype.loadButton = function(buttonSelector, url, type, params)
         return false;
     });
 }
+*/
 
 
 var pfObj = new PostForm();
@@ -794,27 +796,26 @@ $(document).ready(function() {
 
 ///////////////////////////////////////
 
-/* Country, TZ, Lang script */
+/* Country, TZ, Lang script, Notification, Messages popups */
 $(document).ready(function(){
 
     $(".show-tip").click(function(event){
-        var id=$(this).attr("id");
-        var visi=$("#"+id+"-tip").is(":visible");
-        $(".alltip").hide();
-        if(visi){
-            $("#"+id+"-tip").hide(300);
-        }else{
-            $("#"+id+"-tip").slideDown(300);
+        //Close all popups
+        $(".alltip").hide(300);
 
-        }
+        //Button ID is used to build the ID of the popup
+        var id = $(this).attr('id');
+        $('#' + id + '-tip').slideDown(300);
+
         event.stopPropagation();
-
     });
+
     $(".alltip").children().click(function(event){
+        //If user click on records in the popup - make sure the popup stay open
         event.stopPropagation();
     });
+
     $("html").click(function(ev){
-        //alert(ev.target.attr('class'));
-        $(".alltip").hide();
+        $(".alltip").hide(300);
     });
 });

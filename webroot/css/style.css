@@ -18,7 +18,6 @@ section{
 	top:0;
 	left:0;
 	z-index:100;
-	cursor:pointer;
 }
 	
 .navbar{
@@ -5247,8 +5246,7 @@ ul.subject-morelesson li .upcominglesson-textbox{
 
 .head-countrybar label.countrylabel{
 	float:left;
-	width:65px;
-	margin-top:5px;
+	margin-top:7px;
 }
 
 .head-countrybar select{
@@ -5388,6 +5386,10 @@ p.head-countrytext{
     color: #333;
 }
 
+.pointer {
+    cursor:pointer;
+}
+
 .modal-backdrop {
     z-index: 0;
 }
@@ -5478,3 +5480,4 @@ li.alert-error {
 .alert-error .qq-upload-failed-text {
     display: inline;
 }
+

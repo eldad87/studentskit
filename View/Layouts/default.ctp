@@ -45,18 +45,16 @@
 										'slimScroll',
                                         'jquery.fineuploader-3.0',
                                         'filesystem',
-                                        'test-creator'));
+                                        'test-creator',
+                                        'lang'));
         echo $this->fetch('script');
     ?>
 
 
 
     <script type="text/javascript">
-        function changeTime(spanId, val) {
-            $('#'+spanId).html(val);
-        }
 
-        $(document).ready(function(){
+       /* $(document).ready(function(){
             // For Search Selectbox
             $('.dropdown-menu li').click(function(){
                 $('.btn-selt-catg').html('<i class="iconSmall-info btn-selt-catg-info"></i>'+$(this).text()+'<span class="caret btn-selt-catg-arw"></span>');
@@ -74,7 +72,7 @@
             $("#messageIcon").click(function(){
                 $("#messageList").slideToggle();
             });
-        });
+        });*/
     </script>
 </head>
 

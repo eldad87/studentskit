@@ -1,29 +1,43 @@
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $('#localization').lang();
+    });
+</script>
 <!-- Topbar
 ================================================== -->
 <Section class="topbar">
     <div class="topbar-inner">
-        <div class="top-left">
-            <div class="label-txt pull-left space1">Language</div>
+        <div class="top-left" id="localization">
+            <div class="label-txt pull-left space1"><?php echo __('Language'); ?></div>
             <div class="pull-left space1 position">
-                <div class="select show-tip" id="selcountry">Country</div>
+                <div class="select show-tip pointer" id="selcountry"><?php echo __('Default'); ?></div>
                 <!-- country box -->
                 <div  id="selcountry-tip" class="header-tooltip-box toolbarbox alltip">
                     <div class="header-tooltip"></div>
                     <div class="head-countrybox">
                         <form class="sk-form">
                             <div class="head-countrybar">
-                                <label class="countrylabel">Layout :</label>
-                                <?php
-                                echo $this->Form->input('layout', array('options' => Configure::read('template_languages'), 'label'=>false, 'div'=>false, 'default' => Configure::read('Config.language'),  'onChange'=>'changeTime(\'countary1\', this.value)'));
-                                ?>
+                                <label class="countrylabel"><?php echo __('Site Layout'); ?> :</label>
+                                <?php echo $this->Form->input('layout', array('options' => Configure::read('template_languages'), 'id'=>'layout', 'label'=>false, 'div'=>false, 'default' => Configure::read('Config.language'), 'class'=>'pull-right')); ?>
                             </div>
                             <div class="head-countrybar">
-                                <p class="head-countrytext pull-left fullwidth">Prioritize: <i class="iconSmall-info"></i></p>
-                                <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  English</p>
-                                <p  class="space37 fullwidth pull-left"><a href="#" class="color-text"><i class="iconSmall-red-cross"></i></a>  Hebrew</p>
-                                <p  class="space37 fullwidth pull-left"><i class="iconMedium-add-sub"></i>
+                                <p class="head-countrytext pull-left fullwidth"><?php echo __('Prioritize'); ?> : <i class="iconSmall-info"></i></p>
+
+                                <!-- Lang list -->
+                                <ul id="prioritize_lang_list">
+                                    <li class="space37 fullwidth pull-left space29" data-lang="eng">
+                                        <a href="#" class="color-text remove_lang"><i class="iconSmall-red-cross"></i></a> English
+                                    </li>
+                                    <li class="space37 fullwidth pull-left space29" data-lang="heb">
+                                        <a href="#" class="color-text remove_lang"><i class="iconSmall-red-cross"></i></a> Hebrew
+                                    </li>
+                                </ul>
+
+                                <p class="space37 fullwidth pull-left space29">
+                                    <a href="#" class="add"><i class="iconMedium-add-sub pointer"></i></a>
                                     <?php
-                                    echo $this->Form->input('languages', array('options' => $languages, 'label'=>false, 'div'=>false, 'class'=>'space38', 'onChange'=>'changeTime(\'countary1\', this.value)'));
+                                    echo $this->Form->input('languages', array('options' => $languages, 'label'=>false, 'div'=>false, 'class'=>'space38 lang_list'));
                                     ?>
                                 </p>
                             </div>
@@ -33,9 +47,9 @@
                 <!-- /country box -->
             </div>
             <div class="pull-left head-languagebox">
-                <span id="countary2" class="select2"><?php echo Configure::read('Config.timezone'); ?></span>
+                <span id="countary2 pointer" class="select2"><?php echo Configure::read('Config.timezone'); ?></span>
                 <?php
-                echo $this->Form->input('TZ', array('options' => CakeTime::listTimezones(null, null, false), 'label'=>false, 'div'=>false, 'default' => Configure::read('Config.timezone'), 'class'=>'styled2', 'onChange'=>'changeTime(\'countary2\', this.value)'));
+                echo $this->Form->input('TZ', array('options' => CakeTime::listTimezones(null, null, false), 'label'=>false, 'div'=>false, 'default' => Configure::read('Config.timezone'), 'class'=>'styled2 pointer', 'onChange'=>'changeTime(\'countary2\', this.value)'));
                 ?>
             </div>
         </div> <!-- /pull-left -->
@@ -62,7 +76,7 @@
 
 
 		<div class="top-middle">
-            <div class="pull-left position request-box">
+            <div class="pull-left position request-box pointer">
                 <?php
                 $notificationsCount = $this->requestAction(array('controller'=>'Notifications', 'action'=>'getUnreadNotificationsCount'));
                 if($notificationsCount['unreadCount']) {
@@ -90,7 +104,7 @@
                 </div>
             </div>
 
-            <div class="pull-left position">
+            <div class="pull-left position pointer">
                 <?php
                 $messagesCount = $this->requestAction(array('controller'=>'Message', 'action'=>'getUnreadThreadCount'));
                 if($messagesCount['unreadCount']) {
