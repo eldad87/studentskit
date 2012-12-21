@@ -323,7 +323,7 @@ class UserLessonEventListener implements CakeEventListener {
             }
         }
 
-        return $this->notification->addNotification(    $toUserId, //To user id
+        return $this->notification->addNotification(    $toUserId, $byUserId, //To user id
                                                         array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
     }
 
@@ -339,7 +339,7 @@ class UserLessonEventListener implements CakeEventListener {
             $messageType = 'student.rate.teacher';
         }
 
-        return $this->notification->addNotification(    $toUserId, //To user id
+        return $this->notification->addNotification(    $toUserId, $byUserId, //To user id
             array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
     }
 
@@ -517,7 +517,7 @@ class UserLessonEventListener implements CakeEventListener {
             }
         }
 
-        return $this->notification->addNotification(    $toUserId, //To user id
+        return $this->notification->addNotification(    $toUserId, $byUserId, //To user id
                                                         array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
     }
     public function afterReProposeRequest(CakeEvent $event) {
@@ -614,7 +614,7 @@ class UserLessonEventListener implements CakeEventListener {
             }
         }
 
-        return $this->notification->addNotification(    $toUserId, //To user id
+        return $this->notification->addNotification(    $toUserId, $byUserId, //To user id
                                                         array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
 
     }
@@ -674,9 +674,11 @@ class UserLessonEventListener implements CakeEventListener {
                     if($event->subject()->acceptRequest($event->subject()->id, $event->data['user_lesson']['teacher_user_id'])) {
                         //Send a confirmation - that his request been auto-approved
                         $this->notification->addNotification(   $event->data['user_lesson']['student_user_id'], //To user id
-                            array( 'message_enum'=>'teacher.booking.request.auto.approve', 'params'=>$event->data['user_lesson']) ); //Message
+                                                                $event->data['user_lesson']['teacher_user_id'], //From user id
+                                                                array( 'message_enum'=>'teacher.booking.request.auto.approve', 'params'=>$event->data['user_lesson']) ); //Message
                         $this->notification->addNotification(   $event->data['user_lesson']['teacher_user_id'], //To user id
-                            array( 'message_enum'=>'student.booking.request.auto.approve', 'params'=>$event->data['user_lesson'])); //Message
+                                                                $event->data['user_lesson']['student_user_id'], //From user id
+                                                                array( 'message_enum'=>'student.booking.request.auto.approve', 'params'=>$event->data['user_lesson'])); //Message
 
                         $toUserId = $messageType = null;
                     }

@@ -72,9 +72,14 @@ $config['Order.getLiveLessons.success.1.description'] = __('Live lessons');
 /********************* Accounts - End		******************************************/
 
 /********************* Notifications - Start		******************************************/
+
 /*-------------------- Notifications.index		--------------------*/
 $config['Notifications.index.success.1.title'] = __('Success');
 $config['Notifications.index.success.1.description'] = __('List of notifications');
+
+/*-------------------- Notifications.markAsRead --------------------*/
+$config['Notifications.markAsRead.success.1.title'] = __('Success');
+$config['Notifications.markAsRead.success.1.description'] = __('List of notifications');
 
 /*-------------------- Notifications.getUnreadNotificationsCount		--------------------*/
 $config['Notifications.getUnreadNotificationsCount.success.1.title'] = __('Success');

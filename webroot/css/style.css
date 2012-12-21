@@ -3391,9 +3391,9 @@ ul.booking-nav.nav-tabs.back-more li.active{
 	left:11px;
 }
 
-ul.headerdropdown{
+.headerdropdown{
 	width:250px;
-	border:solid 1px #cccccc;
+	/*border:solid 1px #cccccc;*/
 	float:left;
 	height:auto;
 	background:#fff;
@@ -3401,8 +3401,10 @@ ul.headerdropdown{
 	z-index:0;
 }
 
-ul.headerdropdown li{
-	border-bottom: 1px solid #ccc;
+
+
+.headerdropdown li, .headerdropdown .loadMore {
+	border: 1px solid #ccc;
 	padding:9px;
 	float:left;
 	width:100%;
@@ -3413,7 +3415,15 @@ ul.headerdropdown li{
 	background:#fff;
 }
 
-ul.headerdropdown li:last-child{
+.headerdropdown .loadMore {
+    background: #F0F0F0;
+}
+
+ul.headerdropdown li {
+    border-bottom: none;
+}
+
+.headerdropdown .loadMore {
 	border-radius:0px 0px 3px 3px;
 	-moz-border-radius:0px 0px 3px 3px;
 	-webkit-border-radius:0px 0px 3px 3px;
@@ -3421,12 +3431,9 @@ ul.headerdropdown li:last-child{
 	-ms-border-radius:0px 0px 3px 3px;
 }
 
-ul.headerdropdown li:last-child{
-	padding:0px;
-	border:none;
-}
 
-ul.headerdropdown li.visiter-background{
+
+.headerdropdown li.visiter-background{
 	background:#f0f0f0;
 }
 
@@ -3438,7 +3445,7 @@ ul.headerdropdown li.visiter-background{
 }
 
 .headeruser-text{
-	margin:5px 0px 0px 	45px;
+	margin:0px 0px 0px 	45px;
 	text-align:left;
 	color:#000;	
 }

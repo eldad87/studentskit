@@ -3,13 +3,20 @@ class Notification extends AppModel {
 	public $name = 'Notification';
 	public $useTable = 'notifications';
 	public $primaryKey = 'notification_id';
+    public $belongsTo = array(
+        'ByUser' => array(
+            'className' => 'User',
+            'foreignKey'=>'by_user_id',
+            'fields'=>array('username','image_source')
+        )
+    );
 
     public function __construct($id = false, $table = null, $ds = null) {
         parent::__construct($id, $table, $ds);
         Configure::load('notifications');
     }
 
-    public function addNotification($userId, array $message=array()) {
+    public function addNotification($userId, $byUserId, array $message=array()) {
         //Format the message -> create url
         foreach($message['params'] AS $key=>$value) {
             if(!in_array($key, array('teacher_user_id', 'student_user_id', 'name', 'datetime', 'user_lesson_id'))) {
@@ -19,6 +26,7 @@ class Notification extends AppModel {
         $this->create(false);
         $this->set(array(
                 'user_id'       =>$userId,
+                'by_user_id'    =>$byUserId,
                 'message'       =>$this->formatMessage($userId, $message['message_enum'], $message['params']),
                 'message_enum'  =>$message['message_enum'],
                 'message_params'=>json_encode($message),
@@ -71,15 +79,16 @@ class Notification extends AppModel {
     }
 
     public function getUnreadCount($userId) {
+        $this->recursive = -1;
         return $this->find('count', array('conditions'=>array(
-            'user_id'=>$userId,
+            $this->alias.'.user_id'=>$userId,
             'unread'=>1
         )));
     }
 
     public function getNotifications($userId, $limit=7, $page=1, $markAsRead=true) {
-        $this->recursive = -1;
-        $results = $this->find('all', array('conditions'=>array( 'user_id'=>$userId ),
+        $this->recursive = 1;
+        $results = $this->find('all', array('conditions'=>array( $this->alias.'.user_id'=>$userId ),
                                                                 'limit'=>$limit,
                                                                 'page'=>$page));
 
@@ -91,6 +100,8 @@ class Notification extends AppModel {
 
         $markAsReadIds = array();
         foreach($results AS $result) {
+            $result[$this->alias]['by_user_image_source'] = $result['ByUser']['image_source'];
+            $result[$this->alias]['by_user_username'] = $result['ByUser']['username'];
             $return[] = $result[$this->alias];
 
             if($markAsRead && $result[$this->alias]['unread']==1) {
@@ -100,10 +111,19 @@ class Notification extends AppModel {
 
         //Mark notifications as read
         if($markAsReadIds) {
-            $this->updateAll(array('unread'=>0), array($this->primaryKey=>$markAsReadIds));
+            $this->markAsRead($markAsReadIds);
         }
 
         return $return;
+    }
+
+    public function markAsRead($ids, $where=array()) {
+        if(!$ids) {
+            return false;
+        }
+        $this->unbindAll();
+        $where[$this->primaryKey] = $ids;
+        $this->updateAll(array('unread'=>0), $where);
     }
 
 }

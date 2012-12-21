@@ -22,6 +22,35 @@
             $('#countary2').html(data['response']['timezone']);
         });
 
+        var url = '/Notifications/index/{limit}/{page}';
+        lmObj.loadMoreButton('#notification-load-more', 'click', '#notification ul', url, {}, 'get', 3);
+
+        //On the first click, make the first page items as read
+        $('#world').click(function(e){
+            //Update only once
+            if($(this).data('first-click-update')) {
+                return false;
+            }
+            $(this).data('first-click-update', true);
+
+            //Get notifications ids
+            var updateNotificationIds = [];
+            $('#notification ul li').each(function(index, element){
+                updateNotificationIds.push($(element).data('notification-id'));
+            })
+
+            //Update
+            var url = '/Notifications/markAsRead';
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: {
+                    notification_ids: updateNotificationIds
+                },
+                dataType: 'json'
+            })
+
+        });
     });
 </script>
 <!-- Topbar
@@ -114,9 +143,10 @@
 
 
 		<div class="top-middle">
-            <div class="pull-left position request-box pointer">
+            <div class="pull-left position request-box pointer" id="notification">
                 <?php
                 $notificationsCount = $this->requestAction(array('controller'=>'Notifications', 'action'=>'getUnreadNotificationsCount'));
+
                 if($notificationsCount['unreadCount']) {
                     echo '<div class="requst-number">',$notificationsCount['unreadCount'],'</div>';
                 }
@@ -125,20 +155,16 @@
                 <div class="header-tooltip-box alltip" id="world-tip">
                     <div class="header-tooltip"></div>
                     <ul class="headerdropdown radius3">
-                        <li class="visiter-background">
-                            <div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
-                            <div class="headeruser-text">
-                                <p>Hi, How are you.</p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
-                            <div class="headeruser-text">
-                                <p>Can you invite me in?</p>
-                            </div>
-                        </li>
-                        <li><a href="#">See all</a></li>
+                        <?php
+                            $notifications = $this->requestAction(array('controller'=>'Notifications', 'action'=>'index', 3, 1, 0));
+
+                            if($notifications['notifications']) {
+                                echo $this->element('Topnav/notifications', array('notifications'=>$notifications['notifications']));
+                            }
+                        ?>
                     </ul>
+
+                    <div class="headerdropdown"><a href="#" id="notification-load-more" class="loadMore centered"><strong><?php echo __('Load More'); ?></strong></a></div>
                 </div>
             </div>
 
@@ -165,7 +191,7 @@
                                 <p>Can you invite me in?</p>
                             </div>
                         </li>
-                        <li><a href="studentkit-message-innerpage action pressed.html">See all</a></li>
+                        <li><a href="studentkit-message-innerpage action pressed.html"><?php echo __('Load More'); ?></a></li>
                     </ul>
                 </div>
             </div>
