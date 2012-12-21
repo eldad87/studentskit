@@ -179,6 +179,9 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
         } else {
             //data-target
             url = urlParams['target'];
+            if($(this).val()) {
+                urlParams['value'] = $(this).val();
+            }
 
             dataParams = urlParams;
         }
@@ -206,7 +209,7 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
                     }
                 }
 
-                if(data['response']['title'][0]=='Error') {
+                if(appendErrorsSelector && data['response']['title'][0]=='Error') {
                     /*//Show error
                     var msg = '';
 

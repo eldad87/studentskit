@@ -29,8 +29,8 @@ $config['Accounts.changePassword.error.3.title'] = __('Error');
 $config['Accounts.changePassword.error.3.description'] = __('Cannot change password');
 
 /*-------------------- Accounts.setTimezone		--------------------*/
-$config['Account.setTimezone.success.1.title'] = __('Success');
-$config['Account.setTimezone.success.1.description'] = __('New timezone set');
+$config['Accounts.setTimezone.success.1.title'] = __('Success');
+$config['Accounts.setTimezone.success.1.description'] = __('New timezone set');
 
 $config['Accounts.setTimezone.error.1.title'] = __('Error');
 $config['Accounts.setTimezone.error.1.description'] = __('New language set');

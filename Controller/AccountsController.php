@@ -131,7 +131,12 @@ class AccountsController extends AppController {
 
 	}
 
-    public function setTimezone($timezone=null) {
+    public function setTimezone($continent, $region=null) {
+        $timezone = $continent;
+        if($region) {
+            $timezone .= '/' . $region;
+        }
+
         if(!$timezone) {
             return $this->error(1);
         }
@@ -145,7 +150,7 @@ class AccountsController extends AppController {
                 return $this->error(2);
             }
         }
-        return $this->success(1);
+        return $this->success(1, array('timezone'=>$timezone));
     }
 
     /*public function setLocale($locale=null) {

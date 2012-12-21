@@ -15,6 +15,13 @@
             savePrioritizeUrl: '<?php echo Router::url(array('controller'=>'Accounts', 'action'=>'setLanguagesOfRecords')); ?>'
 
         });
+
+        //On change TZ
+        pAPIObj.loadElement('#timezone', 'change', false, 'post');
+        pAPIObj.setAppendCallback('#timezone', 'after', function(data) {
+            $('#countary2').html(data['response']['timezone']);
+        });
+
     });
 </script>
 <!-- Topbar
@@ -63,9 +70,11 @@
                 <!-- /country box -->
             </div>
             <div class="pull-left head-languagebox">
-                <span id="countary2 pointer" class="select2"><?php echo Configure::read('Config.timezone'); ?></span>
+                <span id="countary2" class="select pointer"><?php echo Configure::read('Config.timezone'); ?></span>
                 <?php
-                echo $this->Form->input('TZ', array('options' => CakeTime::listTimezones(null, null, false), 'label'=>false, 'div'=>false, 'default' => Configure::read('Config.timezone'), 'class'=>'styled2 pointer', 'onChange'=>'changeTime(\'countary2\', this.value)'));
+                echo $this->Form->input('TZ', array('options' => CakeTime::listTimezones(null, null, false),
+                    'label'=>false, 'div'=>false, 'default' => Configure::read('Config.timezone'), 'class'=>'styled2 pointer',
+                    'id'=>'timezone', 'data-target'=>Router::url(array('controller'=>'Accounts', 'action'=>'setTimezone', '{value}'))));
                 ?>
             </div>
         </div> <!-- /pull-left -->
