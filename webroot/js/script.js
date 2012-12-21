@@ -207,7 +207,7 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
                 }
 
                 if(data['response']['title'][0]=='Error') {
-                    //Show error
+                    /*//Show error
                     var msg = '';
 
                     var validationErrors = {};
@@ -220,7 +220,11 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
                     $.each(validationErrors, function(key, val) {
                         msg += val[0] + '<br />';
                     });
-                    showError(appendErrorsSelector, data['response']['description'][0], msg);
+
+                    showError(appendErrorsSelector, data['response']['description'][0], msg);*/
+                    var parseData = parseResponse(data);
+                    showError(appendErrorsSelector, parseData['title'], parseData['des']);
+
                     return false;
                 }
 
@@ -233,6 +237,39 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
         //Stop from from submitting itself
         return false;
     });
+}
+
+function parseResponse(data) {
+
+
+    if(data['response']['title'][0]=='Error') {
+        var msg = '';
+
+        var validationErrors = {};
+        if(data['response']['validation_errors']!=undefined) {
+            validationErrors = data['response']['validation_errors'];
+        } else if(data['response']['results'] && data['response']['results']['validation_errors']!=undefined) {
+            validationErrors = data['response']['results']['validation_errors'];
+        }
+
+        $.each(validationErrors, function(key, val) {
+            msg += val[0] + '<br />';
+        });
+
+        return {
+            type: data['response']['title'][0],
+            title: data['response']['description'][0],
+            des: msg
+        };
+    } else {
+        return {
+            type: data['response']['title'][0],
+            title: data['response']['description'][0],
+            des: ''
+        };
+    }
+
+
 }
 
 /////////////////////////////////////////////////////////////// panel + site
@@ -552,12 +589,41 @@ LoadMore.prototype.getAppendCallback = function( buttonSelector, on ) {
 
 var lmObj = new LoadMore();
 
-function showError(inSelector, title, msg) {
-    $(inSelector + ' .alert').remove(); //Remove old alert msg
+function showSuccess(inSelector, title, msg, autoFadeMilli) {
+    showMessage(inSelector, title, msg, autoFadeMilli, 'alert-success');
+}
+function showError(inSelector, title, msg, autoFadeMilli) {
+    showMessage(inSelector, title, msg, autoFadeMilli, 'alert');
+}
+function showMessage(inSelector, title, msg, autoFadeMilli, msgClass) {
+    if(autoFadeMilli==undefined) {
+        autoFadeMilli = 3000;
+    }
+
+    //There is no need to add .alert, because its already in the templete below
+    var appendClass = msgClass;
+    if(msgClass=='alert') {
+        appendClass = '';
+    }
+
+    var obj = $(inSelector);
+
+    $(obj).find('.' + msgClass).remove(); //Remove old alert msg
+
     if(title==undefined || msg==undefined) {
         return false;
     }
-    $(inSelector).prepend('<div class="alert fade in"> <button type="button" class="close" data-dismiss="alert">×</button> <strong>'+ title +' </strong>'+ msg +'</div>'); //Append new alert msg
+
+    //Auto fade after 3 sec
+    if(autoFadeMilli) {
+        $(obj).prepend('<div class="alert ' + appendClass + ' fade in"> <strong>'+ title +' </strong>'+ msg +'</div>'); //Append new alert msg
+
+        var messageContainer = $(obj).find('.' + msgClass);
+        setTimeout(function(){$(messageContainer).fadeOut()}, autoFadeMilli);
+    } else {
+        $(obj).prepend('<div class="alert ' + appendClass + ' fade in"> <button type="button" class="close" data-dismiss="alert">×</button> <strong>'+ title +' </strong>'+ msg +'</div>'); //Append new alert msg with close button
+
+    }
 }
 
 //Copy ids from A to model

@@ -1,7 +1,20 @@
 <script type="text/javascript">
 
     $(document).ready(function(){
-        $('#localization').lang();
+        $('#localization').lang({
+            langDisplay: '#selcountry',
+            lang: '#layout',
+            addExistsError:{
+                title: '<?php echo __('Error'); ?>',
+                msg: '<?php echo __('Already exists'); ?>',
+                selector: '.head-countrybar .prioritize-message'
+            },
+            layoutMessageSelector: '.layout-message',
+
+            saveLangUrl: '<?php echo Router::url(array('controller'=>'Accounts', 'action'=>'setLanguage')); ?>',
+            savePrioritizeUrl: '<?php echo Router::url(array('controller'=>'Accounts', 'action'=>'setLanguagesOfRecords')); ?>'
+
+        });
     });
 </script>
 <!-- Topbar
@@ -18,10 +31,13 @@
                     <div class="head-countrybox">
                         <form class="sk-form">
                             <div class="head-countrybar">
+                                <div class="layout-message"></div>
+                                <div class="error-message"></div>
                                 <label class="countrylabel"><?php echo __('Site Layout'); ?> :</label>
                                 <?php echo $this->Form->input('layout', array('options' => Configure::read('template_languages'), 'id'=>'layout', 'label'=>false, 'div'=>false, 'default' => Configure::read('Config.language'), 'class'=>'pull-right')); ?>
                             </div>
                             <div class="head-countrybar">
+                                <div class="prioritize-message"></div>
                                 <p class="head-countrytext pull-left fullwidth"><?php echo __('Prioritize'); ?> : <i class="iconSmall-info"></i></p>
 
                                 <!-- Lang list -->

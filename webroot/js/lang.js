@@ -4,11 +4,38 @@
 (function( $ ){
 
     var methods = {
-        _save: function() {
-            $(this).lang('_getPrioritize');
-            $(this).lang('_getMainLang');
+        //lang/prioritize
+        _save: function(operation) {
+            var settings = $(this).data('lang');
 
-            //TODO:
+            var url = saveData = errorSelector = false;
+            if(operation=='lang') {
+                errorSelector = settings.layoutMessageSelector;
+
+                url = settings.saveLangUrl + '/' + $(this).lang('_getMainLang');
+
+            } else if(operation=='prioritize') {
+                errorSelector = settings.addExistsError.selector;
+
+                url = settings.savePrioritizeUrl + '/' +  $(this).lang('_getPrioritize').join();
+            }
+
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'json'
+
+            }).done(function ( data ) {
+                var parseData = parseResponse(data);
+                if(parseData['type']=='Error') {
+                    showError(errorSelector, parseData['title'], parseData['des']);
+                } else {
+                    showSuccess(settings.layoutMessageSelector, parseData['title'], parseData['des']);
+                }
+
+            });
+
+            return false;
         },
 
         _getPrioritize: function() {
@@ -25,7 +52,7 @@
 
         _getMainLang: function() {
             var settings = $(this).data('lang');
-            return $(this).find(settings.layout).val();
+            return $(this).find(settings.lang).val();
         },
 
         _bindRemoveButton: function() {
@@ -37,7 +64,7 @@
             //On remove
             $(this).find(settings.remove).click(function() {
                 $(this).closest('li').remove();
-                self.lang('_save');
+                self.lang('_save', 'prioritize');
             });
         },
 
@@ -56,6 +83,10 @@
                 //Check if already in list
                 var pLang = self.lang('_getPrioritize');
                 if(jQuery.inArray(langValue, pLang)!==-1) {
+
+                    showError(  settings.addExistsError.selector, //self.find(settings.addExistsError.selector),
+                                settings.addExistsError.title,
+                                settings.addExistsError.msg);
                     return false;
                 }
 
@@ -71,30 +102,38 @@
                 //Append to list
                 self.find(settings.prioritizeLangList).append(html);
                 self.lang('_bindRemoveButton');
+
+
+                //Save
+                self.lang('_save', 'prioritize')
             });
 
             //On template change
-            $(this).find(settings.layout).change(function() {
+            $(this).find(settings.lang).change(function() {
                 var newLang = $(this).find(':selected').text(); //Get the selected text
                 //Set the new text
-                $(self).find(settings.layoutDisplay).html(
+                $(self).find(settings.langDisplay).html(
                     newLang
                 );
 
                 //Save
-                self.lang('_save');
+                self.lang('_save', 'lang');
             });
         },
 
         init : function( options ) {
             var settings = {
-                layoutDisplay: '#selcountry',                   //When changing main lang - it will appear there
-                layout: '#layout',                              //template selector
+                langDisplay: '#showLang',                       //When changing main lang - it will appear there
+                lang: '#lang',                                  //template selector
                 prioritizeLangList: '#prioritize_lang_list',    //UL that contain languages
                 dataPostfix: 'lang',                            //The attribute that hold that lang value <li data-lang="eng">
                 remove: '.remove_lang',                         //Remove lang button
 
                 add: '.add',            //Add button
+                addExistsError: {
+                    title: 'Error',
+                    msg: 'Already exist in list'
+                },
                 langList: '.lang_list', //On click the add button, add the selected option here
                 langTemplate: '<li class="space37 fullwidth pull-left space29" data-lang="{val}"><a href="#" class="color-text remove_lang"><i class="iconSmall-red-cross"></i></a>{text}</li>'
             };
