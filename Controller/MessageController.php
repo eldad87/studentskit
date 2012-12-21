@@ -12,9 +12,12 @@ class MessageController extends AppController {
     public function index() {
 		$threads = $this->Thread->getUserThreadsLastMessage($this->Auth->user('user_id'));
         $this->set('threads', $threads);
-        //pr($threads);
-        //return $this->success(1, array('threads'=>$threads));
 	}
+
+    public function getList($limit=3, $page=1) {
+        $threads = $this->Thread->getUserThreadsLastMessage($this->Auth->user('user_id'), $page, $limit);
+        return $this->success(1, array('threads'=>$threads));
+    }
 
     public function viewThread($threadId) {
         $thread = $this->Thread->getThreadMessages($threadId, $this->Auth->user('user_id'));

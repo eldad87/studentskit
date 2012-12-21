@@ -49,8 +49,11 @@
                 },
                 dataType: 'json'
             })
-
         });
+
+        //Messages
+        var url = '/Message/getList/{limit}/{page}';
+        lmObj.loadMoreButton('#messages-load-more', 'click', '#massages-tip ul', url, {}, 'get', 3);
     });
 </script>
 <!-- Topbar
@@ -60,6 +63,8 @@
         <div class="top-left" id="localization">
             <div class="label-txt pull-left space1"><?php echo __('Language'); ?></div>
             <div class="pull-left space1 position">
+
+                <!-- Layout -->
                 <div class="select show-tip pointer" id="selcountry"><?php
                     $templateLanguages = Configure::read('template_languages');
                     $userLang = Configure::read('Config.language');
@@ -69,26 +74,27 @@
                     } else {
                         echo __(current($templateLanguages));
                     }
+                    ?>
+                </div>
 
-
-
-                    ?></div>
-                <!-- country box -->
+                <!-- Layout/Prioritize -->
                 <div  id="selcountry-tip" class="header-tooltip-box toolbarbox alltip">
                     <div class="header-tooltip"></div>
                     <div class="head-countrybox">
                         <form class="sk-form">
+                            <!-- layout list -->
                             <div class="head-countrybar">
                                 <div class="layout-message"></div>
                                 <div class="error-message"></div>
                                 <label class="countrylabel"><?php echo __('Site Layout'); ?> :</label>
                                 <?php echo $this->Form->input('layout', array('options' => $templateLanguages, 'id'=>'layout', 'label'=>false, 'div'=>false, 'default' => $userLang, 'class'=>'pull-right')); ?>
                             </div>
+
+                            <!-- Prioritize list -->
                             <div class="head-countrybar">
                                 <div class="prioritize-message"></div>
                                 <p class="head-countrytext pull-left fullwidth"><?php echo __('Prioritize'); ?> : <i class="iconSmall-info"></i></p>
 
-                                <!-- Lang list -->
                                 <ul id="prioritize_lang_list">
                                     <?php
                                         if(Configure::read('Config.languages_of_records')) {
@@ -109,8 +115,9 @@
                         </form>
                     </div>
                 </div>
-                <!-- /country box -->
             </div>
+
+            <!-- Timezone -->
             <div class="pull-left head-languagebox">
                 <span id="countary2" class="select pointer"><?php echo Configure::read('Config.timezone'); ?></span>
                 <?php
@@ -122,6 +129,8 @@
         </div> <!-- /pull-left -->
 
         <div class="top-right">
+
+            <!-- Register / Login-->
             <div class="top-right">
                 <?php
                 if(!$user) {
@@ -139,10 +148,11 @@
 
 
             <?php if(isSet($user['user_id'])) { ?>
-            <!--world icon and messageicon box -->
 
-
+        <!--world icon and messageicon box -->
 		<div class="top-middle">
+
+            <!-- Notifications -->
             <div class="pull-left position request-box pointer" id="notification">
                 <?php
                 $notificationsCount = $this->requestAction(array('controller'=>'Notifications', 'action'=>'getUnreadNotificationsCount'));
@@ -168,6 +178,7 @@
                 </div>
             </div>
 
+            <!-- Messages -->
             <div class="pull-left position pointer">
                 <?php
                 $messagesCount = $this->requestAction(array('controller'=>'Message', 'action'=>'getUnreadThreadCount'));
@@ -179,20 +190,15 @@
                 <div id="massages-tip" class="header-tooltip-box alltip">
                     <div class="header-tooltip"></div>
                     <ul class="headerdropdown radius3">
-                        <li class="visiter-background">
-                            <div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
-                            <div class="headeruser-text">
-                                <p>Hi, How are you.</p>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="headeruser"><img src="assets/img/users/img-38x38-1.jpg" alt=""></div>
-                            <div class="headeruser-text">
-                                <p>Can you invite me in?</p>
-                            </div>
-                        </li>
-                        <li><a href="studentkit-message-innerpage action pressed.html"><?php echo __('Load More'); ?></a></li>
+                        <?php
+                        $threads = $this->requestAction(array('controller'=>'Message', 'action'=>'getList'));
+
+                        if($threads['threads']) {
+                            echo $this->element('Topnav/threads', array('threads'=>$threads['threads']));
+                        }
+                        ?>
                     </ul>
+                    <div class="headerdropdown"><a href="#" id="messages-load-more" class="loadMore centered"><strong><?php echo __('Load More'); ?></strong></a></div>
                 </div>
             </div>
 

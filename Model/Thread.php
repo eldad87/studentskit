@@ -137,11 +137,14 @@ class Thread extends AppModel {
     public function getUserThreadsLastMessage($userId, $page=1, $limit=10) {
 		//Show subject image
 		//Get all messages from DB
+        $this->recursive = 1;
 		$messagesData = $this->find('all', array(	'conditions'=>array(
 														'OR'=>array(array('by_user_id'=>$userId, 'by_user_visible'=>1),
                                                                     array('to_user_id'=>$userId, 'to_user_visible'=>1))
 													),
-													'order'=>'modified DESC'
+													'order'=>'modified DESC',
+                                                    'page'=>$page,
+                                                    'limit'=>$limit
 											)
 		);
 		
@@ -164,7 +167,7 @@ class Thread extends AppModel {
 				
 				$messages[] = array(
 					'thread_id'			=>$messageData['thread_id'],
-					'title'			=>$messageData['title'],
+					'title'			    =>$messageData['title'],
 					'entity_type'		=>$messageData['entity_type'],
 					'entity_id'			=>$messageData['entity_id'],
 					'unread_messages'	=>$messageData[$userByTo.'_user_unread_messages'],

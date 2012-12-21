@@ -3450,20 +3450,7 @@ ul.headerdropdown li {
 	color:#000;	
 }
 
-ul.headerdropdown li a{
-	display:block;
-	width:100%;
-	height:100%;
-	text-align:center;
-	font-weight:bold;
-	font-size:13px;
-	outline:none;
-	padding:5px;
-	box-sizing:border-box;
-	-webkit-box-sizing:border-box;
-	-moz-box-sizing:border-box;
-	background:#f0f0f0;
-}
+
 
 .requst-number{
 	width:17px;
