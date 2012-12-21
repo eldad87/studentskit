@@ -176,6 +176,18 @@ class AppController extends Controller {
             Configure::write('Config.timezone', $this->Session->read('timezone'));
         }
 
+
+        if($this->Session->read('languages_of_records')) {
+
+            $lor = array();
+            foreach($this->Session->read('languages_of_records') AS $lang) {
+                $lor[$lang] = $localize->catalog($lang);
+                $lor[$lang] = $lor[$lang]['language'];
+            }
+
+            Configure::write('Config.languages_of_records', $lor);
+        }
+
         //Set language direction
         //setlocale(LC_ALL, $locale .'UTF8', $locale['locale'] .'UTF-8', $locale['locale'], 'eng.UTF8', 'eng.UTF-8', 'eng', 'en_US');
 

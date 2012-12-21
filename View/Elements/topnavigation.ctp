@@ -31,7 +31,19 @@
         <div class="top-left" id="localization">
             <div class="label-txt pull-left space1"><?php echo __('Language'); ?></div>
             <div class="pull-left space1 position">
-                <div class="select show-tip pointer" id="selcountry"><?php echo __('Default'); ?></div>
+                <div class="select show-tip pointer" id="selcountry"><?php
+                    $templateLanguages = Configure::read('template_languages');
+                    $userLang = Configure::read('Config.language');
+
+                    if(isSet($templateLanguages[$userLang])) {
+                        echo __($templateLanguages[$userLang]);
+                    } else {
+                        echo __(current($templateLanguages));
+                    }
+
+
+
+                    ?></div>
                 <!-- country box -->
                 <div  id="selcountry-tip" class="header-tooltip-box toolbarbox alltip">
                     <div class="header-tooltip"></div>
@@ -41,7 +53,7 @@
                                 <div class="layout-message"></div>
                                 <div class="error-message"></div>
                                 <label class="countrylabel"><?php echo __('Site Layout'); ?> :</label>
-                                <?php echo $this->Form->input('layout', array('options' => Configure::read('template_languages'), 'id'=>'layout', 'label'=>false, 'div'=>false, 'default' => Configure::read('Config.language'), 'class'=>'pull-right')); ?>
+                                <?php echo $this->Form->input('layout', array('options' => $templateLanguages, 'id'=>'layout', 'label'=>false, 'div'=>false, 'default' => $userLang, 'class'=>'pull-right')); ?>
                             </div>
                             <div class="head-countrybar">
                                 <div class="prioritize-message"></div>
@@ -49,12 +61,13 @@
 
                                 <!-- Lang list -->
                                 <ul id="prioritize_lang_list">
-                                    <li class="space37 fullwidth pull-left space29" data-lang="eng">
-                                        <a href="#" class="color-text remove_lang"><i class="iconSmall-red-cross"></i></a> English
-                                    </li>
-                                    <li class="space37 fullwidth pull-left space29" data-lang="heb">
-                                        <a href="#" class="color-text remove_lang"><i class="iconSmall-red-cross"></i></a> Hebrew
-                                    </li>
+                                    <?php
+                                        if(Configure::read('Config.languages_of_records')) {
+                                            foreach(Configure::read('Config.languages_of_records') AS $lan=>$language) {
+                                                echo '<li class="space37 fullwidth pull-left space29" data-lang="',$lan,'"><a href="#" class="color-text remove_lang"><i class="iconSmall-red-cross"></i></a> ',$language,'</li>';
+                                            }
+                                        }
+                                    ?>
                                 </ul>
 
                                 <p class="space37 fullwidth pull-left space29">

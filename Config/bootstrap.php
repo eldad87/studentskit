@@ -196,7 +196,7 @@ CakePlugin::loadAll(array(
 );
 App::import('Vendor', 'Uploader.Uploader');
 
-Configure::write('template_languages', array('heb'=>'Hebrew', 'eng'=>'English'));
+Configure::write('template_languages', array('eng'=>'English', 'heb'=>'Hebrew'));
 Configure::write('public_domain', 'http://universito.com');
 
 App::build(array('Event' => array('%s'.'Event'.DS)), App::REGISTER);

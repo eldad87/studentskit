@@ -25,7 +25,7 @@ class AccountsController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow(array('login', 'forgotten_password', 'register', 'activate', 'setTimezone', 'setLocale'));
+		$this->Auth->allow(array('login', 'forgotten_password', 'register', 'activate', 'setTimezone', 'setLocale', 'setLanguage', 'setLanguagesOfRecords'));
 	}
 
     public function __construct($request = null, $response = null) {
