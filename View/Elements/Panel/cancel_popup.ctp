@@ -17,8 +17,8 @@ $buttonId = 'cancel-approved_'.$appendId;
 
     function initCancelJS(buttonSelector, i) {
 
-        buttonId =  'cancel-approved_' + i;
-        popupId =  'cancel-popup_' + i;
+        var buttonId =  'cancel-approved_' + i;
+        var popupId =  'cancel-popup_' + i;
 
         //Unbind existing events
         $(buttonSelector).unbind();
