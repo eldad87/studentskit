@@ -410,11 +410,18 @@ $(document).ready(function(){
 
 
 //////////////////
+var lastLoad3;
+
 $(function() {
     var BBQWidgets = {
         '.load2': {
                     containerSelector: '#main-area',
-                    click: function(clickedElement, state){
+                    markButtonBasedOnHash: function(clickedElement) {
+                        var url = $.bbq.getState( BBQWidgets['.load2'].containerSelector ) || '';
+                        if(url!='') {
+                            clickedElement = $( 'a[rel="' + url + '"].load2:visible');
+                        }
+
                         //Hide
                         $('#sub-area').children( ':visible' ).hide();
 
@@ -422,12 +429,15 @@ $(function() {
                         $(".right-menu li").removeClass("bg-active");
                         $(clickedElement).parent("li").addClass("bg-active");
 
+                    },
+                    click: function(clickedElement, state){
+                        BBQWidgets['.load2'].markButtonBasedOnHash(clickedElement);
+
                         if( $.bbq.getState( BBQWidgets['.load3'].containerSelector) ) {
-                            state['#sub-area'] = '';
+                            $.bbq.removeState('#sub-area');
                             var containerData = $('#sub-area').data( 'bbq' );
                             containerData.url = '';
-
-
+                            lastLoad3 = undefined;
                         }
                         return state;
                     },
@@ -439,7 +449,7 @@ $(function() {
                             //Load the first button
                             firstMenuLink = $('ul.right-menu:visible li:first a');;
                         }
-                        if(firstMenuLink) {
+                        if(firstMenuLink.length) {
                             $(firstMenuLink).click();
                         }
                     },
@@ -451,7 +461,12 @@ $(function() {
                     }},
         '.load3': {
                     containerSelector: '#sub-area',
-                    click: function(clickedElement, state){
+
+                    markButtonBasedOnHash: function(clickedElement) {
+                        var url = $.bbq.getState( BBQWidgets['.load3'].containerSelector ) || '';
+                        if(url!='') {
+                            clickedElement = $( 'a[rel="' + url + '"].load3:visible' );
+                        }
 
                         //If the parent have class of .disable - ignore it
                         if($(clickedElement).parent().hasClass('disable')) {
@@ -464,19 +479,30 @@ $(function() {
 
                         $(".booking-nav li").removeClass("active");
                         $(clickedElement).parent("li").addClass("active");
+                    },
+                    click: function(clickedElement, state){
+                        BBQWidgets['.load3'].markButtonBasedOnHash(clickedElement);
+
+
 
                         return state;
                     },
                     emptyUrl: function() {
+
                         //Load the marked tab
                         var firstTab = $(".tab-menu:visible li.active a");
                         if(!firstTab.length) {
                             //Load the first tab
                             firstTab = $(".tab-menu:visible li:first a");
                         }
-                        if(firstTab) {
-                            $(firstTab).click();
+                        if(firstTab.length) {
+                            if(lastLoad3!=$(firstTab).attr('rel')) {
+                                $(firstTab).click();
+                            } else if(lastLoad3) {
+                                history.back(1);
+                            }
                         }
+                        lastLoad3 = $(firstTab).attr('rel');
                     }
     }};
 
@@ -560,6 +586,15 @@ $(function() {
 
                 // Store the url for the next time around.
                 containerData.url = url;
+
+                //Set last loaded
+                if(linkSelector=='.load3') {
+                    lastLoad3 = url;
+                }
+
+                if(BBQWidgets[linkSelector].markButtonBasedOnHash) {
+                    BBQWidgets[linkSelector].markButtonBasedOnHash();
+                }
 
                 // Remove .bbq-current class from any previously "current" link(s).
                 $( 'a.bbq-current' + linkSelector ).removeClass( 'bbq-current' );
