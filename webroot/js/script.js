@@ -351,15 +351,16 @@ function resetData(elementSelector) {
 /* Back office tabs */
 
 //Old Tabs
-$(document).ready(function(){
+/*$(document).ready(function(){
     $(".load").click(function(){
         $(".loadpage").load("/ajax/"+$(this).attr('rel'));
         $(".booking-nav li").removeClass("active");
         $(this).parent("li").addClass("active");
     });
-});
+});*/
 //New Tabs
 function initTabs(loadActive) {
+    return false;
     if(loadActive==undefined) {
         loadActive = true;
     }
@@ -400,8 +401,230 @@ $(document).ready(function(){
     });
 
 });
+
+
+
+
+
+
+
+
+//////////////////
+$(function() {
+    var BBQWidgets = {
+        '.load2': {
+                    containerSelector: '#main-area',
+                    click: function(clickedElement, state){
+                        //Hide
+                        $('#sub-area').children( ':visible' ).hide();
+
+                        //Mark link
+                        $(".right-menu li").removeClass("bg-active");
+                        $(clickedElement).parent("li").addClass("bg-active");
+
+                        if( $.bbq.getState( BBQWidgets['.load3'].containerSelector) ) {
+                            state['#sub-area'] = '';
+                            var containerData = $('#sub-area').data( 'bbq' );
+                            containerData.url = '';
+
+
+                        }
+                        return state;
+                    },
+                    emptyUrl: function() {
+
+                        //Load the marked button
+                        var firstMenuLink = $('ul.right-menu:visible li.bg-active a');
+                        if(!firstMenuLink.length) {
+                            //Load the first button
+                            firstMenuLink = $('ul.right-menu:visible li:first a');;
+                        }
+                        if(firstMenuLink) {
+                            $(firstMenuLink).click();
+                        }
+                    },
+                    afterLoad: function() {
+                        var url = $.bbq.getState( BBQWidgets['.load3'].containerSelector ) || '';
+                        if(url=='') {
+                            BBQWidgets['.load3'].emptyUrl();
+                        }
+                    }},
+        '.load3': {
+                    containerSelector: '#sub-area',
+                    click: function(clickedElement, state){
+
+                        //If the parent have class of .disable - ignore it
+                        if($(clickedElement).parent().hasClass('disable')) {
+                            return false;
+                        }
+                        //If element have class of .disable - ignore it
+                        if($(clickedElement).hasClass('disable')) {
+                            return false;
+                        }
+
+                        $(".booking-nav li").removeClass("active");
+                        $(clickedElement).parent("li").addClass("active");
+
+                        return state;
+                    },
+                    emptyUrl: function() {
+                        //Load the marked tab
+                        var firstTab = $(".tab-menu:visible li.active a");
+                        if(!firstTab.length) {
+                            //Load the first tab
+                            firstTab = $(".tab-menu:visible li:first a");
+                        }
+                        if(firstTab) {
+                            $(firstTab).click();
+                        }
+                    }
+    }};
+
+
+    function initCache() {
+        // For each widget, keep a data object containing a mapping of
+        // url-to-container for caching purposes.
+        $.each(BBQWidgets, function(linkSelector, data){
+            //There is no data set
+            if(!$(data.containerSelector).data( 'bbq')) {
+                $(data.containerSelector).data( 'bbq', {
+                    cache: {
+                        // If url is '' (no fragment), display this div's content.
+                        '': $(this)
+                    }
+                });
+            }
+        });
+    }
+
+
+    // For all links inside a widget, push the appropriate state onto the
+    // history when clicked.
+    $.each(BBQWidgets, function(linkSelector, data){
+        $( linkSelector ).live( 'click', function(e){
+
+            var state = {},
+
+            // Get the url from the link's href attribute
+                url = $(this).attr( 'rel' );
+            //.replace( /^#/, '' ); // stripping any leading #.
+            state[ data.containerSelector ] = url;
+
+            if(BBQWidgets[linkSelector].click) {
+                state = BBQWidgets[linkSelector].click(this, state);
+                if(!state) {
+                    e.stopPropagation();
+                    return false;
+                }
+            }
+
+
+
+            // Set the state!
+            $.bbq.pushState( state );
+
+            // And finally, prevent the default link click behavior by returning false.
+            return false;
+        });
+    });
+
+
+    // Bind an event to window.onhashchange that, when the history state changes,
+    // iterates over all .bbq widgets, getting their appropriate url from the
+    // current state. If that .bbq widget's url has changed, display either our
+    // cached content or fetch new content to be displayed.
+    $(window).bind( 'hashchange', function(e) {
+        initCache();
+
+        $.each(BBQWidgets, function(linkSelector, data){
+            // Iterate over all  widgets.
+            $(data.containerSelector).each(function(){
+                var that = $(this),
+
+                // Get the stored data for this .bbq widget.
+                    containerData = that.data( 'bbq' ),
+
+                // Get the url for this .bbq widget from the hash, based on the
+                // appropriate id property. In jQuery 1.4, you should use e.getState()
+                // instead of $.bbq.getState().
+                    url = $.bbq.getState( data.containerSelector ) || '';
+
+                //On empty URL
+                if(url=='' && BBQWidgets[linkSelector].emptyUrl) {
+                    BBQWidgets[linkSelector].emptyUrl();
+                    return false;
+                }
+
+                // If the url hasn't changed, do nothing and skip to the next .bbq widget.
+                if ( containerData.url === url ) { return; }
+
+                // Store the url for the next time around.
+                containerData.url = url;
+
+                // Remove .bbq-current class from any previously "current" link(s).
+                $( 'a.bbq-current' + linkSelector ).removeClass( 'bbq-current' );
+
+                // Hide any visible ajax content.
+                that.children( ':visible' ).hide();
+
+                // Add .bbq-current class to "current" nav link(s), only if url isn't empty.
+                url && $( 'a[rel="' + url + '"]' + linkSelector ).addClass( 'bbq-current' );
+
+                if ( containerData.cache[ url ] ) {
+                    // Since the widget is already in the cache, it doesn't need to be
+                    // created, so instead of creating it again, let's just show it!
+                    containerData.cache[ url ].show();
+
+                    if(BBQWidgets[linkSelector].afterLoad) {
+                        BBQWidgets[linkSelector].afterLoad();
+                    }
+
+                } else {
+                    // Show "loading" content while AJAX content loads.
+                    that.find( '.bbq-loading' ).show();
+
+                    // Create container for this url's content and store a reference to it in
+                    // the cache.
+                    containerData.cache[ url ] = $( '<div class="bbq-item"/>' )
+
+                        // Append the content container to the parent container.
+                        .appendTo( that )
+
+                        // Load external content via AJAX. Note that in order to keep this
+                        // example streamlined, only the content in .infobox is shown. You'll
+                        // want to change this based on your needs.
+                        .load( url, function(){
+                            // Content loaded, hide "loading" content.
+                            that.find( '.bbq-loading' ).hide();
+
+                            if(BBQWidgets[linkSelector].afterLoad) {
+                                BBQWidgets[linkSelector].afterLoad();
+                            }
+                        });
+                }
+            });
+        })
+    });
+
+    // Since the event is only triggered when the hash changes, we need to trigger
+    // the event now, to handle the hash the page may have loaded with.
+    $(window).trigger( 'hashchange' );
+
+
+});
+//////////////////
+
+
+
+
+
+
+
+
+
 //Organizer - New menu links
 function initMenuLinks() {
+    return false;
     $(".load2").unbind();
     $(".load2").click(function(e){
         $(".loadpage1").load($(this).attr('rel'));

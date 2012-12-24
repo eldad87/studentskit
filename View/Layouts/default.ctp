@@ -46,7 +46,8 @@
                                         'jquery.fineuploader-3.0',
                                         'filesystem',
                                         'test-creator',
-                                        'lang'));
+                                        'lang',
+                                        'jquery.ba-bbq'));
         echo $this->fetch('script');
     ?>
 

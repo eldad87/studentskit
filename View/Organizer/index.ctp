@@ -10,7 +10,7 @@
                         <h5><?php echo $user['username']; ?></h5>
                     </div> <!-- /student-main-box -->
 
-                    <ul class="right-menu">
+                    <ul class="right-menu bbq" id="mainLinks">
                         <li class="bg-main"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'index')); ?>"><?php echo __('User Management'); ?></a></li>
                         <li class="bg-sub"><a href="#" class="load2 " rel="<?php echo Router::url(array('controller'=>'Student','action'=>'lessons')); ?>"><?php echo __('Lessons'); ?></a></li>
                         <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'profile')); ?>"><?php echo __('Profile'); ?></a></li>
@@ -29,9 +29,12 @@
                         <li class="bg-main"><a href="#" class="load1" rel="student-profile-tm-credits.html"><?php echo __('Credit'); ?></a></li>
                     </ul> <!-- /right-menu -->
                 </div> <!-- /cont-span3 -->
-                <div class="cont-span15 c-mar-message loadpage1" id="main-area">
 
-                </div><!-- /loadpage -->
+                <div class="cont-span15 c-mar-message" id="main-area">
+                </div>
+                <div class="cont-span15" id="sub-area">
+                </div>
+
             </div> <!-- /cont-span12 -->
         </div> <!-- /row -->
     </div> <!-- /container-inner -->

@@ -21,7 +21,7 @@
 
 
 
-        pfObj.loadForm('#subject-form', '.loadpage', 'post');
+        pfObj.loadForm('#subject-form', '#sub-area', 'post');
 
         initSubjectForm('#Subject1On1Price', '#SubjectLessonType',
             '#SubjectMaxStudents', '#msDiv',

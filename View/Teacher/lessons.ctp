@@ -16,7 +16,4 @@
         </ul>
     </div>
     <div class="clear"></div>
-    <div class="fullwidth loadpage">
-
-    </div> <!-- /fullwidth -->
 </div> <!-- /cont-span6 -->
