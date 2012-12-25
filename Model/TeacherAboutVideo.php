@@ -18,7 +18,7 @@ class TeacherAboutVideo extends AppModel {
 
         'Uploader.FileValidation' => array(
             'videoUpload' => array(
-                'extension'	=> array('webm', 'ogv', 'mp4'),
+                'extension'	=> array('webm', 'ogv', 'mp4', 'flv', 'mov'),
                 'filesize'	=> 104857600, //100MB
                 /*'minWidth'	=> 100,
                 'minHeight'	=> 100,*/

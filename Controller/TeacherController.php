@@ -12,7 +12,7 @@ class TeacherController extends AppController {
 	
 	public function index() {
         $upcomingLessons = $this->TeacherLesson->getUpcoming($this->Auth->user('user_id'), null, 2, 1);
-//pr($upcomingLessons);
+
         //Get student latest forum messages
         app::import('Model', 'Forum.Post');
         $postObj = new Post();

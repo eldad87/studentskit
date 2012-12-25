@@ -57,14 +57,13 @@
                 <div class="cont-span17 cbox-space ">
                     <?php
                         if(!empty($teacherData['TeacherAboutVideo'][0])) {
-                            $this->Html->css('http://vjs.zencdn.net/c/video-js.css', null, array('inline' => false));
-                            $this->Html->script('http://vjs.zencdn.net/c/video.js', array('inline' => false));
+
 
 
                     ?>
 
                     <div class="lesson-box pad8 space4 pull-left">
-                        <h3 class="radius1 pull-left"><strong>About video</strong></h3>
+                        <h3 class="radius1 pull-left"><strong><?php echo __('About video'); ?></strong></h3>
                         <div class="box-subject2 radius3 teacher-livevideo pull-left">
 
                            <?php

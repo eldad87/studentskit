@@ -88,7 +88,11 @@ class LayoutHelper extends AppHelper {
     }
 
     public function videoPlayer($link) {
-        //$teacherData['TeacherAboutVideo'][0]['video_source']
+        $link = 'vid/teachers/about_videos/flv/flv.flv';
+
+        $this->_View->Html->css('http://vjs.zencdn.net/c/video-js.css', null, array('inline' => false));
+        $this->_View->Html->script('http://vjs.zencdn.net/c/video.js', array('inline' => false));
+
         $info = pathinfo($link);
 
         $mimiType = false;
@@ -96,9 +100,14 @@ class LayoutHelper extends AppHelper {
             case 'mp4':  $mimiType = 'video/mp4'; break;
             case 'ogv':  $mimiType = 'video/ogg'; break;
             case 'webm': $mimiType = 'video/webm'; break;
-            default: return false; break;
+            case 'flv':  $mimiType = 'video/x-flv'; break;
+            case 'mov':  $mimiType = 'video/x-flv'; break;
+            default:
+                return false;
+                break;
         }
 
+        //
         return ' <video id="example_video_1" class="video-js vjs-default-skin" controls width="430" height="220" preload="auto" data-setup="{}">
                                 <source type="'.$mimiType.'" src="'.Router::url('/', true).$link.'">
                             </video>';
