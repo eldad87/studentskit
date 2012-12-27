@@ -34,11 +34,17 @@ class Subject extends AppModel {
         'Lock',
         'LanguageFilter',
         'Uploader.Attachment' => array(
+            'videoUpload'=>array(
+                'uploadDir'	            => 'vid/subjects/about_videos/',
+                'appendNameToUploadDir' => true,
+                'name'                  => 'formatFileName',
+                'dbColumn'              => 'video_source'
+            ),
             'imageUpload'=>array(
                 'uploadDir'	            => 'img/subjects/',
                 'appendNameToUploadDir' => true,
                 'flagColumn'            => array('dbColumn'=>'image', 'value'=>IMAGE_SUBJECT), //Flag DB.table.image with value of IMAGE_SUBJECT
-                'name'                  => 'formatImageName',
+                'name'                  => 'formatFileName',
                 'dbColumn'              => 'image_source',
                 'transforms' => array(
                     array('method'=>'resize','width'=> 200,  'height'=>210,  'append'=>'_resize',   'overwrite'=>true, 'dbColumn'=>'image_resize', 'aspect'=>true, 'mode'=>Uploader::MODE_HEIGHT, 'setAsTransformationSource'=>true),
@@ -59,6 +65,13 @@ class Subject extends AppModel {
         ),
 
         'Uploader.FileValidation' => array(
+            'videoUpload' => array(
+                'extension'	=> array('webm', 'ogv', 'mp4', 'flv', 'mov'),
+                'filesize'	=> 104857600, //100MB
+                /*'minWidth'	=> 100,
+                'minHeight'	=> 100,*/
+                'required'	=> false
+            ),
             'imageUpload' => array(
                 'extension'	=> array('gif', 'jpg', 'png', 'jpeg'),
                 'filesize'	=> 1048576,
@@ -70,7 +83,7 @@ class Subject extends AppModel {
     );
 
 
-    public function formatImageName($name, $field, $file) {
+    public function formatFileName($name, $field, $file) {
         return String::uuid();
     }
 
