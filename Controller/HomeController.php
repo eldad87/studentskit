@@ -652,18 +652,32 @@ $id = $scObj->id;
         $subjectData =& $data['subjectData'];
         $this->set('lessonType', $subjectData['lesson_type']);
 
+        $orderURL = array('controller'=>'Order', 'action'=>'init', 'order', $subjectId);
+        $settings = array(
+            'order_text'=>__('Order LIVE lesson'),
+            'play_link'=>false,
+            'order_url'=>$orderURL,
+            'order_button_text'=>__('Order'),
+            'popup'=>array( 'description'=>__('You\'re latest order for this lesson is still pending for the teacher approval'),
+                            'button'=>array(array('name'=>__('I want to order again'), 'url'=>$orderURL)))
+        );
 
+
+
+        if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
+            $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons(null, $subjectId);
+            $this->set('upcomingAvailableLessons', $upcomingAvailableLessons);
+            $settings['popup'] = false;
 
         //Video lesson, show order button if no request already made
         //else show play button
-        if($subjectData['lesson_type']=='video') {
+        } else if($subjectData['lesson_type']=='video') {
             $canWatchVideo = $this->UserLesson->getVideoLessonStatus($subjectId, $this->Auth->user('user_id'), false);
             if(!$canWatchVideo) {
                 $this->redirect('/');
             }
-            $this->set('paymentNeeded', $canWatchVideo['payment_needed']>0);
+           /* $this->set('paymentNeeded', $canWatchVideo['payment_needed']>0);
 
-            //
             $this->set('showPendingTeacherApproval', false);
             $this->set('showAcceptInvitationButton', false);
             $this->set('showGoToLessonButton', false);
@@ -672,33 +686,36 @@ $id = $scObj->id;
 
             if(!empty($canWatchVideo['user_lesson_id'])) {
                 $this->set('userLessonId', $canWatchVideo['user_lesson_id']);
-            }
+            }*/
 
             if($canWatchVideo['approved'] || $canWatchVideo['is_teacher']) {
                 //show "Go to lesson" button
-                $this->set('showGoToLessonButton', true);
+                //$this->set('showGoToLessonButton', true);
+                $settings['popup'] = false;
 
             } else if($canWatchVideo['pending_teacher_approval']) {
                 //Show message on the page "pending for teacher approval, please come back later"
-                $this->set('showPendingTeacherApproval', true);
+                //$this->set('showPendingTeacherApproval', true);
+                $settings['popup']['description'] = __('You\'re latest order for this lesson is still pending for the teacher approval');
+
 
             } else if($canWatchVideo['pending_user_approval']) {
                 //Show message on the page "pending for your approval, click <a>here</a> to review it in your panel"
-                $this->set('showAcceptInvitationButton', true);
+                //$this->set('showAcceptInvitationButton', true);
                 //$this->redirect(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'invitations', $liveRequestStatus['user_lesson_id']));
+                $settings['popup']['description'] = __('There is a pending invitation for this lesson');
 
             } else if($canWatchVideo['payment_needed']) {
-                $this->set('showOrderLessonButton', true);
-
+                //$this->set('showOrderLessonButton', true);
+                $settings['popup'] = false;
             } else  {
-                $this->set('showOrderFreeLessonButton', true);
+                //$this->set('showOrderFreeLessonButton', true);
+                $settings['popup'] = false;
             }
-        } else {
-            $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons(null, $subjectId);
-            $this->set('upcomingAvailableLessons', $upcomingAvailableLessons);
         }
 
-        $this->set('orderURL', array('controller'=>'Order', 'action'=>'init', 'order', $subjectId));
+        $this->set('settings', $settings);
+        //$this->set('orderURL', array('controller'=>'Order', 'action'=>'init', 'order', $subjectId));
 	}
 
     public function getUpcomingOpenLesson($teacherUserId, $limit=3, $page=1) {
@@ -749,12 +766,20 @@ $id = $scObj->id;
             $this->redirect($this->referer(array('controller'=>'Home')));
         }
 
-        $this->set('showPendingTeacherApproval', false);
+        /*$this->set('showPendingTeacherApproval', false);
         $this->set('showAcceptInvitationButton', false);
         $this->set('showGoToLessonButton', false);
         $this->set('showPayForLessonButton', false);
-        $this->set('showJoinForFreeLessonButton', false);
+        $this->set('showJoinForFreeLessonButton', false);*/
 
+        $orderURL = array('controller'=>'Order', 'action'=>'init', 'join', $teacherLessonId);
+        $settings = array(  'order_text'=>__('Join a LIVE lesson'),
+                            'play_link'=>false,
+                            'order_url'=>$orderURL,
+                            'order_button_text'=>__('Join'),
+                            'popup'=>array( 'description'=>__('You\'re latest order is still pending for the teacher approval'),
+                                            'button'=>array(array('name'=>__('I want to order again'), 'url'=>$orderURL)))
+                        );
 
         if($liveRequestStatus['overdue']) {
             $this->Session->setFlash(__('Lesson is overdue'));
@@ -762,28 +787,31 @@ $id = $scObj->id;
 
         } else if($liveRequestStatus['approved'] || $liveRequestStatus['is_teacher']) {
             //TODO: show "Go to lesson" button
-            $this->set('showGoToLessonButton', true);
+            //$this->set('showGoToLessonButton', true);
+            $settings['popup'] = false;
 
         } else if($liveRequestStatus['pending_teacher_approval']) {
             //TODO: Show message on the page "pending for teacher approval, please come back later"
-            $this->set('showPendingTeacherApproval', true);
+            //$this->set('showPendingTeacherApproval', true);
+            $settings['popup']['description'] = __('You\'re latest order is still pending for the teacher approval');
 
         } else if($liveRequestStatus['pending_user_approval']) {
             //TODO: Show message on the page "pending for your approval, click <a>here</a> to review it in your panel"
-            $this->set('showAcceptInvitationButton', true);
+            //$this->set('showAcceptInvitationButton', true);
+            $settings['popup']['description'] = __('There is a pending invitation for this lesson');
             //$this->redirect(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'invitations', $liveRequestStatus['user_lesson_id']));
 
         } else if($liveRequestStatus['payment_needed']) {
-            $this->set('showOrderLessonButton', true);
+            //$this->set('showOrderLessonButton', true);
+            $settings['popup'] = false;
 
         } else  {
-            $this->set('showOrderFreeLessonButton', true);
+            //$this->set('showOrderFreeLessonButton', true);
+            $settings['popup'] = false;
         }
 
-        $orderURL = array('controller'=>'Order', 'action'=>'init', 'join', $teacherLessonId);
-        $this->set('settings', array('order_text'=>'Join a LIVE lesson', 'play_link'=>false, 'order_url'=>$orderURL, 'order_button_text'=>'Join',
-                                    'popup'=>array( 'description'=>'You\'re last order is pending for the teacher approval',
-                                                    'button'=>array(array('name'=>'I want to order again', 'url'=>$orderURL)))));
+
+        $this->set('settings', $settings);
         $this->set('teacherLessonData', $teacherLessonData);
         $this->set('orderURL', array('controller'=>'Order', 'action'=>'init', 'join', $teacherLessonData['teacher_lesson_id']));
         $this->loadSubjectCommonInfo($teacherLessonData['subject_id']);

@@ -698,7 +698,7 @@ class UserLessonEventListener implements CakeEventListener {
 
         if($toUserId && $messageType) {
             return $this->notification->addNotification( $toUserId, //To user id
-                                                         array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
+                                                         $byUserId, array( 'message_enum'=>$messageType, 'params'=>$event->data['user_lesson']) );//Message
         }
 
 

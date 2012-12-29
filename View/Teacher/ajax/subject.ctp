@@ -13,6 +13,7 @@
                             var rel = $(this).attr('rel');
                             var newUrl = rel + '/' + $subjectId;
 
+                            //Replace cache keys
                             if(containerData.cache[ url ]) {
                                 containerData.cache[ newUrl ] = containerData.cache[ url ];
                                 delete containerData.cache[ url ];

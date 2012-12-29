@@ -1,5 +1,6 @@
 <?php
 echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
+echo $this->fetch('popups');
 ?>
 <!-- Containeer
 ================================================== -->
@@ -14,7 +15,7 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                     <div class="student-main-box2 radius3 pad1">
                         <div class="sec-main-box">
 
-                            <?php echo $this->fetch('order_button'); ?>
+                            <?php echo $this->fetch('topic_image'); ?>
 
                             <h6><?php
                                 echo $this->Html->link($subjectData['name'], array('controller'=>'Home', 'action'=>'teacherSubject', $subjectData['subject_id']))
@@ -106,7 +107,9 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                     <!--<a href="#" class="more radius3 gradient2 space8"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>-->
 
                     <?php
-                        echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$subjectRatingByStudents, 'title'=>__('What student say about this subject?')));
+                        if($subjectRatingByStudents) {
+                            echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$subjectRatingByStudents, 'title'=>__('What student say about this subject?')));
+                        }
                     ?>
 
 

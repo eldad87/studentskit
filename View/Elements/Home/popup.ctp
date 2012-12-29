@@ -1,5 +1,5 @@
 <!-- poppup start -->
-<div id="myModal1" class="modal hide fade">
+<div id="order-notice-popup" class="modal hide fade">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h3>Info</h3>

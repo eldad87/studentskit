@@ -87,8 +87,7 @@ class LayoutHelper extends AppHelper {
         return str_replace($info['basename'], basename($imageSource, '.'.$info['extension']).'_'.$width.'x'.$height.'.'.$info['extension'], $imageSource);
     }
 
-    public function videoPlayer($link) {
-        $link = 'vid/teachers/about_videos/flv/flv.flv';
+    public function videoPlayer($link, $image=false, $width=430, $height=220) {
 
         $this->_View->Html->css('http://vjs.zencdn.net/c/video-js.css', null, array('inline' => false));
         $this->_View->Html->script('http://vjs.zencdn.net/c/video.js', array('inline' => false));
@@ -107,8 +106,17 @@ class LayoutHelper extends AppHelper {
                 break;
         }
 
-        //
-        return ' <video id="example_video_1" class="video-js vjs-default-skin" controls width="430" height="220" preload="auto" data-setup="{}">
+        /*$css = null;
+        if($image) {
+            $image = 'http://universito.com/img/subjects//50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_436x214.jpg';
+            $css = '<style type="text/css">
+            #video_player{
+                background: url("'.$image.'") no-repeat;
+            }
+            </style>';
+        }*/
+
+        return '<video id="video_player" class="video-js vjs-default-skin" controls width="'.$width.'" height="'.$height.'" preload="auto" data-setup="{}">
                                 <source type="'.$mimiType.'" src="'.Router::url('/', true).$link.'">
                             </video>';
 
