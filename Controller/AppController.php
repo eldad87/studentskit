@@ -245,6 +245,7 @@ class AppController extends Controller {
 			$this->viewPath = 'debug';
 			$this->render('debug');
 		}
+
         if($this->RequestHandler->isAjax()) {
             $this->viewPath = $this->viewPath.DS.'ajax';
         }

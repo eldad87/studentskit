@@ -65,9 +65,9 @@
             downloadAction: {url: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'download', '{id}')); ?>'}
         });
 
-        if(jQuery.isFunction('initNextButton') ) {
-            initNextButton();
-        }
+        //if(jQuery.isFunction('initNextButton') ) {
+            initNextButton('<?php echo Router::url(array('controller'=>'Teacher', 'action'=>'setSubjectCreationStage', '{subject_id}', '{creation_stage}')) ?>');
+        //}
     });
 
 

@@ -74,7 +74,7 @@ class Subject extends AppModel {
             ),
             'imageUpload' => array(
                 'extension'	=> array('gif', 'jpg', 'png', 'jpeg'),
-                'filesize'	=> 1048576,
+                'filesize'	=> 1048576, //1MB
                 'minWidth'	=> 440,
                 'minHeight'	=> 215,
                 'required'	=> false
@@ -224,6 +224,11 @@ class Subject extends AppModel {
         $exists = $this->exists(!empty($this->data['Subject'][$this->primaryKey]) ? $this->data['Subject'][$this->primaryKey] : $this->id);
         $this->calcFullGroupPriceIfNeeded($this->data['Subject'], $exists );
         $this->extraValidation($this);
+
+        //No need to validate duration for video lessons
+        if(isSet($this->data['Subject']['lesson_type']) &&  $this->data['Subject']['lesson_type']==LESSON_TYPE_VIDEO) {
+            $this->validator()->remove('duration_minutes');
+        }
     }
 
 	public function beforeSave($options=array()) {
@@ -455,7 +460,7 @@ class Subject extends AppModel {
 
 
         //Set file system
-        if($created && $this->data['Subject']['lesson_type']!=LESSON_TYPE_VIDEO) {
+        if($created && $this->data['Subject']['type']!=SUBJECT_TYPE_REQUEST) {
             App::import('Model', 'FileSystem');
             $fsObj = new FileSystem();
 
@@ -464,13 +469,11 @@ class Subject extends AppModel {
             $rootFS = $fsObj->id;
 
             //Create users upload root dir
-            $fsObj->addFolder($rootFS, __('Users uploads'));
+            $fsObj->addFolder($rootFS, __('Users uploads')); //TODO: use subject language
             $usersUploadRoot = $fsObj->id;
 
-            $this->set(array('root_file_system_id'=>$rootFS, 'user_upload_root_file_system_id'=>$usersUploadRoot));
-            if(!$this->save()) {
-                return false;
-            }
+            //$this->set(array('root_file_system_id'=>$rootFS, 'user_upload_root_file_system_id'=>$usersUploadRoot));
+            return $this->updateAll(array('root_file_system_id'=>$rootFS, 'user_upload_root_file_system_id'=>$usersUploadRoot), array($this->primaryKey=>$this->id));
         }
 
         return true;

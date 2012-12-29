@@ -1,6 +1,8 @@
 <script type="text/javascript">
     $(document).ready(function(){
-        initNextButton();
+        //if(jQuery.isFunction('initNextButton') ) {
+            initNextButton('<?php echo Router::url(array('controller'=>'Teacher', 'action'=>'setSubjectCreationStage', '{subject_id}', '{creation_stage}')) ?>');
+        //}
     });
 </script>
 <div class="cont-span6 cbox-space">

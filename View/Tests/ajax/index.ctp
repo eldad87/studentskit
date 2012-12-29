@@ -1,9 +1,9 @@
 <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
     $(document).ready(function(){
         initTabs(false);
-        if(jQuery.isFunction('initNextButton') ) {
-            initNextButton();
-        }
+        //if(jQuery.isFunction('initNextButton') ) {
+            initNextButton('<?php echo Router::url(array('controller'=>'Teacher', 'action'=>'setSubjectCreationStage', '{subject_id}', '{creation_stage}')) ?>');
+        //}
         preventNullLinks();
     });
 </script>

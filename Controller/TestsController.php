@@ -101,12 +101,13 @@ class TestsController extends AppController {
                         return $this->error(2);
                     }
                 }
-
+                $subjectId = $params[0];
+                break;
 
             case 'delete':
                 $this->Test->recursive = -1;
                 $testData = $this->Test->findByTestId($params[0]);
-                if($testData) {
+                if(!$testData) {
                     return $this->error(2);
                 }
                 $subjectId = $testData['Test']['subject_id'];

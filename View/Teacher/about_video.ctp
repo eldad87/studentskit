@@ -24,7 +24,7 @@
 $this->Form->create('TeacherAboutVideo', array('type' => 'file'));
     echo '<fieldset>';
         echo $this->Form->input('language', $this->Layout->styleForInput(array('options'=>$languages)));
-        echo $this->Form->input('videoUpload', $this->Layout->styleForInput(array('type'=>'file')));
+        echo $this->Form->input('videoUpload', $this->Layout->styleForInput(array('type'=>'file', 'label'=>array('class'=>'control-label', 'text'=>__('About video')))));
     echo '</fieldset>';
 $this->Form->end();
 ?>

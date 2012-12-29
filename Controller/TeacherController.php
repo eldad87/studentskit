@@ -94,7 +94,7 @@ class TeacherController extends AppController {
 
         //Post
         if (!empty($this->request->data)) {
-            App::import('Model', 'Subject');
+             $this->Subject; //For consts
 
             //Set new creation_stage if needed
             $this->request->data['Subject']['creation_stage'] = $currentCreationStage > CREATION_STAGE_SUBJECT ? $currentCreationStage : CREATION_STAGE_SUBJECT;
@@ -113,6 +113,7 @@ class TeacherController extends AppController {
                     //Will enable the next set using JS in view
                     if($this->request->data['Subject']['creation_stage']==CREATION_STAGE_SUBJECT) {
                         $this->set('enableNextStep', true);
+                        $this->set('isNewSave', $subjectId ? false : true);
                     }
                     return $this->success(1);
                 }
@@ -139,7 +140,7 @@ class TeacherController extends AppController {
             return $this->error(1);
         }
 
-        $settings = $this->requestAction(array('controller'=>'Lessons', 'action'=>'subject', $subjectId));
+        $settings = $this->requestAction(array('controller'=>'Lessons', 'action'=>'subject', $subjectId)); //Create a Watchitoo meeting
         if(!$settings) {
             return $this->error(2);
         }
@@ -147,6 +148,13 @@ class TeacherController extends AppController {
         $this->set('meetingSettings', $settings['meeting_settings']);
         $this->set('lessonName', $settings['name']);
         $this->set('subjectId', $subjectId);
+
+        //Get stage
+        $this->Subject->recursive = -1;
+        $subjectData = $this->Subject->findBySubjectId($subjectId);
+        if($subjectData['Subject']['creation_stage']!=CREATION_STAGE_PUBLISH) {
+            $this->set('creationStage', $subjectData['Subject']['creation_stage']);
+        }
 
         $this->success(1, array('results'=>$settings));
     }

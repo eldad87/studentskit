@@ -280,7 +280,21 @@ function parseResponse(data) {
 function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
                          maxStudentsInputSelector, maxStudentsDivSelector,
                          fullGroupStudentPriceDivSelector, fullGroupStudentPriceInputSelector,
-                        durationDivSelector) {
+                         durationDivSelector) {
+
+
+    oneOnOnePriceInputSelector          = '#sub-area div:visible ' + oneOnOnePriceInputSelector;
+    lessonTypeInputSelector             = '#sub-area div:visible ' + lessonTypeInputSelector;
+    maxStudentsInputSelector            = '#sub-area div:visible ' + maxStudentsInputSelector;
+    maxStudentsDivSelector              = '#sub-area div:visible ' + maxStudentsDivSelector;
+    fullGroupStudentPriceDivSelector    = '#sub-area div:visible ' + fullGroupStudentPriceDivSelector;
+    fullGroupStudentPriceInputSelector  = '#sub-area div:visible ' + fullGroupStudentPriceInputSelector;
+    durationDivSelector                 = '#sub-area div:visible ' + durationDivSelector;
+
+    $(oneOnOnePriceInputSelector).unbind();
+    $(fullGroupStudentPriceInputSelector).unbind();
+    $(maxStudentsInputSelector).unbind();
+    $(lessonTypeInputSelector).unbind();
 
     //Make Full-group-student-price invisible until the user set max-students>1
     $(fullGroupStudentPriceDivSelector).hide();
@@ -336,6 +350,11 @@ function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
             $(fullGroupStudentPriceDivSelector).hide();
         }
     });
+
+    $(oneOnOnePriceInputSelector).change();
+    $(fullGroupStudentPriceInputSelector).change();
+    $(maxStudentsInputSelector).change();
+    $(lessonTypeInputSelector).change();
 }
 
 function resetData(elementSelector) {
@@ -406,7 +425,63 @@ $(document).ready(function(){
 
 
 
+// manage subject
+function enableNextTabAndUpdateCurrentCreationStage(updateUrl, subjectId, newCreationStage) {
+    $.ajax({
+        url: jQuery.nano(   updateUrl,
+            {subject_id: subjectId, creation_stage: newCreationStage}),
+        type: 'get',
+        //data: $(this).serialize(),
+        dataType: 'json'
 
+    }).done(function ( data ) {
+            if(data['response']['title'][0]=='Error') {
+                //Show error
+                showError('#subjectContainer', data['response']['description'][0], '');
+            } else {
+                //Just clear errors
+                showError('#subjectContainer');
+
+                //Enable next tab
+
+                //Find the next tab
+                var nextTabId;
+                switch(newCreationStage) {
+                    case 1: //Subject done, open meeting tab
+                        nextTabId = '#meetingTab';
+                        break;
+                    case 2: //Meeting done, open files
+                        nextTabId = '#filesTab';
+                        break;
+                    case 3: //Files done, open test
+                        nextTabId = '#testsTab';
+                        break;
+                    case 4: //Tests done, open publish
+                        nextTabId = '#publishTab';
+                        break;
+                    case 5: //Publish done, close this tab and show the subject tab
+                        $('#publishTab').hide('slow');
+                        nextTabId = '#subjectTab';
+                        break;
+
+                }
+                if(nextTabId) {
+                    $(nextTabId).removeClass('disable');
+                    initTabs();
+                    $( nextTabId + ' a').click();
+                }
+            }
+        });
+
+}
+
+//When click on nextButton - execute enableNextTabAndUpdateCurrentCreationStage(data-subject-id, data-creation-stage)
+function initNextButton(updateUrl) {
+    $('.nextButton').click(function() {
+        enableNextTabAndUpdateCurrentCreationStage(updateUrl, $(this).data('subject-id'), $(this).data('creation-stage'));
+        return false;
+    });
+}
 
 
 //////////////////
@@ -605,10 +680,28 @@ $(function() {
                 // Add .bbq-current class to "current" nav link(s), only if url isn't empty.
                 url && $( 'a[rel="' + url + '"]' + linkSelector ).addClass( 'bbq-current' );
 
+
+                $.ajax({
+                    url: url,
+                    dataType: 'html'
+
+                }).done(function ( data ) {
+                        containerData.cache[ url ] = data;
+                        that.html(data);
+
+                        if(BBQWidgets[linkSelector].afterLoad) {
+                            BBQWidgets[linkSelector].afterLoad();
+                        }
+                    });
+
+                return false;
+
                 if ( containerData.cache[ url ] ) {
                     // Since the widget is already in the cache, it doesn't need to be
                     // created, so instead of creating it again, let's just show it!
-                    containerData.cache[ url ].show();
+                    //containerData.cache[ url ].show();
+
+                    that.html(containerData.cache[ url ]);
 
                     if(BBQWidgets[linkSelector].afterLoad) {
                         BBQWidgets[linkSelector].afterLoad();
@@ -618,7 +711,8 @@ $(function() {
                     // Show "loading" content while AJAX content loads.
                     that.find( '.bbq-loading' ).show();
 
-                    // Create container for this url's content and store a reference to it in
+
+                    /*// Create container for this url's content and store a reference to it in
                     // the cache.
                     containerData.cache[ url ] = $( '<div class="bbq-item"/>' )
 
@@ -635,7 +729,20 @@ $(function() {
                             if(BBQWidgets[linkSelector].afterLoad) {
                                 BBQWidgets[linkSelector].afterLoad();
                             }
-                        });
+                        });*/
+
+                    $.ajax({
+                        url: url,
+                        dataType: 'html'
+
+                    }).done(function ( data ) {
+                            containerData.cache[ url ] = data;
+                            that.html(data);
+
+                            if(BBQWidgets[linkSelector].afterLoad) {
+                                BBQWidgets[linkSelector].afterLoad();
+                            }
+                    });
                 }
             });
         })

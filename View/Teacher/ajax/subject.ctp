@@ -4,16 +4,28 @@
         <?php
         if($subjectId && isSet($enableNextStep)) {
             //Add subject id to the links
-            echo "$('.load3').each(function(){
-                        var rel = $(this).attr('rel')
-                        $(this).attr('rel', rel + '/' + $subjectId);
-                    });";
+            if($isNewSave) {
+                echo "
+                var url = $.bbq.getState( '#sub-area' );
+                var containerData = $('#sub-area').data( 'bbq' );
+
+                $('.load3:visible').each(function(){
+                            var rel = $(this).attr('rel');
+                            var newUrl = rel + '/' + $subjectId;
+
+                            if(containerData.cache[ url ]) {
+                                containerData.cache[ newUrl ] = containerData.cache[ url ];
+                                delete containerData.cache[ url ];
+                            }
+                            $(this).attr('rel', newUrl);
+                        });";
+            }
 
             //Enable the meeting tab
-            echo "$('#meetingTab').removeClass('disable');";
+            echo "$('#meetingTab:visible').removeClass('disable');";
 
             echo 'initTabs();';
-            echo '$(\'#meetingTab a\').click();';
+            echo '$(\'#meetingTab:visible a\').click();';
         }
         ?>
 
@@ -21,7 +33,19 @@
 
 
 
-        pfObj.loadForm('#subject-form', '#sub-area', 'post');
+        //pfObj.loadForm('#subject-form', '#sub-area', 'post');
+        $('#subject-form:visible').unbind();
+            $('#subject-form:visible').ajaxForm({
+            // target identifies the element(s) to update with the server response
+            target: '#sub-area div:visible',
+
+            // success identifies the function to invoke when the server response
+            // has been received; here we apply a fade-in effect to the new content
+            success: function() {
+                $('#sub-area div:visible').fadeIn('slow');
+            }
+        });
+
 
         initSubjectForm('#Subject1On1Price', '#SubjectLessonType',
             '#SubjectMaxStudents', '#msDiv',
@@ -37,7 +61,7 @@
         echo $this->Form->create( 'Subject',
                                     array(  'class'=>'sk-form', 'type' => 'file', 'method'=>'post', 'id'=>'subject-form',
                                             'url'=>array('controller'=>'Teacher', 'action'=>'subject', $subjectId)));
-        
+
         echo $this->Form->input('name', $this->Layout->styleForInput());
 
         if(!$subjectId) {
@@ -51,8 +75,10 @@
         echo $this->Form->input('lesson_type', $this->Layout->styleForInput(array('options'=>array(LESSON_TYPE_LIVE=>__('Live'), LESSON_TYPE_VIDEO=>__('Video')))));
         //echo $this->Form->input('is_public', $this->Layout->styleForInput(array('options'=>array(SUBJECT_IS_PUBLIC_TRUE=>__('Yes'), SUBJECT_IS_PUBLIC_FALSE=>__('No')))));
         echo $this->Form->input('duration_minutes', $this->Layout->styleForInput(array('type'=>'number', 'min'=>10, 'div'=>array('id'=>'durationDiv', 'class'=>'control-group'))));
-        echo $this->Form->input('imageUpload', $this->Layout->styleForInput(array('type'=>'file')));
-        echo $this->Form->input('videoUpload', $this->Layout->styleForInput(array('type'=>'file')));
+
+        echo $this->Form->input('imageUpload', $this->Layout->styleForInput(array('type'=>'file', 'label'=>array('class'=>'control-label', 'text'=>__('Image')))));
+
+        echo $this->Form->input('videoUpload', $this->Layout->styleForInput(array('type'=>'file', 'label'=>array('class'=>'control-label', 'text'=>__('Preview video')))));
 
         echo $this->Form->input('1_on_1_price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0)));
         echo $this->Form->input('max_students', $this->Layout->styleForInput(array('type'=>'number', 'min'=>1, 'div'=>array('id'=>'msDiv', 'class'=>'control-group'))));

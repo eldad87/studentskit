@@ -41,7 +41,7 @@
                 </div>
                 <?php echo $this->Form->input('phone', $this->Layout->styleForInput(array('div'=>array('class'=>'control-group control2')))); ?>
                 <?php echo $this->Form->input('student_about', $this->Layout->styleForInput(array('div'=>array('class'=>'control-group control2')))); ?>
-                <?php echo $this->Form->input('imageUpload', $this->Layout->styleForInput(array('div'=>array('class'=>'control-group control2'), 'type' => 'file'  ))); ?>
+                <?php echo $this->Form->input('imageUpload', $this->Layout->styleForInput(array('div'=>array('class'=>'control-group control2'), 'type' => 'file', 'label'=>array('class'=>'control-label', 'text'=>__('Profile image'))  ))); ?>
 
                 <div class="control-group control2">
                     <label class="control-label"></label>

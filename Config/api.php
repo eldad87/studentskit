@@ -265,6 +265,7 @@ $config['FileSystem.addFolder.error.4.description'] = __('Internal error');
 $config['FileSystem.fileSystem.success.1.title'] = __('Success');
 $config['FileSystem.fileSystem.success.1.description'] = __('Subject file system');
 
+$config['FileSystem.fileSystem.error.1.title'] = __('Error');
 $config['FileSystem.fileSystem.error.1.description'] = __('Cannot find resource');
 $config['FileSystem.fileSystem.error.2.title'] = __('Error');
 $config['FileSystem.fileSystem.error.2.description'] = __('Permission error');
