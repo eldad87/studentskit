@@ -4,6 +4,8 @@ echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-dele
     'description'=>__('This procedure may be irreversible.
                        Do you want to proceed?'),
     'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'disableSubject', '{id}')));
+
+echo $this->element('panel/schedule_teacher_lesson_popup', array('buttonSelector'=>'.schedule'));
 ?>
 
 <div class="cont-span15 cbox-space">
@@ -34,7 +36,12 @@ echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-dele
                             <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" href="#">
                                 <i class="iconSmall-drop-arrow"></i>
                             </a>
-                            <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
+                            <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">';
+
+            if($subject['Subject']['lesson_type']==LESSON_TYPE_LIVE) {
+                echo '<li><a href="#" class="schedule" data-subject_id="'.$subject['Subject']['subject_id'].'">'.__('Schedule').'</a></li>';
+            }
+            echo '
                                 <li><a href="#" class="load2" rel="'.Router::url(array('controller'=>'Teacher', 'action'=>'manageSubject', $subject['Subject']['subject_id'])).'">'.__('Manage').'</a></li>
                                 <li><a href="#" class="confirm-delete" data-cancel-prefix="subject_id" data-id="'.$subject['Subject']['subject_id'].'">'.__('Disable').'</a></li>
                             </ul>

@@ -300,15 +300,19 @@ class TeacherController extends AppController {
 	}
 	
 	
-	public function createTeacherLesson($subjectId) {
+	public function scheduleTeacherLesson($subjectId) {
+        $this->Subject; //Const
+
 		if (!empty($this->request->data)) {
 			if($this->TeacherLesson->add(array('type'=>'subject','id'=>$subjectId), $this->request->data['TeacherLesson']['datetime'], $this->request->data['TeacherLesson']['is_public'], array('teacher_user_id'=>$this->Auth->user('user_id')) )) {
+                $this->set('success', true);
 				return $this->success(1, array('subject_id'=>$subjectId));
 			}
+            $this->set('error', true);
 			return $this->error(1, array('results'=>array('subject_id'=>$subjectId, 'validation_errors'=>$this->TeacherLesson->validationErrors)));
 		}
-		//Remove this after testing + view "create_teacher_lessons.ctp"
-		//return $this->error(2, array('subject_id'=>$subjectId));
+
+        return $this->success(1, array('subject_id'=>$subjectId));
 	}
 	public function manageTeacherLesson( $teacherLessonId ) {
 		$teacherLessonData = $this->TeacherLesson->findByTeacherLessonId($teacherLessonId);
