@@ -290,6 +290,10 @@ class OrderController extends AppController {
         $orderData['datetime'] = isSet($orderData['datetime']) ? $orderData['datetime'] : null;
         $this->Session->delete('order.viewedSummary');
 
+        //Video cannot be public
+        if($orderData['lesson_type']==LESSON_TYPE_VIDEO) {
+            $this->request->data['is_public'] = SUBJECT_IS_PUBLIC_FALSE;
+        }
         //TODO: make sure the user is not the teacher
 
         /**
@@ -320,6 +324,7 @@ class OrderController extends AppController {
                 $success = $this->PendingUserLesson->lessonRequest($orderData['id'], $this->Auth->user('user_id'), $orderData['datetime'], false, array('is_public'=>$this->request->data['is_public']));
                 $pendingUserLessonId = $this->PendingUserLesson->id;
             } else {
+
                 $success = $this->UserLesson->lessonRequest($orderData['id'], $this->Auth->user('user_id'), $orderData['datetime'], false, array('is_public'=>$this->request->data['is_public']));
                 $userLessonId = $this->UserLesson->id;
             }

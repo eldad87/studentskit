@@ -382,7 +382,7 @@ class UserLesson extends AppModel {
                 'allowEmpty'=> true,
                 'rule'    	=> 'isFutureDatetime',
                 'message' 	=> $datetimeErrorMessage
-            ));
+            ))->remove('duration_minutes');
         }
     }
 
@@ -768,10 +768,12 @@ class UserLesson extends AppModel {
 	
 	public function acceptRequest( $userLessonId, $byUserId, $version=null ) {
 		//Find user lesson
+        $this->recursive = 1;
 		$userLessonData = $this->findByUserLessonId($userLessonId);
-        //Check that user lesson found + there is enough room int the TeacherLesson
-		if( !$userLessonData ||
-            ($userLessonData['TeacherLesson']['max_students'] && //Make sure this UL already bind to a TK
+
+        //Check that there is enough room int the TeacherLesson
+		if( $userLessonData &&
+            ($userLessonData['TeacherLesson']['max_students'] && //Make sure this UL already bind to a TL, no need to check $userLessonData['UserLesson']['teacher_lesson_id']
                 $userLessonData['TeacherLesson']['max_students']<=$userLessonData['TeacherLesson']['num_of_students']) ) {
 			return false;
 		}

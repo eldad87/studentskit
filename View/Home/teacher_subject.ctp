@@ -1,4 +1,5 @@
 <?php
+
 $this->extend('/Home/Common/subject');
 
 $this->start('popups');
@@ -11,12 +12,17 @@ $this->start('popups');
     }
 $this->end();
 
+
 $this->start('lesson_box');
     echo '<div class="black-cent-butn butns-width"><strong>',$settings['order_text'],'</strong></div>';
 
+    $params = array('escape'=>false, 'class'=>'greencentbutn pull-left radius3');
+    if($settings['popup']) {
+        $params['data-toggle'] = 'modal';
+    }
     echo $this->Html->link('<i class="iconBig-kart-icon pull-left"></i><span class="pull-left"><strong>'.$settings['order_button_text'].'</strong></span>',
         $settings['popup'] ? '#order-notice-popup' : $settings['order_url'],
-        array('escape'=>false, 'class'=>'greencentbutn pull-left radius3', 'data-toggle'=>'modal')
+        $params
     );
 $this->end();
 

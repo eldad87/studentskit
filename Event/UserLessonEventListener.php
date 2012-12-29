@@ -681,6 +681,9 @@ class UserLessonEventListener implements CakeEventListener {
                                                                 array( 'message_enum'=>'student.booking.request.auto.approve', 'params'=>$event->data['user_lesson'])); //Message
 
                         $toUserId = $messageType = null;
+                    } else {
+                        $event->subject()->log('Cannot Auto-Accept UserLesson '.$event->subject()->id, 'error');
+                        return false;
                     }
                     //CakeEventManager::instance()->attach($this, 'Model.UserLesson.afterAccept');
                     $this->setNotificationStatus('Model.UserLesson.afterAccept', true);

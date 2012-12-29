@@ -13,9 +13,21 @@
 
         <p><?php echo $description; ?></p>
 
-        <div class="control  control1 pull-right">
-            <button class="btn-blue" type="button"><?php echo $button[0]['name']; ?></button>
-        </div>
     </div> <!-- /modal-body -->
+
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true"><?php echo __('Cancel'); ?></button>
+        <button class="btn btn-primary" id="order-popup-button"><?php echo $button[0]['name']; ?></button>
+    </div>
 </div>
 <!-- poppup ends -->
+<script type="text/javascript">
+
+  $(document).ready(function() {
+      $('#order-popup-button').click(function() {
+          window.location = '<?php echo Router::url($button[0]['url']); ?>';
+      });
+
+  });
+
+</script>

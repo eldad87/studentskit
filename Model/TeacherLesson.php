@@ -319,7 +319,7 @@ class TeacherLesson extends AppModel {
                 'allowEmpty'=> true,
                 'rule'    	=> 'isFutureDatetime',
                 'message' 	=> $datetimeErrorMessage
-            ));
+            ))->remove('duration_minutes');
         }
 
     }
