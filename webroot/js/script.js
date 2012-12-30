@@ -875,7 +875,7 @@ var pAPIObj = new PostAPI();
 /*  live join subject page */
 function LoadMore() {
     this.paginator = {};
-    this.callbacks = {before:{}, after:{}};
+    this.callbacks = {before:{}, after:{}, clearBeforeAppend:{}, itemCount:{}};
 }
 LoadMore.prototype.getNextPage = function(buttonSelector) {
     if(!this.paginator[buttonSelector]) {
@@ -885,18 +885,11 @@ LoadMore.prototype.getNextPage = function(buttonSelector) {
     this.paginator[buttonSelector]++;
     return this.paginator[buttonSelector];
 }
-LoadMore.prototype.curlyBracketsVars = function(url, params) {
 
-    var curlyRe = /\{(.*?)}/g;
-    url = url.replace(curlyRe, function() {
-        if(!params[arguments[1]]) {
-            return '{' + arguments[1] + '}';
-        }
-        return params[arguments[1]];
-    });
-
-    return url;
+LoadMore.prototype.clearBeforeAppend = function(buttonSelector, status ) {
+    this.callbacks.clearBeforeAppend[buttonSelector] = status;
 }
+
 
 LoadMore.prototype.loadMoreButton = function(buttonSelector, eventName, appendToSelector, url, params, type, limit, excludeGetParams) {
 
@@ -915,7 +908,7 @@ LoadMore.prototype.loadMoreButton = function(buttonSelector, eventName, appendTo
         }
 
         $.ajax({
-            url: jQuery.nano(url, params), //loadMoreObj.curlyBracketsVars(url, params) + '.json',
+            url: jQuery.nano(url, params),
             type: type,
             data: params,
             dataType: 'html'
@@ -927,13 +920,36 @@ LoadMore.prototype.loadMoreButton = function(buttonSelector, eventName, appendTo
                 if(!data) {
                     return false;
                 }
-            } else {
+            }
+
+            var itemCountMethod = loadMoreObj.getAppendCallback(buttonSelector, 'itemCount');
+            if(!itemCountMethod) {
                 //Default action
                 if(!data) {
                     $(buttonSelector).css('visibility', 'hidden');
+                    return false;
+                }
+            } else {
+                //No items loaded, call user func
+                var currentCount = $(itemCountMethod.itemCountSelector).length;
+                if(!data) {
+                    return itemCountMethod.func(currentCount, 0, limit);
                 }
             }
+
+
+            //Check if need to clear current results
+            if(loadMoreObj.getAppendCallback(buttonSelector, 'clearBeforeAppend')) {
+                $(appendToSelector).html('');
+            }
+
+            //Append results
             $(data).appendTo(appendToSelector);
+
+            if(itemCountMethod) {
+                var newCount = $(itemCountMethod.itemCountSelector).length;
+                itemCountMethod.func(currentCount, newCount, limit);
+            }
 
             afterCallback = loadMoreObj.getAppendCallback(buttonSelector, 'after');
             if(afterCallback) {
@@ -944,6 +960,13 @@ LoadMore.prototype.loadMoreButton = function(buttonSelector, eventName, appendTo
      });
 
 };
+LoadMore.prototype.setItemsCountSelector = function( buttonSelector, itemCountSelector, func ) {
+    this.setAppendCallback(buttonSelector, 'itemCount', {
+        itemCountSelector: itemCountSelector,
+        func: func
+    });
+
+}
 LoadMore.prototype.setAppendCallback = function( buttonSelector, on, func ) {
     this.callbacks[on][buttonSelector] = func;
 }

@@ -16,797 +16,129 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`studentskit` /*!40100 DEFAULT CHARACTER
 
 USE `studentskit`;
 
-/*Table structure for table `adaptive_payments` */
-
-DROP TABLE IF EXISTS `adaptive_payments`;
-
-CREATE TABLE `adaptive_payments` (
-  `adaptive_payment_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `pending_user_lesson_id` int(11) unsigned DEFAULT NULL,
-  `user_lesson_id` int(11) unsigned DEFAULT NULL,
-  `teacher_lesson_id` int(11) unsigned DEFAULT NULL,
-  `subject_id` int(11) unsigned DEFAULT NULL,
-  `student_user_id` int(11) unsigned NOT NULL,
-  `status` enum('IN_PROCESS','ACTIVE','CANCELED','DEACTIVED','ERROR') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'IN_PROCESS',
-  `is_approved` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `max_amount` float NOT NULL,
-  `paid_amount` float DEFAULT NULL,
-  `is_used` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `preapproval_key` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `valid_thru` datetime NOT NULL,
-  `created` datetime NOT NULL,
-  PRIMARY KEY (`adaptive_payment_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `auto_approve_lesson_request` */
-
-DROP TABLE IF EXISTS `auto_approve_lesson_request`;
-
-CREATE TABLE `auto_approve_lesson_request` (
-  `teacher_user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `live` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `live_range_of_time` text COLLATE utf8_unicode_ci,
-  `video` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`teacher_user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `file_system` */
-
-DROP TABLE IF EXISTS `file_system`;
-
-CREATE TABLE `file_system` (
-  `file_system_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '		',
-  `permission` int(11) unsigned NOT NULL DEFAULT '0',
-  `parent_id` int(11) unsigned NOT NULL DEFAULT '0',
-  `lft` int(11) unsigned NOT NULL DEFAULT '0',
-  `rght` int(11) unsigned NOT NULL DEFAULT '0',
-  `entity_type` enum('subject','teacher_lesson','user_lesson') COLLATE utf8_unicode_ci NOT NULL,
-  `entity_id` int(11) unsigned NOT NULL,
-  `type` enum('file','folder','delete') COLLATE utf8_unicode_ci DEFAULT NULL,
-  `name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `size_kb` int(10) unsigned DEFAULT NULL,
-  `extension` varchar(4) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `file_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`file_system_id`),
-  KEY `NewIndex1` (`entity_type`,`entity_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=45 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `forum_access` */
-
-DROP TABLE IF EXISTS `forum_access`;
-
-CREATE TABLE `forum_access` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `access_level_id` int(11) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `created` datetime DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `access_level_id` (`access_level_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Users with certain access';
-
-/*Table structure for table `forum_access_levels` */
-
-DROP TABLE IF EXISTS `forum_access_levels`;
-
-CREATE TABLE `forum_access_levels` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(30) NOT NULL,
-  `level` int(11) NOT NULL,
-  `isAdmin` tinyint(4) NOT NULL DEFAULT '0',
-  `isSuper` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Access levels for users';
-
-/*Table structure for table `forum_forums` */
-
-DROP TABLE IF EXISTS `forum_forums`;
-
-CREATE TABLE `forum_forums` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `forum_id` int(11) DEFAULT '0',
-  `access_level_id` int(11) DEFAULT '0',
-  `title` varchar(100) NOT NULL,
-  `slug` varchar(115) NOT NULL,
-  `deep` int(11) DEFAULT '1',
-  `path` text,
-  `description` varchar(255) NOT NULL,
-  `status` smallint(6) NOT NULL DEFAULT '1',
-  `orderNo` smallint(6) NOT NULL DEFAULT '0',
-  `topic_count` int(11) NOT NULL DEFAULT '0',
-  `post_count` int(11) NOT NULL DEFAULT '0',
-  `accessRead` smallint(6) NOT NULL DEFAULT '0',
-  `accessPost` smallint(6) NOT NULL DEFAULT '1',
-  `accessPoll` smallint(6) NOT NULL DEFAULT '1',
-  `accessReply` smallint(6) NOT NULL DEFAULT '1',
-  `settingPostCount` smallint(6) NOT NULL DEFAULT '1',
-  `settingAutoLock` smallint(6) NOT NULL DEFAULT '1',
-  `lastTopic_id` int(11) DEFAULT NULL,
-  `lastPost_id` int(11) DEFAULT NULL,
-  `lastUser_id` int(11) DEFAULT NULL,
-  `created` datetime DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `lastTopic_id` (`lastTopic_id`),
-  KEY `lastPost_id` (`lastPost_id`),
-  KEY `lastUser_id` (`lastUser_id`),
-  KEY `forum_id` (`forum_id`),
-  KEY `access_level_id` (`access_level_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Forum categories to post topics to';
-
-/*Table structure for table `forum_forums_i18n` */
-
-DROP TABLE IF EXISTS `forum_forums_i18n`;
-
-CREATE TABLE `forum_forums_i18n` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `locale` varchar(6) COLLATE utf8_unicode_ci NOT NULL,
-  `model` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `foreign_key` int(10) NOT NULL,
-  `field` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `content` text COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`id`),
-  KEY `locale` (`locale`),
-  KEY `model` (`model`),
-  KEY `row_id` (`foreign_key`),
-  KEY `field` (`field`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `forum_moderators` */
-
-DROP TABLE IF EXISTS `forum_moderators`;
-
-CREATE TABLE `forum_moderators` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `forum_id` int(11) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `created` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `forum_id` (`forum_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Moderators to forums';
-
-/*Table structure for table `forum_poll_options` */
-
-DROP TABLE IF EXISTS `forum_poll_options`;
-
-CREATE TABLE `forum_poll_options` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `poll_id` int(11) DEFAULT NULL,
-  `option` varchar(100) NOT NULL,
-  `vote_count` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `poll_id` (`poll_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Options/Questions for a poll';
-
-/*Table structure for table `forum_poll_votes` */
-
-DROP TABLE IF EXISTS `forum_poll_votes`;
-
-CREATE TABLE `forum_poll_votes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `poll_id` int(11) DEFAULT NULL,
-  `poll_option_id` int(11) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `poll_id` (`poll_id`),
-  KEY `poll_option_id` (`poll_option_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Votes for polls';
-
-/*Table structure for table `forum_polls` */
-
-DROP TABLE IF EXISTS `forum_polls`;
-
-CREATE TABLE `forum_polls` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `topic_id` int(11) DEFAULT NULL,
-  `created` datetime DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  `expires` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `topic_id` (`topic_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Polls attached to topics';
-
-/*Table structure for table `forum_posts` */
-
-DROP TABLE IF EXISTS `forum_posts`;
-
-CREATE TABLE `forum_posts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `forum_id` int(11) DEFAULT NULL,
-  `topic_id` int(11) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `userIP` varchar(100) NOT NULL,
-  `content` text NOT NULL,
-  `contentHtml` text NOT NULL,
-  `created` datetime DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `forum_id` (`forum_id`),
-  KEY `topic_id` (`topic_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='Posts to topics';
-
-/*Table structure for table `forum_profiles` */
-
-DROP TABLE IF EXISTS `forum_profiles`;
-
-CREATE TABLE `forum_profiles` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) DEFAULT NULL,
-  `signature` varchar(255) DEFAULT NULL,
-  `signatureHtml` text,
-  `locale` varchar(3) NOT NULL DEFAULT 'eng',
-  `timezone` varchar(4) NOT NULL DEFAULT '-8',
-  `totalPosts` int(10) NOT NULL DEFAULT '0',
-  `totalTopics` int(10) NOT NULL DEFAULT '0',
-  `currentLogin` datetime DEFAULT NULL,
-  `lastLogin` datetime DEFAULT NULL,
-  `created` datetime DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='User profiles';
-
-/*Table structure for table `forum_reported` */
-
-DROP TABLE IF EXISTS `forum_reported`;
-
-CREATE TABLE `forum_reported` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `item_id` int(11) DEFAULT NULL,
-  `itemType` smallint(6) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `comment` varchar(255) NOT NULL,
-  `created` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `item_id` (`item_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Reported topics, posts, users, etc';
-
-/*Table structure for table `forum_settings` */
-
-DROP TABLE IF EXISTS `forum_settings`;
-
-CREATE TABLE `forum_settings` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `key` varchar(50) NOT NULL,
-  `value` varchar(100) NOT NULL,
-  `created` datetime DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COMMENT='Forum settings';
-
-/*Table structure for table `forum_subscriptions` */
-
-DROP TABLE IF EXISTS `forum_subscriptions`;
-
-CREATE TABLE `forum_subscriptions` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) DEFAULT NULL,
-  `forum_id` int(11) DEFAULT NULL,
-  `topic_id` int(11) DEFAULT NULL,
-  `created` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `topic_id` (`topic_id`),
-  KEY `forum_id` (`forum_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='User topic and forum subscriptions.';
-
-/*Table structure for table `forum_topics` */
-
-DROP TABLE IF EXISTS `forum_topics`;
-
-CREATE TABLE `forum_topics` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `forum_id` int(11) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `title` varchar(100) NOT NULL,
-  `language` char(2) NOT NULL DEFAULT 'en',
-  `slug` varchar(110) NOT NULL,
-  `status` smallint(6) NOT NULL DEFAULT '0',
-  `type` smallint(6) NOT NULL DEFAULT '0',
-  `post_count` int(11) NOT NULL DEFAULT '0',
-  `view_count` int(11) NOT NULL DEFAULT '0',
-  `firstPost_id` int(11) DEFAULT NULL,
-  `lastPost_id` int(11) DEFAULT NULL,
-  `lastUser_id` int(11) DEFAULT NULL,
-  `created` datetime DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `firstPost_id` (`firstPost_id`),
-  KEY `lastPost_id` (`lastPost_id`),
-  KEY `lastUser_id` (`lastUser_id`),
-  KEY `forum_id` (`forum_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Discussion topics';
-
-/*Table structure for table `i18n` */
-
-DROP TABLE IF EXISTS `i18n`;
-
-CREATE TABLE `i18n` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `locale` varchar(6) COLLATE utf8_unicode_ci NOT NULL,
-  `model` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `foreign_key` int(10) NOT NULL,
-  `field` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `content` text COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`id`),
-  KEY `locale` (`locale`),
-  KEY `model` (`model`),
-  KEY `row_id` (`foreign_key`),
-  KEY `field` (`field`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `images` */
-
-DROP TABLE IF EXISTS `images`;
-
-CREATE TABLE `images` (
-  `image_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `image` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_resize` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`image_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `notifications` */
-
-DROP TABLE IF EXISTS `notifications`;
-
-CREATE TABLE `notifications` (
-  `notification_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) unsigned NOT NULL,
-  `by_user_id` int(11) unsigned NOT NULL,
-  `message` text COLLATE utf8_unicode_ci NOT NULL,
-  `message_enum` text COLLATE utf8_unicode_ci NOT NULL,
-  `message_params` text COLLATE utf8_unicode_ci,
-  `link` text COLLATE utf8_unicode_ci,
-  `unread` tinyint(2) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`notification_id`),
-  KEY `NewIndex1` (`user_id`,`unread`)
-) ENGINE=InnoDB AUTO_INCREMENT=577 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `payment_info` */
-
-DROP TABLE IF EXISTS `payment_info`;
-
-CREATE TABLE `payment_info` (
-  `payment_info_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_ID` int(10) unsigned NOT NULL,
-  `last_4_digits` int(11) unsigned NOT NULL,
-  `cc_ref` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `is_default` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`payment_info_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `pending_user_lessons` */
-
-DROP TABLE IF EXISTS `pending_user_lessons`;
-
-CREATE TABLE `pending_user_lessons` (
-  `pending_user_lesson_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_lesson_id` int(11) unsigned DEFAULT NULL,
-  `status` enum('ACTIVE','CANCELED','EXECUTED') COLLATE utf8_unicode_ci DEFAULT 'ACTIVE',
-  `action` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `teacher_lesson_id` int(11) unsigned DEFAULT NULL,
-  `subject_id` int(11) unsigned DEFAULT NULL,
-  `teacher_user_id` int(11) unsigned DEFAULT NULL,
-  `student_user_id` int(11) unsigned NOT NULL,
-  `datetime` datetime DEFAULT NULL,
-  `duration_minutes` int(11) unsigned DEFAULT NULL,
-  `1_on_1_price` float unsigned DEFAULT NULL,
-  `max_students` int(11) unsigned DEFAULT NULL,
-  `full_group_total_price` float unsigned DEFAULT NULL,
-  `extra` text COLLATE utf8_unicode_ci,
-  `reverse_stage` tinyint(1) DEFAULT '0',
-  `version` char(36) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`pending_user_lesson_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `student_tests` */
-
-DROP TABLE IF EXISTS `student_tests`;
-
-CREATE TABLE `student_tests` (
-  `student_test_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `is_enable` tinyint(4) DEFAULT '1',
-  `entity_id` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `entity_type` enum('subject','lesson') COLLATE utf8_unicode_ci DEFAULT NULL,
-  `name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `description` text COLLATE utf8_unicode_ci,
-  `questions` text COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`student_test_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `subject_catalog` */
-
-DROP TABLE IF EXISTS `subject_catalog`;
-
-CREATE TABLE `subject_catalog` (
-  `subject_catalog_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`subject_catalog_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `subject_categories` */
-
-DROP TABLE IF EXISTS `subject_categories`;
-
-CREATE TABLE `subject_categories` (
-  `subject_category_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `parent_subject_category_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `path` text COLLATE utf8_unicode_ci,
-  `name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `description` text COLLATE utf8_unicode_ci,
-  `forum_id` int(11) DEFAULT NULL,
-  `deep` int(10) unsigned DEFAULT '1',
-  PRIMARY KEY (`subject_category_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `subject_categories_i18n` */
-
-DROP TABLE IF EXISTS `subject_categories_i18n`;
-
-CREATE TABLE `subject_categories_i18n` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `locale` varchar(6) COLLATE utf8_unicode_ci NOT NULL,
-  `model` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `foreign_key` int(10) NOT NULL,
-  `field` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `content` text COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`id`),
-  KEY `locale` (`locale`),
-  KEY `model` (`model`),
-  KEY `row_id` (`foreign_key`),
-  KEY `field` (`field`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `subjects` */
-
-DROP TABLE IF EXISTS `subjects`;
-
-CREATE TABLE `subjects` (
-  `subject_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `type` tinyint(4) NOT NULL DEFAULT '1',
-  `lesson_type` enum('live','video') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'live',
-  `subject_category_id` int(11) DEFAULT NULL,
-  `catalog_id` int(11) DEFAULT NULL,
-  `forum_id` int(11) DEFAULT NULL,
-  `root_file_system_id` int(11) unsigned DEFAULT NULL,
-  `user_upload_root_file_system_id` int(11) unsigned DEFAULT NULL,
-  `name` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
-  `video_source` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `image_source` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_resize` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_38x38` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_58x58` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_60x60` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_63x63` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_72x72` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_78x78` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_80x80` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_100x100` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_128x95` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_149x182` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_200x210` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_436x214` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `is_enable` tinyint(4) NOT NULL DEFAULT '1',
-  `description` text COLLATE utf8_unicode_ci NOT NULL,
-  `language` char(3) COLLATE utf8_unicode_ci NOT NULL,
-  `is_public` tinyint(2) unsigned NOT NULL DEFAULT '1',
-  `duration_minutes` int(11) NOT NULL DEFAULT '60',
-  `total_lessons` int(11) unsigned NOT NULL DEFAULT '0',
-  `students_amount` int(11) NOT NULL DEFAULT '0',
-  `raters_amount` int(11) NOT NULL DEFAULT '0',
-  `avarage_rating` float NOT NULL DEFAULT '0',
-  `1_on_1_price` float unsigned NOT NULL,
-  `max_students` int(11) unsigned DEFAULT NULL,
-  `full_group_student_price` float unsigned DEFAULT NULL,
-  `full_group_total_price` float unsigned DEFAULT NULL,
-  `creation_stage` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `is_locked` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `lock_ends` datetime DEFAULT NULL,
-  `created` datetime DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  PRIMARY KEY (`subject_id`),
-  KEY `NewIndex1` (`type`,`language`,`is_public`,`is_enable`)
-) ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `teacher_about_videos` */
-
-DROP TABLE IF EXISTS `teacher_about_videos`;
-
-CREATE TABLE `teacher_about_videos` (
-  `teacher_about_video_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `teacher_user_id` int(11) unsigned NOT NULL,
-  `video_source` varchar(120) COLLATE utf8_unicode_ci NOT NULL,
-  `language` char(3) COLLATE utf8_unicode_ci NOT NULL,
-  `created` datetime NOT NULL,
-  PRIMARY KEY (`teacher_about_video_id`),
-  KEY `teacher_user_id_language` (`teacher_user_id`,`language`),
-  KEY `teacher_user_id` (`teacher_user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `teacher_certificates` */
-
-DROP TABLE IF EXISTS `teacher_certificates`;
-
-CREATE TABLE `teacher_certificates` (
-  `teacher_certificate_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `teacher_user_id` int(11) unsigned NOT NULL,
-  `name` varchar(120) COLLATE utf8_unicode_ci NOT NULL,
-  `description` text COLLATE utf8_unicode_ci NOT NULL,
-  `image` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `image_resize` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_source` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_80x80` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  PRIMARY KEY (`teacher_certificate_id`),
-  KEY `teacher_user_id` (`teacher_user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `teacher_lessons` */
-
-DROP TABLE IF EXISTS `teacher_lessons`;
-
-CREATE TABLE `teacher_lessons` (
-  `teacher_lesson_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `subject_id` int(11) NOT NULL,
-  `request_subject_id` int(11) DEFAULT NULL,
-  `teacher_user_id` int(11) NOT NULL,
-  `student_user_id` int(11) DEFAULT NULL,
-  `datetime` datetime DEFAULT NULL,
-  `end_datetime` datetime DEFAULT NULL,
-  `subject_category_id` int(11) DEFAULT NULL,
-  `forum_id` int(11) DEFAULT NULL,
-  `lesson_type` enum('live','video') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'live',
-  `is_public` tinyint(2) unsigned NOT NULL DEFAULT '1',
-  `is_deleted` tinyint(2) DEFAULT '0',
-  `name` text COLLATE utf8_unicode_ci NOT NULL,
-  `description` text COLLATE utf8_unicode_ci NOT NULL,
-  `image` tinyint(2) NOT NULL DEFAULT '0',
-  `image_source` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_resize` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_38x38` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_58x58` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_60x60` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_63x63` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_72x72` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_78x78` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_80x80` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_100x100` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_128x95` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_149x182` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_200x210` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_436x214` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `language` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
-  `duration_minutes` int(11) NOT NULL,
-  `1_on_1_price` float NOT NULL,
-  `max_students` int(11) unsigned DEFAULT '1',
-  `full_group_student_price` float DEFAULT NULL,
-  `full_group_total_price` float DEFAULT NULL,
-  `num_of_pending_join_requests` float NOT NULL DEFAULT '0',
-  `num_of_students` int(11) NOT NULL DEFAULT '0',
-  `num_of_pending_invitations` int(11) NOT NULL DEFAULT '0',
-  `notification_status` tinyint(2) NOT NULL DEFAULT '0',
-  `payment_status` tinyint(2) NOT NULL DEFAULT '0',
-  `rating_status` tinyint(2) NOT NULL DEFAULT '0',
-  `is_locked` tinyint(2) NOT NULL DEFAULT '0',
-  `lock_ends` datetime DEFAULT NULL,
-  PRIMARY KEY (`teacher_lesson_id`),
-  KEY `payment` (`lesson_type`,`payment_status`,`datetime`),
-  KEY `NewIndex1` (`datetime`,`lesson_type`,`notification_status`,`payment_status`),
-  KEY `NewIndex2` (`end_datetime`,`payment_status`,`rating_status`),
-  KEY `NewIndex3` (`subject_id`),
-  KEY `subject_startdatetime` (`subject_id`,`datetime`),
-  KEY `teacher_user_id_start_datetime_end_datetime` (`teacher_user_id`,`datetime`,`end_datetime`,`is_deleted`)
-) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `tests` */
-
-DROP TABLE IF EXISTS `tests`;
-
-CREATE TABLE `tests` (
-  `test_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `description` text COLLATE utf8_unicode_ci NOT NULL,
-  `subject_id` int(11) unsigned NOT NULL,
-  `questions` text COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`test_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `threads` */
-
-DROP TABLE IF EXISTS `threads`;
-
-CREATE TABLE `threads` (
-  `thread_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `by_user_id` int(10) unsigned NOT NULL,
-  `by_user_type` enum('teacher','student') COLLATE utf8_unicode_ci NOT NULL,
-  `by_user_unread_messages` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `by_user_visible` tinyint(2) NOT NULL DEFAULT '1',
-  `to_user_id` int(11) unsigned NOT NULL,
-  `to_user_type` enum('teacher','student') COLLATE utf8_unicode_ci NOT NULL,
-  `to_user_unread_messages` tinyint(2) unsigned NOT NULL DEFAULT '1',
-  `to_user_visible` tinyint(2) NOT NULL DEFAULT '1',
-  `entity_type` enum('subject','teacher_lesson','user_lesson') COLLATE utf8_unicode_ci DEFAULT NULL,
-  `entity_id` int(11) unsigned DEFAULT NULL,
-  `title` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `messages` mediumtext COLLATE utf8_unicode_ci NOT NULL,
-  `created` datetime DEFAULT NULL,
-  `modified` datetime DEFAULT NULL,
-  PRIMARY KEY (`thread_id`),
-  KEY `by_user_id` (`by_user_id`,`by_user_unread_messages`),
-  KEY `to_user_id` (`to_user_id`,`to_user_unread_messages`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `user_lessons` */
-
-DROP TABLE IF EXISTS `user_lessons`;
-
-CREATE TABLE `user_lessons` (
-  `user_lesson_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '	',
-  `teacher_lesson_id` int(11) DEFAULT NULL,
-  `subject_id` int(11) NOT NULL,
-  `request_subject_id` int(11) DEFAULT NULL,
-  `teacher_user_id` int(11) DEFAULT NULL,
-  `student_user_id` int(11) NOT NULL,
-  `datetime` datetime DEFAULT NULL,
-  `end_datetime` datetime DEFAULT NULL,
-  `stage` tinyint(4) NOT NULL,
-  `subject_category_id` int(11) DEFAULT NULL,
-  `forum_id` int(11) DEFAULT NULL,
-  `root_file_system_id` int(11) unsigned DEFAULT NULL,
-  `is_public` tinyint(2) unsigned NOT NULL DEFAULT '1',
-  `lesson_type` enum('live','video') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'video',
-  `name` text COLLATE utf8_unicode_ci NOT NULL,
-  `description` text COLLATE utf8_unicode_ci NOT NULL,
-  `image` tinyint(2) NOT NULL DEFAULT '0',
-  `image_source` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_resize` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_38x38` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_58x58` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_60x60` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_63x63` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_72x72` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_78x78` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_80x80` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_100x100` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_128x95` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_149x182` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_200x210` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_436x214` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `language` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
-  `duration_minutes` int(11) NOT NULL,
-  `offer_message` text COLLATE utf8_unicode_ci,
-  `1_on_1_price` float unsigned NOT NULL,
-  `max_students` int(10) unsigned DEFAULT NULL,
-  `full_group_student_price` float unsigned DEFAULT NULL,
-  `full_group_total_price` float DEFAULT NULL,
-  `rating_by_student` float DEFAULT NULL,
-  `comment_by_student` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `student_image` tinyint(2) NOT NULL DEFAULT '0',
-  `rating_by_teacher` float DEFAULT NULL,
-  `comment_by_teacher` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `notification_status` tinyint(2) NOT NULL DEFAULT '0',
-  `payment_status` tinyint(2) NOT NULL DEFAULT '0',
-  `version` char(36) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`user_lesson_id`),
-  KEY `NewIndex2` (`teacher_lesson_id`),
-  KEY `NewIndex1` (`payment_status`,`stage`,`notification_status`,`teacher_lesson_id`),
-  KEY `NewIndex3` (`subject_id`),
-  KEY `student_user_id_start_datetime_end_datetime` (`student_user_id`,`datetime`,`end_datetime`)
-) ENGINE=InnoDB AUTO_INCREMENT=329 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `users` */
-
-DROP TABLE IF EXISTS `users`;
-
-CREATE TABLE `users` (
-  `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `facebook_id` int(11) DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
-  `password_reset` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `activation_code` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `active` tinyint(2) DEFAULT '0',
-  `first_name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `last_name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image` tinyint(2) NOT NULL DEFAULT '0',
-  `image_source` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_resize` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_38x38` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_60x60` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_63x63` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_72x72` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_78x78` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_80x80` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_100x100` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_149x182` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_200x210` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `dob` date DEFAULT NULL,
-  `phone` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `address` text COLLATE utf8_unicode_ci,
-  `zipcode` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `student_avarage_rating` float unsigned NOT NULL DEFAULT '0',
-  `student_about` text COLLATE utf8_unicode_ci,
-  `student_raters_amount` int(10) unsigned NOT NULL DEFAULT '0',
-  `student_total_lessons` int(10) unsigned NOT NULL DEFAULT '0',
-  `students_total_learning_minutes` int(11) DEFAULT '0',
-  `teacher_about` text COLLATE utf8_unicode_ci,
-  `teacher_address` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `teacher_zipcode` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `teacher_total_teaching_minutes` int(11) unsigned NOT NULL DEFAULT '0',
-  `teacher_students_amount` int(11) unsigned NOT NULL DEFAULT '0',
-  `teacher_total_lessons` int(11) unsigned NOT NULL DEFAULT '0',
-  `teacher_avarage_rating` float unsigned NOT NULL DEFAULT '0',
-  `teacher_raters_amount` int(11) unsigned NOT NULL DEFAULT '0',
-  `teacher_paypal_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `language` varchar(3) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'eng',
-  `languages_of_records` text COLLATE utf8_unicode_ci,
-  `title` enum('Dr.','Mr.') COLLATE utf8_unicode_ci DEFAULT NULL,
-  `timezone` varchar(25) COLLATE utf8_unicode_ci DEFAULT 'UTC',
-  `currentLogin` datetime DEFAULT NULL,
-  `lastLogin` datetime DEFAULT NULL,
-  `created` datetime DEFAULT NULL,
-  PRIMARY KEY (`user_id`),
-  KEY `NewIndex1` (`email`),
-  KEY `NewIndex2` (`facebook_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=59 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `watchitoo_lesson_meetings` */
-
-DROP TABLE IF EXISTS `watchitoo_lesson_meetings`;
-
-CREATE TABLE `watchitoo_lesson_meetings` (
-  `watchitoo_lesson_meeting_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `teacher_lesson_id` int(11) unsigned NOT NULL,
-  `meeting_id` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
-  `created` datetime NOT NULL,
-  PRIMARY KEY (`watchitoo_lesson_meeting_id`),
-  KEY `NewIndex1` (`teacher_lesson_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `watchitoo_lesson_users` */
-
-DROP TABLE IF EXISTS `watchitoo_lesson_users`;
-
-CREATE TABLE `watchitoo_lesson_users` (
-  `user_id` int(11) unsigned NOT NULL,
-  `watchitoo_user_id` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `watchitoo_subject_meetings` */
-
-DROP TABLE IF EXISTS `watchitoo_subject_meetings`;
-
-CREATE TABLE `watchitoo_subject_meetings` (
-  `watchitoo_subject_meeting_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `subject_id` int(11) unsigned NOT NULL,
-  `meeting_id` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`watchitoo_subject_meeting_id`),
-  KEY `subject_id` (`subject_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `watchitoo_subject_teachers` */
-
-DROP TABLE IF EXISTS `watchitoo_subject_teachers`;
-
-CREATE TABLE `watchitoo_subject_teachers` (
-  `user_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `watchitoo_user_id` int(11) unsigned NOT NULL,
-  `subject_id` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`user_id`),
-  KEY `NewIndex1` (`subject_id`,`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*Data for the table `adaptive_payments` */
+
+/*Data for the table `auto_approve_lesson_request` */
+
+/*Data for the table `file_system` */
+
+insert  into `file_system`(`file_system_id`,`permission`,`parent_id`,`lft`,`rght`,`entity_type`,`entity_id`,`type`,`name`,`size_kb`,`extension`,`file_source`) values (1,0,0,1,8,'subject',1,'folder','video subject',NULL,NULL,NULL),(2,0,1,2,5,'subject',1,'folder','Users uploads',NULL,NULL,NULL),(3,0,1,6,7,'subject',1,'file','14340_1308633517963_1348361_n.jpg',73596,NULL,'/file_system/14340_1308633517963_1348361_n.jpg'),(4,0,0,9,14,'subject',2,'folder','live subject',NULL,NULL,NULL),(5,0,4,10,11,'subject',2,'folder','Users uploads',NULL,NULL,NULL),(6,0,4,12,13,'subject',2,'file','14340_1308636838046_1125140_n - Copy.jpg',58870,NULL,'/file_system/14340_1308636838046_1125140_n_-_Copy.jpg'),(7,13,2,3,4,'subject',1,'folder','Sivan Eshkol-Yamin',NULL,NULL,NULL);
+
+/*Data for the table `forum_access` */
+
+insert  into `forum_access`(`id`,`access_level_id`,`user_id`,`created`,`modified`) values (1,4,4,'2012-07-26 05:43:24','2012-07-26 05:43:24');
+
+/*Data for the table `forum_access_levels` */
+
+insert  into `forum_access_levels`(`id`,`title`,`level`,`isAdmin`,`isSuper`) values (1,'Member',1,0,0),(2,'Moderator',4,0,0),(3,'Super Moderator',7,0,1),(4,'Administrator',10,1,1);
+
+/*Data for the table `forum_forums` */
+
+insert  into `forum_forums`(`id`,`forum_id`,`access_level_id`,`title`,`slug`,`deep`,`path`,`description`,`status`,`orderNo`,`topic_count`,`post_count`,`accessRead`,`accessPost`,`accessPoll`,`accessReply`,`settingPostCount`,`settingAutoLock`,`lastTopic_id`,`lastPost_id`,`lastUser_id`,`created`,`modified`) values (1,0,0,'Forums','forums',1,NULL,'This is a primary forum and it contains child forums. Primary forums (no parents) can not be posted in.',1,1,0,0,0,1,1,1,0,0,4,5,4,'2012-11-28 01:30:40','2012-11-27 23:37:25'),(2,1,0,'General Discussion','general-discussion',1,NULL,'This is a child forum. You can add, edit or delete these forums by visiting the administration panel, but first you would need to give a user admin rights.',1,1,4,5,0,1,1,1,1,1,4,5,4,'2012-11-28 01:30:40','2012-11-27 23:37:25');
+
+/*Data for the table `forum_forums_i18n` */
+
+insert  into `forum_forums_i18n`(`id`,`locale`,`model`,`foreign_key`,`field`,`content`) values (1,'eng','Forum',1,'title','test forum'),(2,'eng','Forum',1,'description','test forum'),(3,'heb','Forum',1,'title','פורום בדיקה'),(4,'heb','Forum',1,'description','פורום בדיקה'),(5,'eng','Forum',2,'title','test forum 2'),(6,'eng','Forum',2,'description','test forum 2'),(7,'heb','Forum',2,'title','פורום בדיקה 2'),(8,'heb','Forum',2,'description','פורום בדיקה 2'),(9,'eng','Forum',3,'title','title'),(10,'eng','Forum',3,'description','description'),(11,'heb','Forum',3,'title','כותרת'),(12,'heb','Forum',3,'description','תאור');
+
+/*Data for the table `forum_moderators` */
+
+/*Data for the table `forum_poll_options` */
+
+/*Data for the table `forum_poll_votes` */
+
+/*Data for the table `forum_polls` */
+
+/*Data for the table `forum_posts` */
+
+insert  into `forum_posts`(`id`,`forum_id`,`topic_id`,`user_id`,`userIP`,`content`,`contentHtml`,`created`,`modified`) values (1,2,1,4,'127.0.0.1','message','message','2012-08-15 00:04:58','2012-08-15 00:04:58'),(2,2,1,4,'127.0.0.1','my comment','my comment','2012-08-15 00:25:55','2012-08-15 00:25:55'),(3,2,2,4,'127.0.0.1','מודעה','מודעה','2012-08-15 00:26:15','2012-08-15 01:05:17'),(4,2,3,4,'127.0.0.1','בדיקה','בדיקה','2012-11-27 23:21:49','2012-11-27 23:21:49'),(5,2,4,4,'127.0.0.1','hih','hih','2012-11-27 23:37:23','2012-11-27 23:37:23');
+
+/*Data for the table `forum_profiles` */
+
+insert  into `forum_profiles`(`id`,`user_id`,`signature`,`signatureHtml`,`locale`,`timezone`,`totalPosts`,`totalTopics`,`currentLogin`,`lastLogin`,`created`,`modified`) values (1,4,NULL,NULL,'eng','-8',5,4,NULL,NULL,'2012-08-13 02:34:17','2012-08-13 02:34:17'),(2,5,NULL,NULL,'eng','-8',0,0,NULL,NULL,'2012-09-11 21:27:58','2012-09-11 21:27:58'),(3,13,NULL,NULL,'eng','-8',0,0,NULL,NULL,'2012-10-03 01:54:56','2012-10-03 01:54:56'),(4,50,NULL,NULL,'eng','-8',0,0,NULL,NULL,'2012-11-04 02:19:48','2012-11-04 02:19:48'),(5,51,NULL,NULL,'eng','-8',0,0,NULL,NULL,'2012-11-04 02:20:03','2012-11-04 02:20:03'),(6,52,NULL,NULL,'eng','-8',0,0,NULL,NULL,'2012-11-04 02:20:48','2012-11-04 02:20:48'),(7,53,NULL,NULL,'eng','-8',0,0,NULL,NULL,'2012-11-04 02:22:38','2012-11-04 02:22:38'),(8,54,NULL,NULL,'eng','-8',0,0,NULL,NULL,'2012-11-04 02:23:02','2012-11-04 02:23:02'),(9,57,NULL,NULL,'eng','-8',0,0,NULL,NULL,'2012-11-04 11:48:30','2012-11-04 11:48:30'),(10,58,NULL,NULL,'eng','-8',0,0,NULL,NULL,'2012-11-04 11:49:18','2012-11-04 11:49:18');
+
+/*Data for the table `forum_reported` */
+
+/*Data for the table `forum_settings` */
+
+insert  into `forum_settings`(`id`,`key`,`value`,`created`,`modified`) values (1,'site_name','Universito',NULL,'2012-10-16 12:51:00'),(2,'site_email','noreply@universito.com',NULL,'2012-10-16 12:51:00'),(3,'site_main_url','http://universito.com/',NULL,'2012-10-16 12:51:00'),(4,'topics_per_page','20',NULL,'2012-10-16 12:51:00'),(5,'topics_per_hour','3',NULL,'2012-10-16 12:51:00'),(6,'topic_flood_interval','300',NULL,'2012-10-16 12:51:00'),(7,'topic_pages_till_truncate','10',NULL,'2012-10-16 12:51:00'),(8,'posts_per_page','15',NULL,'2012-10-16 12:51:00'),(9,'posts_per_hour','15',NULL,'2012-10-16 12:51:00'),(10,'posts_till_hot_topic','35',NULL,'2012-10-16 12:51:00'),(11,'post_flood_interval','60',NULL,'2012-10-16 12:51:00'),(12,'days_till_autolock','21',NULL,'2012-10-16 12:51:00'),(13,'whos_online_interval','15',NULL,'2012-10-16 12:51:00'),(14,'security_question','What framework does this plugin run on?',NULL,'2012-10-16 12:51:00'),(15,'security_answer','cakephp',NULL,'2012-10-16 12:51:00'),(16,'enable_quick_reply','1',NULL,'2012-10-16 12:51:00'),(17,'enable_gravatar','1',NULL,'2012-10-16 12:51:00'),(18,'censored_words','',NULL,'2012-10-16 12:51:00'),(19,'default_locale','eng',NULL,'2012-10-16 12:51:00'),(20,'default_timezone','+2',NULL,'2012-10-16 12:51:00'),(21,'title_separator',' - ',NULL,'2012-10-16 12:51:00'),(22,'enable_topic_subscriptions','1',NULL,'2012-10-16 12:51:00'),(23,'enable_forum_subscriptions','1',NULL,'2012-10-16 12:51:00'),(24,'auto_subscribe_self','1',NULL,'2012-10-16 12:51:00');
+
+/*Data for the table `forum_subscriptions` */
+
+insert  into `forum_subscriptions`(`id`,`user_id`,`forum_id`,`topic_id`,`created`) values (1,4,NULL,1,'2012-08-15 00:04:59'),(2,4,NULL,2,'2012-08-15 00:26:16'),(3,4,NULL,3,'2012-11-27 23:21:50'),(4,4,NULL,4,'2012-11-27 23:37:25');
+
+/*Data for the table `forum_topics` */
+
+insert  into `forum_topics`(`id`,`forum_id`,`user_id`,`title`,`language`,`slug`,`status`,`type`,`post_count`,`view_count`,`firstPost_id`,`lastPost_id`,`lastUser_id`,`created`,`modified`) values (1,2,4,'message','en','message',1,0,2,12,1,2,4,'2012-08-15 00:04:58','2012-08-15 00:25:55'),(2,2,4,'מודעה','he','מודעה',1,0,1,14,3,3,4,'2012-08-15 00:26:15','2012-08-15 01:05:17'),(3,2,4,'בדיקה','en','בדיקה',1,0,1,3,4,4,4,'2012-11-27 23:21:49','2012-11-27 23:21:49'),(4,2,4,'hihihi','en','hihihi',1,0,1,2,5,5,4,'2012-11-27 23:37:22','2012-11-27 23:37:23');
+
+/*Data for the table `i18n` */
+
+/*Data for the table `images` */
+
+/*Data for the table `notifications` */
+
+insert  into `notifications`(`notification_id`,`user_id`,`by_user_id`,`message`,`message_enum`,`message_params`,`link`,`unread`) values (1,4,5,'Sivan Yamin requesting \"live subject\" on 2013-01-29 16:00:00','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":\"2013-01-29 16:00:00\",\"name\":\"live subject\",\"user_lesson_id\":\"3\"}}','[\"\\/\"]',0),(2,4,5,'Sivan Yamin requesting \"live subject\" on 2013-01-29 16:00:00','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":\"2013-01-29 16:00:00\",\"name\":\"live subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',0),(3,4,5,'Sivan Yamin requesting \"live subject\" on 2013-01-29 16:00:00','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":\"2013-01-29 16:00:00\",\"name\":\"live subject\",\"user_lesson_id\":\"2\"}}','[\"\\/\"]',0),(4,4,5,'Sivan Yamin canceled his request for \"live subject\" on 2013-01-29 16:00:00','student.booking.request.canceled','{\"message_enum\":\"student.booking.request.canceled\",\"params\":{\"user_lesson_id\":\"2\",\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":\"2013-01-29 16:00:00\",\"name\":\"live subject\"}}','[\"\\/\"]',0),(5,4,5,'Sivan Yamin canceled his request for \"live subject\" on 2013-01-29 16:00:00','student.booking.request.canceled','{\"message_enum\":\"student.booking.request.canceled\",\"params\":{\"user_lesson_id\":\"1\",\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":\"2013-01-29 16:00:00\",\"name\":\"live subject\"}}','[\"\\/\"]',0),(6,4,5,'Sivan Yamin requesting \"live subject\" on 2013-01-29 16:00:00','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":\"2013-01-29 16:00:00\",\"name\":\"live subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',0),(7,4,5,'Sivan Yamin canceled his request for \"live subject\" on 2013-01-29 16:00:00','student.booking.request.canceled','{\"message_enum\":\"student.booking.request.canceled\",\"params\":{\"user_lesson_id\":\"1\",\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":\"2013-01-29 16:00:00\",\"name\":\"live subject\"}}','[\"\\/\"]',0),(8,4,5,'Sivan Yamin requesting \"live subject\" on 2013-01-29 16:00:00','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":\"2013-01-29 16:00:00\",\"name\":\"live subject\",\"user_lesson_id\":\"2\"}}','[\"\\/\"]',0),(9,4,5,'Sivan Yamin requesting \"live subject\" on 2013-02-01 20:20:00','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":\"2013-02-01 20:20:00\",\"name\":\"live subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',0),(10,4,5,'Sivan Yamin requesting \"video subject\" on ','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":null,\"name\":\"video subject\",\"user_lesson_id\":\"2\"}}','[\"\\/\"]',0),(11,4,5,'Sivan Yamin requesting \"live subject\" on 2013-01-29 20:35:00','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":\"2013-01-29 20:35:00\",\"name\":\"live subject\",\"user_lesson_id\":\"3\"}}','[\"\\/\"]',0),(12,4,5,'Sivan Yamin requesting \"live subject\" on 2013-01-29 20:35:00','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"5\",\"datetime\":\"2013-01-29 20:35:00\",\"name\":\"live subject\",\"user_lesson_id\":\"4\"}}','[\"\\/\"]',0),(13,4,13,'Sivan Eshkol-Yamin requesting \"video subject\" on ','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":null,\"name\":\"video subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',0),(14,4,13,'Sivan Eshkol-Yamin requesting \"video subject\" on ','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":null,\"name\":\"video subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',0),(15,13,4,'Eldad Yamin auto-approved you\'r request for \"video subject\" on ','teacher.booking.request.auto.approve','{\"message_enum\":\"teacher.booking.request.auto.approve\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":null,\"name\":\"video subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',1),(16,4,13,'Sivan Eshkol-Yamin request for \"video subject\" on  has been auto approved','student.booking.request.auto.approve','{\"message_enum\":\"student.booking.request.auto.approve\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":null,\"name\":\"video subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',0),(17,13,4,'Eldad Yamin auto-approved you\'r request for \"video subject\" on ','teacher.booking.request.auto.approve','{\"message_enum\":\"teacher.booking.request.auto.approve\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":null,\"name\":\"video subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',1),(18,4,13,'Sivan Eshkol-Yamin request for \"video subject\" on  has been auto approved','student.booking.request.auto.approve','{\"message_enum\":\"student.booking.request.auto.approve\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":null,\"name\":\"video subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',0),(19,13,4,'Eldad Yamin auto-approved you\'r request for \"video subject\" on ','teacher.booking.request.auto.approve','{\"message_enum\":\"teacher.booking.request.auto.approve\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":null,\"name\":\"video subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',1),(20,4,13,'Sivan Eshkol-Yamin request for \"video subject\" on  has been auto approved','student.booking.request.auto.approve','{\"message_enum\":\"student.booking.request.auto.approve\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":null,\"name\":\"video subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',0),(21,13,4,'Eldad Yamin auto-approved you\'r request for \"video subject\" on ','teacher.booking.request.auto.approve','{\"message_enum\":\"teacher.booking.request.auto.approve\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":null,\"name\":\"video subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',1),(22,4,13,'Sivan Eshkol-Yamin request for \"video subject\" on  has been auto approved','student.booking.request.auto.approve','{\"message_enum\":\"student.booking.request.auto.approve\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":null,\"name\":\"video subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',0),(23,4,13,'Sivan Eshkol-Yamin requesting \"live subject\" on 2013-01-29 23:21:00','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":\"2013-01-29 23:21:00\",\"name\":\"live subject\",\"user_lesson_id\":\"2\"}}','[\"\\/\"]',0),(24,4,13,'Sivan Eshkol-Yamin requesting \"live subject\" on 2013-01-29 14:00:00','student.booking.request.sent','{\"message_enum\":\"student.booking.request.sent\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":\"2013-01-29 14:00:00\",\"name\":\"live subject\",\"user_lesson_id\":\"3\"}}','[\"\\/\"]',0),(25,13,4,'Eldad Yamin auto-approved you\'r request for \"video subject\" on ','teacher.booking.request.auto.approve','{\"message_enum\":\"teacher.booking.request.auto.approve\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":null,\"name\":\"video subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',1),(26,4,13,'Sivan Eshkol-Yamin request for \"video subject\" on  has been auto approved','student.booking.request.auto.approve','{\"message_enum\":\"student.booking.request.auto.approve\",\"params\":{\"teacher_user_id\":\"4\",\"student_user_id\":\"13\",\"datetime\":null,\"name\":\"video subject\",\"user_lesson_id\":\"1\"}}','[\"\\/\"]',0);
+
+/*Data for the table `payment_info` */
+
+/*Data for the table `pending_user_lessons` */
+
+/*Data for the table `student_tests` */
+
+/*Data for the table `subject_catalog` */
+
+/*Data for the table `subject_categories` */
+
+insert  into `subject_categories`(`subject_category_id`,`parent_subject_category_id`,`path`,`name`,`description`,`forum_id`,`deep`) values (2,0,NULL,'Spirituality','about spirituality',NULL,1),(3,2,'2','Astrology','Astrology',NULL,2),(4,3,'2,3','Chinese Astrology','Chinese Astrology',NULL,3),(5,3,'2,3','Vedic Astrology','Vedic Astrology',NULL,3),(6,2,'2','Graphology','Graphology',NULL,2),(7,0,NULL,'Computers','Computers',NULL,1),(8,7,'7','Applications','Applications',NULL,2),(9,8,'7,8','CAD','CAD',NULL,3),(10,8,'7,8','SAP','SAP',NULL,3),(11,7,'7','Databases','Databases',NULL,2),(12,11,'7,11','MySQL','MySQL',NULL,3),(13,11,'7,11','NoSQL','NoSQL',NULL,3);
+
+/*Data for the table `subject_categories_i18n` */
+
+insert  into `subject_categories_i18n`(`id`,`locale`,`model`,`foreign_key`,`field`,`content`) values (9,'eng','SubjectCategory',2,'name','Spirituality'),(10,'eng','SubjectCategory',2,'description','about spirituality'),(11,'eng','SubjectCategory',3,'name','Astrology'),(12,'eng','SubjectCategory',3,'description','Astrology'),(13,'eng','SubjectCategory',4,'name','Chinese Astrology'),(14,'eng','SubjectCategory',4,'description','Chinese Astrology'),(15,'eng','SubjectCategory',5,'name','Vedic Astrology'),(16,'eng','SubjectCategory',5,'description','Vedic Astrology'),(17,'eng','SubjectCategory',6,'name','Graphology'),(18,'eng','SubjectCategory',6,'description','Graphology'),(19,'eng','SubjectCategory',7,'name','Computers'),(20,'eng','SubjectCategory',7,'description','Computers'),(21,'eng','SubjectCategory',8,'name','Applications'),(22,'eng','SubjectCategory',8,'description','Applications'),(23,'eng','SubjectCategory',9,'name','CAD'),(24,'eng','SubjectCategory',9,'description','CAD'),(25,'eng','SubjectCategory',10,'name','SAP'),(26,'eng','SubjectCategory',10,'description','SAP'),(27,'eng','SubjectCategory',11,'name','Databases'),(28,'eng','SubjectCategory',11,'description','Databases'),(29,'eng','SubjectCategory',12,'name','MySQL'),(30,'eng','SubjectCategory',12,'description','MySQL'),(31,'eng','SubjectCategory',13,'name','NoSQL'),(32,'eng','SubjectCategory',13,'description','NoSQL'),(33,'heb','SubjectCategory',13,'name','מייאסקיואל'),(34,'heb','SubjectCategory',13,'description','נואקסקיואל');
+
+/*Data for the table `subjects` */
+
+insert  into `subjects`(`subject_id`,`user_id`,`type`,`lesson_type`,`subject_category_id`,`catalog_id`,`forum_id`,`root_file_system_id`,`user_upload_root_file_system_id`,`name`,`video_source`,`image`,`image_source`,`image_resize`,`image_crop_38x38`,`image_crop_58x58`,`image_crop_60x60`,`image_crop_63x63`,`image_crop_72x72`,`image_crop_78x78`,`image_crop_80x80`,`image_crop_100x100`,`image_crop_128x95`,`image_crop_149x182`,`image_crop_200x210`,`image_crop_436x214`,`is_enable`,`description`,`language`,`is_public`,`duration_minutes`,`total_lessons`,`students_amount`,`raters_amount`,`avarage_rating`,`1_on_1_price`,`max_students`,`full_group_student_price`,`full_group_total_price`,`creation_stage`,`is_locked`,`lock_ends`,`created`,`modified`) values (1,4,1,'video',4,NULL,NULL,1,2,'video subject','/vid/subjects/about_videos/\\50df04a5-a00c-4ed4-8510-1768ded5dd25/50df04a5-a00c-4ed4-8510-1768ded5dd25.mp4',2,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_resize.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_38x38.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_58x58.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_60x60.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_63x63.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_72x72.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_78x78.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_80x80.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_100x100.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_128x95.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_149x182.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_200x210.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_436x214.jpg',1,'my new video subject','eng',1,NULL,0,0,0,0,0,1,NULL,NULL,5,0,NULL,'2012-12-29 14:54:14','2012-12-29 14:56:36'),(2,4,1,'live',7,NULL,NULL,4,5,'live subject','/vid/subjects/about_videos/\\50df35e4-0408-404b-b51f-1768ded5dd25/50df35e4-0408-404b-b51f-1768ded5dd25.flv',2,'/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_resize.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_38x38.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_58x58.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_60x60.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_63x63.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_72x72.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_78x78.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_80x80.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_100x100.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_128x95.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_149x182.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_200x210.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_436x214.jpg',1,'my live subject','eng',1,60,0,0,0,0,0,1,NULL,NULL,5,0,NULL,'2012-12-29 14:55:45','2012-12-29 18:26:44');
+
+/*Data for the table `teacher_about_videos` */
+
+insert  into `teacher_about_videos`(`teacher_about_video_id`,`teacher_user_id`,`video_source`,`language`,`created`) values (13,4,'/vid/teachers/about_videos/\\50da21bd-777c-455c-9961-0c18ded5dd25/50da21bd-777c-455c-9961-0c18ded5dd25.mp4','eng','2012-12-25 21:59:25');
+
+/*Data for the table `teacher_certificates` */
+
+/*Data for the table `teacher_lessons` */
+
+insert  into `teacher_lessons`(`teacher_lesson_id`,`subject_id`,`request_subject_id`,`teacher_user_id`,`student_user_id`,`datetime`,`end_datetime`,`subject_category_id`,`forum_id`,`lesson_type`,`is_public`,`is_deleted`,`name`,`description`,`image`,`image_source`,`image_resize`,`image_crop_38x38`,`image_crop_58x58`,`image_crop_60x60`,`image_crop_63x63`,`image_crop_72x72`,`image_crop_78x78`,`image_crop_80x80`,`image_crop_100x100`,`image_crop_128x95`,`image_crop_149x182`,`image_crop_200x210`,`image_crop_436x214`,`language`,`duration_minutes`,`1_on_1_price`,`max_students`,`full_group_student_price`,`full_group_total_price`,`num_of_pending_join_requests`,`num_of_students`,`num_of_pending_invitations`,`notification_status`,`payment_status`,`rating_status`,`is_locked`,`lock_ends`) values (1,2,NULL,4,NULL,'2013-01-29 14:00:00','2013-01-29 15:00:00',7,NULL,'live',1,0,'live subject','my live subject',2,'/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_resize.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_38x38.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_58x58.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_60x60.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_63x63.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_72x72.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_78x78.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_80x80.jpg',NULL,NULL,'/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_149x182.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_200x210.jpg','/img/subjects/\\50df04b3-f51c-42cd-8b7a-3aa4ded5dd25/50df04b3-f51c-42cd-8b7a-3aa4ded5dd25_436x214.jpg','eng',60,0,1,NULL,NULL,5,0,0,0,0,0,0,'2012-12-29 17:00:34'),(5,1,NULL,4,13,NULL,NULL,4,NULL,'video',0,0,'video subject','my new video subject',2,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_resize.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_38x38.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_58x58.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_60x60.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_63x63.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_72x72.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_78x78.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_80x80.jpg',NULL,NULL,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_149x182.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_200x210.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_436x214.jpg','eng',NULL,0,1,NULL,NULL,0,1,0,0,0,0,0,'2012-12-29 23:39:09'),(6,1,NULL,4,13,NULL,NULL,4,NULL,'video',0,0,'video subject','my new video subject',2,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_resize.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_38x38.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_58x58.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_60x60.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_63x63.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_72x72.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_78x78.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_80x80.jpg',NULL,NULL,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_149x182.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_200x210.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_436x214.jpg','eng',NULL,0,1,NULL,NULL,0,1,0,0,0,0,0,'2012-12-29 23:40:01'),(7,1,NULL,4,13,NULL,NULL,4,NULL,'video',0,0,'video subject','my new video subject',2,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_resize.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_38x38.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_58x58.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_60x60.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_63x63.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_72x72.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_78x78.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_80x80.jpg',NULL,NULL,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_149x182.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_200x210.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_436x214.jpg','eng',NULL,0,1,NULL,NULL,0,1,0,0,0,0,0,'2012-12-29 23:41:20'),(8,1,NULL,4,13,'2012-12-29 23:17:43','2012-12-31 23:17:43',4,NULL,'video',0,0,'video subject','my new video subject',2,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_resize.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_38x38.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_58x58.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_60x60.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_63x63.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_72x72.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_78x78.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_80x80.jpg',NULL,NULL,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_149x182.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_200x210.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_436x214.jpg','eng',NULL,0,1,NULL,NULL,0,1,0,0,0,0,0,'2012-12-30 00:17:35'),(9,1,NULL,4,13,NULL,NULL,4,NULL,'video',0,0,'video subject','my new video subject',2,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_resize.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_38x38.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_58x58.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_60x60.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_63x63.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_72x72.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_78x78.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_80x80.jpg',NULL,NULL,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_149x182.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_200x210.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_436x214.jpg','eng',NULL,0,1,NULL,NULL,0,1,0,0,0,0,0,'2012-12-30 19:44:34'),(10,1,NULL,4,13,'2012-12-30 18:48:59','2013-01-01 18:48:59',4,NULL,'video',0,0,'video subject','my new video subject',2,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_resize.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_38x38.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_58x58.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_60x60.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_63x63.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_72x72.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_78x78.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_80x80.jpg',NULL,NULL,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_149x182.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_200x210.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_436x214.jpg','eng',NULL,0,1,NULL,NULL,0,1,0,0,0,0,0,'2012-12-30 19:48:09');
+
+/*Data for the table `tests` */
+
+insert  into `tests`(`test_id`,`name`,`description`,`subject_id`,`questions`) values (1,'test 1','test 1 description',1,'[{\"qId\":\"0\",\"q\":\"how are you\",\"a\":[\"good\",\"fine\"],\"ra\":\"1\"}]');
+
+/*Data for the table `threads` */
+
+insert  into `threads`(`thread_id`,`by_user_id`,`by_user_type`,`by_user_unread_messages`,`by_user_visible`,`to_user_id`,`to_user_type`,`to_user_unread_messages`,`to_user_visible`,`entity_type`,`entity_id`,`title`,`messages`,`created`,`modified`) values (1,13,'teacher',1,1,4,'teacher',0,0,'subject',2,'live subject','[{\"user_id\":\"13\",\"message\":\"hi\",\"timestamp\":1356905135},{\"user_id\":\"4\",\"message\":\"Hi, I\'m good\\r\\nhow are you?\\r\\n\",\"timestamp\":1356905417}]','2012-12-30 22:05:35','2012-12-30 22:13:18'),(2,5,'teacher',0,1,4,'teacher',0,1,'subject',1,'video subject','[{\"user_id\":\"5\",\"message\":\"ddd\",\"timestamp\":1356905482},{\"user_id\":\"4\",\"message\":\"hiiii\\r\\n\",\"timestamp\":1356905536},{\"user_id\":\"5\",\"message\":\"hii\\r\\n\",\"timestamp\":1356905567},{\"user_id\":\"5\",\"message\":\"hhiii\\r\\nhi\\r\\n\",\"timestamp\":1356905572},{\"user_id\":\"5\",\"message\":\"guu\\r\\n\",\"timestamp\":1356905577},{\"user_id\":\"5\",\"message\":\"nuu\",\"timestamp\":1356905617}]','2012-12-30 22:11:22','2012-12-30 22:14:14');
+
+/*Data for the table `user_lessons` */
+
+insert  into `user_lessons`(`user_lesson_id`,`teacher_lesson_id`,`subject_id`,`request_subject_id`,`teacher_user_id`,`student_user_id`,`datetime`,`end_datetime`,`stage`,`subject_category_id`,`forum_id`,`root_file_system_id`,`is_public`,`lesson_type`,`name`,`description`,`image`,`image_source`,`image_resize`,`image_crop_38x38`,`image_crop_58x58`,`image_crop_60x60`,`image_crop_63x63`,`image_crop_72x72`,`image_crop_78x78`,`image_crop_80x80`,`image_crop_100x100`,`image_crop_128x95`,`image_crop_149x182`,`image_crop_200x210`,`image_crop_436x214`,`language`,`duration_minutes`,`offer_message`,`1_on_1_price`,`max_students`,`full_group_student_price`,`full_group_total_price`,`rating_by_student`,`comment_by_student`,`student_image`,`rating_by_teacher`,`comment_by_teacher`,`notification_status`,`payment_status`,`version`) values (1,10,1,NULL,4,13,'2012-12-30 18:48:59','2013-01-01 18:48:59',7,4,NULL,7,0,'video','video subject','my new video subject',2,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_resize.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_38x38.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_58x58.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_60x60.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_63x63.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_72x72.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_78x78.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_80x80.jpg',NULL,NULL,'/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_149x182.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_200x210.jpg','/img/subjects/\\50df04a4-7440-4812-a923-1768ded5dd25/50df04a4-7440-4812-a923-1768ded5dd25_436x214.jpg','eng',NULL,NULL,0,1,NULL,NULL,NULL,NULL,0,NULL,NULL,0,0,'50e08c9b-b428-4804-ba84-3aa4ded5dd25');
+
+/*Data for the table `users` */
+
+insert  into `users`(`user_id`,`facebook_id`,`email`,`password`,`password_reset`,`activation_code`,`active`,`first_name`,`last_name`,`image`,`image_source`,`image_resize`,`image_crop_38x38`,`image_crop_60x60`,`image_crop_63x63`,`image_crop_72x72`,`image_crop_78x78`,`image_crop_80x80`,`image_crop_100x100`,`image_crop_149x182`,`image_crop_200x210`,`dob`,`phone`,`address`,`zipcode`,`student_avarage_rating`,`student_about`,`student_raters_amount`,`student_total_lessons`,`students_total_learning_minutes`,`teacher_about`,`teacher_address`,`teacher_zipcode`,`teacher_total_teaching_minutes`,`teacher_students_amount`,`teacher_total_lessons`,`teacher_avarage_rating`,`teacher_raters_amount`,`teacher_paypal_id`,`language`,`languages_of_records`,`title`,`timezone`,`currentLogin`,`lastLogin`,`created`) values (4,1616529824,'eldad87@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','Yamin',1,'/img/users/\\50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25/50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25.jpg','/img/users/\\50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25/50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25_resize.jpg','/img/users/\\50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25/50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25_38x38.jpg','/img/users/\\50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25/50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25_60x60.jpg','/img/users/\\50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25/50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25_63x63.jpg','/img/users/\\50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25/50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25_72x72.jpg','/img/users/\\50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25/50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25_78x78.jpg','/img/users/\\50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25/50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25_80x80.jpg','/img/users/\\50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25/50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25_100x100.jpg','/img/users/\\50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25/50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25_149x182.jpg','/img/users/\\50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25/50dc3bbb-5b4c-4c8c-b5cc-1998ded5dd25_200x210.jpg',NULL,'','','',0,'about me',0,0,0,'about 1','','',0,0,0,0,0,'buyer_1346976561_per@gmail.com','eng','[\"eng\",\"heb\"]',NULL,'Asia/Jerusalem','2012-12-30 22:13:50','2012-12-30 22:13:45','2012-07-19 22:50:32'),(5,NULL,'sivaneshokol@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Sivan','Yamin',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,'',NULL,NULL,0,0,0,4,2,NULL,'eng','[\"heb\",\"eng\"]',NULL,'Asia/Jerusalem','2012-12-30 22:13:28','2012-12-30 22:12:40',NULL),(6,NULL,'test@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'bba6d5957eff80ee1aa2f0e85f75f9979b4823c2',2,'nana','banana',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,'',NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,NULL,NULL,NULL,NULL),(15,NULL,'wedding@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'d869265677bdca60d0fe275df9c526e1c52e262e',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 01:47:50'),(7,NULL,'nanan@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'6d09a6fbb100b57426819a982cd1d65f35f2ab04',0,'eldad','yamin',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,'',NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,NULL,NULL,NULL,NULL),(8,NULL,'nanan2@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'c0631ff1d127d0af5c855e3c698fac887e6de6e4',0,'eldad','yamin',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,'',NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,NULL,NULL,NULL,NULL),(9,NULL,'nanan3@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'e4154b450ab649927690083bd87d4398458fde11',0,'eldad','yamin',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,3,180,'',NULL,NULL,0,0,0,0,0,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL),(13,NULL,'eshkolsivan@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Sivan','Eshkol-Yamin',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,5,300,'',NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC','2012-12-30 18:33:35','2012-12-29 20:53:16','2012-10-03 01:44:58'),(14,NULL,'test@new.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'26715edf0f3f5392af536d687b63e19c138ac0c4',0,'new','test',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-10-22 01:19:24'),(16,NULL,'wedding2@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'fe94affc18556001421b1107ed15926c8aa87516',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 01:53:36'),(17,NULL,'wedding3@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'6727620f5db3431581f06c0d83fcbebde85a8739',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 01:54:40'),(18,NULL,'wedding5@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'118cc9ba541ced625534f5fdab73524841071af8',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 01:55:33'),(19,NULL,'wedding6@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'b9dc8d01c3f8064327c46592600c0aab1282954a',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 01:56:03'),(20,NULL,'wedding7@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'8180ea14da81960ce3a198c93d6de65f10c3f431',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 01:56:12'),(21,NULL,'wedding8@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'b2f9649c4993142705efc32d4f0895531c932321',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 01:56:24'),(22,NULL,'wedding9@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'a3f315fe9ca0abbe836baf1d710f7a6e1c54a7b4',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 01:56:38'),(23,NULL,'wedding10@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'64de843db004cbf3504b47ce4fcb99d7daedb34b',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 01:58:01'),(24,NULL,'wedding11@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'5e2687b1dd5515cce5bbcd432cff3da280dc46ed',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 01:58:49'),(25,NULL,'wedding12@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'dc8e31575dcd4061d1c983f5771d8248d039e82d',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 01:58:59'),(26,NULL,'wedding13@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'161c678b9c55ecd5a7130e39caad4487651455a8',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:00:01'),(27,NULL,'wedding15@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'10fe4367a84a083446eb950387451a4fa8aa90de',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:00:31'),(28,NULL,'wedding16@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'745a27b4f0652f5ab2d8301a371356109d2e80db',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:03:10'),(29,NULL,'wedding17@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'8e1864e53b7eed8e43c88fd1530263267c5ad2be',0,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:03:36'),(30,NULL,'wedding18@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:06:29'),(31,NULL,'wedding20@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:07:11'),(32,NULL,'wedding21@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:07:38'),(33,NULL,'wedding22@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:08:02'),(34,NULL,'wedding23@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:08:54'),(35,NULL,'wedding24@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:09:02'),(36,NULL,'wedding25@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:09:16'),(37,NULL,'wedding26@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:10:42'),(38,NULL,'wedding27@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:10:52'),(39,NULL,'wedding28@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:11:14'),(40,NULL,'wedding30@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:11:45'),(41,NULL,'wedding31@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:11:55'),(42,NULL,'wedding32@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:12:13'),(43,NULL,'wedding33@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:13:33'),(44,NULL,'wedding34@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:13:49'),(45,NULL,'wedding35@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:14:16'),(46,NULL,'wedding36@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:15:25'),(47,NULL,'wedding37@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:15:46'),(48,NULL,'wedding38@user.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:16:03'),(49,NULL,'sivaneshokol@gmail2.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 02:18:24'),(50,NULL,'sivaneshokol@gmail3.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC','2012-11-04 02:19:34',NULL,'2012-11-04 02:19:34'),(51,NULL,'sivaneshokol@gmail4.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC','2012-11-04 02:19:53',NULL,'2012-11-04 02:19:53'),(52,NULL,'sivaneshokol1@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'Eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC','2012-11-04 02:20:21',NULL,'2012-11-04 02:20:21'),(53,NULL,'2sivaneshokol@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC','2012-11-04 02:22:15',NULL,'2012-11-04 02:22:15'),(54,NULL,'3sivaneshokol@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC','2012-11-04 02:22:51',NULL,'2012-11-04 02:22:51'),(55,NULL,'10sivaneshokol@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'b0be666548211f31738790a106759af632bd9d6e',0,'eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 11:44:20'),(56,NULL,'11sivaneshokol@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,'af5fbd1c6259266cd2679c85ad3e7dbc61cab190',0,'eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC',NULL,NULL,'2012-11-04 11:45:13'),(57,NULL,'12sivaneshokol@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC','2012-11-04 11:45:51',NULL,'2012-11-04 11:45:51'),(58,NULL,'13sivaneshokol@gmail.com','93bcca70e6e28f23c82fb55c48d88a1bab4bba0d',NULL,NULL,1,'eldad','',0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,NULL,'eng',NULL,NULL,'UTC','2012-11-04 22:45:21','2012-11-04 22:43:25','2012-11-04 11:48:35');
+
+/*Data for the table `watchitoo_lesson_meetings` */
+
+insert  into `watchitoo_lesson_meetings`(`watchitoo_lesson_meeting_id`,`teacher_lesson_id`,`meeting_id`,`created`) values (9,63,'wkr-227','2012-10-22 13:32:00'),(10,64,'wti-088','2012-10-25 16:10:10'),(11,65,'wjw-366','2012-10-25 16:13:42'),(12,66,'wlm-234','2012-10-28 14:58:12'),(13,67,'wgd-171','2012-10-28 14:58:26'),(14,68,'wwb-806','2012-10-28 14:58:41'),(15,69,'wws-958','2012-10-28 14:58:52'),(16,70,'wkd-265','2012-11-05 15:44:27'),(17,75,'wzf-069','2012-11-11 20:54:40'),(18,76,'wrx-551','2012-11-11 20:58:43'),(19,77,'wfc-610','2012-12-01 13:53:47'),(20,78,'wzh-843','2012-12-01 14:30:00'),(21,79,'wax-328','2012-12-01 15:13:02'),(22,80,'wls-532','2012-12-01 15:20:44'),(23,81,'wdp-422','2012-12-01 15:23:20'),(24,82,'wby-567','2012-12-01 15:25:52'),(25,83,'wab-289','2012-12-01 15:26:53'),(26,1,'wcr-808','2012-12-29 16:00:39'),(27,5,'wac-782','2012-12-29 22:39:13'),(28,6,'wla-984','2012-12-29 22:40:06'),(29,7,'wli-314','2012-12-29 22:41:26'),(30,8,'wja-675','2012-12-29 23:17:38'),(31,9,'wve-312','2012-12-30 18:45:11'),(32,10,'wzq-409','2012-12-30 18:48:13');
+
+/*Data for the table `watchitoo_lesson_users` */
+
+insert  into `watchitoo_lesson_users`(`user_id`,`watchitoo_user_id`) values (5,11428062),(6,11411175),(13,11437434);
+
+/*Data for the table `watchitoo_subject_meetings` */
+
+insert  into `watchitoo_subject_meetings`(`watchitoo_subject_meeting_id`,`subject_id`,`meeting_id`) values (1,23,'wne-014'),(2,102,'wps-785'),(3,103,'wqd-289'),(4,104,'wxf-362'),(5,106,'wjh-222'),(6,108,'wze-659'),(7,113,'wzq-630'),(8,1,'wzs-962'),(9,2,'wmm-000'),(10,3,'wwf-426'),(11,4,'wra-013'),(12,5,'wuc-126'),(13,6,'wrp-868'),(14,7,'wko-799'),(15,10,'wfn-064'),(16,11,'wov-503'),(17,12,'wfm-874'),(18,13,'wda-006'),(19,14,'wqj-042'),(20,15,'wse-990'),(21,16,'wna-118'),(22,19,'wyy-764'),(23,20,'wvp-907'),(24,8,'wfm-134'),(25,9,'waw-654');
+
+/*Data for the table `watchitoo_subject_teachers` */
+
+insert  into `watchitoo_subject_teachers`(`user_id`,`watchitoo_user_id`,`subject_id`) values (4,11437371,1);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

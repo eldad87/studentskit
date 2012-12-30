@@ -3413,15 +3413,14 @@ ul.booking-nav.nav-tabs.back-more li.active{
 	-webkit-box-sizing:border-box;
 	-moz-box-sizing:border-box;
 	background:#fff;
+    border-top: none;
 }
 
 .headerdropdown .loadMore {
     background: #F0F0F0;
 }
 
-ul.headerdropdown li {
-    border-bottom: none;
-}
+
 
 .headerdropdown .loadMore {
 	border-radius:0px 0px 3px 3px;

@@ -21,9 +21,10 @@
         )
  */
 
+
     foreach($threads AS $thread) {
         echo '<li ',($thread['unread_messages']) ? ' class="visiter-background"' : '','>
-                            <a href="#">
+                            <a href="',Router::url($this->Layout->getOrganizerUrl('/Message/viewThread/' . $thread['thread_id'])),'">
                             <div class="headeruser">',
                                 $this->Html->image($this->Layout->image($thread['other_user']['image_source'], 38, 38), array('alt' => 'By user image'))
                             ,'</div>

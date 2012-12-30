@@ -270,4 +270,21 @@ class LayoutHelper extends AppHelper {
 
         return $this->_View->Html->image('icons/'.$lessonType.'.png', array('class'=>$class));
     }
+
+    public function getOrganizerUrl($mainArea, $subArea=null) {
+        //http://universito.com/Organizer#%23main-area=/Student/lessons&%23sub-area=/Student/lessonsArchive
+        ///Organizer#%23main-area=/Message
+
+        $hash = array();
+        if($mainArea) {
+            $hash[] = '%23main-area='.$mainArea;
+        }
+        if($subArea) {
+            $hash[] = '%23sub-area='.$subArea;
+        }
+        $hash = implode('&', $hash);
+
+        return array('controller'=>'Organizer', '#'=>$hash);
+
+    }
 }

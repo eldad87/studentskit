@@ -22,8 +22,15 @@
             $('#countary2').html(data['response']['timezone']);
         });
 
-        var url = '/Notifications/index/{limit}/{page}';
+        var url = '/Notifications/index/{limit}/1/1/1';
         lmObj.loadMoreButton('#notification-load-more', 'click', '#notification ul', url, {}, 'get', 3);
+        lmObj.clearBeforeAppend('#notification-load-more', true);
+        lmObj.setItemsCountSelector('#notification-load-more', '#notification ul li', function(totalCount, newCount, limit) {
+            if(newCount<limit) {
+                $('#notification-load-more').remove(); //css('visibility', 'hidden');
+            }
+            changeNotificationCountValue( -1 * newCount );
+        });
 
         //On the first click, make the first page items as read
         $('#world').click(function(e){
@@ -37,7 +44,10 @@
             var updateNotificationIds = [];
             $('#notification ul li').each(function(index, element){
                 updateNotificationIds.push($(element).data('notification-id'));
-            })
+            });
+
+
+            changeNotificationCountValue( -1 * updateNotificationIds.length );
 
             //Update
             var url = '/Notifications/markAsRead';
@@ -51,9 +61,25 @@
             })
         });
 
-        //Messages
+        function changeNotificationCountValue(plus) {
+            var val = $('#unreadNotificationCount').html();
+
+            val = parseInt(val) + plus;
+
+            if(val<=0) {
+                $('#world').unbind();
+                $('#unreadNotificationCount').remove();
+            } else {
+                $('#unreadNotificationCount').html( val );
+            }
+
+            //
+        }
+
+       /* //Messages
         var url = '/Message/getList/{limit}/{page}';
         lmObj.loadMoreButton('#messages-load-more', 'click', '#massages-tip ul', url, {}, 'get', 3);
+        lmObj.clearBeforeAppend('#messages-load-more', true)*/
     });
 </script>
 <!-- Topbar
@@ -158,26 +184,27 @@
                 $notificationsCount = $this->requestAction(array('controller'=>'Notifications', 'action'=>'getUnreadNotificationsCount'));
 
                 if($notificationsCount['unreadCount']) {
-                    echo '<div class="requst-number">',$notificationsCount['unreadCount'],'</div>';
+                    echo '<div class="requst-number" id="unreadNotificationCount">',$notificationsCount['unreadCount'],'</div>';
                 }
 
-                $notifications = $this->requestAction(array('controller'=>'Notifications', 'action'=>'index', 3, 1, 0));
+
                 ?>
                 <i class="pull-left iconMedium-world space22 icon <?php
                     //Only if we have notifications, set a popup class
-                    echo ($notifications['notifications'] ? 'show-tip' : '');
+                    echo ($notificationsCount['unreadCount'] ? 'show-tip' : '');
                     ?>" id="world"></i>
                 <div class="header-tooltip-box alltip" id="world-tip">
                     <div class="header-tooltip"></div>
                     <ul class="headerdropdown radius3">
                         <?php
+                            $notifications = $this->requestAction(array('controller'=>'Notifications', 'action'=>'index', 3, 1, 0));
                             if($notifications['notifications']) {
                                 echo $this->element('Topnav/notifications', array('notifications'=>$notifications['notifications']));
                             }
                         ?>
                     </ul>
 
-                    <div class="headerdropdown"><a href="#" id="notification-load-more" class="loadMore centered"><strong><?php echo __('Load More'); ?></strong></a></div>
+                    <div class="headerdropdown"><a href="#" id="notification-load-more" class="loadMore centered"><strong><?php echo __('Next'); ?></strong></a></div>
                 </div>
             </div>
 
@@ -202,12 +229,15 @@
                         <?php
 
 
+
                         if($threads['threads']) {
                             echo $this->element('Topnav/threads', array('threads'=>$threads['threads']));
                         }
                         ?>
                     </ul>
-                    <div class="headerdropdown"><a href="#" id="messages-load-more" class="loadMore centered"><strong><?php echo __('Load More'); ?></strong></a></div>
+                    <div class="headerdropdown">
+                        <a href="<?php echo Router::url($this->Layout->getOrganizerUrl('/Message')); ?>" class="loadMore centered"><strong><?php echo __('See All'); ?></strong></a>
+                    </div>
                 </div>
             </div>
 

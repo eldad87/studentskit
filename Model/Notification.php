@@ -86,9 +86,13 @@ class Notification extends AppModel {
         )));
     }
 
-    public function getNotifications($userId, $limit=7, $page=1, $markAsRead=true) {
+    public function getNotifications($userId, $limit=7, $page=1, $markAsRead=true, $unreadOnly=true) {
         $this->recursive = 1;
-        $results = $this->find('all', array('conditions'=>array( $this->alias.'.user_id'=>$userId ),
+        $conditions = array( $this->alias.'.user_id'=>$userId );
+        if($unreadOnly) {
+            $conditions[$this->alias.'.unread'] = 1;
+        }
+        $results = $this->find('all', array('conditions'=>$conditions,
                                                                 'limit'=>$limit,
                                                                 'page'=>$page));
 
