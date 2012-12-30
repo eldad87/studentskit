@@ -160,14 +160,17 @@
                 if($notificationsCount['unreadCount']) {
                     echo '<div class="requst-number">',$notificationsCount['unreadCount'],'</div>';
                 }
+
+                $notifications = $this->requestAction(array('controller'=>'Notifications', 'action'=>'index', 3, 1, 0));
                 ?>
-                <i class="pull-left iconMedium-world space22 icon show-tip" id="world"></i>
+                <i class="pull-left iconMedium-world space22 icon <?php
+                    //Only if we have notifications, set a popup class
+                    echo ($notifications['notifications'] ? 'show-tip' : '');
+                    ?>" id="world"></i>
                 <div class="header-tooltip-box alltip" id="world-tip">
                     <div class="header-tooltip"></div>
                     <ul class="headerdropdown radius3">
                         <?php
-                            $notifications = $this->requestAction(array('controller'=>'Notifications', 'action'=>'index', 3, 1, 0));
-
                             if($notifications['notifications']) {
                                 echo $this->element('Topnav/notifications', array('notifications'=>$notifications['notifications']));
                             }
@@ -185,13 +188,19 @@
                 if($messagesCount['unreadCount']) {
                     echo '<div class="requst-number">',$messagesCount['unreadCount'],'</div>';
                 }
+
+                $threads = $this->requestAction(array('controller'=>'Message', 'action'=>'getList'));
                 ?>
-                <i class="pull-left iconMedium-mail space22 icon show-tip" id="massages"></i>
+                <i class="pull-left iconMedium-mail space22 icon <?php
+                    //Only if we have messages, set a popup class
+                    echo ($threads['threads'] ? 'show-tip' : '');
+                    ?>" id="massages"></i>
+
                 <div id="massages-tip" class="header-tooltip-box alltip">
                     <div class="header-tooltip"></div>
                     <ul class="headerdropdown radius3">
                         <?php
-                        $threads = $this->requestAction(array('controller'=>'Message', 'action'=>'getList'));
+
 
                         if($threads['threads']) {
                             echo $this->element('Topnav/threads', array('threads'=>$threads['threads']));
