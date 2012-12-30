@@ -382,16 +382,6 @@ class UserLessonEventListener implements CakeEventListener {
         }
     }
     public function afterAccept(CakeEvent $event) {
-        if(!$this->getNotificationStatus('Model.UserLesson.afterAccept')) {
-            //No notifications needed
-            return true;
-        }
-
-        $toUserId = $messageType = null;
-        $byUserId = $event->data['by_user_id'];
-
-
-
         //Add FS
         if(!$event->data['user_lesson']['root_file_system_id']) {
 
@@ -435,6 +425,16 @@ class UserLessonEventListener implements CakeEventListener {
                 return false;
             }
         }
+
+
+        //Check if notifications are needed
+        if(!$this->getNotificationStatus('Model.UserLesson.afterAccept')) {
+            //No notifications needed
+            return true;
+        }
+
+        $toUserId = $messageType = null;
+        $byUserId = $event->data['by_user_id'];
 
 
         if($event->data['user_lesson']['teacher_user_id']==$byUserId) {

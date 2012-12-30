@@ -8,14 +8,14 @@
     <div class="container-inner">
 <?php
     //$showAds
-    echo $this->Html->scriptBlock($this->Watchitoo->initJS($meetingSettings['meeting_id'], $meetingSettings), array('inline'=>(isSet($blank)), 'safe'=>false));
+    //echo $this->Html->scriptBlock($this->Watchitoo->initJS($meetingSettings['meeting_id'], $meetingSettings), array('inline'=>(isSet($blank)), 'safe'=>false));
 ?>
 
         <div class="row">
-            <div class="lesson-box pull-left">
+            <div class="lesson-box pull-left pad8">
                 <h3 class="radius1"><!--5:30 - --><strong><?php echo $lessonName; ?></strong></h3>
                 <div class="lesson-box-content file-lesson no-padding-and-border">
-                    <?php echo $this->Watchitoo->embedMeetingJS($meetingSettings['meeting_id'], $meetingSettings); ?>
+                    <?php //echo $this->Watchitoo->embedMeetingJS($meetingSettings['meeting_id'], $meetingSettings); ?>
                 </div>
             </div>
 
@@ -28,11 +28,10 @@
             <ul class="booking-nav f-pad-norml um-upcoming f-pad-norml1 tab-menu">
                 <li class="active" id="filesTab"><a href="#"  class="load3" rel="<?php echo Router::url(array('controller'=>'FileSystem','action'=>'fileSystem', $FS['entity_type'], $FS['entity_id'])); ?>"><?php echo __('Files'); ?></a></li>
                 <li class="" id="testsTab"><a href="#"  class="load3" rel="<?php echo Router::url(array('controller'=>'Tests','action'=>'index', $subjectId)); ?>"><?php echo __('Tests'); ?></a></li>
-
-
             </ul>
         </div>
         <div class="clear"></div>
+        <div id="sub-area"></div>
 </div> <!-- /cont-span6 -->
 <?php
     }

@@ -28,19 +28,16 @@ class LessonsController extends AppController {
 
     /**
      * TODO:
-     *
-     * Download files
-     * Take tests
-     * Submit files to the teacher
      * forum
      *
      * if $teacherLessonId is provided - check if there is an existing recording on watchitoo
      * @param $subjectId
      */
-
     /**
      * Give the teacher the option to manage his lesson
+     *
      * @param $subjectId
+     * @return array|bool
      */
     public function subject($subjectId) {
         //Make sure the lesson belongs to the user
@@ -150,23 +147,9 @@ class LessonsController extends AppController {
                 }
             }
 
-            if($enterLesson) {
-                //TODO: generate token
-                $this->set('meetingSettings', $this->Watchitoo->getMeetingSettings($teacherLessonId, $this->Auth->user('user_id')));
-                /*$this->set('fileSystem', $this->FileSystem->getFS('subject', $liveRequestStatus['subject_id']));
-                $this->set('tests', $this->TeacherLesson->getTests($teacherLessonId));*/
 
-                if($liveRequestStatus['is_teacher']) {
-                    $this->set('FS', array('entity_type'=>'subject', 'entity_id'=>$liveRequestStatus['subject_id']));
-                } else {
-                    $this->set('FS', array('entity_type'=>'user_lesson', 'entity_id'=>$liveRequestStatus['user_lesson_id']));
-                }
-            }
+            $this->_setMeetingData($liveRequestStatus, $enterLesson);
 
-            $this->set('subjectId', $liveRequestStatus['subject_id']);
-            $this->set('datetime', $liveRequestStatus['datetime']);
-            $this->set('is_teacher', $liveRequestStatus['is_teacher']);
-            $this->set('lessonName', $liveRequestStatus['lesson_name']);
             $this->render('common'.DS.'lesson');
         }
     }
@@ -227,18 +210,31 @@ class LessonsController extends AppController {
             $this->UserLesson->setVideoStartEndDatetime($canWatchData['user_lesson_id']);
         }
 
-
-        $this->set('lessonName', $canWatchData['lesson_name']);
-        $this->set('subjectUrl', $this->TeacherLesson->getVideoUrl($subjectId));
         $this->set('showAds', ((!empty($canWatchData['end_datetime']) &&
-                                $this->TeacherLesson->toServerTime($canWatchData['end_datetime'])<=$this->TeacherLesson->timeExpression( 'now', false )) ||
-                                !$canWatchData['payment_needed']) );
+            $this->TeacherLesson->toServerTime($canWatchData['end_datetime'])<=$this->TeacherLesson->timeExpression( 'now', false )) ||
+            !$canWatchData['payment_needed']) );
 
-        $this->set('subjectId', $canWatchData['subject_id']);
-        $this->set('userLessonId', $canWatchData['user_lesson_id']);
-        /*$this->set('fileSystem', $this->FileSystem->getFS('subject', $canWatchData['subject_id']));
-		$this->set('tests', $this->TeacherLesson->getTests($canWatchData['teacher_lesson_id']));*/
+        $this->_setMeetingData($canWatchData);
+
+
         $this->render('common'.DS.'lesson');
+    }
+
+    private function _setMeetingData($data, $enterLesson=true) {
+        if($enterLesson) {
+            $this->set('meetingSettings', $this->Watchitoo->getMeetingSettings($data['teacher_lesson_id'], $this->Auth->user('user_id')));
+        }
+
+        if($data['is_teacher']) {
+            $this->set('FS', array('entity_type'=>'subject', 'entity_id'=>$data['subject_id']));
+        } else {
+            $this->set('FS', array('entity_type'=>'user_lesson', 'entity_id'=>$data['user_lesson_id']));
+        }
+
+        $this->set('subjectId', $data['subject_id']);
+        //$this->set('datetime', $liveRequestStatus['datetime']);
+        $this->set('is_teacher', $data['is_teacher']);
+        $this->set('lessonName', $data['lesson_name']);
     }
 
     public function invite($idKey=null, $id=null) {
