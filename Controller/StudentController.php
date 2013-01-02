@@ -37,6 +37,16 @@ class StudentController extends AppController {
 		$this->Set('latestUpdatedTopics', $latestUpdatedTopics);
 	}
 
+    public function latestUpdatedBoardPosts($limit, $page) {
+        app::import('Model', 'Forum.Post');
+        $postObj = new Post();
+        $postObj->setLanguages($this->Session->read('languages_of_records'));
+        $latestUpdatedTopics = $postObj->getGroupedLatestUpdatedTopicsByUser($this->Auth->user('user_id'), $limit, $page);
+        $this->Set('limit', $limit);
+        $this->Set('page', $page);
+        $this->Set('latestUpdatedTopics', $latestUpdatedTopics);
+    }
+
     public function lessons() {
 
     }
@@ -282,7 +292,7 @@ class StudentController extends AppController {
             return $this->error(1);
         }
 
-        if(!$this->UserLesson->rate(	$userLessonId, $this->Auth->user('user_id'),
+        if(!$this->UserLesson-> rate(	$userLessonId, $this->Auth->user('user_id'),
                                         $this->request->data['rating'],
                                         $this->request->data['review'])) {
 

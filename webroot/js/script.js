@@ -885,6 +885,14 @@ LoadMore.prototype.getNextPage = function(buttonSelector) {
     this.paginator[buttonSelector]++;
     return this.paginator[buttonSelector];
 }
+LoadMore.prototype.getPrevPage = function(buttonSelector) {
+    if(!this.paginator[buttonSelector]) {
+        this.paginator[buttonSelector] = 1;
+    }
+
+    this.paginator[buttonSelector]--;
+    return this.paginator[buttonSelector];
+}
 
 LoadMore.prototype.clearBeforeAppend = function(buttonSelector, status ) {
     this.callbacks.clearBeforeAppend[buttonSelector] = status;
@@ -955,6 +963,9 @@ LoadMore.prototype.loadMoreButton = function(buttonSelector, eventName, appendTo
             if(afterCallback) {
                 afterCallback( data );
             }
+        }).error(function(data){
+            //Set prev page
+            loadMoreObj.getPrevPage(buttonSelector);
         });
 
      });

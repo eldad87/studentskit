@@ -317,8 +317,7 @@ class TeacherController extends AppController {
 	public function manageTeacherLesson( $teacherLessonId ) {
 		$teacherLessonData = $this->TeacherLesson->findByTeacherLessonId($teacherLessonId);
 		$students = $this->UserLesson->getStudentsForTeacherLesson($teacherLessonId);
-		
-		//TODO: add student amount of lessons, FS and Tests managment
+
 		$this->set('teacherLesson', $teacherLessonData['TeacherLesson']);
 		$this->set('subjectData', $teacherLessonData['Subject']);
 		$this->set('allStudents',	 $students);

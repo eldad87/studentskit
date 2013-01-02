@@ -2550,7 +2550,7 @@ ul.message-tm-stu{
 	float:left;
 	width:100%;
 	height:auto;
-	margin-top:10px;
+	/*margin-top:10px;*/
 }
 
 ul.message-tm-stu li{
