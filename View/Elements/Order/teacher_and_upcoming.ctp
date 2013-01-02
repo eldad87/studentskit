@@ -34,7 +34,7 @@
     if($upcomingAvailableLessons) {
         ?>
         <div class="lesson-box pad8">
-            <h3 class="radius1"><strong>Join existing lessons</strong></h3>
+            <h3 class="radius1"><strong><?php echo __('Join existing lessons'); ?></strong></h3>
             <div class="box-subject2 radius3">
                 <?php
                 $upcomingAvailableLessonsCount = count($upcomingAvailableLessons);
@@ -66,15 +66,15 @@
         </div><!-- /lesson-box -->
 
 
-        <a class="more radius3 gradient2" data-toggle="modal" href="#upcoming"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
+        <a class="more radius3 gradient2" data-toggle="modal" href="#upcoming"><strong><?php echo __('Load More'); ?></strong><i class="iconSmall-more-arrow"></i></a>
 
         <div id="upcoming" class="modal hide fade">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h3>Join existing group lessons</h3>
+                <h3><?php echo __('Join existing group lessons'); ?></h3>
             </div> <!-- /modal-header -->
             <div class="modal-body">
-                <h5><a href="#">Why should i join existing lesson?</a><i class="iconSmall-info space20 space23"></i> </h5>
+                <h5><a href="#"><?php echo __('Why should i join existing lesson?'); ?></a><i class="iconSmall-info space20 space23"></i> </h5>
                 <?php
                 $i=0;
                 foreach($upcomingAvailableLessons AS $upcomingAvailableLesson) {
@@ -87,7 +87,7 @@
             <div class="modal-footer">
                 <div class="fullwidth pull-left">
                     <div class="popmargin">
-                        <a href="#" class="more radius3 gradient2 space9 pull-left upcoming-lessons-for-subject"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
+                        <a href="#" class="more radius3 gradient2 space9 pull-left upcoming-lessons-for-subject"><strong><?php echo __('Load More'); ?></strong><i class="iconSmall-more-arrow"></i></a>
                     </div>
                 </div>
             </div> <!-- /modal-footer -->

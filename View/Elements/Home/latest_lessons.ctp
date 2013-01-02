@@ -16,4 +16,4 @@
     </div>
 </div>
 <!-- /lesson-box -->
-<a href="#" class="more radius3 gradient2 space9 pull-left latest-lessons"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
+<a href="#" class="more radius3 gradient2 space9 pull-left latest-lessons"><strong><?php echo __('Load More'); ?></strong><i class="iconSmall-more-arrow"></i></a>

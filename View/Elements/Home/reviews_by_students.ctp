@@ -15,4 +15,4 @@
     </div>
     <!-- /lesson-box -->
 </div>
-<a href="#" class="more radius3 gradient2 space8 reviews-by-students"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
+<a href="#" class="more radius3 gradient2 space8 reviews-by-students"><strong><?php echo __('Load More'); ?></strong><i class="iconSmall-more-arrow"></i></a>

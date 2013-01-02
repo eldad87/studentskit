@@ -52,7 +52,7 @@
                         <!-- pager -->
                         <div class="fullwidth pull-left">
                             <div class="popmargin">
-                                <a href="#" class="more radius3 gradient2 space9 pull-left search-load-more"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>
+                                <a href="#" class="more radius3 gradient2 space9 pull-left search-load-more"><strong><?php echo __('Load More'); ?></strong><i class="iconSmall-more-arrow"></i></a>
                             </div>
                         </div>
                     </div>

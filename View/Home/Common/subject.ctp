@@ -104,7 +104,7 @@ echo $this->fetch('popups');
                             </div> <!-- /pic-butn-box -->
                         </li>
                     </ul>
-                    <!--<a href="#" class="more radius3 gradient2 space8"><strong>Load More</strong><i class="iconSmall-more-arrow"></i></a>-->
+                    <!--<a href="#" class="more radius3 gradient2 space8"><strong><?php echo __('Load More'); ?></strong><i class="iconSmall-more-arrow"></i></a>-->
 
                     <?php
                         if($subjectRatingByStudents) {
