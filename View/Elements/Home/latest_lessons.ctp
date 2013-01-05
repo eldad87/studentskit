@@ -1,6 +1,6 @@
 <!-- /student-main-box -->
 <div class="lesson-box pad8 space4">
-    <h3 class="radius1"><strong>Latest Lessons</strong></h3>
+    <h3 class="radius1"><strong><?php echo __('Latest Lessons'); ?></strong></h3>
     <div class="box-subject2 radius3">
         <div class="latest-lessons">
             <?php
@@ -16,4 +16,7 @@
     </div>
 </div>
 <!-- /lesson-box -->
-<a href="#" class="more radius3 gradient2 space9 pull-left latest-lessons"><strong><?php echo __('Load More'); ?></strong><i class="iconSmall-more-arrow"></i></a>
+<?php
+if(count($archiveLessons)>=$archiveLessonsLimit) {
+    echo '<a href="#" class="more radius3 gradient2 space9 pull-left latest-lessons"><strong>',__('Load More'),'</strong><i class="iconSmall-more-arrow"></i></a>';
+}

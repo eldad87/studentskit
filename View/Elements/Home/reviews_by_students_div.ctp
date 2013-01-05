@@ -1,4 +1,4 @@
-<div class="main-student<?php echo (!$first ? ' bot2' : null); ?>">
+<div class="main-student<?php echo (!$first ? ' bot2' : null); ?> student-review">
     <div class="left-student-box">
         <?php
         echo $this->Html->image(

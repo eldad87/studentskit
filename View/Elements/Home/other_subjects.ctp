@@ -11,5 +11,10 @@
         </ul>
     </div>
 </div>
-<a href="#" class="more radius3 gradient2 space9 pull-left mysubject-more"><strong><?php echo __('Load More'); ?></strong><i class="iconSmall-more-arrow"></i></a>
+
+<?php
+if(count($teacherSubjects)>=$teacherOtherSubjectsLimit) {
+    echo '<a href="#" class="more radius3 gradient2 space9 pull-left mysubject-more"><strong>',__('Load More'),'</strong><i class="iconSmall-more-arrow"></i></a>';
+}
+?>
 <!-- other-subjects ends -->

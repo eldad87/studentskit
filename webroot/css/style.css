@@ -108,6 +108,7 @@ section{
 	box-sizing: border-box;
 }
 
+
 ul.board-msg li {
     color: #333;
 }
@@ -1942,7 +1943,6 @@ tr.table-heading2 td ul.color-box li{
 
 .pad1{
 	padding-top:32px;
-	margin-bottom:30px;
 }
 
 .pad1 h6 a{
@@ -5147,7 +5147,7 @@ a.add-blckbtn{
 }
 
 .popmargin{
-	margin:10px 10%;
+	margin-left:20px;
 }
 
 /* oreder billing */

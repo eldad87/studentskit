@@ -1,5 +1,4 @@
-
-<div class="main-student<?php echo ($first ? null : ' bot2'); ?>">
+<div class="main-student<?php echo ($first ? null : ' bot2'); ?> latest-lesson">
     <div class="left-student-box">
         <?php
         echo $this->Html->image($this->Layout->image($archiveLesson['UserLesson']['image_source'], 58, 58), array('alt' => 'Lesson image', 'class'=>'border1'));

@@ -296,6 +296,7 @@ class HomeController extends AppController {
 
 		$this->set('newSubjects', $newSubjects);
 		$this->set('latestTopics', $latestTopics);
+		$this->set('latestTopicsCount', 5);
     }
 
     public function latestBoardPosts($limit, $page) {
@@ -641,6 +642,8 @@ $id = $scObj->id;
         if($lessonType) {
             $query['fq']['lesson_type'] = '('.implode(' OR ',$lessonType).')';
         }
+
+        $this->set('subjectSearchLimit', $limit);
         return $query;
     }
 
@@ -665,7 +668,9 @@ $id = $scObj->id;
 
 
         if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
-            $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons(null, $subjectId);
+            $upcomingAvailableLessonsLimit = 2;
+            $this->set('upcomingAvailableLessonsLimit', $upcomingAvailableLessonsLimit);
+            $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons(null, $subjectId, $upcomingAvailableLessonsLimit);
             $this->set('upcomingAvailableLessons', $upcomingAvailableLessons);
             $settings['popup'] = false;
 
@@ -676,40 +681,21 @@ $id = $scObj->id;
             if(!$canWatchVideo) {
                 $this->redirect('/');
             }
-           /* $this->set('paymentNeeded', $canWatchVideo['payment_needed']>0);
 
-            $this->set('showPendingTeacherApproval', false);
-            $this->set('showAcceptInvitationButton', false);
-            $this->set('showGoToLessonButton', false);
-            $this->set('showOrderLessonButton', false);
-            $this->set('showOrderFreeLessonButton', false);
-
-            if(!empty($canWatchVideo['user_lesson_id'])) {
-                $this->set('userLessonId', $canWatchVideo['user_lesson_id']);
-            }*/
 
             if($canWatchVideo['approved'] || $canWatchVideo['is_teacher']) {
-                //show "Go to lesson" button
-                //$this->set('showGoToLessonButton', true);
                 $settings['popup'] = false;
 
             } else if($canWatchVideo['pending_teacher_approval']) {
-                //Show message on the page "pending for teacher approval, please come back later"
-                //$this->set('showPendingTeacherApproval', true);
                 $settings['popup']['description'] = __('You\'re latest order for this lesson is still pending for the teacher approval');
 
 
             } else if($canWatchVideo['pending_user_approval']) {
-                //Show message on the page "pending for your approval, click <a>here</a> to review it in your panel"
-                //$this->set('showAcceptInvitationButton', true);
-                //$this->redirect(array('controller'=>'Student', 'action'=>'lessons', 'tab'=>'invitations', $liveRequestStatus['user_lesson_id']));
                 $settings['popup']['description'] = __('There is a pending invitation for this lesson');
 
             } else if($canWatchVideo['payment_needed']) {
-                //$this->set('showOrderLessonButton', true);
                 $settings['popup'] = false;
             } else  {
-                //$this->set('showOrderFreeLessonButton', true);
                 $settings['popup'] = false;
             }
         }
@@ -819,7 +805,7 @@ $id = $scObj->id;
         $this->render('teacher_subject');
     }
 
-    private function loadSubjectCommonInfo($subjectId) {
+    private function loadSubjectCommonInfo($subjectId, $teacherOtherSubjectsLimit=6) {
         $subjectData = $this->Subject->findBySubjectId( $subjectId );
         if(!$subjectData || $subjectData['Subject']['is_enable']==SUBJECT_IS_ENABLE_FALSE) {
 
@@ -836,11 +822,13 @@ $id = $scObj->id;
         $this->setJSSetting('teacher_user_id', $subjectData['user_id']);
 
         //Get students comments for that subject
-        $subjectRatingByStudents = $this->Subject->getRatingByStudents( $subjectId, 2 );
+        $reviewsLimit = 2;
+        $this->set('reviewsLimit', $reviewsLimit);
+        $subjectRatingByStudents = $this->Subject->getRatingByStudents( $subjectId, $reviewsLimit );
 
         //Get teacher other subjects
         $this->Subject->setLanguages($this->Session->read('languages_of_records'));
-        $teacherOtherSubjects = $this->Subject->getOffersByTeacher( $subjectData['user_id'], false, null, 1, 6, null, $subjectId );
+        $teacherOtherSubjects = $this->Subject->getOffersByTeacher( $subjectData['user_id'], false, null, 1, $teacherOtherSubjectsLimit, null, $subjectId );
 
         //Get teacher data
         $this->User->recursive = -1;
@@ -853,7 +841,7 @@ $id = $scObj->id;
             return false;
         }
 
-        if(!empty($subjectData['category_id'])) {
+        /*if(!empty($subjectData['category_id'])) {
             if(!$lor = $this->Session->read('languagesOfRecords')) {
                 $lor = array();
             }
@@ -872,12 +860,13 @@ $id = $scObj->id;
             if($otherTeacherForThisSubject && !empty($otherTeacherForThisSubject['subjects'])) {
                 $this->set('otherTeacherForThisSubject', $otherTeacherForThisSubject['subjects']);
             }
-        }
+        }*/
 
 
         $this->set('subjectData', 				$subjectData);
         $this->set('subjectRatingByStudents', 	$subjectRatingByStudents);
         $this->set('teacherOtherSubjects', 		$teacherOtherSubjects);
+        $this->set('teacherOtherSubjectsLimit', $teacherOtherSubjectsLimit);
         $this->set('teacherData', 			    $teacherData['User']);
         $this->set('paymentNeeded',             $subjectData['1_on_1_price']>0);
 
@@ -885,7 +874,7 @@ $id = $scObj->id;
                         'subjectRatingByStudents'   =>$subjectRatingByStudents,
                         'teacherOtherSubjects'      =>$teacherOtherSubjects,
                         'teacherData'               =>$teacherData['User'],
-                        'teacherData'               =>$subjectData['1_on_1_price']>0);
+                        'paymentNeeded'             =>$subjectData['1_on_1_price']>0);
 
         if(!empty($otherTeacherForThisSubject)) {
             $return['otherTeacherForThisSubject'] = $otherTeacherForThisSubject;
@@ -938,13 +927,18 @@ $id = $scObj->id;
 
 		//Get students comments for that teacher
         $this->UserLesson->setLanguages($this->Session->read('languages_of_records'));
-		$teacherReviews = $this->UserLesson->getTeacherReviews( $teacherUserId, 2 );
+
+        $reviewsLimit = 2;
+        $this->set('reviewsLimit', $reviewsLimit);
+		$teacherReviews = $this->UserLesson->getTeacherReviews( $teacherUserId, $reviewsLimit );
 
 		//get forum latest posts
         $latestPosts = $this->getLastUserPosts($teacherUserId, 2, 1);
 
         //Get upcoming lessons
-        $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($teacherUserId);
+        $upcomingAvailableLessonsLimit = 2;
+        $this->set('upcomingAvailableLessonsLimit', $upcomingAvailableLessonsLimit);
+        $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons($teacherUserId, null, $upcomingAvailableLessonsLimit);
 
 
 		$this->set('teacherData', 	            $teacherData);
@@ -993,12 +987,16 @@ $id = $scObj->id;
 
         //Get teachers comments for that user
         $this->UserLesson->setLanguages($this->Session->read('languages_of_records'));
-        $studentReviews = $this->UserLesson->getStudentReviews( $userId, 2 );
+        $reviewsByTeachersLimit = 2;
+        $this->set('reviewsByTeachersLimit', $reviewsByTeachersLimit);
+        $studentReviews = $this->UserLesson->getStudentReviews( $userId, $reviewsByTeachersLimit );
 
         //Get archived lessons
         $this->UserLesson->recursive = -1;
         $this->UserLesson->setLanguages($this->Session->read('languages_of_records'));
-        $archiveLessons = $this->UserLesson->getArchive($userId, 2, 1);
+        $archiveLessonsLimit = 2;
+        $archiveLessons = $this->UserLesson->getArchive($userId, $archiveLessonsLimit, 1);
+        $this->set('archiveLessonsLimit', $archiveLessonsLimit);
 
         $this->set('userData',         $userData['User']);
         $this->set('latestPosts',      $latestPosts);

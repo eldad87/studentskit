@@ -1180,6 +1180,7 @@ $(document).ready(function(){
     var url = '/Order/getUpcomingOpenLessonForSubject/{subject_id}/{limit}/{page}';
 
     lmObj.loadMoreButton('.upcoming-lessons-for-subject', 'click', '#upcoming .modal-body', url, jsSettings, 'get', 3);
+    lmObj.setItemsCountSelector('.upcoming-lessons-for-subject', '#upcoming .modal-body .main-student' );
 });
 
 ///////////////////////////////////////////// Home/Requests auto complete
@@ -1193,7 +1194,8 @@ $(document).ready(function(){
 
     var url = '{search_load_more_url}&limit={limit}&page={page}';
 
-    lmObj.loadMoreButton('.search-load-more', 'click', 'ul.lesson-container', url, jsSettings, 'get', 8);
+    lmObj.loadMoreButton('a.search-load-more', 'click', 'ul.lesson-container', url, jsSettings, 'get', 8);
+    lmObj.setItemsCountSelector('a.search-load-more', 'ul.lesson-container li' );
 });
 
 ///////////////////////////////////////////// Teacher/TeacherSubject page
@@ -1213,7 +1215,8 @@ $(document).ready(function(){
         url = url + '/{subject_id}'
     }
 
-    lmObj.loadMoreButton('.mysubject-more', 'click', '.subject-box', url, jsSettings, 'get', 3);
+    lmObj.loadMoreButton('a.mysubject-more', 'click', 'ul.subject-box', url, jsSettings, 'get', 3);
+    lmObj.setItemsCountSelector('a.mysubject-more', 'ul.subject-box li' );
 });
 
 $(document).ready(function(){
@@ -1233,6 +1236,7 @@ $(document).ready(function(){
     }
 
     lmObj.loadMoreButton('a.upcoming-more', 'click', 'ul.upcoming-more', url, jsSettings, 'get', 3);
+    lmObj.setItemsCountSelector('a.upcoming-more', 'ul.upcoming-more li' );
 });
 
 $(document).ready(function(){
@@ -1251,6 +1255,7 @@ $(document).ready(function(){
         }
 
         lmObj.loadMoreButton('a.reviews-by-students', 'click', 'div.reviews-by-students', url, jsSettings, 'get', 3);
+        lmObj.setItemsCountSelector('a.reviews-by-students', 'div.reviews-by-students div.student-review' );
     });
 });
 
@@ -1266,6 +1271,7 @@ $(document).ready(function(){
         });
 
         lmObj.loadMoreButton('a.reviews-by-teachers', 'click', 'div.reviews-by-teachers', '/Home/getStudentRatingByTeachers/{student_user_id}/{limit}/{page}', jsSettings, 'get', 3);
+        lmObj.setItemsCountSelector('a.reviews-by-teachers', 'div.reviews-by-teachers div.teacher-review' );
     });
 });
 
@@ -1281,6 +1287,7 @@ $(document).ready(function(){
     });
 
     lmObj.loadMoreButton('a.latest-lessons', 'click', 'div.latest-lessons', '/Home/getStudentArchiveLessons/{student_user_id}/{limit}/{page}', jsSettings, 'get', 5);
+    lmObj.setItemsCountSelector('a.latest-lessons', 'div.latest-lessons div.latest-lesson' );
 });
 
 ///////////////////////////////////////////// Home page
@@ -1295,6 +1302,7 @@ $(document).ready(function() {
     });
 
     lmObj.loadMoreButton('a.more-btn1', 'click', 'ul.board-msg', '/Home/latestBoardPosts/{limit}/{page}', jsSettings, 'get', 5);
+    lmObj.setItemsCountSelector('a.more-btn1', 'ul.board-msg li' );
 });
 
 ///////////////////////////////////////

@@ -5,7 +5,7 @@
     <div class="container-inner">
         <div class="row">
             <div class="cont-span8">
-                <h2 class="pull-left"><i class="iconBig-about space1"></i>Newest subjects</h2>
+                <h2 class="pull-left"><i class="iconBig-about space1"></i><?php echo __('Newest'); ?></h2>
                 <?php
                     echo $this->Layout->subjectRequestPopupButton();
                     echo $this->element('Home/subject_request_popup');
@@ -39,25 +39,25 @@
                     <div class="color-btn-span">
                         <a href="#" title="" class="btn-color-green">
                             <i class="iconMedium-work"></i>
-                            <p class="btn-color-txt"><span>How it</span><br>Works?</p>
+                            <p class="btn-color-txt"><?php echo sprintf(__('%s How it %s WORKS?'), '<span>', '</span><br />'); ?></p>
                         </a>
                     </div>
                     <div class="color-btn-span">
                         <a href="#" title="" class="btn-color-red">
                             <i class="iconMedium-more"></i>
-                            <p class="btn-color-txt"><span>Learn</span><br>More</p>
+                            <p class="btn-color-txt"><?php echo sprintf(__('%s Learn %s MORE'), '<span>', '</span><br />'); ?></p>
                         </a>
                     </div>
                     <div class="color-btn-span last">
                         <a href="#" title="" class="btn-color-blue">
                             <i class="iconMedium-teacher"></i>
-                            <p class="btn-color-txt"><span>Become A</span><br>Teacher</p>
+                            <p class="btn-color-txt"><?php echo sprintf(__('%s Become A %s TEACHER'), '<span>', '</span><br />'); ?></p>
                         </a>
                     </div>
                 </div>
             </div> <!-- /cont-span8 -->
             <div class="cont-span4 spc-mar">
-                <h2><i class="iconBig-mesg space1"></i>Board Messages</h2>
+                <h2><i class="iconBig-mesg space1"></i><?php echo __('Board Messages'); ?></h2>
                 <div class="board-msg-container">
                     <ul class="board-msg">
                         <?php
@@ -73,7 +73,12 @@
                     ?>
                     </ul>
                 </div>
-                <a class="more-btn1">More Threads</a>
+                <?php
+                    if(count($latestTopics)>=$latestTopicsCount) {
+                        echo '<a class="more-btn1">',_('More Threads'),'</a>';
+                    }
+                ?>
+
             </div> <!-- /cont-span8 -->
         </div>
     </div>

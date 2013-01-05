@@ -37,12 +37,12 @@
                             </div>
                         </div>
                         <div class="log-box">
-                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo ceil($teacherData['User']['teacher_total_teaching_minutes']/60); ?> H</span><br />Teaching</p>
-                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_total_lessons']; ?></span><br />Lessons</p>
-                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_students_amount']; ?></span><br />Students</p>
+                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo ceil($teacherData['User']['teacher_total_teaching_minutes']/60); ?> <?php echo __('H'); ?></span><br /><?php echo __('Teaching'); ?></p>
+                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_total_lessons']; ?></span><br /><?php echo __('Lessons'); ?></p>
+                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_students_amount']; ?></span><br /><?php echo __('Students'); ?></p>
                             <a class="log2 btn-black radius3" href="#"><?php
                                 echo $this->Layout->ratingNew($teacherData['User']['teacher_avarage_rating'], false, 'space20 centered');
-                                ?><br />(<?php echo $teacherData['User']['teacher_avarage_rating']; ?>/<?php echo $teacherData['User']['teacher_raters_amount']; ?> Reviews)</a>
+                                ?><br />(<?php echo $teacherData['User']['teacher_avarage_rating']; ?>/<?php echo $teacherData['User']['teacher_raters_amount']; ?> <?php echo __('Reviews'); ?>)</a>
                         </div>
                     </div> <!-- /student-main-box -->
 
@@ -82,7 +82,7 @@
                     ?>
                     <!-- certification-box -->
                     <div class="lesson-box pad8 space4">
-                        <h3 class="radius1"><strong>Certifications</strong></h3>
+                        <h3 class="radius1"><strong><?php echo __('Certifications'); ?></strong></h3>
                         <div class="box-subject2 radius3 fix-height">
                     <?php
                             $tcCount = count($teacherData['TeacherCertificate']);
@@ -108,7 +108,7 @@
                             echo $this->element('Home/board_topics', array('topics'=>$latestPosts));
                         }
 
-                        echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$teacherReviews, 'title'=>'What student say about me?'));
+                        echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$teacherReviews, 'title'=>__('What student say about me?')));
                     ?>
                     <!---->
 

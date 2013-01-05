@@ -37,14 +37,17 @@ echo $this->fetch('popups');
                                         }
                                     }
                                     ?>
-                                </span><span class="duration">Duration: <?php echo $subjectData['duration_minutes']; ?> min</span></p>
+                                </span><span class="duration">
+                                    <?php
+                                    echo sprintf(__('Duration %s min'), $subjectData['duration_minutes']);
+                                    ?></span></p>
                                 <div class="pull-right price-margn"><?php echo $this->Layout->priceTag($subjectData['1_on_1_price'], $subjectData['full_group_student_price']); ?></div>
                             </div>
                         </div>
                         <div class="log-box">
-                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $subjectData['total_lessons'] ?></span><br/>Lessons</p>
-                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $subjectData['students_amount'] ?></span><br/>Students</p>
-                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $subjectData['raters_amount'] ?></span><br/>Reviews</p>
+                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $subjectData['total_lessons'] ?></span><br/><?php echo __('Lessons'); ?></p>
+                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $subjectData['students_amount'] ?></span><br/><?php echo __('Students'); ?></p>
+                            <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $subjectData['raters_amount'] ?></span><br/><?php echo __('Reviews'); ?></p>
 
                             <a href="#" class="log2 btn-black radius3"><?php
                                 echo $this->Layout->ratingNew($subjectData['avarage_rating'], false, 'space20 centered');
@@ -52,7 +55,8 @@ echo $this->fetch('popups');
                         </div>
                     </div> <!-- /student-main-box -->
 
-                    <?php if($teacherOtherSubjects) {
+                    <?php
+                    if($teacherOtherSubjects) {
                         echo $this->element('Home/other_subjects', array('teacherSubjects'=>$teacherOtherSubjects));
                     }
 

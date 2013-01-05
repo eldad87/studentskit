@@ -106,6 +106,7 @@ class RequestsController extends AppController {
 		$subjectsData = $this->requestAction(array('controller'=>'Home', 'action'=>'searchSubject'), $this->request->query);
         $this->request->data = $this->request->query; //For search form
 		$this->set('subjectsData', $subjectsData);
+		$this->set('subjectSearchLimit', 8); //Set in homeController::searchSubject, $this->_searchDefaultQueryParams();
 	}
 	
 	

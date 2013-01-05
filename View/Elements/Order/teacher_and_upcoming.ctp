@@ -66,33 +66,36 @@
         </div><!-- /lesson-box -->
 
 
-        <a class="more radius3 gradient2" data-toggle="modal" href="#upcoming"><strong><?php echo __('Load More'); ?></strong><i class="iconSmall-more-arrow"></i></a>
+        <?php
+        if(count($upcomingAvailableLessons)>=$upcomingAvailableLessonsLimit) {
+        ?>
 
-        <div id="upcoming" class="modal hide fade">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h3><?php echo __('Join existing group lessons'); ?></h3>
-            </div> <!-- /modal-header -->
-            <div class="modal-body">
-                <h5><a href="#"><?php echo __('Why should i join existing lesson?'); ?></a><i class="iconSmall-info space20 space23"></i> </h5>
-                <?php
-                $i=0;
-                foreach($upcomingAvailableLessons AS $upcomingAvailableLesson) {
-                    $upcomingAvailableLesson = $upcomingAvailableLesson['TeacherLesson'];
-                    echo $this->element('Order/upcoming_lesson_div', array('upcomingAvailableLesson'=>$upcomingAvailableLesson, 'first'=>!++$i));
-                }
-                ?>
-            </div> <!-- /modal-body -->
+            <a class="more radius3 gradient2" data-toggle="modal" href="#upcoming"><strong><?php echo __('Load More'); ?></strong><i class="iconSmall-more-arrow"></i></a>
 
-            <div class="modal-footer">
-                <div class="fullwidth pull-left">
-                    <div class="popmargin">
+            <div id="upcoming" class="modal hide fade">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3><?php echo __('Join existing group lessons'); ?></h3>
+                </div> <!-- /modal-header -->
+                <div class="modal-body">
+                    <h5><a href="#"><?php echo __('Why should i join existing lesson?'); ?></a><i class="iconSmall-info space20 space23"></i> </h5>
+                    <?php
+                    $i=0;
+                    foreach($upcomingAvailableLessons AS $upcomingAvailableLesson) {
+                        $upcomingAvailableLesson = $upcomingAvailableLesson['TeacherLesson'];
+                        echo $this->element('Order/upcoming_lesson_div', array('upcomingAvailableLesson'=>$upcomingAvailableLesson, 'first'=>!++$i));
+                    }
+                    ?>
+                </div> <!-- /modal-body -->
+
+                <div class="modal-footer">
+                    <div class="fullwidth pull-left">
                         <a href="#" class="more radius3 gradient2 space9 pull-left upcoming-lessons-for-subject"><strong><?php echo __('Load More'); ?></strong><i class="iconSmall-more-arrow"></i></a>
                     </div>
-                </div>
-            </div> <!-- /modal-footer -->
-        </div>
+                </div> <!-- /modal-footer -->
+            </div>
         <?php
+        }
     }
     ?>
 

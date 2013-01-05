@@ -124,6 +124,7 @@ class OrderController extends AppController {
         $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons(null, $subjectId, 3);
         $this->set('teacherData', $teacherData['User']);
         $this->set('upcomingAvailableLessons', $upcomingAvailableLessons);
+        $this->set('upcomingAvailableLessonsLimit', 3);
 
         $this->setJSSetting('subject_id', $subjectId);
 
