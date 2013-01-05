@@ -16,6 +16,6 @@
     <!-- /lesson-box -->
 </div>
 <?php
-if(count($ratingByStudent)>=$reviewsLimit) {
+if(count($ratingByStudents)>=$reviewsLimit) {
     echo '<a href="#" class="more radius3 gradient2 space8 reviews-by-students"><strong>',__('Load More'),'</strong><i class="iconSmall-more-arrow"></i></a>';
 }
