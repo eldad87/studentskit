@@ -21,11 +21,14 @@ class TeacherController extends AppController {
 					
 		$this->Set('upcomingLessons', $upcomingLessons);
         $this->Set('latestUpdatedTopics', $latestUpdatedTopics);
+        $this->Set('limit', 3);
 	}
 
 	public function subjects($limit=5, $page=1) {
+        $this->Set('limit', $limit);
+        $this->Set('page', $page);
+
 		$subjects = $this->Subject->getOffersByTeacher($this->Auth->user('user_id'), true, null, $page, $limit);
-		//$this->Set('teacherImage', $this->Auth->user('image'));
 		$this->Set('subjects', $subjects);
 
         return $this->success(1, array('subjects'=>$subjects));
@@ -264,19 +267,29 @@ class TeacherController extends AppController {
 	}
 
 	public function lessonsUpcoming( $limit=6, $page=1, $subjectId=null ) {
+        $this->Set('limit', $limit);
+        $this->Set('page', $page);
+
 		$nextLessons = $this->TeacherLesson->getUpcoming($this->Auth->user('user_id'), $subjectId, $limit, $page);
 		return $this->success(1, array('upcomingLessons'=>$nextLessons));
 	}
 	public function lessonsBooking($limit=6, $page=1, $subjectId=null) {
+        $this->Set('limit', $limit);
+        $this->Set('page', $page);
 		$bookingRequests = $this->UserLesson->getWaitingForTeacherApproval($this->Auth->user('user_id'), $subjectId, $limit, $page);
 		return $this->success(1, array('bookingRequests'=>$bookingRequests));
 	}
 	public function lessonsArchive($limit=6, $page=1) {
+        $this->Set('limit', $limit);
+        $this->Set('page', $page);
+
         $this->Subject; //Init const
 		$archiveLessons = $this->TeacherLesson->getArchive($this->Auth->user('user_id'), null, $limit, $page);
 		return $this->success(1, array('archiveLessons'=>$archiveLessons));
 	}
 	public function lessonsInvitations($limit=6, $page=1,$subjectId=null) {
+        $this->Set('limit', $limit);
+        $this->Set('page', $page);
 		$lessonInvitations = $this->UserLesson->getTeacherInvitations($this->Auth->user('user_id'), $subjectId, $limit, $page);
 		return $this->success(1, array('lessonInvitations'=>$lessonInvitations));
 	}

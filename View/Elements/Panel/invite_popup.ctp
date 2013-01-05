@@ -7,11 +7,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        //Unbind existing events
-        $('<?php echo $buttonSelector; ?>').unbind();
-        $('#invitation-form').unbind();
-
-        $('<?php echo $buttonSelector; ?>').click(function(e){
+        $('body').undelegate('<?php echo $buttonSelector; ?>', 'click');
+        $('body').delegate('<?php echo $buttonSelector; ?>', 'click', function(e) {
             e.preventDefault();
 
             //Reset form's data-*
@@ -23,6 +20,8 @@
             //Show popup
             $('#invitation-popup').modal('show');
         });
+
+
 
         pAPIObj.loadElement('#invite-form', 'submit', '#invitation-popup .modal-body', 'post');
         pAPIObj.setAppendCallback('#invite-form', 'after', function(data){

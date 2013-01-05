@@ -1,15 +1,3 @@
-<p class="fontsize1 space8"><?php echo __('Here you can find all invitations that still pending for your approval.'); ?></p>
-
-<?php
-echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-deny',
-    'title'=>__('Cancel an invitation'),
-    'description'=>__('This procedure may be irreversible.
-                                                                                Do you want to proceed?'),
-    'cancelUrl'=>array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')));
-echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
-echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate'));
-echo $this->element('panel/accept_lesson_popup', array('buttonSelector'=>'.confirm-accept'));
-?>
 <script type="text/javascript">
     $(document).ready(function(){
         //Activate tooltip
@@ -17,18 +5,46 @@ echo $this->element('panel/accept_lesson_popup', array('buttonSelector'=>'.confi
     });
 </script>
 
-    <div class="fullwidth pull-left">
-        <ul>
-            <li>
-                <div class="space2 space6 left-student-box2 left-student-newbox2">
-                    <h5 class="pull-left"><strong><?php echo __('Invitation\'s request'); ?></strong></h5>
-                </div>
-                <div class="space2 space6 right-student-box2 right-student-newbox2">
-                    <h5 class=" pull-left"><strong><?php echo __('Lesson\'s info'); ?></strong></h5>
-                </div>
-            </li>
+<?php
+////////////// Page 1 - start
+if($page==1) {
+    ?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var url = '/Student/lessonsInvitations/{limit}/{page}';
+        lmObj.loadMoreButton('#user-lessons-invitations-load-more', 'click', '#user-lessons-invitations', url, {}, 'get', <? echo $limit; ?>);
+        lmObj.setItemsCountSelector('#user-lessons-invitations-load-more', '#user-lessons-invitations li' );
+    });
+</script>
 
-            <?php
+    <p class="fontsize1 space8"><?php echo __('Here you can find all invitations that still pending for your approval.'); ?></p>
+
+    <?php
+    echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-deny',
+        'title'=>__('Cancel an invitation'),
+        'description'=>__('This procedure may be irreversible.
+                                                                                    Do you want to proceed?'),
+        'cancelUrl'=>array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')));
+    echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
+    echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate'));
+    echo $this->element('panel/accept_lesson_popup', array('buttonSelector'=>'.confirm-accept'));
+    ?>
+
+        <div class="fullwidth pull-left">
+            <ul id="user-lessons-invitations">
+                <li>
+                    <div class="space2 space6 left-student-box2 left-student-newbox2">
+                        <h5 class="pull-left"><strong><?php echo __('Invitation\'s request'); ?></strong></h5>
+                    </div>
+                    <div class="space2 space6 right-student-box2 right-student-newbox2">
+                        <h5 class=" pull-left"><strong><?php echo __('Lesson\'s info'); ?></strong></h5>
+                    </div>
+                </li>
+
+    <?php
+}
+////////////// Page 1 - end
+
             foreach($response['response']['lessonInvitations'] AS $lessonInvitation) {
                 //Link to the subject page
                 $toTheLessonLink = $this->Html->link(__('Lesson page'), array('controller'=>'Home',
@@ -134,8 +150,19 @@ echo $this->element('panel/accept_lesson_popup', array('buttonSelector'=>'.confi
             }
             ?>
 
+<?php
+////////////// Page 1 - start
+if($page==1) {
+?>
         </ul>
+
         <div class="fullwidth pull-left">
+            <?php
+            if(count($response['response']['lessonInvitations'])>=$limit) {
+                echo '<a href="#" class="more radius3 gradient2 space8" id="user-lessons-invitations-load-more"><strong>', __('Load More') ,'</strong><i class="iconSmall-more-arrow"></i></a>';
+            }
+            ?>
+
             <div class="fullwidth pull-left">
                 <i class="iconBig-new-refresh pull-left"></i>
                 <p class="space26 space24"><?php echo __('A request for a new lesson'); ?></p>
@@ -146,3 +173,7 @@ echo $this->element('panel/accept_lesson_popup', array('buttonSelector'=>'.confi
             </div>
         </div>
     </div><!-- /left-student-box-->
+<?php
+////////////// Page 1 - ends
+}
+?>

@@ -28,10 +28,10 @@
 </script>
 <div class="cont-span6 ext-wid cbox-space">
     <div class="fullwidth pull-left">
-        <h2 class="pull-left"><?php echo ($thread['title'] ? $thread['title'] : sprintf(__('Conversation with %s'), $thread['other_user']['username'])); ?></h2>
+        <h2 class="pull-left"><?php echo ($response['response']['thread']['title'] ? $response['response']['thread']['title'] : sprintf(__('Conversation with %s'), $response['response']['thread']['other_user']['username'])); ?></h2>
         <div class="pull-right skmsg-headerbtn">
            <a class="btn-blue long-wid2 fontsize1 text-color load2" href="#" rel="<? echo Router::url(array('controller'=>'Message', 'action'=>'index')); ?>">
-               <i class="iconSmall-sidearrow sidearrow" />Message
+               <i class="iconSmall-sidearrow sidearrow" /><?php echo __('Message'); ?>
            </a>
            <!--<a class="btn-blue long-wid2 fontsize1 text-color show-tip" id="action-blue" href="#">
                 <i class="iconSmall-small-tool action-icon"></i><span class="actin">Action</span> <i class="iconSmall-drop-arrow action-icon"></i></a>
@@ -53,8 +53,8 @@
         <ul class="messagebar" id="messageList">
 
             <?php
-                foreach($thread['messages'] AS $message) {
-                    echo $this->element('Panel/Message/replay_li', array('message'=>$message, 'other_user'=>$thread['other_user']));
+                foreach($response['response']['thread']['messages'] AS $message) {
+                    echo $this->element('Panel/Message/replay_li', array('message'=>$message, 'other_user'=>$response['response']['thread']['other_user']));
                 }
             ?>
         </ul>
@@ -72,7 +72,7 @@
                                     </div>
                                     <textarea id="replay" name="message" class="fullwidth" required="required"></textarea>
 
-                                    <input type="hidden" name="thread_id" value="<?php echo $thread['thread_id']; ?>" />
+                                    <input type="hidden" name="thread_id" value="<?php echo $response['response']['thread']['thread_id']; ?>" />
                                 </div>
                                 <div class="fullwidth space23">
                                     <!--<a href="#"><i class="iconSmall-clip pull-left"></i></a>

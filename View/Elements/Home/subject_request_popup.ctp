@@ -10,7 +10,9 @@ if(!isSet($buttonSelector)) {
 ?>
 <script type="text/javascript">
     $(document).ready(function() {
-        $('<?php echo $buttonSelector; ?>').click(function(e){
+        $('body').undelegate('<?php echo $buttonSelector; ?>', 'click');
+        $('body').delegate('<?php echo $buttonSelector; ?>', 'click', function(e) {
+        //$('<?php echo $buttonSelector; ?>').click(function(e){
             e.preventDefault();
 
             //Copy data-* and place it as hidden:input

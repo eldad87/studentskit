@@ -1,14 +1,30 @@
-<p class="fontsize1 space8"><?php echo __('Here you can find all your past lessons.'); ?></p>
-
 <script type="text/javascript">
     $(document).ready(function(){
         //Activate tooltip
         initToolTips();
     });
 </script>
-<div class="add-sub pull-left space3">
 
+
+<?php
+////////////// Page 1 - start
+if($page==1) {
+    ?>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var url = '/Teacher/lessonsArchive/{limit}/{page}';
+            lmObj.loadMoreButton('#teacher-lessons-archive-load-more', 'click', '#teacher-lessons-archive', url, {}, 'get', <? echo $limit; ?>);
+            lmObj.setItemsCountSelector('#teacher-lessons-archive-load-more', '#teacher-lessons-archive div.lesson-box' );
+        });
+    </script>
+
+    <p class="fontsize1 space8"><?php echo __('Here you can find all your past lessons.'); ?></p>
+
+    <div class="add-sub pull-left space3" id="teacher-lessons-archive">
     <?php
+////////////// Page 1 - ends
+}
+
     foreach($response['response']['archiveLessons'] AS $archiveLessons) {
 
         $toTheLessonLink = false;
@@ -59,5 +75,14 @@
                 </div> <!-- /lesson-box-footer -->
             </div> <!-- /lesson-box -->';
     }
+
+////////////// Page 1 - start
+if($page==1) {
     ?>
-</div>
+    </div>
+<?php
+    if(count($response['response']['archiveLessons'])>=$limit) {
+        echo '<a href="#" class="more radius3 gradient2 space8" id="teacher-lessons-archive-load-more"><strong>', __('Load More') ,'</strong><i class="iconSmall-more-arrow"></i></a>';
+    }
+}
+////////////// Page 1 - end

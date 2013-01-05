@@ -67,11 +67,8 @@ PostForm.prototype.getAppendCallback = function( formSelector, on ) {
 PostForm.prototype.loadForm = function( formSelector, appendResultsSelector, type, params ) {
     var postForm = this;
 
-    //Remove all event binding
-    $(formSelector).unbind();
-
-    $(formSelector).submit(function(event) {
-
+    $('body').undelegate(formSelector, 'submit');
+    $('body').delegate(formSelector, 'submit', function(event) {
 
         //Get form action (url)
         url = $(this).attr('action');
@@ -79,10 +76,14 @@ PostForm.prototype.loadForm = function( formSelector, appendResultsSelector, typ
         if(!params) {
             params = $(this).data();
         }
+
+        //Remove hidden inputs
+        $(this).find('.load-element-dynamic').remove();
+
         //Append data-* as hidden:input
         formData = $(this).data();
         $.each(formData, function(key, val){
-            $('<input>').attr('type','hidden').attr('name', key).attr('value', val).appendTo(formSelector);
+            $('<input>').attr('type','hidden').attr('name', key).attr('class', 'load-element-dynamic').attr('value', val).appendTo(formSelector);
         });
 
         //Before we call Ajax
@@ -149,10 +150,8 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
     var postFormAPI = this;
 
     //Remove all event binding
-    $(formSelector).unbind();
-
-    $(formSelector).on(onEvent, function(event) {
-
+    $('body').undelegate(formSelector, onEvent);
+    $('body').delegate(formSelector, onEvent, function(event) {
 
         //Link data-* attributes will be used as data
         var urlParams = $(this).data();
@@ -161,11 +160,14 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
         //Check if this is a form
         if($(this).attr('action')) {
 
+            //Remove hidden inputs
+            $(this).find('.load-element-dynamic').remove();
+
             //Convert the data-* into hidden inputs
             if(urlParams) {
                 form = $(this);
                 $.each(urlParams, function(key, val){
-                    $('<input>').attr('type','hidden').attr('name', key).attr('value', val).appendTo(form);
+                    $('<input>').attr('type','hidden').attr('name', key).attr('class', 'load-element-dynamic').attr('value', val).appendTo(form);
                 });
             }
 
@@ -533,6 +535,8 @@ $(function() {
                         if(url=='') {
                             BBQWidgets['.load3'].emptyUrl();
                         }
+
+                        lmObj.reset();
                     }},
         '.load3': {
                     containerSelector: '#sub-area',
@@ -578,6 +582,9 @@ $(function() {
                             }
                         }
                         lastLoad3 = $(firstTab).attr('rel');
+                    },
+                    afterLoad: function() {
+                        lmObj.reset();
                     }
     }};
 
@@ -692,6 +699,8 @@ $(function() {
                         if(BBQWidgets[linkSelector].afterLoad) {
                             BBQWidgets[linkSelector].afterLoad();
                         }
+
+                        preventNullLinks();
                     });
 
                 return false;
@@ -774,9 +783,9 @@ function initMenuLinks() {
         $(this).parent("li").addClass("bg-active");
     });
 }
-$(document).ready(function(){
+/*$(document).ready(function(){
     initMenuLinks();
-});
+});*/
 
 
 
@@ -879,19 +888,28 @@ function LoadMore() {
 }
 LoadMore.prototype.getNextPage = function(buttonSelector) {
     if(!this.paginator[buttonSelector]) {
-        this.paginator[buttonSelector] = 1;
+        this.paginator[buttonSelector] = 2;
+    } else {
+        this.paginator[buttonSelector]++;
     }
 
-    this.paginator[buttonSelector]++;
     return this.paginator[buttonSelector];
 }
 LoadMore.prototype.getPrevPage = function(buttonSelector) {
     if(!this.paginator[buttonSelector]) {
         this.paginator[buttonSelector] = 1;
+    } else {
+        this.paginator[buttonSelector]--;
     }
 
-    this.paginator[buttonSelector]--;
     return this.paginator[buttonSelector];
+}
+LoadMore.prototype.reset = function(buttonSelector) {
+    if(buttonSelector) {
+        this.paginator[buttonSelector] = 1;
+    } else {
+        this.paginator = {};
+    }
 }
 
 LoadMore.prototype.clearBeforeAppend = function(buttonSelector, status ) {
@@ -903,8 +921,9 @@ LoadMore.prototype.loadMoreButton = function(buttonSelector, eventName, appendTo
 
     var loadMoreObj = this;
 
-    $(buttonSelector).bind(eventName ,function() {
-
+    $('body').undelegate(buttonSelector, eventName);
+    $('body').delegate(buttonSelector, eventName, function(e) {
+        e.preventDefault();
         params['rnd'] = Math.random(); //to avoid cache
         params['limit'] = limit;
         params['page'] = loadMoreObj.getNextPage(buttonSelector);
@@ -968,10 +987,19 @@ LoadMore.prototype.loadMoreButton = function(buttonSelector, eventName, appendTo
             loadMoreObj.getPrevPage(buttonSelector);
         });
 
+        //return false;
      });
 
 };
 LoadMore.prototype.setItemsCountSelector = function( buttonSelector, itemCountSelector, func ) {
+    if(func==undefined) {
+        func = function(currentCount, newCount, limit) {
+            //Not enough new items
+            if(currentCount+limit>newCount) {
+                $(buttonSelector).css('visibility', 'hidden');
+            }
+        }
+    }
     this.setAppendCallback(buttonSelector, 'itemCount', {
         itemCountSelector: itemCountSelector,
         func: func
@@ -1061,11 +1089,18 @@ $(document).ready(function(){
     $.ajaxSetup({
         error: function(event, request, options, error) {
             switch (event.status) {
-                case 403: //Forb    idden - caused by users that not logged in
+                case 403: //Forbidden - caused by users that not logged in
                     $('#login-popup').modal('show');
                 break;
             }
-        }
+        }/*,
+        success: function (event, request, options, error) {
+            switch (event.status) {
+                case 500:
+
+                break;
+            }
+        }*/
     });
 
     //Make sure .requireLogin elements will popup the login-form first and cancel other event-listeners

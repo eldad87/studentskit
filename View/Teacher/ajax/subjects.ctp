@@ -1,32 +1,47 @@
+<script type="text/javascript">
+    $(document).ready(function(){
+        //Activate tooltip
+        initToolTips();
+
+        //initMenuLinks();
+
+    });
+</script>
+
 <?php
-echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
-    'title'=>__('Cancel your lesson'),
-    'description'=>__('This procedure may be irreversible.
-                       Do you want to proceed?'),
-    'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'disableSubject', '{id}')));
+////////////// Page 1 - start
+if($page==1) {
 
-echo $this->element('panel/schedule_teacher_lesson_popup', array('buttonSelector'=>'.schedule'));
-?>
+    echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
+        'title'=>__('Cancel your lesson'),
+        'description'=>__('This procedure may be irreversible.
+                           Do you want to proceed?'),
+        'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'disableSubject', '{id}')));
 
-<div class="cont-span15 cbox-space">
-    <p class="fontsize1 space8"><?php echo __('Here you can find all your subjects.'); ?></p>
-
-    <?php
-    echo $this->Html->link('ADD', '#', array( 'class'=>'black-cent-butn2 add-blckbtn fontsize1 move-right lesson-request load2',
-                                                                'rel'=>Router::url(array('controller'=>'Teacher', 'action'=>'manageSubject'))));
-?>
+    echo $this->element('panel/schedule_teacher_lesson_popup', array('buttonSelector'=>'.schedule'));
+    ?>
 
     <script type="text/javascript">
         $(document).ready(function(){
-            //Activate tooltip
-            initToolTips();
-
-            initMenuLinks();
+            var url = '/Teacher/subjects/{limit}/{page}';
+            lmObj.loadMoreButton('#teacher-subjects-load-more', 'click', '#teacher-subjects', url, {}, 'get', <? echo $limit; ?>);
+            lmObj.setItemsCountSelector('#teacher-subjects-load-more', '#teacher-subjects div.lesson-box' );
         });
     </script>
 
-    <div class="add-sub pull-left space3">
+
+    <div class="cont-span15 cbox-space">
+        <p class="fontsize1 space8"><?php echo __('Here you can find all your subjects.'); ?></p>
+
         <?php
+        echo $this->Html->link('ADD', '#', array( 'class'=>'black-cent-butn2 add-blckbtn fontsize1 move-right lesson-request load2',
+                                                                    'rel'=>Router::url(array('controller'=>'Teacher', 'action'=>'manageSubject'))));
+        ?>
+
+        <div class="add-sub pull-left space3" id="teacher-subjects">
+<?php
+}
+
         foreach($response['response']['subjects'] AS $subject) {
             echo '<div class="lesson-box space2" id="subject_id_'.$subject['Subject']['subject_id'].'">
                     <div class="head-back radius1">
@@ -68,7 +83,20 @@ echo $this->element('panel/schedule_teacher_lesson_popup', array('buttonSelector
                     </div> <!-- /lesson-box-footer -->
                 </div> <!-- /lesson-box -->';
         }
-        ?>
 
+////////////// Page 1 - start
+if($page==1) {
+?>
+
+        </div>
     </div>
-</div>
+
+<?php
+    if(count($response['response']['subjects'])>=$limit) {
+        echo '<a href="#" class="more radius3 gradient2 space8" id="teacher-subjects-load-more"><strong>', __('Load More') ,'</strong><i class="iconSmall-more-arrow"></i></a>';
+    }
+}
+////////////// Page 1 - end
+
+
+

@@ -1,7 +1,5 @@
 <script type="text/javascript">
     $(document).ready(function(){
-        /* My Subject */
-
         //Scroll
         $('.message-tm-stu').slimScroll({
             height: '240px',
@@ -10,7 +8,8 @@
             disableFadeOut: true
         });
         var url = '/Student/latestUpdatedBoardPosts/{limit}/{page}';
-        lmObj.loadMoreButton('a.message-tm-more', 'click', 'ul.message-tm-stu', url, jsSettings, 'get', 3);
+        lmObj.loadMoreButton('a.message-tm-more', 'click', 'ul.message-tm-stu', url, {}, 'get', <?php echo $limit; ?>);
+        lmObj.setItemsCountSelector('a.message-tm-more', 'ul.message-tm-stu li');
     });
 </script>
 
@@ -27,5 +26,9 @@
         }
     ?>
     </ul>
-    <a href="#" class="message-tm-more fontsize1">More Threads</a>
+    <?php
+        if(count($latestUpdatedTopics)>=$limit) {
+            echo '<a href="#" class="message-tm-more fontsize1">More Threads</a>';
+        }
+    ?>
 </div>

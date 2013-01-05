@@ -12,10 +12,12 @@
     function initCertificateJS() {
 
         //Unbind existing events
-        $('<?php echo $buttonSelector; ?>').unbind();
-        $('#certificate-form').unbind();
+        //$('<?php echo $buttonSelector; ?>').unbind();
+        //$('#certificate-form').unbind();
 
-        $('<?php echo $buttonSelector; ?>').click(function(e){
+        $('body').undelegate('<?php echo $buttonSelector; ?>', 'click');
+        $('body').delegate('<?php echo $buttonSelector; ?>', 'click', function(e) {
+        //$('<?php echo $buttonSelector; ?>').click(function(e){
             e.preventDefault();
 
             //Reset form's data-*

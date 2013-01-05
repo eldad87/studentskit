@@ -451,6 +451,8 @@ $config['Requests.subjectSearchSuggestions.success.1.description'] = __('Lesson 
 /*-------------------- Student.invite	--------------------*/
 $config['Lessons.invite.success.1.title'] = __('Success');
 $config['Lessons.invite.success.1.description'] = __('Invitations sent');
+$config['Lessons.invite.success.2.title'] = __('Success');
+$config['Lessons.invite.success.2.description'] = __('Invitations sent');
 $config['Lessons.invite.error.1.title'] = __('Error');
 $config['Lessons.invite.error.1.description'] = __('Missing parameters');
 $config['Lessons.invite.error.2.title'] = __('Error');

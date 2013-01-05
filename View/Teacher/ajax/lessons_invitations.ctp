@@ -5,6 +5,18 @@
     });
 </script>
 
+<?php
+////////////// Page 1 - start
+if($page==1) {
+?>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var url = '/Teacher/lessonsInvitations/{limit}/{page}';
+        lmObj.loadMoreButton('#teacher-lessons-invitations-load-more', 'click', '#teacher-lessons-invitations', url, {}, 'get', <? echo $limit; ?>);
+        lmObj.setItemsCountSelector('#teacher-lessons-invitations-load-more', '#teacher-lessons-invitations li' );
+    });
+</script>
+
 <p class="fontsize1 space8"><?php echo __('Here you can find all invitations requests that still pending for the student\'s approval.'); ?></p>
 
 <?php
@@ -18,7 +30,7 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
 ?>
 
     <div class="fullwidth pull-left">
-        <ul>
+        <ul id="teacher-lessons-invitations">
             <li>
                 <div class="space2 space6 left-student-box2 left-student-newbox2">
                     <h5 class="pull-left"><strong><?php echo __('Invitation offer\'s data'); ?></strong></h5>
@@ -27,8 +39,10 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
                     <h5 class=" pull-left"><strong><?php echo __('Lesson\'s info'); ?></strong></h5>
                 </div>
             </li>
+<?php
+////////////// Page 1 - ends
+}
 
-            <?php
             foreach($response['response']['lessonInvitations'] AS $lessonInvitation) {
                 //Link to the subject page
                 $toTheLessonLink = $this->Html->link(__('Lesson page'), array('controller'=>'Home',
@@ -134,10 +148,19 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
                 </li>
                 <?php
             }
+
+////////////// Page 1 - start
+if($page==1) {
             ?>
 
         </ul>
         <div class="fullwidth pull-left">
+            <?php
+            if(count($response['response']['lessonInvitations'])>=$limit) {
+                echo '<a href="#" class="more radius3 gradient2 space8" id="teacher-lessons-invitations-load-more"><strong>', __('Load More') ,'</strong><i class="iconSmall-more-arrow"></i></a>';
+            }
+            ?>
+
             <div class="fullwidth pull-left">
                 <i class="iconBig-new-refresh pull-left"></i>
                 <p class="space26 space24"><?php echo __('A request for a new lesson'); ?></p>
@@ -148,3 +171,5 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
             </div>
         </div>
     </div><!-- /left-student-box-->
+<?php
+}

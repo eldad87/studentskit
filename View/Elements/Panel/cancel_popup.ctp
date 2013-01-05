@@ -21,10 +21,12 @@ $buttonId = 'cancel-approved_'.$appendId;
         var popupId =  'cancel-popup_' + i;
 
         //Unbind existing events
-        $(buttonSelector).unbind();
-        $('#'+buttonId).unbind();
+        //$(buttonSelector).unbind();
+        //$('#'+buttonId).unbind();
 
-        $(buttonSelector).click(function(e){
+        $('body').undelegate(buttonSelector, 'click');
+        $('body').delegate(buttonSelector, 'click', function(e) {
+        //$(buttonSelector).click(function(e){
             e.preventDefault();
 
             //resetData('#'+buttonId);

@@ -9,9 +9,12 @@ class MessageController extends AppController {
      * Show user main message list
      * @return array
      */
-    public function index() {
-		$threads = $this->Thread->getUserThreadsLastMessage($this->Auth->user('user_id'));
-        $this->set('threads', $threads);
+    public function index($limit=10, $page=1) {
+        $this->set('limit', $limit);
+        $this->set('page', $page);
+
+		$threads = $this->Thread->getUserThreadsLastMessage($this->Auth->user('user_id'), $page, $limit);
+        return $this->success(1, array('threads'=>$threads));
 	}
 
     public function getList($limit=3, $page=1) {
@@ -24,8 +27,9 @@ class MessageController extends AppController {
 
         //make the thread as read.
         $this->Thread->setAsRead($threadId, $this->Auth->user('user_id'));
-
         $this->set('thread', $thread);
+        return $this->success(1, array('thread'=>$thread));
+
     }
 
     /**

@@ -1,22 +1,39 @@
-<p class="fontsize1 space8"><?php echo __('Here you can find all your future lessons.'); ?></p>
-
-<?php
-echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
-                                                        'title'=>__('Cancel your participation'),
-                                                        'description'=>__('This procedure may be irreversible.
-                                                            Do you want to proceed?'),
-                                                        'cancelUrl'=>array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')));
-echo $this->element('panel/invite_popup', array('buttonSelector'=>'.invite'));
-echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
-?>
 <script type="text/javascript">
     $(document).ready(function(){
         //Activate tooltip
         initToolTips();
     });
 </script>
+<?php
+////////////// Page 1 - start
+if($page==1) {
+?>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var url = '/Student/lessonsUpcoming/{limit}/{page}';
+            lmObj.loadMoreButton('#user-lessons-upcoming-load-more', 'click', '#user-lessons-upcoming', url, {}, 'get', <? echo $limit; ?>);
+            lmObj.setItemsCountSelector('#user-lessons-upcoming-load-more', '#user-lessons-upcoming div.lesson-box' );
+        });
+    </script>
 
-<div class="add-sub pull-left space3">
+    <p class="fontsize1 space8"><?php echo __('Here you can find all your future lessons.'); ?></p>
+
+    <?php
+    echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
+                                                            'title'=>__('Cancel your participation'),
+                                                            'description'=>__('This procedure may be irreversible.
+                                                                Do you want to proceed?'),
+                                                            'cancelUrl'=>array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')));
+    echo $this->element('panel/invite_popup', array('buttonSelector'=>'.invite'));
+    echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
+    ?>
+
+    <div class="add-sub pull-left space3" id="user-lessons-upcoming">
+<?php
+}
+////////////// Page 1 - end
+?>
+
     <?php
     foreach($response['response']['upcomingLessons'] AS $upcomingLesson) {
         $toTheLessonLink = $this->Html->link(__('Lesson page'), array('controller'=>'Lessons',
@@ -28,14 +45,14 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                     <h1>'.$this->Layout->lessonTypeIcon($upcomingLesson['UserLesson']['lesson_type']).
                         $this->Time->niceShort($upcomingLesson['UserLesson']['datetime']).' -  <strong>'.$upcomingLesson['UserLesson']['name'].'</strong></h1>
                     <div class="dropdown pull-right">
-                        <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" href="#">
+                        <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" href="">
                             <i class="iconSmall-drop-arrow"></i>
                         </a>
                         <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
-                            <li><a href="#" class="msg-teacher" data-entity_type="user_lesson" data-entity_id="'.$upcomingLesson['UserLesson']['user_lesson_id'].'" data-to_user_id="'.$upcomingLesson['UserLesson']['teacher_user_id'].'">'.__('Message teacher').'</a></li>
-                            <li><a href="#" class="invite" data-teacher_lesson_id="'.$upcomingLesson['UserLesson']['teacher_lesson_id'].'"> '.__('Invite friends').'</a></li>
+                            <li><a href="" class="msg-teacher" data-entity_type="user_lesson" data-entity_id="'.$upcomingLesson['UserLesson']['user_lesson_id'].'" data-to_user_id="'.$upcomingLesson['UserLesson']['teacher_user_id'].'">'.__('Message teacher').'</a></li>
+                            <li><a href="" class="invite" data-teacher_lesson_id="'.$upcomingLesson['UserLesson']['teacher_lesson_id'].'"> '.__('Invite friends').'</a></li>
                             <li>'.$toTheLessonLink.'</li>
-                            <li><a href="#" class="confirm-delete" data-cancel-prefix="user_lesson_id" data-id="'.$upcomingLesson['UserLesson']['user_lesson_id'].'">'.__('Cancel').'</a></li>
+                            <li><a href="" class="confirm-delete" data-cancel-prefix="user_lesson_id" data-id="'.$upcomingLesson['UserLesson']['user_lesson_id'].'">'.__('Cancel').'</a></li>
                         </ul>
                     </div>
 
@@ -62,6 +79,17 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                 </div> <!-- /lesson-box-footer -->
             </div> <!-- /lesson-box -->';
     }
-    ?>
 
-</div>
+////////////// Page 1 - start
+if($page==1) {
+    ?>
+    </div>
+
+    <?php
+    if(count($response['response']['upcomingLessons'])>=$limit) {
+        echo '<a href="#" class="more radius3 gradient2 space8" id="user-lessons-upcoming-load-more"><strong>', __('Load More') ,'</strong><i class="iconSmall-more-arrow"></i></a>';
+    }
+}
+////////////// Page 1 - end
+?>
+

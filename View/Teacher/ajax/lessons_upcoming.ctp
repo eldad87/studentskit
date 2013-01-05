@@ -1,25 +1,43 @@
-<p class="fontsize1 space8"><?php echo __('Here you can find all your future lessons.'); ?></p>
-
-<?php
-echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
-                                                        'title'=>__('Cancel your lesson'),
-                                                        'description'=>__('This procedure may be irreversible.
-                                                                                Do you want to proceed?'),
-                                                        'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'cancelTeacherLesson', '{id}')));
-echo $this->element('panel/invite_popup', array('buttonSelector'=>'.invite'));
-echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
-?>
 <script type="text/javascript">
     $(document).ready(function(){
         //Activate tooltip
         initToolTips();
 
-        initMenuLinks();
+        //initMenuLinks();
     });
 </script>
 
-<div class="add-sub pull-left space3">
-    <?php
+<?php
+
+////////////// Page 1 - start
+if($page==1) {
+    echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
+                                                            'title'=>__('Cancel your lesson'),
+                                                            'description'=>__('This procedure may be irreversible.
+                                                                                    Do you want to proceed?'),
+                                                            'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'cancelTeacherLesson', '{id}')));
+    echo $this->element('panel/invite_popup', array('buttonSelector'=>'.invite'));
+    echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
+    ?>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var url = '/Teacher/lessonsUpcoming/{limit}/{page}';
+            lmObj.loadMoreButton('#teacher-lessons-upcoming-load-more', 'click', '#teacher-lessons-upcoming', url, {}, 'get', <? echo $limit; ?>);
+            lmObj.setItemsCountSelector('#teacher-lessons-upcoming-load-more', '#teacher-lessons-upcoming div.lesson-box' );
+        });
+    </script>
+
+
+    <p class="fontsize1 space8"><?php echo __('Here you can find all your future lessons.'); ?></p>
+
+
+
+    <div class="add-sub pull-left space3" id="teacher-lessons-upcoming">
+
+<?php
+}
+
     foreach($response['response']['upcomingLessons'] AS $upcomingLesson) {
         $toTheLessonLink = $this->Html->link(__('Lesson page'), array('controller'=>'Lessons',
                                                                 'action'=>($upcomingLesson['TeacherLesson']['lesson_type']==LESSON_TYPE_LIVE ? 'index' : 'video'),
@@ -63,6 +81,15 @@ echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teache
                 </div> <!-- /lesson-box-footer -->
             </div> <!-- /lesson-box -->';
     }
-    ?>
 
-</div>
+
+////////////// Page 1 - start
+if($page==1) {
+?>
+    </div>
+<?php
+    if(count($response['response']['upcomingLessons'])>=$limit) {
+        echo '<a href="#" class="more radius3 gradient2 space8" id="teacher-lessons-upcoming-load-more"><strong>', __('Load More') ,'</strong><i class="iconSmall-more-arrow"></i></a>';
+    }
+}
+////////////// Page 1 - end
