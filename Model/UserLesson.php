@@ -957,7 +957,7 @@ class UserLesson extends AppModel {
 
             $userType = 'student';
             $newStage = ($userLessonData['stage']==USER_LESSON_PENDING_RATING) ?
-                ( $userLessonData['lesson_type']!=LESSON_TYPE_LIVE ? USER_LESSON_PENDING_TEACHER_RATING : USER_LESSON_DONE ) : //teacher can rate only live lessons, otherwise don't let him
+                ( $userLessonData['lesson_type']==LESSON_TYPE_LIVE ? USER_LESSON_PENDING_TEACHER_RATING : USER_LESSON_DONE ) : //teacher can rate only live lessons, otherwise don't let him
                 USER_LESSON_DONE;
         } else {
             //This is not the teacher/student

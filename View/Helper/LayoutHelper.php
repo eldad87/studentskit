@@ -20,7 +20,7 @@ class LayoutHelper extends AppHelper {
         }
 
         return '<div class="ratingstar '.$class.'"'.$id.'>
-                    <div class="star-box'.$changeableClass.($rating>0 ? ' star-active' : null).'" id="1"></div>
+                    <div class="star-box'.$changeableClass.($rating>0 ? ' star-active' : null).' first"></div>
                     <div class="star-box'.$changeableClass.($rating>1 ? ' star-active' : null).'"></div>
                     <div class="star-box'.$changeableClass.($rating>2 ? ' star-active' : null).'"></div>
                     <div class="star-box'.$changeableClass.($rating>3 ? ' star-active' : null).'"></div>

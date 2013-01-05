@@ -303,7 +303,7 @@ class StudentController extends AppController {
             return $this->error(1);
         }
 
-        if(!$this->UserLesson-> rate(	$userLessonId, $this->Auth->user('user_id'),
+        if(!$this->UserLesson->rate(	$userLessonId, $this->Auth->user('user_id'),
                                         $this->request->data['rating'],
                                         $this->request->data['review'])) {
 

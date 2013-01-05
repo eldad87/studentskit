@@ -1,36 +1,3 @@
-/* star rating */
-$(document).ready(function(){
-    $('.star-box.dynamic').mouseover(function(){
-        $(this).addClass('star-active');
-        $(this).prevAll().addClass('star-active');
-    });
-    $('.star-box.dynamic').mouseout(function(){
-        $(this).removeClass('star-active');
-        $(this).prevAll().removeClass('star-active');
-
-
-    });
-    $('.star-box.dynamic').click( function(){
-        if ($(this).hasClass('star-active1'))
-        {
-            if(($(this).attr("id"))==1){
-                if(!$(this).nextAll().hasClass('star-active1'))
-                {
-
-                    $(this).removeClass('star-active1');
-                }
-            }
-            $(this).nextAll().removeClass('star-active1');
-        }
-        else
-        {
-            $(this).addClass('star-active1');
-            $(this).prevAll().addClass('star-active1');
-        }
-    });
-
-});
-
 /////////////////////////////////////////////////////////////// Helpers
 /**
  * Used to post a form and replace its container with the (HTML) result
@@ -423,7 +390,37 @@ $(document).ready(function(){
 
 });
 
+/* User/Teacher rating */
+$(document).ready(function(){
 
+    $('#main-area').delegate('.star-box.dynamic', 'mouseover', function(event) {
+        $(this).addClass('star-active');
+        $(this).prevAll().addClass('star-active');
+    });
+    $('#main-area').delegate('.star-box.dynamic', 'mouseout', function(event) {
+        $(this).removeClass('star-active');
+        $(this).prevAll().removeClass('star-active');
+    });
+    $('#main-area').delegate('.star-box.dynamic', 'click', function(event) {
+        if ($(this).hasClass('star-active1'))
+        {
+            //if(($(this).attr("id"))==1){
+            if($(this).hasClass('first')){
+                if(!$(this).nextAll().hasClass('star-active1'))
+                {
+
+                    $(this).removeClass('star-active1');
+                }
+            }
+            $(this).nextAll().removeClass('star-active1');
+        }
+        else
+        {
+            $(this).addClass('star-active1');
+            $(this).prevAll().addClass('star-active1');
+        }
+    });
+});
 
 
 
