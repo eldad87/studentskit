@@ -24,7 +24,7 @@ if(isSet($paymentPage)) {
 
                 if(isSet($updateLessonBoxAfterNegotiate)) {
                     //Change lesson box
-                    echo '$(\'',$updateLessonBoxAfterNegotiate['element'],'\').replaceWith(\'',
+                    echo '$(\'#',$updateLessonBoxAfterNegotiate['element'],'\').replaceWith(\'',
                                                                                     $this->Layout->stringToJSVar(
                                                                                         $this->element('Panel/lesson_box_li',
                                                                                             array('lessonData'=>$updateLessonBoxAfterNegotiate['data'],
@@ -32,7 +32,7 @@ if(isSet($paymentPage)) {
                         ,   '\');';
 
                     //Change message
-                    echo '$(\'',$updateLessonBoxAfterNegotiate['element'],'_msg\').html(\'',$this->Layout->stringToJSVar($updateLessonBoxAfterNegotiate['data']['UserLesson']['offer_message']),'\');';
+                    echo '$(\'#',$updateLessonBoxAfterNegotiate['element'],'_msg\').html(\'',$this->Layout->stringToJSVar($updateLessonBoxAfterNegotiate['data']['UserLesson']['offer_message']),'\');';
 
                     //Init tooltip
                     echo 'initToolTips()';

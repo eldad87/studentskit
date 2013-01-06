@@ -27,7 +27,7 @@
             $('#negotiate-form').data($(this).data());
 
             //AJAX - load the form with its data
-            url = $('#negotiate-form').attr('action');
+            var url = $('#negotiate-form').attr('action');
             $.ajax({
                 url: jQuery.nano(url, $(this).data()),
                 type: 'get',

@@ -38,10 +38,10 @@ PostForm.prototype.loadForm = function( formSelector, appendResultsSelector, typ
     $('body').delegate(formSelector, 'submit', function(event) {
 
         //Get form action (url)
-        url = $(this).attr('action');
+        var url = $(this).attr('action');
 
         if(!params) {
-            params = $(this).data();
+            var params = $(this).data();
         }
 
         //Remove hidden inputs
@@ -132,7 +132,7 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
 
             //Convert the data-* into hidden inputs
             if(urlParams) {
-                form = $(this);
+                var form = $(this);
                 $.each(urlParams, function(key, val){
                     $('<input>').attr('type','hidden').attr('name', key).attr('class', 'load-element-dynamic').attr('value', val).appendTo(form);
                 });
@@ -143,11 +143,11 @@ PostAPI.prototype.loadElement = function( formSelector, onEvent, appendErrorsSel
             dataParams = $(this).serialize();
 
             //Get form action - this will be used as url
-            url = $(this).attr('action');
+            var url = $(this).attr('action');
 
         } else {
             //data-target
-            url = urlParams['target'];
+            var url = urlParams['target'];
             if($(this).val()) {
                 urlParams['value'] = $(this).val();
             }

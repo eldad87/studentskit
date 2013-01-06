@@ -71,7 +71,7 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
                                     <li><a href="#" class="msg-student" data-entity_type="user_lesson" data-entity_id="<?php echo $lessonInvitation['UserLesson']['user_lesson_id']; ?>" data-to_user_id="<?php echo $lessonInvitation['UserLesson']['student_user_id']; ?>"><?php echo __('Message student'); ?></a></li>
                                     <?php
                                         if(empty($lessonInvitation['UserLesson']['teacher_lesson_id'])) {
-                                            echo '<li><a href="#" class="negotiate" data-update-lesson-box-after-negotiate="#lesson_box_'.$lessonInvitation['UserLesson']['user_lesson_id'].'" data-user_lesson_id="'.$lessonInvitation['UserLesson']['user_lesson_id'].'">'.__('Negotiate').'</a></li>';
+                                            echo '<li><a href="#" class="negotiate" data-update-lesson-box-after-negotiate="lesson_box_'.$lessonInvitation['UserLesson']['user_lesson_id'].'" data-user_lesson_id="'.$lessonInvitation['UserLesson']['user_lesson_id'].'">'.__('Negotiate').'</a></li>';
                                         }
                                     ?>
                                     <li><a href="#" class="confirm-cancel" data-cancel-prefix="user_lesson_id" data-id="<?php echo $lessonInvitation['UserLesson']['user_lesson_id']; ?>"><?php echo __('Cancel'); ?></a></li>
