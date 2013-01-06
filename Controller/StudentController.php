@@ -242,14 +242,20 @@ class StudentController extends AppController {
                     $this->set('success', true);
 
                     //Need to refresh the tooltip info
-                    if(isSet($this->request->data['updateTooltipAfterNegotiate'])) {
+                    /*if(isSet($this->request->data['updateTooltipAfterNegotiate'])) {
                         $this->set('updateTooltip', $this->request->data['updateTooltipAfterNegotiate']);
                         $this->set('userLessonData', $this->request->data['UserLesson']);
-                    }
+                    }*/
                     if(isSet($this->request->data['removeElementAfterNegotiate'])) {
                         $this->set('removeElement', $this->request->data['removeElementAfterNegotiate']);
                     }
 
+                    if(isSet($this->request->data['updateLessonBoxAfterNegotiate'])) {
+                        $this->UserLesson->cacheQueries = false;
+                        $newULData = $this->UserLesson->getLessons(array(), $userLessonId);
+                        $this->set('updateLessonBoxAfterNegotiate', array('element'=>$this->request->data['updateLessonBoxAfterNegotiate'],
+                                                                            'data'=>$newULData));
+                    }
 
                 }
             }

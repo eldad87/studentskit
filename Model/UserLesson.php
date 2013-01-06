@@ -1264,6 +1264,7 @@ class UserLesson extends AppModel {
 			}
 		}
 
+        $this->recursive = 1;
 		return $this->find($find, array('conditions'=>$conditions, 
 										'order'=>'datetime',
 										'limit'=>( $limit ? $limit : null),

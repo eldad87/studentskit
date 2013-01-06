@@ -29,7 +29,8 @@ class RequestsController extends AppController {
         if($subjectId) {
             $this->Subject->recursive = -1;
             $subjectData = $this->Subject->findBySubjectId($subjectId);
-            if(!$subjectData || $subjectData['Subject']['user_id']!=$this->Auth->user('user_id')) {
+            if(!$subjectData || $subjectData['Subject']['user_id']!=$this->Auth->user('user_id') ||
+                $subjectData['Subject']['type']==SUBJECT_TYPE_OFFER) {
                 return false;
             }
 

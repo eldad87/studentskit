@@ -1,3 +1,4 @@
+
 <?php
 if(isSet($paymentPage)) {
     echo '<p><strong>'.__('In order for those changes to take effect, please continue through the ').'</strong>'.$this->Html->link(__('Order page'), $paymentPage).'</p>';
@@ -17,9 +18,26 @@ if(isSet($paymentPage)) {
                 }
 
 
-                if(isSet($updateTooltip)) {
+                /*if(isSet($updateTooltip)) {
                     echo '$(\''.$updateTooltip.'\').data(\'title\',"'.$this->Layout->buildLessonTooltipHtml($userLessonData, $lessonType).'").tooltip(\'destroy\').tooltip({html: true});';
+                }*/
+
+                if(isSet($updateLessonBoxAfterNegotiate)) {
+                    //Change lesson box
+                    echo '$(\'',$updateLessonBoxAfterNegotiate['element'],'\').replaceWith(\'',
+                                                                                    $this->Layout->stringToJSVar(
+                                                                                        $this->element('Panel/lesson_box_li',
+                                                                                            array('lessonData'=>$updateLessonBoxAfterNegotiate['data'],
+                                                                                            'id'=>$updateLessonBoxAfterNegotiate['element'])))
+                        ,   '\');';
+
+                    //Change message
+                    echo '$(\'',$updateLessonBoxAfterNegotiate['element'],'_msg\').html(\'',$this->Layout->stringToJSVar($updateLessonBoxAfterNegotiate['data']['UserLesson']['offer_message']),'\');';
+
+                    //Init tooltip
+                    echo 'initToolTips()';
                 }
+
 
                 if(isSet($removeElement)) {
                     echo '$(\''.$removeElement.'\').hide();';

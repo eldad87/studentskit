@@ -285,6 +285,9 @@ class LayoutHelper extends AppHelper {
         $hash = implode('&', $hash);
 
         return array('controller'=>'Organizer', '#'=>$hash);
+    }
 
+    public function stringToJSVar($str) {
+        return preg_replace("/\r?\n/", "\\n", addslashes($str));
     }
 }
