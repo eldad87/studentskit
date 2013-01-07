@@ -7,6 +7,20 @@
         <?php
             if(isSet($success)) {
                 echo '$(\'#subject-request-popup\').modal(\'hide\');';
+
+                if(isSet($appendTemplate) && isSet($subjectRequestData)) {
+
+                    $appendTemplate = ($appendTemplate=='user-panel' ? 'Panel/user_subject_request_div' : '');
+
+                    if(isSet($prependTo)) {
+                        echo '$(\'#',$prependTo,'\').prepend(\'', $this->Layout->stringToJSVar($this->element($appendTemplate, array('subjectRequestData'=>$subjectRequestData))) , '\');';
+                    } else if(isSet($replaceWith)) {
+                        //Change subject request box
+                        echo '$(\'#',$replaceWith,'\').replaceWith(\'', $this->Layout->stringToJSVar($this->element($appendTemplate, array('subjectRequestData'=>$subjectRequestData))) , '\');';
+                    }
+
+                    echo 'initToolTips();';
+                }
             }
         ?>
 

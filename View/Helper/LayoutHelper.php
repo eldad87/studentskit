@@ -190,9 +190,9 @@ class LayoutHelper extends AppHelper {
         $settings['class'] .= ' lesson-request'; //JS recognize the button using this
 
 
-        return $this->_View->Html->link($settings['name'], '#',
-                                            $this->requireLogin(array( 'class'=>$settings['class'],
-                                            /*'data-toggle'=>'modal'*/)));
+        $name = $settings['name'];
+        unset($settings['name']);
+        return $this->_View->Html->link($name, '#', $this->requireLogin( $settings ));
     }
 
     public function toolTip($text, $iClass='space3', $aClass=null, $id=null) {

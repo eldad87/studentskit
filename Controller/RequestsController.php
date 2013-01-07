@@ -60,6 +60,22 @@ class RequestsController extends AppController {
 				}
 
                 $this->set('success', true);
+
+                if(isSet($this->request->data['appendTemplate'])) {
+                    if(isSet($this->request->data['prependTo']) ) {
+                        $this->set('prependTo', $this->request->data['prependTo']);
+                    } else if(isSet($this->request->data['replaceWith']) ) {
+                        $this->set('replaceWith', $this->request->data['replaceWith']);
+                    }
+
+                    $this->set('appendTemplate', $this->request->data['appendTemplate']);
+
+                    //Load subject data
+                    $this->Subject->recursive = -1;
+                    $this->Subject->cacheQueries = false;
+                    $subjectData = $this->Subject->findBySubjectId($subjectId);
+                    $this->set('subjectRequestData', $subjectData);
+                }
 				//$this->Session->setFlash(__('Request saved, you can browse and manage it through the control panel'));
 				//$this->redirect(array('action'=>'index'));
 			} else if($this->params['ext']) {
