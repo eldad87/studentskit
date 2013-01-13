@@ -922,7 +922,9 @@ $id = $scObj->id;
 		
 		//Get teacher other subjects
         $this->Subject->setLanguages($this->Session->read('languages_of_records'));
-		$teacherSubjects = $this->Subject->getOffersByTeacher( $teacherUserId, false, null, 1, 6 );
+        $teacherOtherSubjectsLimit = 6;
+		$teacherSubjects = $this->Subject->getOffersByTeacher( $teacherUserId, false, null, 1, $teacherOtherSubjectsLimit );
+        $this->set('teacherOtherSubjectsLimit', 	            $teacherOtherSubjectsLimit);
 
 
 		//Get students comments for that teacher
@@ -1072,10 +1074,10 @@ $id = $scObj->id;
 		$this->set('aalr', 					$aalr);
 
 	}*/
-	public function getUserLessons($userId, $year, $month=null) {
+	/*public function getUserLessons($userId, $year, $month=null) {
 		$allLessons = $this->User->getLiveLessonsByDate( $userId, false, $year, $month);
 		return $this->success(1, array('lessons'=>$allLessons));
-	}
+	}*/
 
     /*public function submitOrder($requestType, $subjectId) {
 		App::import('Model', 'Subject');

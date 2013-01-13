@@ -14,7 +14,7 @@
 
 
     <!-- styles -->
-    <?php echo $this->Html->css(array('basic', 'style-responsive', 'bootstrap', 'bootstrap-responsive', 'jquery-ui/ui-lightness/jquery-ui-1.9.1.custom', 'fineuploader', 'style'));
+    <?php echo $this->Html->css(array('basic', 'style-responsive', 'bootstrap', 'bootstrap-responsive', 'jquery-ui/ui-lightness/jquery-ui-1.9.1.custom', 'style'));
     echo $this->fetch('css');?>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -43,38 +43,13 @@
 										'script',
                                         'bootstrap',
 										'slimScroll',
-                                        'jquery.fineuploader-3.0',
+                                        /*'jquery.fineuploader-3.0',
                                         'filesystem',
-                                        'test-creator',
+                                        'test-creator',*/
                                         'lang',
-                                        'jquery.ba-bbq'));
+                                        /*'jquery.ba-bbq'*/));
         echo $this->fetch('script');
     ?>
-
-
-
-    <script type="text/javascript">
-
-       /* $(document).ready(function(){
-            // For Search Selectbox
-            $('.dropdown-menu li').click(function(){
-                $('.btn-selt-catg').html('<i class="iconSmall-info btn-selt-catg-info"></i>'+$(this).text()+'<span class="caret btn-selt-catg-arw"></span>');
-            });
-
-            <!-- For language Selectbox -->
-            $('.header-tooltip-box').css('display','none');
-
-            $("#countrySelect").click(function(){
-                $("#countryList").slideToggle();
-            });
-            $("#notificationIcon").click(function(){
-                $("#notificationList").slideToggle();
-            });
-            $("#messageIcon").click(function(){
-                $("#messageList").slideToggle();
-            });
-        });*/
-    </script>
 </head>
 
 <body data-spy="scroll" data-target=".subnav" data-offset="50">

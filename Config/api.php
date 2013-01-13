@@ -67,8 +67,8 @@ $config['Accounts.setLanguagesOfRecords.error.2.description'] = __('Cannot set l
 $config['Order.getUpcomingOpenLessonForSubject.success.1.title'] = __('Success');
 $config['Order.getUpcomingOpenLessonForSubject.success.1.description'] = __('Upcoming lessons');
 /*-------------------- Order.getLiveLessons		--------------------*/
-$config['Order.getUpcomingOpenLessonForSubject.success.1.title'] = __('Success');
-$config['Order.getLiveLessons.success.1.description'] = __('Live lessons');
+/*$config['Order.getUpcomingOpenLessonForSubject.success.1.title'] = __('Success');
+$config['Order.getLiveLessons.success.1.description'] = __('Live lessons');*/
 /********************* Accounts - End		******************************************/
 
 /********************* Notifications - Start		******************************************/

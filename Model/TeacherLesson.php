@@ -550,6 +550,17 @@ class TeacherLesson extends AppModel {
         return $this->find('all', array('conditions'=>$conditions, 'limit'=>$limit, 'page'=>$page));
     }
 
+    public function getLiveLessons( $teacherUserId, $futureOnly=true ) {
+        $this->getDataSource();
+        $conditions = array('teacher_user_id'=>$teacherUserId, $this->alias.'.lesson_type'=>LESSON_TYPE_LIVE,
+                            'is_deleted'=>0 );
+        if($futureOnly) {
+            $conditions[] = 'datetime > NOW()';
+        }
+
+        return $this->find('all', array('conditions'=>$conditions));
+    }
+
 	public function getLiveLessonsByDate( $teacherUserId, $year, $month=null ) {
 		$this->getDataSource();
         $this->Subject; //Init const LESSON_TYPE_LIVE

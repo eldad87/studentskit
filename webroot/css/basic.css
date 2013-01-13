@@ -255,9 +255,14 @@ small {
 	width: auto; 
 	height: auto; 
 }
-	
-.centered { 
-	text-align: center; 
+
+/* back computability*/
+.centered {
+    text-align: center;
+}
+
+.centered-text {
+    text-align: center;
 }
 
 a.move-left{

@@ -190,7 +190,15 @@ class User extends AppModel {
 		return $this->save();
 	}
 	
-	public function getLiveLessonsByDate( $userId, $isOwner=true, $year=null, $month=null ) {
+
+    /**
+     * @param $userId
+     * @param bool $isOwner - if not owner, dim lesson info
+     * @param bool $futureOnly
+     * @return array
+     */
+    //public function getLiveLessonsByDate( $userId, $isOwner=true, $year=null, $month=null ) {
+    public function getLiveLessons( $userId, $isOwner=true, $futureOnly=true ) {
 		App::import('Model', 'TeacherLesson');
 		App::import('Model', 'UserLesson');
 		$tlObj = new TeacherLesson();
@@ -201,34 +209,44 @@ class User extends AppModel {
 		//Get student lessons for a given month
 		//$ulObj->unbindModel(array('belongsTo' => array('Student')));
 		$ulObj->recursive = -1;
-		$userLessons = $ulObj->getLiveLessonsByDate( $userId, $year, $month, ($isOwner ? null : array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT,
+		/*$userLessons = $ulObj->getLiveLessonsByDate( $userId, $year, $month, ($isOwner ? null : array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT,
                                                                                                         USER_LESSON_RESCHEDULED_BY_TEACHER, USER_LESSON_RESCHEDULED_BY_STUDENT,
-                                                                                                        USER_LESSON_ACCEPTED)));
+                                                                                                        USER_LESSON_ACCEPTED)));*/
+        $userLessons = $ulObj->getLiveLessons(  $userId,
+                                                array(  USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT,
+                                                        USER_LESSON_RESCHEDULED_BY_TEACHER, USER_LESSON_RESCHEDULED_BY_STUDENT,
+                                                        USER_LESSON_ACCEPTED),
+                                                $futureOnly);
 
 		//Get teacher lessons for a given month
 		$tlObj->recursive = -1;
-		$teacherLessons = $tlObj->getLiveLessonsByDate( $userId, $year, $month); //Public to all
-		
+		//$teacherLessons = $tlObj->getLiveLessonsByDate( $userId, $year, $month); //Public to all
+		$teacherLessons = $tlObj->getLiveLessons( $userId, $futureOnly );
+
 		$allLessons = array();
 
 			//Dim all none public/subject request teacherLessons
 			foreach($teacherLessons AS &$teacherLesson) {
 				//If !$isOwner, hide details about teacherLessons
 				if( !$isOwner && !$teacherLesson['TeacherLesson']['is_public'] )  {
-					$allLessons[] = array(	'name'=>null, 'description'=>null,
-                                            'type'=>'TeacherLesson',
-                                            'datetime'=>$teacherLesson['TeacherLesson']['datetime'],
-                                            'duration_minutes'=>$teacherLesson['TeacherLesson']['duration_minutes'],
+					$allLessons[] = array(	'type'              => 'TeacherLesson',
+                                            'datetime'          => $teacherLesson['TeacherLesson']['datetime'],
+                                            'duration_minutes'  => $teacherLesson['TeacherLesson']['duration_minutes'],
                     );
 					
 				} else {
-					$allLessons[] = array(	'teacher_lesson_id'=>$teacherLesson['TeacherLesson']['teacher_lesson_id'],
-                                            'name'=>$teacherLesson['TeacherLesson']['name'], 'description'=>$teacherLesson['TeacherLesson']['description'], 'type'=>'TeacherLesson',
-											'datetime'=>$teacherLesson['TeacherLesson']['datetime'], 'duration_minutes'=>$teacherLesson['TeacherLesson']['duration_minutes'],
-											'num_of_students'=>$teacherLesson['TeacherLesson']['num_of_students'],'max_students'=>$teacherLesson['TeacherLesson']['max_students'],
-											'1_on_1_price'=>$teacherLesson['TeacherLesson']['1_on_1_price'],'full_group_total_price'=>$teacherLesson['TeacherLesson']['full_group_total_price'],
-											'full_group_student_price'=>$teacherLesson['TeacherLesson']['full_group_student_price'],
-											'request_subject_id'=>$teacherLesson['TeacherLesson']['request_subject_id']
+					$allLessons[] = array(	'teacher_lesson_id'         => $teacherLesson['TeacherLesson']['teacher_lesson_id'],
+                                            'name'                      => $teacherLesson['TeacherLesson']['name'],
+                                            'description'               => $teacherLesson['TeacherLesson']['description'], 'type'=>'TeacherLesson',
+											'datetime'                  => $teacherLesson['TeacherLesson']['datetime'],
+                                            'duration_minutes'          => $teacherLesson['TeacherLesson']['duration_minutes'],
+											'num_of_students'           => $teacherLesson['TeacherLesson']['num_of_students'],
+                                            'max_students'              => $teacherLesson['TeacherLesson']['max_students'],
+											'1_on_1_price'              => $teacherLesson['TeacherLesson']['1_on_1_price'],
+                                            'full_group_total_price'    => $teacherLesson['TeacherLesson']['full_group_total_price'],
+											'full_group_student_price'  => $teacherLesson['TeacherLesson']['full_group_student_price'],
+											'request_subject_id'        => $teacherLesson['TeacherLesson']['request_subject_id'],
+											'image_source'              => $teacherLesson['TeacherLesson']['image_source']
 											);
 				}
 			}
@@ -241,18 +259,26 @@ class User extends AppModel {
 				//If !$isOwner, hide details about userLessons
 					if(!$isOwner && (!$showUserLessonsToOthers || !$userLesson['UserLesson']['is_public'])) {
 						//unset($userLesson['Subject'], $userLesson['Teacher'], $userLesson['Student']);
-						$allLessons[] = array(	'name'=>null, 'description'=>null, 'type'=>'UserLesson',
-												'datetime'=>$userLesson['UserLesson']['datetime'], 'duration_minutes'=>$userLesson['UserLesson']['duration_minutes']);
+						$allLessons[] = array(	'type'              => 'UserLesson',
+												'datetime'          => $userLesson['UserLesson']['datetime'],
+                                                'duration_minutes'  => $userLesson['UserLesson']['duration_minutes']);
 					} else {
 						
-						$allLessons[] = array(	'user_lesson_id'=>$userLesson['UserLesson']['user_lesson_id'], 'teacher_lesson_id'=>$userLesson['UserLesson']['teacher_lesson_id'],
-												'name'=>$userLesson['UserLesson']['name'], 'description'=>$userLesson['UserLesson']['description'],
-                                                'stage'=>$userLesson['UserLesson']['stage'], 'type'=>'UserLesson',
-												'datetime'=>$userLesson['UserLesson']['datetime'], 'duration_minutes'=>$userLesson['UserLesson']['duration_minutes'],
-												'num_of_students'=>$userLesson['TeacherLesson']['num_of_students'], 'max_students'=>$userLesson['TeacherLesson']['max_students'],
-												'1_on_1_price'=>$userLesson['UserLesson']['1_on_1_price'], 'full_group_total_price'=>$userLesson['UserLesson']['full_group_total_price'],
-												'full_group_student_price'=>$userLesson['UserLesson']['full_group_student_price'],
-												'request_subject_id'=>$userLesson['UserLesson']['request_subject_id']
+						$allLessons[] = array(	'user_lesson_id'            => $userLesson['UserLesson']['user_lesson_id'],
+                                                'teacher_lesson_id'         => $userLesson['UserLesson']['teacher_lesson_id'],
+                                                'name'                      => $userLesson['UserLesson']['name'],
+                                                'description'               => $userLesson['UserLesson']['description'],
+                                                'stage'                     => $userLesson['UserLesson']['stage'],
+                                                'type'                      => 'UserLesson',
+                                                'datetime'                  => $userLesson['UserLesson']['datetime'],
+                                                'duration_minutes'          => $userLesson['UserLesson']['duration_minutes'],
+                                                'num_of_students'           => $userLesson['TeacherLesson']['num_of_students'],
+                                                'max_students'              => $userLesson['TeacherLesson']['max_students'],
+                                                '1_on_1_price'              => $userLesson['UserLesson']['1_on_1_price'],
+                                                'full_group_total_price'    => $userLesson['UserLesson']['full_group_total_price'],
+                                                'full_group_student_price'  => $userLesson['UserLesson']['full_group_student_price'],
+                                                'request_subject_id'        => $userLesson['UserLesson']['request_subject_id'],
+                                                'image_source'              => $userLesson['UserLesson']['image_source']
 												);
 					}
 			}

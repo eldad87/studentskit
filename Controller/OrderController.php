@@ -133,22 +133,14 @@ class OrderController extends AppController {
 
     /**
      * Shows the active meeting of the person the current user is trying to set a meeting with.
-     * @param null $year
-     * @param null $month
      */
-    public function calendar($year=null, $month=null) {
+    public function calendar() {
         $actionData = $this->getActionData();
         if(!$actionData || $actionData['Subject']['lesson_type']!='live') {
             $this->redirect($this->getOrderData('redirect'));
         }
 
 
-        if(!$year) {
-            $year = date('Y');
-            $month = date('m');
-        } else if(!$month) {
-            $month = date('m');
-        }
 
         //get booking-auto-approve-settings
         App::import('Model', 'AutoApproveLessonRequest');
@@ -158,9 +150,12 @@ class OrderController extends AppController {
 
         $this->loadCommonData($actionData['Subject']['user_id'], $actionData['Subject']['subject_id']);
 
-        $allLiveLessons = $this->getLiveLessons($year, $month);
+        $allLiveLessons = $this->User->getLiveLessons($actionData['Subject']['user_id'], false);
+        $this->setJSSetting('calendarClickUrl', Router::url(array('controller'=>'Home', 'action'=>'teacherLesson', '{teacher_lesson_id}')));
+        $this->setJSSetting('months', array(__('January'), __('February'), __('March'), __('April'), __('May'), __('June'), __('July'),
+                                            __('August'), __('September'), __('October'), __('November'), __('December')));
 
-        $this->set('allLiveLessons',	 	array('records'=>$allLiveLessons, 'month'=>$month, 'year'=>$year));
+        $this->set('allLiveLessons',	 	$allLiveLessons);
         $this->set('aalr', 					$aalr);
         $this->set('subjectData',     		$actionData['Subject']);
         $this->set('orderData',             $this->getOrderData());
@@ -180,7 +175,7 @@ class OrderController extends AppController {
         $this->redirect(array('controller'=>'Order', 'action'=>'summary'));
     }
 
-    public function getLiveLessons($year=null, $month=null) {
+    /*public function getLiveLessons($year=null, $month=null) {
         if(!$year) {
             $year = date('Y');
             $month = date('m');
@@ -200,7 +195,7 @@ class OrderController extends AppController {
             return $this->success(1, array('results'=>$allLiveLessons));
         }
         return $allLiveLessons;
-    }
+    }*/
     public function getUpcomingOpenLessonForSubject($subjectId, $limit=3, $page=1) {
         $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons(null, $subjectId, $limit, $page);
         return $this->success(1, array('results'=>$upcomingAvailableLessons));

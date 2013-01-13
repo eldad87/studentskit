@@ -1058,16 +1058,30 @@ class UserLesson extends AppModel {
 		
 		return $return;
 	}
-	
-	/**
-	 * 
-	 * Get all student lessons for given $stages in a given year/month
-	 * @param unknown_type $studentUserId
-	 * @param unknown_type $stages
-	 * @param unknown_type $year
-	 * @param unknown_type $month
-	 */
-	public function getLiveLessonsByDate( $studentUserId, $year=null, $month=null, $stages=array() ) {
+
+
+    public function getLiveLessons( $studentUserId, $stages=array(), $futureOnly=true ) {
+        $this->getDataSource();
+        $conditions = array('student_user_id'=>$studentUserId, $this->alias.'.lesson_type'=>LESSON_TYPE_LIVE );
+        if($futureOnly) {
+            $conditions[] = 'datetime > NOW()';
+        }
+        if($stages) {
+            $conditions['stage'] = $stages;
+        }
+
+        return $this->find('all', array('conditions'=>$conditions));
+    }
+
+    /**
+     * Get all student lessons for given $stages in a given year/month
+     * @param $studentUserId
+     * @param null $year
+     * @param null $month
+     * @param array $stages
+     * @return array
+     */
+    public function getLiveLessonsByDate( $studentUserId, $year=null, $month=null, $stages=array() ) {
 		$this->getDataSource();
 		$this->Subject; //Init const LESSON_TYPE_LIVE
 

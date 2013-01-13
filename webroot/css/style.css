@@ -2417,7 +2417,7 @@ ul.teacher-box3 li {
     width: 100%;
 	min-height:100px;
 
-    padding-right: 15px;
+    /*padding-right: 15px;*/
 }
 
 .main-student {
@@ -3844,7 +3844,7 @@ p.colorcode-detail span{
 
 a.arrws1{
 	width:15px;
-	margin:27px 15px;
+	margin:40px 15px;
 }
 
 a.arrws2{
@@ -5433,6 +5433,106 @@ img.star-student{
     margin:0px;
 }
 
+/* Calendar
+-------------------------------------------------- */
+/* shadow of tool-tip */
+.qtip-wrapper{
+    box-shadow:2px 2px 4px rgba(204, 204, 204, 0.9) !important;
+    -webkit-box-shadow:2px 2px 4px rgba(204, 204, 204, 0.9) !important;
+    -moz-box-shadow:2px 2px 4px rgba(204, 204, 204, 0.9) !important;
+    -o-box-shadow:2px 2px 4px rgba(204, 204, 204, 0.9) !important;
+    -ms-box-shadow:2px 2px 4px rgba(204, 204, 204, 0.9) !important;
+}
+/* Tool-tip tip*/
+.topimp{
+    top:1px !important;
+}
+
+/*  same month prev days  */
+.JFrontierCal-Day-Cell-Today-prv{
+    background-color:#F8FFCC !important;
+}
+/* prev/next months days */
+.JFrontierCal-NextMonth-Day-Cell, .JFrontierCal-PrevMonth-Day-Cell{
+    background-color:#dbdbdb !important;
+}
+
+/* Month/Year */
+input[type="text"].monthname-box{
+    border:none;
+    background:none;
+    font-size:33px;
+    text-align:center;
+    color:#FFFFFF;
+    float:left;
+    width:100%;
+    cursor:pointer;
+    text-shadow:0px 1px 1px rgba(0,0,0, 0.5);
+}
+
+input[type="text"].yearname-box{
+    border:none;
+    background:none;
+    font-size:25px;
+    text-align:center;
+    color:#FFFFFF;
+    float:left;
+    width:100%;
+    cursor:pointer;
+    text-shadow:0px 1px 1px rgba(0,0,0, 0.5);
+}
+
+.ui-dialog .ui-state-error { padding: .3em; }
+.validateTips { border: 1px solid transparent; padding: 0.3em; }
+.ui-widget-header{
+    background:none;
+    border: none;
+}
+.ui-dialog .ui-dialog-buttonpane button{
+    padding: 0 !important;
+}
+.ui-dialog-buttonpane span{
+    color:#fff;
+    height: 15px;
+    width: 50px;
+    padding: 6px 16px;
+    display: block;
+    background-color: #555;
+    background-image: linear-gradient(bottom, #555 29%, #999 90%);
+    background-image: -o-linear-gradient(bottom, #555 29%, #999 90%);
+    background-image: -moz-linear-gradient(bottom, #555 29%, #999 90%);
+    background-image: -webkit-linear-gradient(bottom, #555 29%, #999 90%);
+    background-image: -ms-linear-gradient(bottom, #555 29%, #999 90%);
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.29, #555),
+        color-stop(0.9, #999)
+    );
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius: 3px;
+    -ms-border-radius: 3px;
+    border: 1px solid #444;
+    box-shadow: 0px 1px 0px rgba(204, 204, 204, .9) inset;
+    -moz-box-shadow: 0px 1px 0px rgba(204, 204, 204, .9) inset;
+    -webkit-box-shadow: 0px 1px 0px rgba(204, 204, 204, .9) inset;
+    -o-box-shadow: 0px 1px 0px rgba(204, 204, 204, .9) inset;
+    -ms-box-shadow: 0px 1px 0px rgba(204, 204, 204, .9) inset;
+}
+/*.JFrontierCal-Agenda-Item span{
+    display:none
+}*/
+.ui-state-default {
+    border: none;
+    background: none;
+}
+.ui-dialog .ui-dialog-buttonpane{
+    border-width:0;
+}
+
 /* infield jQuery plugin */
 div.infield { position:relative }
 label.infield  {
@@ -5454,6 +5554,12 @@ img.lesson-type {
 .no-margin-right {
     margin-right: 0px;
 }
+
+.scheduleTime {
+    margin-bottom:12px; width:95%; padding: .4em;
+}
+
+
 
 /* Fine Uploader
 -------------------------------------------------- */

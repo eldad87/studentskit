@@ -1,6 +1,6 @@
 <!-- other-subjects start -->
 <div class="student-main-box radius3">
-    <h5 class="fullwidth pad8"><strong>My Subjects</strong></h5>
+    <h5 class="fullwidth pad8"><strong><?php echo __('My Subjects'); ?></strong></h5>
     <div class="my-subject-box fix-height">
         <ul class="subject-box">
             <?php

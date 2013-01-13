@@ -47,7 +47,7 @@
                                 <?php echo $this->Layout->priceTag($upcomingAvailableLesson['1_on_1_price'], $upcomingAvailableLesson['full_group_student_price'], 'space25 order-price'); ?>
                                 <?php
                                 echo $this->Html->link('Join', array('controller'=>'Order', 'action'=>'init', 'join', $upcomingAvailableLesson['teacher_lesson_id']),
-                                    array('class'=>'btn-color-gry move-right space35 centered space3'));
+                                    array('class'=>'btn-color-gry move-right space35 centered-text space3'));
                                 ?>
 
                             </div>
@@ -75,7 +75,7 @@
             <div id="upcoming" class="modal hide fade">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h3><?php echo __('Join existing group lessons'); ?></h3>
+                    <h3><?php echo __('centered-textJoin existing group lessons'); ?></h3>
                 </div> <!-- /modal-header -->
                 <div class="modal-body">
                     <h5><a href="#"><?php echo __('Why should i join existing lesson?'); ?></a><i class="iconSmall-info space20 space23"></i> </h5>

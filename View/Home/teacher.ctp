@@ -105,10 +105,12 @@
                     ?>
                     <?php
                         if($latestPosts) {
-                            echo $this->element('Home/board_topics', array('topics'=>$latestPosts));
+                            echo $this->element('Home/board_topics', array('latestPosts'=>$latestPosts));
                         }
 
-                        echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$teacherReviews, 'title'=>__('What student say about me?')));
+                        if($teacherReviews) {
+                            echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$teacherReviews, 'title'=>__('What student say about me?')));
+                        }
                     ?>
                     <!---->
 

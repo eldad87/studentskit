@@ -78,7 +78,7 @@ Style for Saturday cells.
 */
 .JFrontierCal .JFrontierCal-Day-Cell-Last,
 .JFrontierCal .JFrontierCal-NextMonth-Day-Cell-Last {
-//	border-right: 0px solid #ffffff;
+    /*border-right: 0px solid #ffffff;*/
 }
 /*
 Style for hover effect on droppable day cells (drag and drop agenda items.)
@@ -131,7 +131,7 @@ Style for header cells (day name cells at top of calendar)
 Style for Saturday header cell at top of calendar.
 */
 .JFrontierCal .JFrontierCal-Header-Cell-Last {
-//	border-right: 0px solid #ffffff;
+	/*border-right: 0px solid #ffffff;*/
 }
 /*
 Style for week Header cells (cells for day numbers above each week)
@@ -169,7 +169,7 @@ Style for Saturday week header cell.
 */
 .JFrontierCal .JFrontierCal-Week-Header-Cell-Last,
 .JFrontierCal .JFrontierCal-NextMonth-Week-Header-Cell-Last {
-//	border-right: 0px solid #ffffff;
+	/*border-right: 0px solid #ffffff;*/
 }
 /*
 Style for agenda items. These are simply default values. Some values can be configured through the API (height, color, background-color, font, etc...)
