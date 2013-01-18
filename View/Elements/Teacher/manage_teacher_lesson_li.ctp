@@ -6,7 +6,7 @@ $toTheLessonLink = $this->Html->link(__('User page'), array('controller'=>'Home'
         <div class="message-tm-left new-wid">
             <div class="lesson-box">
                 <div class="head-back radius1">
-                    <h1><?php echo __('Joined on'); ?>: <?php echo $this->Time->niceShort($student['UserLesson']['datetime']); ?></h1>
+                    <h1><?php echo __('Joined on'); ?>: <?php echo $this->TimeTZ->niceShort($student['UserLesson']['datetime']); ?></h1>
                     <div class="dropdown pull-right">
                         <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" href="#">
                             <i class="iconSmall-drop-arrow"></i>

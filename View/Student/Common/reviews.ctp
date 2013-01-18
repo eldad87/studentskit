@@ -175,7 +175,7 @@ $otherUserType = ($userType=='student' ? 'teacher' : 'student');
                                                     </div>
                                                     <div class="teach-space-left">
                                                         <h6><strong class="a-black"><?php echo $this->Html->link($review['UserLesson']['name'], $lessonURL); ?></strong></h6>
-                                                        <p><?php echo $this->Time->niceShort($review['UserLesson']['datetime']); ?></p>
+                                                        <p><?php echo $this->TimeTZ->niceShort($review['UserLesson']['datetime']); ?></p>
                                                         <strong><?php echo $this->Html->link($review[ ucfirst($otherUserType) ]['username'], array('controller'=>'Home', 'action'=>$otherUserType, $review['UserLesson'][$otherUserType.'_user_id'])); ?></strong>
                                                     </div>
                                                 </div>

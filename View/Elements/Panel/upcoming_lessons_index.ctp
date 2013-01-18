@@ -7,7 +7,7 @@
         $i++;
         $lessonData = isSet($upcomingLesson['UserLesson']) ? $upcomingLesson['UserLesson'] : $upcomingLesson['TeacherLesson'];
 
-        $lessonLinkText = sprintf(__('Starts on: %s'), $this->Time->niceShort($lessonData['datetime']));
+        $lessonLinkText = sprintf(__('Starts on: %s'), $this->TimeTZ->niceShort($lessonData['datetime']));
         $toTheLessonLink = $this->Html->link($lessonLinkText, array('controller'=>'Lessons',
                                                                                     'action'=>($lessonData['lesson_type']==LESSON_TYPE_LIVE ? 'index' : 'video'),
                                                                                     $lessonData['teacher_lesson_id']),

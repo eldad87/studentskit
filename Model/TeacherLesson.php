@@ -551,8 +551,9 @@ class TeacherLesson extends AppModel {
     }
 
     public function getLiveLessons( $teacherUserId, $futureOnly=true ) {
+        $this->Subject; //Init const
         $this->getDataSource();
-        $conditions = array('teacher_user_id'=>$teacherUserId, $this->alias.'.lesson_type'=>LESSON_TYPE_LIVE,
+        $conditions = array($this->alias.'.teacher_user_id'=>$teacherUserId, $this->alias.'.lesson_type'=>LESSON_TYPE_LIVE,
                             'is_deleted'=>0 );
         if($futureOnly) {
             $conditions[] = 'datetime > NOW()';

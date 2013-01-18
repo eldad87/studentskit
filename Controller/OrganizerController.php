@@ -5,6 +5,7 @@
  */
 class OrganizerController extends AppController {
 	public $name = 'Organizer';
+	public $uses = array( 'User' );
 	//public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
 	public $components = array('Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')), 'Security');
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
@@ -18,7 +19,7 @@ class OrganizerController extends AppController {
             $this->viewPath = $this->viewPath.DS.'ajax'.DS;
             if(strtolower(substr($this->request->params['action'], 0, 4 ))=='user') {
                 $this->viewPath .= 'user';
-            } else {
+            } else if(strtolower(substr($this->request->params['action'], 0, 7 ))=='teacher'){
                 $this->viewPath .= 'teacher';
             }
         }
@@ -27,6 +28,12 @@ class OrganizerController extends AppController {
     }
 
     public function index() {
+    }
+
+    public function calendar() {
+        $allLiveLessons = $this->User->getLiveLessons($this->Auth->user('user_id'), true);
+
+        $this->set('allLiveLessons', $allLiveLessons);
     }
 
 }

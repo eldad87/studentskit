@@ -43,7 +43,7 @@ if($page==1) {
         echo '<div class="lesson-box space2" id="user_lesson_id_'.$upcomingLesson['UserLesson']['user_lesson_id'].'">
                 <div class="head-back radius1">
                     <h1>'.$this->Layout->lessonTypeIcon($upcomingLesson['UserLesson']['lesson_type']).
-                        $this->Time->niceShort($upcomingLesson['UserLesson']['datetime']).' -  <strong>'.$upcomingLesson['UserLesson']['name'].'</strong></h1>
+                        $this->TimeTZ->niceShort($upcomingLesson['UserLesson']['datetime']).' -  <strong>'.$upcomingLesson['UserLesson']['name'].'</strong></h1>
                     <div class="dropdown pull-right">
                         <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" href="">
                             <i class="iconSmall-drop-arrow"></i>

@@ -47,7 +47,7 @@ if($page==1){
                 <a class="load2" href="#" rel="<?php echo $threadLink; ?>">
                     <div class="msg-textheaderbox pad8">
                         <h5><?php echo ($thread['title'] ? $thread['title'] : sprintf(__('Conversation with %s'), $thread['other_user']['username'])); ?></h5>
-                        <span><?php echo $this->Time->niceShort($thread['last_message']['timestamp']); ?></span>
+                        <span><?php echo $this->TimeTZ->niceShort($thread['last_message']['timestamp']); ?></span>
                     </div>
                     <p class="fullwidth"><?php echo $thread['last_message']['message']; ?></p>
                 </a>

@@ -28,7 +28,7 @@ echo $this->Form->create(false, array('url'=>array('controller'=>'Order', 'actio
         </li>
         <li>
             <label>Datetime </label>
-            <div class="order-billing-intext"><p><span>:</span></p><p class="order-billingtext"><?php echo $this->Time->nice($datetime); ?></p>
+            <div class="order-billing-intext"><p><span>:</span></p><p class="order-billingtext"><?php echo $this->TimeTZ->nice($datetime); ?></p>
         </li>
         <li>
             <label>Duration </label>

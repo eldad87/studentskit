@@ -208,7 +208,7 @@ class User extends AppModel {
 		
 		//Get student lessons for a given month
 		//$ulObj->unbindModel(array('belongsTo' => array('Student')));
-		$ulObj->recursive = -1;
+		$ulObj->recursive = 0;
 		/*$userLessons = $ulObj->getLiveLessonsByDate( $userId, $year, $month, ($isOwner ? null : array(USER_LESSON_PENDING_TEACHER_APPROVAL, USER_LESSON_RESCHEDULED_BY_STUDENT,
                                                                                                         USER_LESSON_RESCHEDULED_BY_TEACHER, USER_LESSON_RESCHEDULED_BY_STUDENT,
                                                                                                         USER_LESSON_ACCEPTED)));*/

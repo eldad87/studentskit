@@ -1,7 +1,7 @@
 <div class="lesson-box space2 right-student-box2 right-student-newbox2" id="<?php echo $id; ?>">
     <h3 class="radius1">
         <?php echo $this->Layout->lessonTypeIcon($lessonData['UserLesson']['lesson_type']).
-        $this->Time->niceShort($lessonData['UserLesson']['datetime']).' -  <strong>'.$lessonData['UserLesson']['name'].'</strong>'; ?>
+        $this->TimeTZ->niceShort($lessonData['UserLesson']['datetime']).' -  <strong>'.$lessonData['UserLesson']['name'].'</strong>'; ?>
     </h3>
     <div class="lesson-box-content">
         <div class="user-pic2"><?php echo $this->Html->image($this->Layout->image($lessonData['UserLesson']['image_source'], 72, 72), array('alt' => 'Subject image')); ?></div>

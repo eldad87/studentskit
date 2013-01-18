@@ -35,7 +35,7 @@ class AppController extends Controller {
 	public $components = array('RequestHandler', 'Session',
                                 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login'), 'authenticate' => array('Form' => array('fields' => array('username' => 'email')))),
                                 'DebugKit.Toolbar');
-    public $helpers = array('Facebook.Facebook', 'Layout');
+    public $helpers = array('Facebook.Facebook', 'Layout', 'TimeTZ');
     public $jsSettings = array();
 	
 	public function beforeFilter() {

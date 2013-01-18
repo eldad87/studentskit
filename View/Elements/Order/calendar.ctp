@@ -1,56 +1,56 @@
 <?php
 $isTeacher = (isSet($isTeacher) ? $isTeacher : false);
-
-//JS
-$this->Html->script('lib/jshashtable-2.1', array('inline'=>false));
-$this->Html->script('jquery.tipTip', array('inline'=>false));
-$this->Html->script('calander', array('inline'=>false));
-$this->Html->script('jquery-qtip-1.0.0-rc3140944/jquery.qtip-1.0-custom', array('inline'=>false));
-$this->Html->script('frontierCalendar/jquery-frontier-cal-1.3.2-custom', array('inline'=>false));
+$inline = (isSet($inline) ? $inline : false);
 
 //CSS
-$this->Html->css(array('jquery-ui/smoothness/jquery-ui', 'frontierCalendar/jquery-frontier-cal-1.3.2', 'tipTip'), null, array('inline'=>false));
-
+echo $this->Html->css(array('jquery-ui/smoothness/jquery-ui', 'frontierCalendar/jquery-frontier-cal-1.3.2', 'tipTip'), null, array('inline'=>$inline));
 
 //Add JS tp run the calendar
-$this->Html->scriptBlock('
+echo $this->Html->scriptBlock('
+    var months = [  \''.__('January').'\', \''.__('February').'\', \''.__('March').'\', \''.__('April').'\',
+                    \''.__('May').'\', \''.__('June').'\', \''.__('July').'\', \''.__('August').'\',
+                    \''.__('September').'\', \''.__('October').'\', \''.__('November').'\', \''.__('December').'\'];
+
     var calendarSelector = \'#mycal\';
     var colors = {openUserLessons: \'#07B939\', openTeacherLesson: \'#FF8C1C\', closed: \'#333333\'};
-', array('inline'=>false));
+', array('inline'=>$inline));
 
-
-//Add agenda if any
-$addAgendaJS = '';
-foreach($allLiveLessons AS $lLesson) {
-    if(isSet($lLesson['name'])) {
-        $addAgendaJS .= "
-            addAgenda(  {$lLesson['teacher_lesson_id']},
-                        '{$lLesson['name']}',
-                        '{$lLesson['description']}',
-                        {$lLesson['num_of_students']},
-                        {$lLesson['max_students']},
-                        '{$lLesson['datetime']}',
-                        {$lLesson['duration_minutes']},
-                        '{$this->Layout->image($lLesson['image_source'], 38, 38)}',
-                        '{$lLesson['type']}'
-                        )";
-    } else {
-        $addAgendaJS .= "
-        addBlockedAgenda('  {$lLesson['datetime']}',
-                            {$lLesson['duration_minutes']});";
-    }
-}
-
-
-
-$this->Html->scriptBlock('$(document).ready(function() {
-'.$addAgendaJS.'
-});', array('inline'=>false));
-
-
-
-
+//JS
 ?>
+<script type="text/javascript">
+    autoJSLoaderObj.tryLoadChain('Hashtable', ['/js/lib/jshashtable-2.1.js']);
+    autoJSLoaderObj.tryLoadChain('$.fn.tipTip', ['/js/jquery.tipTip.js']);
+    autoJSLoaderObj.tryLoadChain('$.fn.qtip', ['/js/jquery-qtip-1.0.0-rc3140944/jquery.qtip-1.0-custom.js']);
+    autoJSLoaderObj.tryLoadChain('$.fn.jFrontierCal', ['/js/frontierCalendar/jquery-frontier-cal-1.3.2-custom.js']);
+    autoJSLoaderObj.tryLoadChain('NoneExistingObject', ['/js/calender.js'], onCalenderLoad);
+
+    function onCalenderLoad() {
+        <?php
+            //Add agenda if any
+            $addAgendaJS = '';
+            foreach($allLiveLessons AS $lLesson) {
+                if(isSet($lLesson['name'])) {
+                    $addAgendaJS .= "
+                        addAgenda(  '{$lLesson['teacher_lesson_id']}',
+                                    '{$lLesson['name']}',
+                                    '{$lLesson['description']}',
+                                    '{$lLesson['num_of_students']}',
+                                    '{$lLesson['max_students']}',
+                                    '{$lLesson['datetime']}',
+                                    '{$lLesson['duration_minutes']}',
+                                    '{$this->Layout->image($lLesson['image_source'], 38, 38)}',
+                                    '{$lLesson['type']}'
+                                    );";
+                } else {
+                    $addAgendaJS .= "
+                    addBlockedAgenda('  {$lLesson['datetime']}',
+                                        {$lLesson['duration_minutes']});";
+                }
+            }
+            echo $addAgendaJS;
+        ?>
+    }
+</script>
 
 <!-- Tooltip template -->
 <div id="tooltip-template" class="hide">
@@ -172,8 +172,8 @@ $this->Html->scriptBlock('$(document).ready(function() {
         <li>
             <div class="colorbox colorbox-bgnd4"></div>
             <div class="colordetiail-bar">
-                <p class="colorcode-detail"> <span><?php echo __('Auto approve'); ?></span><br>
-                    <?php echo __('lessons that you may take participation in, includig pending invitations and under negotiation lessons.'); ?>
+                <p class="colorcode-detail"> <span><?php echo __('Optional lessons'); ?></span><br>
+                    <?php echo __('Lessons that you may take participation in, includig pending invitations and under negotiation lessons.'); ?>
                 </p>
             </div>
         </li>
@@ -182,7 +182,9 @@ $this->Html->scriptBlock('$(document).ready(function() {
         ?>
     </ul>
 
-    <span id="error">Not add Event check current date</span>
+    <span id="error"><?php
+        //WTF this is for?
+        echo __('Please select a future dae'); ?></span>
     <div id="display-event-form" title="View Agenda Item"> </div>
 
 </div>

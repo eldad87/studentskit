@@ -1061,15 +1061,17 @@ class UserLesson extends AppModel {
 
 
     public function getLiveLessons( $studentUserId, $stages=array(), $futureOnly=true ) {
+        $this->Subject; //Init const
         $this->getDataSource();
-        $conditions = array('student_user_id'=>$studentUserId, $this->alias.'.lesson_type'=>LESSON_TYPE_LIVE );
+        $conditions = array($this->alias.'.student_user_id'=>$studentUserId, $this->alias.'.lesson_type'=>LESSON_TYPE_LIVE );
         if($futureOnly) {
-            $conditions[] = 'datetime > NOW()';
+            $conditions[] = $this->alias.'.datetime > NOW()';
         }
         if($stages) {
-            $conditions['stage'] = $stages;
+            $conditions[$this->alias.'.stage'] = $stages;
         }
 
+        $this->recursive = 0;
         return $this->find('all', array('conditions'=>$conditions));
     }
 

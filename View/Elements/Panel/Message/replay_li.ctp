@@ -12,7 +12,7 @@
                 $user = $this->getVar('user');
                 echo $message['user_id']==$user['user_id'] ? $user['username'] : $thread['other_user']['username'];
                 ?></h5>
-            <span><?php echo $this->Time->niceShort($message['timestamp']); ?></span>
+            <span><?php echo $this->TimeTZ->niceShort($message['timestamp']); ?></span>
         </div>
         <p class="fullwidth"><?php echo $message['message']; ?></p>
         <!-- <p class="msgbottom-text"><a href="#" class="rly">Reply</a><a href="#" class="trash">Trash</a></p>-->

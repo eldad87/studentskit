@@ -52,7 +52,7 @@
 
                             </div>
                             <div class="space36">
-                                <p>Start : <?php echo $this->Time->niceShort($upcomingAvailableLesson['datetime']); ?></p>
+                                <p>Start : <?php echo $this->TimeTZ->niceShort($upcomingAvailableLesson['datetime']); ?></p>
                                 <p>Current student <?php echo $upcomingAvailableLesson['num_of_students']; ?> of <?php echo $upcomingAvailableLesson['max_students']; ?></p>
                                 <?php echo $this->Html->link('Lesson page', array('controller'=>'Home', 'action'=>'teacherLesson', $upcomingAvailableLesson['teacher_lesson_id']));  ?>
                             </div>

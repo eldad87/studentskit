@@ -152,8 +152,6 @@ class OrderController extends AppController {
 
         $allLiveLessons = $this->User->getLiveLessons($actionData['Subject']['user_id'], false);
         $this->setJSSetting('calendarClickUrl', Router::url(array('controller'=>'Home', 'action'=>'teacherLesson', '{teacher_lesson_id}')));
-        $this->setJSSetting('months', array(__('January'), __('February'), __('March'), __('April'), __('May'), __('June'), __('July'),
-                                            __('August'), __('September'), __('October'), __('November'), __('December')));
 
         $this->set('allLiveLessons',	 	$allLiveLessons);
         $this->set('aalr', 					$aalr);
@@ -168,7 +166,7 @@ class OrderController extends AppController {
 
         $datetime = $this->data['UserLesson']['datetime'];
 
-        $datetime = mktime(($datetime['meridian']=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
+        $datetime = mktime((strtolower($datetime['meridian'])=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
         $datetime = $this->UserLesson->timeExpression($datetime, false);
         $this->Session->write('order.datetime', $datetime);
 
@@ -258,10 +256,9 @@ class OrderController extends AppController {
 
 
         $this->loadCommonData($actionData['Subject']['user_id'], $actionData['Subject']['subject_id']);
-
         $this->Session->write('order.viewedSummary', true);
         $this->set($viewParameters);
-        $this->set('orderData',             $this->getOrderData());
+        $this->set('orderData', $this->getOrderData());
     }
 
     /**

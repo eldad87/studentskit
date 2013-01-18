@@ -1,5 +1,58 @@
 /////////////////////////////////////////////////////////////// Helpers
 /**
+ * Auto JS files loader.
+ * Help to load JS files if objects are missing - in other words, helps to load JS files only once.
+ */
+function autoJSLoader() {
+
+}
+autoJSLoader.prototype.loadScript = function (src, callback) {
+    var head=document.getElementsByTagName('head')[0];
+    var script= document.createElement('script');
+    script.type= 'text/javascript';
+    script.onreadystatechange = function () {
+        if (this.readyState == 'complete' || this.readyState == 'loaded') {
+            callback();
+        }
+    }
+    script.onload = callback;
+    script.src = src;
+    head.appendChild(script);
+}
+
+autoJSLoader.prototype.isLoaded = function (objectType) {
+    var global = window;
+
+    var o = objectType.split('.');
+    for (var i in o) {
+        if(!global[o[i]]) {
+            return false;
+        }
+        global = global[o[i]];
+    }
+
+    return true;
+}
+
+autoJSLoader.prototype.tryLoadChain = function (objectType, chain, runOnLoad) {
+    if (!this.isLoaded(objectType)) {
+        if (chain.length) {
+            this.loadScript(
+                chain[0],
+                function() {
+                    if(runOnLoad) {
+                        runOnLoad(chain[0]);
+                    }
+                    if(chain.length>1) {
+                        this.tryLoadChain.apply(this.tryLoadChain, Array.prototype.slice.call(chain, 1));
+                    }
+                }
+            );
+        }
+    }
+}
+
+/**
  * Used to post a form and replace its container with the (HTML) result
  * @constructor
  */
@@ -870,6 +923,7 @@ ActionButtons.prototype.loadButton = function(buttonSelector, url, type, params)
 
 var pfObj = new PostForm();
 var pAPIObj = new PostAPI();
+var autoJSLoaderObj = new autoJSLoader();
 
 
 
