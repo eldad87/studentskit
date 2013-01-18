@@ -21,8 +21,8 @@ if(isSet($approved)) {
 } else if(isSet($pending_teacher_approval)) {
     echo '<h2 class="pull-left fullwidth space14"><strong>'.__('Success').'</strong></h2>';
 
-    echo '<p class="fontsize1 space13">'.__('You\'re request is waiting for the teacher\'s approval. to check its status, click').
-        $this->Html->link(' here (Under Booking)', array('controller'=>'Student', 'action'=>'lessons')).'</p>';
+    echo '<p class="fontsize1 space13">'.__('You\'re request is waiting for the teacher\'s approval. to check its status, click ').
+        $this->Html->link('here', $this->Layout->getOrganizerUrl('/Student/lessons', '/Student/lessonsBooking')).'</p>';
 
 } else if(isSet($pending_user_approval)) {
     die('Error');

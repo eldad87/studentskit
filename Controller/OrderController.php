@@ -521,13 +521,15 @@ class OrderController extends AppController {
         }
 
         //Check if there are existing requests
-        if($actionData['Subject']['lesson_type']=='live') {
+        if($actionData['Subject']['lesson_type']==LESSON_TYPE_LIVE) {
             //Check if datetime is in the future
-            if(!$this->UserLesson->isFutureDatetime($this->getOrderData('datetime'))) {
+
+            if($this->getOrderData('datetime') && !$this->UserLesson->isFuture1HourDatetime($this->getOrderData('datetime'))) {
                 $this->clearSession();
-                $this->Session->setFlash(__('Datetime error'));
+                $this->Session->setFlash(__('Please select a minimum +1 hour future date-time'));
                 $this->redirect($this->getOrderData('redirect'));
             }
+
 
             //Join request
             if(isSet($actionData['TeacherLesson'])) {
