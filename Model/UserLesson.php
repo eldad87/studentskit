@@ -308,21 +308,22 @@ class UserLesson extends AppModel {
         Subject::calcFullGroupPriceIfNeeded($this->data['UserLesson'], $exists);
         Subject::extraValidation($this);
 
-        $lessonType = false;
+        $lessonType = (isSet($this->data['UserLesson']['lesson_type']) && !empty($this->data['UserLesson']['lesson_type']) ?
+                        $this->data['UserLesson']['lesson_type'] :
+                        false);
 
         /*
+         * Make sure that datetime is taken into consideration when user perform action
          * Make sure the actions are made on future lessons and a least 1 hour before lesson starts (negotiate can change the datetime)
          *
          * 1. Order/Join request are new records, therefore they must have datetime in-order to pass validation
-         * 2. Make sure datetime is not set (I.e. by negotiation)
+         * 2. -
          * 3. State exists - this action must be made by lessonRequest/joinRequest/reProposeRequest/acceptRequest/cancelRequest
          * 4. This check must apply only on user actions and not by daemon/rating
          *
          * 5. There is no need to limit this check to LIVE lessons only. the reason is that VIDEO lessons get datetime only on the first watch
         */
-
         if( $exists && // (1) Record exists
-            (!isSet($this->data['UserLesson']['datetime']) && empty($this->data['UserLesson']['datetime'])) && // (2) No datetime
             isSet($this->data['UserLesson']['stage']) && !empty($this->data['UserLesson']['stage']) && // (3) State exists
             in_array($this->data['UserLesson']['stage'], array( USER_LESSON_RESCHEDULED_BY_STUDENT, USER_LESSON_RESCHEDULED_BY_TEACHER, // (4) Negotiate
                                                                 USER_LESSON_ACCEPTED, //(4) Accept
@@ -333,13 +334,19 @@ class UserLesson extends AppModel {
                 //Find record
                 $this->recursive = -1;
                 $userLessonData = $this->findByUserLessonId($this->id ? $this->id : $this->data['UserLesson'][$this->primaryKey]);
+
+                //Set lesson_type
                 $lessonType = $userLessonData['UserLesson']['lesson_type'];
 
-
-                // (5)
-                $this->data['UserLesson']['datetime'] = $userLessonData['UserLesson']['datetime'];
+                //Take into account the lesson datetime
+                if($lessonType==LESSON_TYPE_LIVE) {
+                    if(!isSet($this->data['UserLesson']['datetime']) && empty($this->data['UserLesson']['datetime'])) { // (5) - only for live
+                        $this->data['UserLesson']['datetime'] = $userLessonData['UserLesson']['datetime'];
+                    } else {
+                        $datetimeErrorMessage = __('Please set a 1-hour future datetime');
+                    }
+                }
         }
-
 
 
         //Get the lessonType from the subject
@@ -355,7 +362,9 @@ class UserLesson extends AppModel {
 
 
         if($lessonType==LESSON_TYPE_LIVE) {
-            $datetimeErrorMessage = $exists ? __('You cannot operate on a lesson that already started or will start in less then 1 hour') : __('Please set a 1-hour future datetime');
+            if(!isSet($datetimeErrorMessage)) {
+                $datetimeErrorMessage = $exists ? __('You cannot operate on a lesson that already started or will start in less then 1 hour') : __('Please set a 1-hour future datetime');
+            }
 
             //Make sure that datetime is not blank for live lessons and that its a future datetime + 1 hour from now
             $this->validator()->add('datetime', 'datetime', array(
@@ -913,7 +922,9 @@ class UserLesson extends AppModel {
 
         $this->id = $userLessonId;
         $this->set($data);
-        $this->save();
+        if(!$this->save()) {
+            return false;
+        }
 
         $event = new CakeEvent('Model.UserLesson.afterReProposeRequest', $this, array('user_lesson'=>$userLessonData, 'update'=>$data, 'by_user_id'=>$byUserId));
         $this->getEventManager()->dispatch($event);
