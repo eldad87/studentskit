@@ -74,6 +74,7 @@ class AdaptivePayment extends AppModel {
             'teacher_lesson_id'     =>$pendingUserLessonData['teacher_lesson_id'],
             'subject_id'            =>$pendingUserLessonData['subject_id'],
             'student_user_id'       =>$pendingUserLessonData['student_user_id'],
+            'preapproval_response'  =>json_encode($response),
             'preapproval_key'       =>$response->preapprovalKey,
             'status'                =>'IN_PROCESS',
             'is_approved'           =>0,
@@ -144,6 +145,7 @@ class AdaptivePayment extends AppModel {
                     $this->set('is_used', 1);
                     $this->set('paid_amount', $receiversPriceAndCommission['perStudentPrice']);
                     $this->set('pay_key',$response->payKey);
+                    $this->set('pay_response',json_encode($response));
                     $this->save();
                     $successTransactionsCount++;
 
@@ -297,7 +299,9 @@ class AdaptivePayment extends AppModel {
         //Update preapproval
         $this->create(false);
         $this->id = $apData['adaptive_payment_id'];
-        $saveData = array('pending_user_lesson_id'=>$ipnData['pending_user_lesson_id'], 'is_approved'=>($ipnData['approved']=='true' ? 1 : 0), 'status'=>$ipnData['status'], 'max_amount'=>$ipnData['max_total_amount_of_all_payments'], 'paid_amount'=>$paid, 'is_used'=>( $paid ? 1 : 0 ), 'preapproval_ipn_data'=>json_encode($ipnData));
+        $saveData = array('pending_user_lesson_id'=>$ipnData['pending_user_lesson_id'], 'is_approved'=>($ipnData['approved']=='true' ? 1 : 0),
+                            'status'=>$ipnData['status'], 'max_amount'=>$ipnData['max_total_amount_of_all_payments'],
+                            'paid_amount'=>$paid, 'is_used'=>( $paid ? 1 : 0 ), 'preapproval_ipn_received'=>json_encode($ipnData));
         if(!$this->save($saveData) && $apData['user_lesson_id']) {
             $this->cancelApproval($apData['user_lesson_id'], $ipnData['preapproval_key']);
             return false;
