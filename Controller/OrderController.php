@@ -5,14 +5,14 @@
 class OrderController extends AppController {
 	public $name = 'Order';
 	public $uses = array('User', 'Subject', 'TeacherLesson', 'UserLesson', 'PendingUserLesson', 'AdaptivePayment', 'PendingAdaptivePayment');
-	public $components = array(/*'Utils.FormPreserver'=>array('directPost'=>true,'actions'=>array('paymentPreapproval')), */'Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login'))/*, 'Security'*/);
+	public $components = array('Utils.FormPreserver'=>array('directPost'=>true,'actions'=>array('prerequisites'), 'priority' => 1));
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 
 
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow(	'index', 'init', 'calendar', 'setLessonDatetime', 'getLiveLessons', 'summary', 'paymentPreapprovalIpnNotificationUrl', 'paymentIpnNotificationUrl', 'paymentUpdateTest', 'getUpcomingOpenLessonForSubject');
-		$this->Auth->deny( array('paymentPreapproval', 'status') );
+		$this->Auth->deny( array('prerequisites', 'status') );
         //$this->Security->requirePost('prerequisites');
 	}
 	
@@ -423,19 +423,6 @@ class OrderController extends AppController {
 
         $this->redirect(array('action'=>'status', $action, $status['user_lesson_id']));
     }
-
-    public function pay() {
-
-    }
-
-    /**
-     * The user canceled the preapproval request
-     */
-    /*public function cancel($action, $userLessonId) {
-        pr($this->UserLesson->findByUserLessonIdAndStudentUserId($userLessonId, $this->Auth->user('user_id')));
-        $this->clearSession();
-
-    }*/
 
     public function paymentPreapprovalIpnNotificationUrl($action, $pendingUserLessonId) {
         $data = $this->data;

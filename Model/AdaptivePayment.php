@@ -15,28 +15,26 @@ class AdaptivePayment extends AppModel {
 				);
 
     private $adaptivePayments;
-    private $callerID = 'caller_1345633979_biz_api1.gmail.com'; //The API user
-    private $siteOwnerId = 'web_1346436413_biz@gmail.com'; //user that will get commission
-    private $paymentUrl = 'https://www.sandbox.paypal.com/webscr&cmd=_ap-preapproval&preapprovalkey='; //Payment Approval URL
 
     public function __construct($id = false, $table = null, $ds = null) {
         parent::__construct($id, $table, $ds);
 
         App::import('Vendor', 'AdaptivePayments'.DS.'AdaptivePayments');
-        $this->adaptivePayments = new AdaptivePayments( $this->callerID );
+        $this->adaptivePayments = new AdaptivePayments( Configure::read('paypal_api_username') );
     }
 
     /**
      * @param $pendingUserLessonId
+     * @param $action
      * @param $cancelUrl
      * @param $returnUrl
      * @param null $clientIP
-     * @return bool
+     * @param null $ipnNotificationUrl
+     * @return bool|string
      *
      * return string on success
      * return false on failure
      * return true if already approved/paid
-     *
      */
     public function getPreApprovalURL( $pendingUserLessonId, $action, $cancelUrl, $returnUrl, $clientIP=null, $ipnNotificationUrl=null ) {
         App::import('Model', 'PendingUserLesson');
@@ -55,8 +53,15 @@ class AdaptivePayment extends AppModel {
         //$adaptivePaymentId = $this->getUnusedUserLessonId();
 
         $approvalValidThru = date('Y-m-d\Z', CakeTime::toUnix('now +1 year', 'UTC' )); //date('Y-m-d', time()+YEAR);
-        $response = $this->adaptivePayments->preapproval( $pendingUserLessonData['1_on_1_price'], $pendingUserLessonData['student_user_id'], $clientIP, $cancelUrl, $returnUrl, $approvalValidThru, $ipnNotificationUrl );
+        try {
+            $response = $this->adaptivePayments->preapproval( $pendingUserLessonData['1_on_1_price'], $pendingUserLessonData['student_user_id'], $clientIP, $cancelUrl, $returnUrl, $approvalValidThru, $ipnNotificationUrl );
+        } catch(Exception $e) {
+            $this->log( 'pendingUserLessonId: '.$pendingUserLessonId.', Exception: '. $e->getMessage(), 'adaptive_payment_error');
+            return false;
+        }
+
         if(strtolower($response->responseEnvelope->ack)!='success') {
+            $this->log(var_export($response, true), 'adaptive_payment_error');
             return false;
         }
 
@@ -82,14 +87,16 @@ class AdaptivePayment extends AppModel {
             return false;
         }
 
-        return $this->paymentUrl.$response->preapprovalKey;
+        return Configure::read('paypal_preapproval_url').$response->preapprovalKey;
     }
 
     /**
      *
      * Charge all students of TeacherLessonId - only with 'approved' status.
      * @param $teacherLessonId
-     * @return bool
+     * @param $cancelUrl
+     * @param $returnUrl
+     * @return int, on success an array of successTransactionsCount, status, perStudentPrice, perStudentCommission, receivers
      */
     public function pay( $teacherLessonId , $cancelUrl, $returnUrl) {
         $this->UserLesson->TeacherLesson->recursive = -1;
@@ -97,7 +104,16 @@ class AdaptivePayment extends AppModel {
         if(!$tlData || $tlData['TeacherLesson']['is_deleted'] || !$tlData['TeacherLesson']['1_on_1_price']) {
             return PAYMENT_STATUS_ERROR;
         }
+        //Check if already used for payment
+        if($tlData['TeacherLesson']['payment_status']!=PAYMENT_STATUS_PENDING) {
+            return $tlData['TeacherLesson']['payment_status'];
+        }
 
+        //Calc how much each student need to pay and to which receiver
+        $receiversPriceAndCommission = $this->generatePaymentReceiversPriceAndCommission($teacherLessonId);
+        if(!is_array($receiversPriceAndCommission)) {
+            return $receiversPriceAndCommission; //Return error message
+        }
 
 
         //Get all approved payments + only approved students
@@ -112,25 +128,32 @@ class AdaptivePayment extends AppModel {
 
         //TODO - check all approval first - users may canceled their approval from PayPal during this process
 
-        //Calc how much each student need to pay
-        $receivers = $this->generatePaymentRecivers($teacherLessonId);
 
-        $successPayments = 0;
+        $successTransactionsCount = 0;
         foreach($aps AS $ap) {
             $ap = $ap['AdaptivePayment'];
-            $response = $this->adaptivePayments->pay( $receivers, $ap['user_lesson_id'], $ap['preapproval_key'], $cancelUrl, $returnUrl );
+            try {
+                $response = $this->adaptivePayments->pay( $receiversPriceAndCommission['receivers'], $ap['user_lesson_id'], $ap['preapproval_key'], $cancelUrl, $returnUrl, null,
+                    //I.e. T5U2# Live PHP Lesson
+                    'T'.$teacherLessonId.'U'.$ap['user_lesson_id'].'# '.$tlData['TeacherLesson']['name']
+                );
 
+                $status = PAYMENT_STATUS_DONE;
+                if(is_object($response) && strtolower($response->paymentExecStatus)=='completed') {
+                    $this->id = $ap['adaptive_payment_id'];
+                    $this->set('is_used', 1);
+                    $this->set('paid_amount', $receiversPriceAndCommission['perStudentPrice']);
+                    $this->set('pay_key',$response->payKey);
+                    $this->save();
+                    $successTransactionsCount++;
 
-            $status = PAYMENT_STATUS_DONE;
-            if(strtolower($response->paymentExecStatus)=='completed') {
-                $this->id = $ap['adaptive_payment_id'];
-                $this->set('is_used', 1);
-                $this->set('paid_amount', $receivers[0]['amount']);
-                $this->save();
-                $successPayments++;
-
-            } else {
-                $this->log(var_export($response, true), 'adaptive_payment_error');
+                } else {
+                    $this->log(var_export($response, true), 'adaptive_payment_error');
+                    $this->setStatus($ap['user_lesson_id'], $ap['preapproval_key'], 'ERROR');
+                    $status = PAYMENT_STATUS_ERROR;
+                }
+            } catch(Exception $e) {
+                $this->log(var_export($e, true), 'adaptive_payment_error');
                 $this->setStatus($ap['user_lesson_id'], $ap['preapproval_key'], 'ERROR');
                 $status = PAYMENT_STATUS_ERROR;
             }
@@ -139,17 +162,19 @@ class AdaptivePayment extends AppModel {
             $this->getEventManager()->dispatch($event);
         }
 
-        $paymentNeeded = count($aps);
+        $return = $receiversPriceAndCommission;
+        $return['successTransactionsCount'] = $successTransactionsCount;
 
-        if($successPayments==$paymentNeeded) {
-            return PAYMENT_STATUS_DONE; //All payments was successful
-        } else if(!$successPayments) {
-            return PAYMENT_STATUS_ERROR; //No successful payments
+
+        if($return['successTransactionsCount']==$tlData['TeacherLesson']['num_of_students']) {
+            $return['status'] = PAYMENT_STATUS_DONE; //All payments was successful
+        } else if(!$return['successTransactionsCount']) {
+            $return['status'] = PAYMENT_STATUS_ERROR; //No successful payments
         } else {
-            return PAYMENT_STATUS_PARTIAL; //Partical payments
+            $return['status'] = PAYMENT_STATUS_PARTIAL; //Partial payments
         }
 
-        //return true;
+        return $return;
     }
 
 
@@ -272,7 +297,7 @@ class AdaptivePayment extends AppModel {
         //Update preapproval
         $this->create(false);
         $this->id = $apData['adaptive_payment_id'];
-        $saveData = array('pending_user_lesson_id'=>$ipnData['pending_user_lesson_id'], 'is_approved'=>($ipnData['approved']=='true' ? 1 : 0), 'status'=>$ipnData['status'], 'max_amount'=>$ipnData['max_total_amount_of_all_payments'], 'paid_amount'=>$paid, 'is_used'=>( $paid ? 1 : 0 ));
+        $saveData = array('pending_user_lesson_id'=>$ipnData['pending_user_lesson_id'], 'is_approved'=>($ipnData['approved']=='true' ? 1 : 0), 'status'=>$ipnData['status'], 'max_amount'=>$ipnData['max_total_amount_of_all_payments'], 'paid_amount'=>$paid, 'is_used'=>( $paid ? 1 : 0 ), 'preapproval_ipn_data'=>json_encode($ipnData));
         if(!$this->save($saveData) && $apData['user_lesson_id']) {
             $this->cancelApproval($apData['user_lesson_id'], $ipnData['preapproval_key']);
             return false;
@@ -362,8 +387,24 @@ class AdaptivePayment extends AppModel {
         return $this->save();
     }
 
-    private function preapprovalDetails( $preapprovalKey ) {
+    public function preapprovalDetails( $preapprovalKey ) {
         $response = $this->adaptivePayments->preapprovalDetails($preapprovalKey);
+        if(strtolower($response->responseEnvelope->ack)!='success') {
+            return false;
+        }
+
+        unset($response->responseEnvelope);
+
+        $return = array();
+        foreach($response AS $key=>$val) {
+            $return[Inflector::underscore($key)] = $val;
+        }
+
+        return $return;
+    }
+
+    public function paymentDetails( $preapprovalKey=null, $trackingNum=null ) {
+        $response = $this->adaptivePayments->paymentDetails($preapprovalKey, $trackingNum);
         if(strtolower($response->responseEnvelope->ack)!='success') {
             return false;
         }
@@ -410,7 +451,12 @@ class AdaptivePayment extends AppModel {
         return $userLessonData['UserLesson'];
     }
 
-    private function generatePaymentRecivers($teacherLessonId) {
+    /**
+     * Return an array of receivers, price per UL and commission to charge
+     * @param $teacherLessonId
+     * @return array|int
+     */
+    private function generatePaymentReceiversPriceAndCommission($teacherLessonId) {
         $this->UserLesson->TeacherLesson->resetRelationshipFields();
         $this->UserLesson->TeacherLesson->recursive = 1;
         $tlData = $this->UserLesson->TeacherLesson->findByTeacherLessonId($teacherLessonId);
@@ -427,26 +473,33 @@ class AdaptivePayment extends AppModel {
 
 
         if(!$teacher['teacher_paypal_id']) {
-            return false;
+            $this->log('TeacherID '.$teacher['user_id'].', does not have teacher_paypal_id set.', 'adaptive_payment_error');
+            return PAYMENT_STATUS_ERROR_MISSING_TEACHER_ACCOUNT;
         }
 
+        //Calc commission
+        $commission = Configure::read('per_student_commission');
+        $commission = $price<$commission ? $price : $commission;
+
         $receivers = array();
+        //Teacher
         $receivers[] = array(
-            'email'         =>$teacher['teacher_paypal_id'],
-            'amount'        =>$price,
-            'paymentType'   =>'DIGITALGOODS',
-            'primary'       =>true,
+            'email'         => $teacher['teacher_paypal_id'],
+            'amount'        => ($price-$commission),
+            'paymentType'   => 'DIGITALGOODS',
+            'primary'       => false,
         );
+
+        //Site
         $receivers[] = array(
-            'email'         =>$this->siteOwnerId,
-            'amount'        =>($price<1 ? $price : 1),
-            'paymentType'   =>'DIGITALGOODS',
-            'primary'       =>false,
+            'email'         => Configure::read('paypal_site_username'),
+            'amount'        => $price,
+            'paymentType'   => 'DIGITALGOODS',
+            'primary'       => true,
         );
-        //TODO: dicanat
 
 
-        return $receivers;
+        return array('receivers'=>$receivers, 'perStudentPrice'=>$price, 'perStudentCommission'=>$commission);
     }
 
     private function cancelDuplications($pendingUserLessonData, $status) {

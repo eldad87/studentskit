@@ -5,7 +5,7 @@
 class HomeController extends AppController {
 	public $name = 'Home';
 	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
-	public $components = array('Utils.FormPreserver'=>array('directPost'=>true,'actions'=>array('submitOrder')), 'Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),
+	public $components = array( 'Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),
         //'Security',
                                /* 'Watchitoo'*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');

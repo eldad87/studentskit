@@ -31,7 +31,7 @@ if($page==1) {
 
 
 <div class="fullwidth pull-left">
-    <p>Booking requests from users.<a href="#"> click here</a> to enable the auto-approve mechanism.</p>
+    <p><a href="#"><?php echo __('click here'); ?></a> <?php echo __('to configure the auto-approve mechanism.'); ?></p>
 
     <div class="fullwidth pull-left">
         <ul id="teacher-lessons-booking">

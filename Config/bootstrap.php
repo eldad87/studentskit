@@ -199,4 +199,14 @@ App::import('Vendor', 'Uploader.Uploader');
 Configure::write('template_languages', array('eng'=>'English', 'heb'=>'Hebrew'));
 Configure::write('public_domain', 'http://universito.com');
 
+
 App::build(array('Event' => array('%s'.'Event'.DS)), App::REGISTER);
+
+
+//Payment commission in USD
+Configure::write('per_student_commission', 1);
+
+//Taken from: https://developer.paypal.com/cgi-bin/devscr?cmd=_certs-session
+Configure::write('paypal_api_username', 'web_1358609058_biz_api1.gmail.com'); //The API Username, Onchange make sure to update: /Vendor/AdaptivePayments/config/sdk_config.ini (API Username, API Password and Signature)
+Configure::write('paypal_site_username', 'web_1358609058_biz@gmail.com');//user that will get commission (Test Account)
+Configure::write('paypal_preapproval_url', 'https://www.sandbox.paypal.com/webscr&cmd=_ap-preapproval&preapprovalkey=');

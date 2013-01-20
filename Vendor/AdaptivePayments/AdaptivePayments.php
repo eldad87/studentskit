@@ -3,7 +3,7 @@ class AdaptivePayments {
     private $adaptivePaymentsService;
     private $currencyCode = 'USD';
 
-    public function __construct( $callerId='caller_1345633979_biz_api1.gmail.com' ) {
+    public function __construct( $callerId='seller_1358606654_biz_api1.gmail.comm' ) {
 
         //Load the AdaptivePayments libraries
         set_include_path(get_include_path() . PATH_SEPARATOR . APP . 'Vendor' . DS . 'AdaptivePayments'.DS.'lib');
@@ -43,7 +43,15 @@ class AdaptivePayments {
 
     /**
      * Get the user approval for a specific amount
-     * @param $userLessonId
+     * @param $amount
+     * @param $customerId
+     * @param $clientIp
+     * @param $cancelUrl
+     * @param $returnUrl
+     * @param null $approvalValidThru
+     * @param null $ipnNotificationUrl
+     * @return PreapprovalResponse
+     * @throws Exception
      */
     public function preapproval( $amount, $customerId, $clientIp, $cancelUrl, $returnUrl, $approvalValidThru=null, $ipnNotificationUrl=null ) {
 
@@ -56,7 +64,7 @@ class AdaptivePayments {
 
         $preapprovalRequest->endingDate                     = $approvalValidThru;
         $preapprovalRequest->maxTotalAmountOfAllPayments    = $amount;
-        $preapprovalRequest->feesPayer                      = 'PRIMARYRECEIVER';
+        $preapprovalRequest->feesPayer                      = 'SECONDARYONLY';
         $preapprovalRequest->ipnNotificationUrl             = $ipnNotificationUrl;
 
         $preapprovalRequest->clientDetails                  = new ClientDetailsType();
@@ -87,7 +95,25 @@ class AdaptivePayments {
         return $response;
     }
 
-    public function pay( $receivers, $trackingId=null, $preapprovalKey=null, $cancelUrl=null, $returnUrl=null, $ipnNotificationUrl=null  ) {
+    public function paymentDetails( $preapprovalKey=null, $trackingId=null ) {
+        $paymentDetailsReq = new PaymentDetailsRequest($this->getRequestEnvelope());
+        if($preapprovalKey) {
+            $paymentDetailsReq->payKey = $preapprovalKey;
+        }
+        if($trackingId) {
+            $paymentDetailsReq->trackingId = $trackingId;
+        }
+
+        try {
+            $response = $this->adaptivePaymentsService->PaymentDetails($paymentDetailsReq);
+        } catch(Exception $ex) {
+            throw new Exception('Error occurred in PaymentDetails method');
+        }
+
+        return $response;
+    }
+
+    public function pay( $receivers, $trackingId=null, $preapprovalKey=null, $cancelUrl=null, $returnUrl=null, $ipnNotificationUrl=null, $memo=null  ) {
 
         //Process receivers
         $receiver = array();
@@ -103,8 +129,9 @@ class AdaptivePayments {
         $payRequest = new PayRequest($this->getRequestEnvelope(), 'PAY', $cancelUrl, $this->currencyCode, $receiverList, $returnUrl);
         $payRequest->preapprovalKey     = $preapprovalKey;
         $payRequest->trackingId         = $trackingId;
-        $payRequest->feesPayer          = 'PRIMARYRECEIVER';
+        $payRequest->feesPayer          = 'SECONDARYONLY'; //'PRIMARYRECEIVER';
         $payRequest->ipnNotificationUrl = $ipnNotificationUrl;
+        $payRequest->memo               = $memo;
         //senderEmail
 
 

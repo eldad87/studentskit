@@ -6,6 +6,7 @@ define('PAYMENT_STATUS_PENDING', 1);
 define('PAYMENT_STATUS_DONE', 2);
 define('PAYMENT_STATUS_PARTIAL', 3);
 define('PAYMENT_STATUS_ERROR', 4);
+define('PAYMENT_STATUS_ERROR_MISSING_TEACHER_ACCOUNT', 5);
 
 define('RATING_STATUS_PENDING', 0);
 define('RATING_STATUS_DONE', 1);
@@ -648,29 +649,35 @@ class TeacherLesson extends AppModel {
 		));
 	} */
 
-    public function pay($teacherLessonId, $cancelURL, $returnURL) {
+    public function pay($teacherLessonId, $cancelURL=null, $returnURL=null) {
         App::import('Model', 'AdaptivePayment');
         $apObj = new AdaptivePayment();
-        $payStatus = $apObj->pay($teacherLessonId, $cancelURL, $returnURL);
-
-        /*//Set status
-        $paymentStatus = null;
-        if($payResults===true) {
-            $paymentStatus = PAYMENT_STATUS_DONE;
-        } else if($payResults===fase) {
-            $paymentStatus = PAYMENT_STATUS_ERROR;
-        } else if ($payResults===1) {
-            $paymentStatus = PAYMENT_STATUS_PARTIAL;
-        }*/
+        $payRes = $apObj->pay($teacherLessonId, $cancelURL, $returnURL);
 
         $this->create(false);
         $this->id = $teacherLessonId;
-        $this->set(array('payment_status'=>$payStatus));
+
+        if(!is_array($payRes)) {
+            $update = array('payment_status'=>$payRes);
+        } else {
+            $update = array(
+                            'payment_status'                    =>$payRes['status'],
+                            'payment_success_transactions_count'=>$payRes['successTransactionsCount'],
+                            'payment_per_student_price'         =>$payRes['perStudentPrice'],
+                            'payment_per_student_commission'    =>$payRes['perStudentCommission'],
+
+            );
+        }
+
+
+        $this->set($update);
         if(!$this->save()) {
             return false;
         }
-        return $payStatus;
+
+        return $payRes['status'];
     }
+
 
     /*public function getLiveLessonMeeting($teacherLessonId) {
         return 'wfg-213';

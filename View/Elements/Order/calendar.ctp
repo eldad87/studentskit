@@ -21,8 +21,10 @@ echo $this->Html->scriptBlock('
     autoJSLoaderObj.tryLoadChain('Hashtable', ['/js/lib/jshashtable-2.1.js']);
     autoJSLoaderObj.tryLoadChain('$.fn.tipTip', ['/js/jquery.tipTip.js']);
     autoJSLoaderObj.tryLoadChain('$.fn.qtip', ['/js/jquery-qtip-1.0.0-rc3140944/jquery.qtip-1.0-custom.js']);
-    autoJSLoaderObj.tryLoadChain('$.fn.jFrontierCal', ['/js/frontierCalendar/jquery-frontier-cal-1.3.2-custom.js']);
-    autoJSLoaderObj.tryLoadChain('NoneExistingObject', ['/js/calender.js'], onCalenderLoad);
+    autoJSLoaderObj.tryLoadChain('$.fn.jFrontierCal', ['/js/frontierCalendar/jquery-frontier-cal-1.3.2-custom.js'], function() {
+        autoJSLoaderObj.tryLoadChain('NoneExistingObject', ['/js/calender.js'], onCalenderLoad);
+    });
+
 
     function onCalenderLoad() {
         <?php
@@ -43,8 +45,8 @@ echo $this->Html->scriptBlock('
                                     );";
                 } else {
                     $addAgendaJS .= "
-                    addBlockedAgenda('  {$lLesson['datetime']}',
-                                        {$lLesson['duration_minutes']});";
+                    addBlockedAgenda(   '{$lLesson['datetime']}',
+                                        '{$lLesson['duration_minutes']}');";
                 }
             }
             echo $addAgendaJS;
