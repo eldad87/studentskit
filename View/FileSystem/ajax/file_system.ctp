@@ -109,10 +109,10 @@
             <span><?php echo __('Create folder'); ?></span>
         </a>
 
-        <a id="fileUpload" href="#" class="fullwidth pull-left spsbjectfile-selector fileUpload">
+        <div id="fileUpload" href="#" class="fullwidth pull-left spsbjectfile-selector fileUpload">
             <i class="iconMedium-upload"></i>
             <span><?php echo __('Upload file'); ?></span>
-        </a>
+        </div>
     </div>
 </div>
     <?php
