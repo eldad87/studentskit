@@ -548,6 +548,9 @@ $(function() {
                         if(url!='') {
                             clickedElement = $( 'a[rel="' + url + '"].load2:visible');
                         }
+                        if(!clickedElement) {
+                            return false;
+                        }
 
                         //Hide
                         $('#sub-area').children( ':visible' ).hide();
@@ -597,6 +600,10 @@ $(function() {
                             clickedElement = $( 'a[rel="' + url + '"].load3:visible' );
                         }
 
+                        if(!clickedElement) {
+                            return false;
+                        }
+
                         //If the parent have class of .disable - ignore it
                         if($(clickedElement).parent().hasClass('disable')) {
                             return false;
@@ -635,6 +642,7 @@ $(function() {
                     },
                     afterLoad: function() {
                         lmObj.reset();
+                        BBQWidgets['.load3'].markButtonBasedOnHash(); //Fix on refresh
                     }
     }};
 
