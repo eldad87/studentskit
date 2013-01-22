@@ -3363,6 +3363,7 @@ ul.booking-nav.nav-tabs.back-more li.active{
 .top-middle{
 	float:left;
 	width:auto;
+    margin-top: 2px;
 }
 
 .position{
@@ -5222,6 +5223,7 @@ ul.subject-morelesson li .upcominglesson-textbox{
 /* country tooltip bar */
 .head-languagebox{
 	margin-left:145px;
+    margin-right: 30px;
 }
 
 .head-countrybox{
