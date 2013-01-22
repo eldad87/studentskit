@@ -28,7 +28,7 @@
         pAPIObj.loadElement('#timezone', 'change', false, 'post');
         pAPIObj.setAppendCallback('#timezone', 'after', function(data) {
             $('#countary2').html(data['response']['timezone']);
-            location.reload(); //Reload page
+            //location.reload(); //Reload page
         });
 
         var url = '/Notifications/index/{limit}/1/1/1';
