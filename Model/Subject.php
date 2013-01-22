@@ -140,7 +140,7 @@ class Subject extends AppModel {
 		'max_students'=> array(
 			'range' 		=> array(
 				'required'	=> 'create',
-				'allowEmpty'=> true,
+				'allowEmpty'=> false,
 				'rule'    	=> array('range', 0, 1025),
 				'message' 	=> 'Lesson must have more then %d or less then %d students'
 			),

@@ -89,11 +89,10 @@ echo $this->Html->scriptBlock('
     <div class="heading-box fullwidth space14">
         <!--<a href="#" class="arrow-left pull-left arrws1" ></a>-->
         <div id="BtnPreviousMonth" class="pull-left"><a href="#" class="arrow-left pull-left arrws1" ></a></div>
-        <div class="head-text pull-left">
-            <h2 class="pull-left fullwidth">
-                <input type="text" id="monthDisplay" class="monthname-box" disabled="disabled" />
-                <input type="text" id="yearDisplay" class="yearname-box" disabled="disabled" />
-            </h2>
+        <div class="head-text pull-left time-display">
+                <p class="monthname-box" id="monthDisplay"></p>
+                <p class="yearname-box" id="yearDisplay"></p>
+                <!--<p class="tz-box"><?php /*echo Configure::read('Config.timezone'); */?></p>-->
         </div>
         <!-- <a href="#" class="arrow-right pull-left arrws1"></a>  -->
         <div id="BtnNextMonth" class="pull-right">

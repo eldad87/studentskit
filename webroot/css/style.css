@@ -5458,10 +5458,12 @@ img.star-student{
 }
 
 /* Month/Year */
-input[type="text"].monthname-box{
+.time-display {
+    width: 595px;
+}
+p.tz-box, p.yearname-box, p.monthname-box {
     border:none;
     background:none;
-    font-size:33px;
     text-align:center;
     color:#FFFFFF;
     float:left;
@@ -5469,17 +5471,17 @@ input[type="text"].monthname-box{
     cursor:pointer;
     text-shadow:0px 1px 1px rgba(0,0,0, 0.5);
 }
-
-input[type="text"].yearname-box{
-    border:none;
-    background:none;
+p.monthname-box {
+    font-size:33px;
+    line-height: 33px;
+}
+p.yearname-box {
     font-size:25px;
-    text-align:center;
-    color:#FFFFFF;
-    float:left;
-    width:100%;
-    cursor:pointer;
-    text-shadow:0px 1px 1px rgba(0,0,0, 0.5);
+    line-height: 25px;
+}
+p.tz-box {
+    font-size:15px;
+    line-height: 15px;
 }
 
 .ui-dialog .ui-state-error { padding: .3em; }
