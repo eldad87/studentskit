@@ -1,3 +1,11 @@
+<?php
+    $timezoneSetByUser = Configure::read('Config.timezone_set_by_user');
+    if(!$timezoneSetByUser) {
+
+        //Auto load timezone
+        echo $this->Html->script('jstz');
+    }
+?>
 <script type="text/javascript">
 
     $(document).ready(function(){
@@ -80,6 +88,25 @@
         var url = '/Message/getList/{limit}/{page}';
         lmObj.loadMoreButton('#messages-load-more', 'click', '#massages-tip ul', url, {}, 'get', 3);
         lmObj.clearBeforeAppend('#messages-load-more', true)*/
+
+        <?php
+            if(!$timezoneSetByUser) {
+
+                //Auto load timezone
+                $this->Html->script('jstz', array('inline'=>false));
+                ?>
+
+                //Determent user's timezone
+                var timezone = jstz.determine();
+
+                if ( typeof (timezone) !== 'undefined') {
+                    console.log(timezone.name());
+                    $('#timezone').val(timezone.name());
+                    $('#timezone').change();
+                }
+                <?php
+            }
+        ?>
     });
 </script>
 <!-- Topbar
@@ -147,9 +174,9 @@
             <div class="pull-left head-languagebox">
                 <span id="countary2" class="select pointer"><?php echo Configure::read('Config.timezone'); ?></span>
                 <?php
-                echo $this->Form->input('TZ', array('options' => CakeTime::listTimezones(null, null, false),
-                    'label'=>false, 'div'=>false, 'default' => Configure::read('Config.timezone'), 'class'=>'styled2 pointer',
-                    'id'=>'timezone', 'data-target'=>Router::url(array('controller'=>'Accounts', 'action'=>'setTimezone', '{value}'))));
+                    echo $this->Form->input('TZ', array('options' => CakeTime::listTimezones(null, null, false),
+                                                        'label'=>false, 'div'=>false, 'default' => Configure::read('Config.timezone'), 'class'=>'styled2 pointer',
+                                                        'id'=>'timezone', 'data-target'=>Router::url(array('controller'=>'Accounts', 'action'=>'setTimezone', '{value}'))));
                 ?>
             </div>
         </div> <!-- /pull-left -->

@@ -81,6 +81,7 @@ class AccountsController extends AppController {
                 //$this->Session->write('locale', $this->Auth->user('locale'));
                 $this->Session->write('login_client', $this->request->query['login_client']);
                 $this->Session->write('timezone', $this->Auth->user('timezone'));
+                Configure::write('Config.timezone_set_by_user', true);
                 $this->Session->write('language', $this->Auth->user('language'));
                 if($lor = json_decode($this->Auth->user('languages_of_records'))) {
                     $this->Session->write('languages_of_records', $lor);

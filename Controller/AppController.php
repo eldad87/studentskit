@@ -39,6 +39,8 @@ class AppController extends Controller {
     public $jsSettings = array();
 	
 	public function beforeFilter() {
+        /** Language + Datetime
+         *************************************/
         $this->_setLanguage();
 
 
@@ -129,6 +131,7 @@ class AppController extends Controller {
         }
         if($this->Connect->user('timezone')) {
             $this->Connect->authUser['User']['timezone']    = 'UTC '.$this->Connect->user('timezone');
+            Configure::write('Config.timezone_set_by_user', true);
         }
 
         if($this->Connect->user('gender')) {
@@ -166,14 +169,15 @@ class AppController extends Controller {
             $language = $localize->catalog($locale);
             //$language = $localize->map($language['localeFallback']); //en
             $language = $language['localeFallback']; //eng
-
         }
+
 
         Configure::write('Config.language', $language);
 
         //pr(($this->Session->read('timezone'))); die;
         if($this->Session->read('timezone')) {
             Configure::write('Config.timezone', $this->Session->read('timezone'));
+            Configure::write('Config.timezone_set_by_user', true);
         }
 
 
