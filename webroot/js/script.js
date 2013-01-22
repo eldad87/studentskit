@@ -1239,8 +1239,7 @@ $(document).ready(function(){
     });
 
     function updateTopBar() {
-        //TODO:
-        //location.reload(); //Reload page
+        location.reload(); //Reload page
     }
 });
 

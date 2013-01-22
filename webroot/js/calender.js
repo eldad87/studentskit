@@ -1,7 +1,5 @@
-var jfcalplugin;
-
 $(document).ready(function(){
-    jfcalplugin = $(calendarSelector).jFrontierCal({
+     jfcalplugin = $(calendarSelector).jFrontierCal({
         date: new Date(),
         dayClickCallback:           myDayClickHandler,
         agendaClickCallback:        myAgendaClickHandler,
@@ -22,8 +20,8 @@ $(document).ready(function(){
         var date = eventObj.data.calDayDate;
 
         var now = new Date();
-        //Check if future date
-        if(date>now ||
+        //Check if today/future date
+        if(date>=now ||
             //Check if same date
                 (date.getFullYear()==now.getFullYear() &&
                  date.getMonth()==now.getMonth() &&
@@ -69,9 +67,12 @@ $(document).ready(function(){
             return false;
         }
 
+        if(!jsSettings['calendarClickUrl']) {
+            return false;
+        }
         //Open a new lesson page
         window.open(
-            $.nano(jsSettings['calendar']['calendarClickUrl'], agendaItem.data)
+            $.nano(jsSettings['calendarClickUrl'], agendaItem.data)
         );
     };
 
@@ -80,8 +81,8 @@ $(document).ready(function(){
      */
     function showCalDate() {
         var calDate = jfcalplugin.getCurrentDate(calendarSelector); // returns Date object
-        $("#monthDisplay").val(jsSettings['months'][calDate.getMonth()]);
-        $("#yearDisplay").val(calDate.getFullYear());
+        $("#monthDisplay").html(months[calDate.getMonth()]);
+        $("#yearDisplay").html(calDate.getFullYear());
     }
 
 
@@ -181,9 +182,6 @@ $(document).ready(function(){
         resizable: false,
         buttons: {
             'Submit': function() {
-                //Check it 1 hour in the future
-                //TODO:
-
                 //Submit
                 $('#setLessonDatetime').submit();
             },
@@ -212,7 +210,7 @@ $(document).ready(function(){
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////// Helpers
 
-function addAgenda( lessonId,
+function addAgenda( teacherLessonId,
                     title, description,
                     currentStudentsCount, maxStudentsCount,
                     startDate, durationMin,
@@ -224,7 +222,7 @@ function addAgenda( lessonId,
     eDate.setMinutes( eDate.getMinutes()+durationMin );
 
 
-
+var name = '';
     //userLessons
     var backgroundColor;
     if(currentStudentsCount<maxStudentsCount) {
@@ -244,8 +242,8 @@ function addAgenda( lessonId,
         eDate,
         false,
         {
-            lessonId: lessonId,
-            title: title,
+            teacher_lesson_id: teacherLessonId,
+            title: name +title,
             description: description,
             startDate: startDate,
             durationMin: durationMin,
@@ -272,7 +270,7 @@ function addBlockedAgenda(startDate, durationMin) {
         false,
         {},
         {
-            backgroundColor: colors.close
+            backgroundColor: colors.closed
         }
     );
 
