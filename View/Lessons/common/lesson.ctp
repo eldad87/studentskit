@@ -1,3 +1,11 @@
+<?php
+$this->Html->script('jquery.fineuploader-3.0', array('inline'=>false));
+$this->Html->script('filesystem', array('inline'=>false));
+$this->Html->script('test-creator', array('inline'=>false));
+$this->Html->script('jquery.ba-bbq', array('inline'=>false));
+
+$this->Html->css(array('fineuploader'), null, array('inline'=>false));
+?>
 <script type="text/javascript">
     //Init tabs
     $(document).ready(function(){

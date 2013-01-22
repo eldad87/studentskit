@@ -97,7 +97,7 @@ class TestsController extends AppController {
                 if(isSet($params[1])) {
                     $this->Test->recursive = -1;
                     $testData = $this->Test->findByTestId($params[1]);
-                    if($testData || $testData['Test']['subject_id']!=$params[0]) {
+                    if(!$testData || $testData['Test']['subject_id']!=$params[0]) {
                         return $this->error(2);
                     }
                 }
@@ -127,9 +127,9 @@ class TestsController extends AppController {
         $this->Subject->recursive = -1;
         $subjectData = $this->Subject->findBySubjectId($subjectId);
         if(!$subjectData || $subjectData['Subject']['user_id']!=$this->Auth->user('user_id')) {
+
             return $this->error(3);
         }
-
         return true;
     }
 

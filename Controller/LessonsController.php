@@ -121,9 +121,12 @@ class LessonsController extends AppController {
 
                     if($liveRequestStatus['payment_needed']) {
                         //Check payment - if did not pass, the user canceled his approval.
-                        App::import('Model', 'AdaptivePayment');
+                        /*App::import('Model', 'AdaptivePayment');
                         $apObj = new AdaptivePayment();
-                        $enterLesson = $apObj->isPaid($liveRequestStatus['user_lesson_id']);
+                        $enterLesson = $apObj->isPaid($liveRequestStatus['user_lesson_id']);*/
+
+                        $this->Session->setFlash(__('Please wait for the lesson to start'));
+                        $this->redirect(array('controller'=>'Home', 'action'=>'teacherLesson', $liveRequestStatus['teacher_lesson_id']));
                     } else {
                         $enterLesson = true;
                     }
