@@ -119,17 +119,17 @@ class AdaptivePayments {
         $receiver = array();
         foreach($receivers AS $key=>$r) {
             $receiver[$key] = new Receiver();
-            $receiver[$key]->email         = $r['email'];
-            $receiver[$key]->amount        = $r['amount'];
-            $receiver[$key]->primary       = $r['primary'];
-            $receiver[$key]->paymentType   = $r['paymentType'];
+            $receiver[$key]->email          = $r['email'];
+            $receiver[$key]->amount         = $r['amount'];
+            $receiver[$key]->primary        = $r['primary'];
+            $receiver[$key]->paymentType    = $r['paymentType'];
         }
         $receiverList = new ReceiverList($receiver);
 
         $payRequest = new PayRequest($this->getRequestEnvelope(), 'PAY', $cancelUrl, $this->currencyCode, $receiverList, $returnUrl);
         $payRequest->preapprovalKey     = $preapprovalKey;
         $payRequest->trackingId         = $trackingId;
-        $payRequest->feesPayer          = 'SECONDARYONLY'; //'PRIMARYRECEIVER';
+        $payRequest->feesPayer          = 'SECONDARYONLY';
         $payRequest->ipnNotificationUrl = $ipnNotificationUrl;
         $payRequest->memo               = $memo;
         //senderEmail

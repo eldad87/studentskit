@@ -469,10 +469,10 @@ class AdaptivePayment extends AppModel {
 
         //If its a video lesson or only 1    student can be in this lesson, the user need to pay the full price
         if($tlData['lesson_type']=='video' || $tlData['max_students']==1 || $tlData['num_of_students']==1) {
-            $price = $tlData['1_on_1_price'];
+            $perStudentPrice = $tlData['1_on_1_price'];
         } else {
             //$price = $this->UserLesson->Subject->calcStudentFullGroupPrice($tlData['1_on_1_price'], $tlData['full_group_total_price'], $tlData['max_students'], $tlData['num_of_students']);
-            $price = $this->UserLesson->Subject->calcStudentPriceAfterDiscount( $tlData['1_on_1_price'], $tlData['max_students'], $tlData['num_of_students'], $tlData['full_group_student_price'] );
+            $perStudentPrice = $this->UserLesson->Subject->calcStudentPriceAfterDiscount( $tlData['1_on_1_price'], $tlData['max_students'], $tlData['num_of_students'], $tlData['full_group_student_price'] );
         }
 
 
@@ -482,28 +482,41 @@ class AdaptivePayment extends AppModel {
         }
 
         //Calc commission
-        $commission = Configure::read('per_student_commission');
-        $commission = $price<$commission ? $price : $commission;
+        $perStudentCommission = $this->calcCommission($perStudentPrice, $tlData['lesson_type'], $tlData['duration_minutes']);
 
         $receivers = array();
-        //Teacher
-        $receivers[] = array(
-            'email'         => $teacher['teacher_paypal_id'],
-            'amount'        => ($price-$commission),
-            'paymentType'   => 'DIGITALGOODS',
-            'primary'       => false,
-        );
 
         //Site
         $receivers[] = array(
             'email'         => Configure::read('paypal_site_username'),
-            'amount'        => $price,
+            'amount'        => $perStudentPrice,
             'paymentType'   => 'DIGITALGOODS',
             'primary'       => true,
         );
 
+        //Teacher
+        $receivers[] = array(
+            'email'         => $teacher['teacher_paypal_id'],
+            'amount'        => ($perStudentPrice-$perStudentCommission),
+            'paymentType'   => 'DIGITALGOODS',
+            'primary'       => false,
+        );
 
-        return array('receivers'=>$receivers, 'perStudentPrice'=>$price, 'perStudentCommission'=>$commission);
+
+
+        return array('receivers'=>$receivers, 'perStudentPrice'=>$perStudentPrice, 'perStudentCommission'=>$perStudentCommission);
+    }
+
+    /**
+     * Calc commission
+     * @param $perStudentPrice
+     * @param $lessonType
+     * @param $duration
+     * @return mixed
+     */
+    private function calcCommission($perStudentPrice, $lessonType, $duration) {
+        $perStudentCommission = Configure::read('per_student_commission');
+        return $perStudentPrice<$perStudentCommission ? $perStudentPrice : $perStudentCommission;
     }
 
     private function cancelDuplications($pendingUserLessonData, $status) {

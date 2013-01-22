@@ -56,6 +56,9 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
                                                             'action'=> 'teacherLesson',
                                                             $lessonInvitation['UserLesson']['teacher_lesson_id']));
                 }
+
+                $toSubject = $this->Html->link(__('To Subject'),
+                                                $this->Layout->getOrganizerUrl('/Teacher/subjects/2/1/'.$lessonInvitation['UserLesson']['subject_id']));
                 ?>
 
                 <li id="user_lesson_id_<?php echo $lessonInvitation['UserLesson']['user_lesson_id']; ?>">
@@ -76,6 +79,7 @@ echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate
                                     ?>
                                     <li><a href="#" class="confirm-cancel" data-cancel-prefix="user_lesson_id" data-id="<?php echo $lessonInvitation['UserLesson']['user_lesson_id']; ?>"><?php echo __('Cancel'); ?></a></li>
                                     <li><?php echo $toTheLessonLink; ?></li>
+                                    <li><?php echo $toSubject; ?></li>
                                 </ul>
                             </div>
 

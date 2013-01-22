@@ -59,6 +59,9 @@ if($page==1) {
                                                                             'action'=> 'teacherLesson',
                                                                             $bookingRequest['UserLesson']['teacher_lesson_id']));
         }
+
+        $toSubject = $this->Html->link(__('To Subject'),
+                                        $this->Layout->getOrganizerUrl('/Teacher/subjects/2/1/'.$bookingRequest['UserLesson']['subject_id']));
 ?>
 
             <li id="user_lesson_id_<?php echo $bookingRequest['UserLesson']['user_lesson_id']; ?>">
@@ -80,6 +83,7 @@ if($page==1) {
                                 <li><a href="#" class="confirm-deny" data-cancel-prefix="user_lesson_id" data-id="<?php echo $bookingRequest['UserLesson']['user_lesson_id']; ?>"><?php echo __('Deny'); ?></a></li>
                                 <li><a href="#" class="msg-student" data-entity_type="user_lesson" data-entity_id="<?php echo $bookingRequest['UserLesson']['user_lesson_id']; ?>" data-to_user_id="<?php echo $bookingRequest['UserLesson']['student_user_id']; ?>"><?php echo __('Message student'); ?></a></li>
                                 <li><?php echo $toTheLessonLink; ?></li>
+                                <li><?php echo $toSubject; ?></li>
                             </ul>
                         </div>
 

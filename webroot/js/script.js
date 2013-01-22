@@ -548,7 +548,17 @@ $(function() {
                         if(url!='') {
                             clickedElement = $( 'a[rel="' + url + '"].load2:visible');
                         }
-                        if(!clickedElement) {
+
+                        //Cover urls like /Teacher/lessonsArchive/2/1/0/15
+                        if(!clickedElement.length) {
+                            $( 'a.load2:visible').each(function(index, value) {
+                                if(url.indexOf($(value).attr('rel'))==0) {
+                                    clickedElement = $(this);
+                                }
+                            });
+                        }
+
+                        if(!clickedElement.length) {
                             return false;
                         }
 
@@ -600,7 +610,16 @@ $(function() {
                             clickedElement = $( 'a[rel="' + url + '"].load3:visible' );
                         }
 
-                        if(!clickedElement) {
+                        //Cover urls like /Teacher/lessonsArchive/2/1/0/15
+                        if(!clickedElement.length) {
+                            $( 'a.load3:visible').each(function(index, value) {
+                                if(url.indexOf($(value).attr('rel'))==0) {
+                                    clickedElement = $(this);
+                                }
+                            });
+                        }
+
+                        if(!clickedElement.length) {
                             return false;
                         }
 

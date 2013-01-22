@@ -1,3 +1,12 @@
+<div class="fullwidth pull-left cont-span15">
+<?php
+if(!$response['response']['billingHistory']) {
+    echo $this->Layout->flashMessage(__('Info'), __( 'You didn\'t received any payments yet.'), 'alert-info');
+    die;
+}
+?>
+</div>
+
 <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
     $(document).ready(function(){
         //Activate tooltip
@@ -37,11 +46,11 @@ if($page==1) {
     <?php
 }
 foreach($response['response']['billingHistory'] AS $billingHistory) {
-    //Link to the subject page
-    $toArchive = $this->Html->link(__('Lesson page'), array('controller'=>'Home',
-        'action'=> 'teacherSubject',
-        $billingHistory['TeacherLesson']['subject_id']));
-
+    //Link to archive
+    $toArchive = $this->Html->link(__('To Archive'),
+        $this->Layout->getOrganizerUrl('/Teacher/lessons', '/Teacher/lessonsArchive/2/1/0/'.$billingHistory['TeacherLesson']['teacher_lesson_id']));
+    $toSubject = $this->Html->link(__('To Subject'),
+        $this->Layout->getOrganizerUrl('/Teacher/subjects/2/1/'.$billingHistory['TeacherLesson']['subject_id']));
     ?>
 
     <li id="teacher_lesson_id_<?php echo $billingHistory['TeacherLesson']['teacher_lesson_id']; ?>">
@@ -55,6 +64,7 @@ foreach($response['response']['billingHistory'] AS $billingHistory) {
                     </a>
                     <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
                         <li><?php echo $toArchive; ?></li>
+                        <li><?php echo $toSubject; ?></li>
                     </ul>
                 </div>
 

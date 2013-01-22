@@ -59,18 +59,18 @@ if(isSet($paymentPage)) {
             if($lessonType==LESSON_TYPE_LIVE) {
                 echo $this->Form->input('datetime', $this->Layout->styleForInput(array('type'=>'datetime', 'class'=>false)));
                 echo $this->Form->input('is_public', $this->Layout->styleForInput(array('options'=>array(SUBJECT_IS_PUBLIC_TRUE=>__('Yes'), SUBJECT_IS_PUBLIC_FALSE=>__('No')))));
-                echo $this->Form->input('duration_minutes', $this->Layout->styleForInput(array('type'=>'number', 'min'=>10, 'div'=>array('id'=>'durationDiv', 'class'=>'control-group'))));
+                echo $this->Form->input('duration_minutes', $this->Layout->styleForInput(array('type'=>'number', 'min'=>4, 'div'=>array('id'=>'durationDiv', 'class'=>'control-group'))));
             }
             echo $this->Form->input('lesson_type', $this->Layout->styleForInput(array('type'=>'hidden')));
 
 
-            echo $this->Form->input('1_on_1_price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0)));
+            echo $this->Form->input('1_on_1_price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0, 'step'=>'any')));
 
 
             //Only for live lessons
             if($lessonType==LESSON_TYPE_LIVE) {
                 echo $this->Form->input('max_students', $this->Layout->styleForInput(array('type'=>'number', 'min'=>1, 'div'=>array('id'=>'msDiv', 'class'=>'control-group'))));
-                echo $this->Form->input('full_group_student_price', $this->Layout->styleForInput(array( 'type'=>'number', 'min'=>0,
+                echo $this->Form->input('full_group_student_price', $this->Layout->styleForInput(array( 'type'=>'number', 'min'=>0, 'step'=>'any',
                                                                                                         'div'=>array('style'=>'display:none', 'id'=>'fgspDiv', 'class'=>'control-group') ,
                                                                                                         'tooltip'=>__('a max discount price for a full lesson, the discount will take place starting from 2 students and above'))));
             }

@@ -26,34 +26,52 @@ if($page==1) {
 }
 
     foreach($response['response']['archiveLessons'] AS $archiveLessons) {
-
         $toTheLessonLink = false;
 
         //Lesson took place
-        if($archiveLessons['TeacherLesson']['is_deleted']==1) {
+        if($archiveLessons['TeacherLesson']['is_deleted']==0) {
             $toTheLessonLink = $this->Html->link(__('Lesson page'), array('controller'=>'Lessons',
                                                                             'action'=>($archiveLessons['TeacherLesson']['lesson_type']==LESSON_TYPE_LIVE ? 'index' : 'video'),
                                                                             $archiveLessons['TeacherLesson']['teacher_lesson_id']));
+
         }
+
+        $toSubject = $this->Html->link(__('To Subject'),
+                                        $this->Layout->getOrganizerUrl('/Teacher/subjects/2/1/'.$archiveLessons['TeacherLesson']['subject_id']));
+
+
+        $toBilling = false;
+        if($archiveLessons['TeacherLesson']['payment_status']==PAYMENT_STATUS_DONE ||
+            $archiveLessons['TeacherLesson']['payment_status']==PAYMENT_STATUS_PARTIAL) {
+
+            $toBilling = $this->Html->link(__('To Billing'),
+                $this->Layout->getOrganizerUrl('/Billing/index/2/1/'.$archiveLessons['TeacherLesson']['teacher_lesson_id']));
+
+        }
+
 
         echo '<div class="lesson-box space2">
                 <div class="head-back radius1">
                     <h1>'.$this->Layout->lessonTypeIcon($archiveLessons['TeacherLesson']['lesson_type']).
                         $this->Time->niceShort($archiveLessons['TeacherLesson']['datetime']).' -  <strong>'.$archiveLessons['TeacherLesson']['name'].'</strong></h1>';
-
-
-                  if($toTheLessonLink) {
-                    ?>
+                        ?>
                       <div class="dropdown pull-right">
                           <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" href="#">
                               <i class="iconSmall-drop-arrow"></i>
                           </a>
                           <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
-                            <li><?php echo $toTheLessonLink ?></li>
+                            <?php
+                            if($toTheLessonLink) {
+                                echo '<li>',$toTheLessonLink,'</li>';
+                            }
+                            if($toBilling) {
+                                echo '<li>',$toBilling,'</li>';
+                            }
+                            ?>
+                            <li><?php echo $toSubject ?></li>
                           </ul>
                       </div>
                       <?php
-                  }
 
             echo '
                 </div>

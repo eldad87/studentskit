@@ -30,11 +30,12 @@ $this->Html->css(array('fineuploader'), null, array('inline'=>false));
                         <li class="bg-sub"><a href="#" class="load2" rel=<?php echo Router::url(array('controller'=>'Teacher','action'=>'lessons')); ?>><?php echo __('Lessons'); ?></a></li>
                         <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'profile')); ?>"><?php echo __('Profile'); ?></a></li>
                         <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Teacher','action'=>'awaitingReview')); ?>"><?php echo __('Rate'); ?></a></li>
+                        <li class="bg-sub"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Billing', 'action'=>'index')); ?>"><?php echo __('Billing'); ?></a></li>
 
                         <li class="bg-main"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Message','action'=>'index')); ?>"><?php echo __('Messages'); ?></a></li>
 
                         <li class="bg-main"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Organizer', 'action'=>'calendar')); ?>"><?php echo __('Calender'); ?></a></li>
-                        <li class="bg-main"><a href="#" class="load2" rel="<?php echo Router::url(array('controller'=>'Billing', 'action'=>'index')); ?>"><?php echo __('Billing'); ?></a></li>
+
 
                         <!--<li class="bg-main"><a href="#" class="load1" rel="student-profile-billinginfo.html"><?php /*echo __('Billing Info'); */?></a></li>
                         <li class="bg-main"><a href="#" class="load1" rel="student-profile-tm-credits.html"><?php /*echo __('Credit'); */?></a></li>-->

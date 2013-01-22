@@ -66,7 +66,13 @@
 
         <?php
 
-        echo $this->Session->flash();
+        $msg =  $this->Session->flash('flash', array('element'=>null));
+        if($msg) {
+            echo '<div class="fullwidth pull-left"><div class="container-inner">';
+            echo $this->Layout->flashMessage(__('Info'), $msg, 'alert-info space9');
+            echo '</div></div>';
+        }
+
         echo $this->fetch('content');
 
         echo $this->element('footer');

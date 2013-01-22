@@ -25,22 +25,26 @@ class BillingController extends AppController {
         die;
     }
 
-    public function index($limit=5, $page=1) {
+    public function index($limit=5, $page=1, $teacherLessonId=null) {
         //$this->TeacherLesson->recursive = -1;
-        $billingHistory = $this->TeacherLesson->find('all',
-                                                        array(
-                                                            'conditions'=>array(
-                                                                'teacher_user_id'=>$this->Auth->user('user_id'),
-                                                                'payment_status NOT'=>array(PAYMENT_STATUS_NO_NEED, PAYMENT_STATUS_PENDING)
-                                                            ),/*
-                                                            'fields'=>array('teacher_lesson_id', 'image', 'name', 'description', 'max_students',
-                                                                            'payment_status', 'payment_success_transactions_count', 'payment_per_student_price', 'payment_per_student_commission',
-                                                                            'full_group_student_price', 'full_group_total_price', 'duration_minutes'),*/
-                                                            'limit'=>$limit,
-                                                            'page'=>$page
-                                                        )
+        if($teacherLessonId) {
+            $billingHistory = $this->TeacherLesson->find('all', array('conditions'=>array('teacher_lesson_id'=>$teacherLessonId, 'teacher_user_id'=>$this->Auth->user('user_id'))));
+        } else {
+            $billingHistory = $this->TeacherLesson->find('all',
+                                                            array(
+                                                                'conditions'=>array(
+                                                                    'teacher_user_id'=>$this->Auth->user('user_id'),
+                                                                    'payment_status NOT'=>array(PAYMENT_STATUS_NO_NEED, PAYMENT_STATUS_PENDING)
+                                                                ),/*
+                                                                'fields'=>array('teacher_lesson_id', 'image', 'name', 'description', 'max_students',
+                                                                                'payment_status', 'payment_success_transactions_count', 'payment_per_student_price', 'payment_per_student_commission',
+                                                                                'full_group_student_price', 'full_group_total_price', 'duration_minutes'),*/
+                                                                'limit'=>$limit,
+                                                                'page'=>$page
+                                                            )
 
-        );
+            );
+        }
 
         $this->set('billingHistory', $billingHistory);
         $this->set('limit', $limit);

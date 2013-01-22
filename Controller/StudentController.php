@@ -73,16 +73,18 @@ class StudentController extends AppController {
 		$this->Set('subjectRequests', $subjectRequests);
 	}*/
 
-	public function lessonsUpcoming($limit=50, $page=1) {
+	public function lessonsUpcoming($limit=50, $page=1, $userLessonId=null) {
         $this->Set('limit', $limit);
         $this->Set('page', $page);
-        $upcomingLessons = $this->UserLesson->getUpcoming($this->Auth->user('user_id'), $limit, $page);
+        $upcomingLessons = $this->UserLesson->getUpcoming($this->Auth->user('user_id'), $limit, $page, $userLessonId);
+
 		return $this->success(1, array('upcomingLessons'=>$upcomingLessons));
 	}
-	public function lessonsBooking($limit=50, $page=1) {
+	public function lessonsBooking($limit=50, $page=1, $userLessonId=null) {
         $this->Set('limit', $limit);
         $this->Set('page', $page);
-		$bookingLessons = $this->UserLesson->getBooking($this->Auth->user('user_id'), $limit, $page);
+        $bookingLessons = $this->UserLesson->getBooking($this->Auth->user('user_id'), $limit, $page, $userLessonId);
+
 		return $this->success(1, array('bookingLessons'=>$bookingLessons));
 	}
 	public function lessonsArchive($limit=50, $page=1) {

@@ -407,6 +407,7 @@ class OrderController extends AppController {
             $stage = $this->UserLesson->checkStage($ulData['UserLesson']);
 
             $this->set($stage);
+            $this->set('userLessonId', $userLessonId);
             $this->set('subjectId', $ulData['UserLesson']['subject_id']);
             $this->set('name', $ulData['UserLesson']['name']);
             $this->set('orderData', array('action'=>$action, 'price'=>$ulData['UserLesson']['1_on_1_price'], 'lesson_type'=>$ulData['UserLesson']['lesson_type']));
@@ -523,7 +524,7 @@ class OrderController extends AppController {
                 $liveRequestStatus = $this->UserLesson->getLiveLessonStatus($actionData['TeacherLesson']['teacher_lesson_id'], $this->Auth->user('user_id'));
 
                 if($liveRequestStatus['approved']) {
-                    $this->Session->setFlash(__('You already ordered that lesson lesson'));
+                    $this->Session->setFlash(__('You already ordered that lesson'));
                     $this->redirect($this->getOrderData('redirect'));
 
                 }

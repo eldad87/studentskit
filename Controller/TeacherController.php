@@ -24,11 +24,16 @@ class TeacherController extends AppController {
         $this->Set('limit', 3);
 	}
 
-	public function subjects($limit=5, $page=1) {
+	public function subjects($limit=5, $page=1, $subjectId=null) {
         $this->Set('limit', $limit);
         $this->Set('page', $page);
 
-		$subjects = $this->Subject->getOffersByTeacher($this->Auth->user('user_id'), true, null, $page, $limit);
+        if($subjectId) {
+            $subjects = $this->Subject->find('all', array('conditions'=>array('subject_id'=>$subjectId, 'user_id'=>$this->Auth->user('user_id'))));
+        } else {
+            $subjects = $this->Subject->getOffersByTeacher($this->Auth->user('user_id'), true, null, $page, $limit);
+        }
+
 		$this->Set('subjects', $subjects);
 
         return $this->success(1, array('subjects'=>$subjects));
@@ -279,12 +284,13 @@ class TeacherController extends AppController {
 		$bookingRequests = $this->UserLesson->getWaitingForTeacherApproval($this->Auth->user('user_id'), $subjectId, $limit, $page);
 		return $this->success(1, array('bookingRequests'=>$bookingRequests));
 	}
-	public function lessonsArchive($limit=6, $page=1) {
+	public function lessonsArchive($limit=6, $page=1, $subjectId=null, $teacherLessonId=null) {
         $this->Set('limit', $limit);
         $this->Set('page', $page);
 
+
         $this->Subject; //Init const
-		$archiveLessons = $this->TeacherLesson->getArchive($this->Auth->user('user_id'), null, $limit, $page);
+		$archiveLessons = $this->TeacherLesson->getArchive($this->Auth->user('user_id'), $subjectId, $teacherLessonId, $limit, $page);
 		return $this->success(1, array('archiveLessons'=>$archiveLessons));
 	}
 	public function lessonsInvitations($limit=6, $page=1,$subjectId=null) {

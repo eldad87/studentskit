@@ -34,6 +34,15 @@ class LayoutHelper extends AppHelper {
         return '<div class="pull-left star"><img src="/img/star.png" alt="" title=""></div>';
     }
 
+    public function flashMessage($type, $msg, $class=null) {
+        return '
+        <div class="alert '.$class.' fade in">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>'.$type.'</strong>
+            '.$msg.'
+        </div>';
+    }
+
     public function priceTag($oneOnOne, $fullGroupStudentPrice, $appendClass=null, $currency='$', $format='html') {
         $priceText = $oneOnOne;
         if($fullGroupStudentPrice) {
