@@ -5522,9 +5522,9 @@ input[type="text"].yearname-box{
     -o-box-shadow: 0px 1px 0px rgba(204, 204, 204, .9) inset;
     -ms-box-shadow: 0px 1px 0px rgba(204, 204, 204, .9) inset;
 }
-/*.JFrontierCal-Agenda-Item span{
-    display:none
-}*/
+.JFrontierCal-Agenda-Item span{
+    font-size: 12px;
+}
 .ui-state-default {
     border: none;
     background: none;
