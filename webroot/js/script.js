@@ -305,13 +305,13 @@ function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
                          durationDivSelector) {
 
 
-    oneOnOnePriceInputSelector          = '#sub-area div:visible ' + oneOnOnePriceInputSelector;
-    lessonTypeInputSelector             = '#sub-area div:visible ' + lessonTypeInputSelector;
-    maxStudentsInputSelector            = '#sub-area div:visible ' + maxStudentsInputSelector;
-    maxStudentsDivSelector              = '#sub-area div:visible ' + maxStudentsDivSelector;
-    fullGroupStudentPriceDivSelector    = '#sub-area div:visible ' + fullGroupStudentPriceDivSelector;
-    fullGroupStudentPriceInputSelector  = '#sub-area div:visible ' + fullGroupStudentPriceInputSelector;
-    durationDivSelector                 = '#sub-area div:visible ' + durationDivSelector;
+    oneOnOnePriceInputSelector          = 'div:visible ' + oneOnOnePriceInputSelector; //#sub-area
+    lessonTypeInputSelector             = 'div:visible ' + lessonTypeInputSelector;
+    maxStudentsInputSelector            = 'div:visible ' + maxStudentsInputSelector;
+    maxStudentsDivSelector              = 'div:visible ' + maxStudentsDivSelector;
+    fullGroupStudentPriceDivSelector    = 'div:visible ' + fullGroupStudentPriceDivSelector;
+    fullGroupStudentPriceInputSelector  = 'div:visible ' + fullGroupStudentPriceInputSelector;
+    durationDivSelector                 = 'div:visible ' + durationDivSelector;
 
     $(oneOnOnePriceInputSelector).unbind();
     $(fullGroupStudentPriceInputSelector).unbind();

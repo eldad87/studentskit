@@ -79,7 +79,7 @@ class UserLesson extends AppModel {
                 'range' 		=> array(
                     'required'	=> 'create',
                     'allowEmpty'=> false,
-                    'rule'    	=> array('between', 5, 240),
+                    'rule'    	=> array('range', 4, 241),
                     'message' 	=> 'Lesson must be more then %d minutes and less then %d minutes'
                 )
             ),
@@ -101,7 +101,7 @@ class UserLesson extends AppModel {
                 'range' 		=> array(
                     'required'	=> 'create',
                     'allowEmpty'=> true,
-                    'rule'    	=> array('between', 1, 1024),
+                    'rule'    	=> array('range', 0, 1025),
                     'message' 	=> 'Lesson must have more then %d or less then %d students'
                 ),
 				'numeric' => array(
@@ -109,13 +109,13 @@ class UserLesson extends AppModel {
 					'allowEmpty'=> false,
 					'rule'    	=> 'numeric',
 					'message' 	=> 'Enter a valid number'
-				),
+				)/*,
 				'max_students' 	=> array(
                     'allowEmpty'=> true,
                     'required'	=> 'create',
                     'rule'    	=> 'maxStudentsCheck',
                     'message' 	=> 'Error on max group price'
-                ),
+                ),*/
 
             ),
             'full_group_student_price'=> array(
@@ -268,9 +268,10 @@ class UserLesson extends AppModel {
         if(!isSet($this->data[$this->name]['max_students']) || empty($this->data[$this->name]['max_students'])) {
             $this->invalidate('max_students', __('Please enter a valid max students (1 or more)'));
             //return false;
-        } else  {
-            if(	isSet($this->data[$this->name]['full_group_student_price']) && !empty($this->data[$this->name]['full_group_student_price']) &&
-                isSet($this->data[$this->name]['1_on_1_price']) && $this->data[$this->name]['1_on_1_price']) {
+        } else if(	isSet($this->data[$this->name]['full_group_student_price'])) {
+
+            if(isSet($this->data[$this->name]['1_on_1_price']) && $this->data[$this->name]['1_on_1_price']) {
+
 
                 $perStudentCommission = Configure::read('per_student_commission');
                 if( ($this->data[$this->name]['full_group_student_price']>$this->data[$this->name]['1_on_1_price']) || //FGSP is greater then 1on1price
@@ -280,19 +281,22 @@ class UserLesson extends AppModel {
                         sprintf(__('Must be greater then %01.2f, and less or equal to 1 on 1 price (%01.2f)'),
                             $perStudentCommission, $this->data[$this->name]['1_on_1_price']) );
                 }
+            } else {
+                $this->data[$this->name]['full_group_student_price'] = null;
             }
+
         }
         return true;
     }
-    public function maxStudentsCheck( $maxStudents ) {
+    /*public function maxStudentsCheck( $maxStudents ) {
         if($maxStudents['max_students']>1 && (!isSet($this->data[$this->name]['full_group_student_price']) || !$this->data[$this->name]['full_group_student_price'])) {
             $this->invalidate('full_group_student_price', __('Please enter a valid full group student price or set Max students to 1'));
             //return false;
         }
         return true;
-    }
+    }*/
 	
-	    public function priceRangeCheck( $price, $checkingFieldName ) {
+    public function priceRangeCheck( $price, $checkingFieldName ) {
         if(is_array($price)) {
             $price = $price[$checkingFieldName];
         }
@@ -870,7 +874,7 @@ class UserLesson extends AppModel {
     }
 
 
-    public function reProposeRequest($userLessonId, $byUserId, array $data=array(), $version=null) {
+    public function reProposeRequest($userLessonId, $byUserId, array $data=array(), $version=null, $save=true) {
         if(!$data) {
             //Nothing to change
             return true;
@@ -923,6 +927,14 @@ class UserLesson extends AppModel {
             return false;
         }
 
+        $this->create(false);
+
+
+        if(!$save) {
+            $this->id = $userLessonId;
+            $this->set($data);
+            return $this->validates();
+        }
 
 
         $event = new CakeEvent('Model.UserLesson.beforeReProposeRequest', $this, array('user_lesson'=>$userLessonData, 'update'=>$data, 'by_user_id'=>$byUserId));
@@ -933,6 +945,7 @@ class UserLesson extends AppModel {
 
         $this->id = $userLessonId;
         $this->set($data);
+
         if(!$this->save()) {
             return false;
         }

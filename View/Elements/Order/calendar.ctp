@@ -12,7 +12,7 @@ echo $this->Html->scriptBlock('
                     \''.__('September').'\', \''.__('October').'\', \''.__('November').'\', \''.__('December').'\'];
 
     var calendarSelector = \'#mycal\';
-    var colors = {openUserLessons: \'#07B939\', openTeacherLesson: \'#FF8C1C\', closed: \'#333333\'};
+    var colors = {openUserLessons: \'#07B939\', openTeacherLesson: \'#FF8C1C\', closed: \'#333333\'}; //#07B939
 ', array('inline'=>$inline));
 
 //JS
@@ -28,10 +28,16 @@ echo $this->Html->scriptBlock('
 
     function onCalenderLoad() {
         <?php
+
             //Add agenda if any
             $addAgendaJS = '';
             foreach($allLiveLessons AS $lLesson) {
                 if(isSet($lLesson['name'])) {
+                    $image = $this->Layout->image($lLesson['image_source'], 38, 38);
+                    if(!$lLesson['image_source']) {
+                        $image = '/' . IMAGES_URL  . $image;
+                    }
+
                     $addAgendaJS .= "
                         addAgenda(  '{$lLesson['teacher_lesson_id']}',
                                     '{$lLesson['name']}',
@@ -40,7 +46,7 @@ echo $this->Html->scriptBlock('
                                     '{$lLesson['max_students']}',
                                     '{$lLesson['datetime']}',
                                     '{$lLesson['duration_minutes']}',
-                                    '{$this->Layout->image($lLesson['image_source'], 38, 38)}',
+                                    '{$image}',
                                     '{$lLesson['type']}'
                                     );";
                 } else {

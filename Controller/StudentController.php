@@ -194,6 +194,15 @@ class StudentController extends AppController {
             $datetime = (isSet($this->request->data['UserLesson']['datetime']) ? $this->request->data['UserLesson']['datetime'] : null );
 
 
+            //Validate first, if valid, only then redirect (if needed) to payment page
+            $valid = $this->UserLesson->reProposeRequest($userLessonId, $this->Auth->user('user_id'), $this->request->data['UserLesson'], null, false);
+            if(!$valid) {
+                if(isSet($this->params['ext'])) {
+                    return $this->error(1, array('results'=>array('validation_errors'=>$this->UserLesson->validationErrors)));
+                }
+                return false;
+            }
+
             $paymentPage = array();
             //if done by the student - Check if preapproval is OK
             if($userLessonData['UserLesson']['student_user_id']==$this->Auth->user('user_id') && ($maxAmount || $datetime)) {
