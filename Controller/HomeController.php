@@ -408,6 +408,123 @@ class HomeController extends AppController {
         //die;
     }*/
 
+    /*public function categories() {
+        App::import('Model', 'SubjectCategory');
+        $scObj = new SubjectCategory();
+
+        //http://www.liveperson.com/site-map/
+        $categories = array(
+            array(
+                'name'=>'Technology and Programming',
+                //'locale'=>array('heb'=>array('name'=>'תכנולוגיה ותיכנות')),
+                'children'=>array(
+                    array(  'name'=>'Networking'//,
+                            //'locale'=>array('heb'=>array('name'=>'רשתות')),
+                            //'children'=>array(
+                            //                array(  'name'=>'TCP',
+                            //                        'locale'=>array('heb'=>array('name'=>'טיסיפי')))
+                            //)
+                    ),
+                    array('name'=>'Databases'),
+                    array('name'=>'IT'),
+                    array('name'=>'Hardware'),
+                    array('name'=>'Mobile development'),
+                    array('name'=>'OS'),
+                    array('name'=>'Programming'),
+                    array('name'=>'Security'),
+                    array('name'=>'Telecommunication'),
+                    array('name'=>'Web development'),
+                    array('name'=>'Other'),
+                )
+            ),
+            array(
+                'name'=>'Education',
+                'children'=>array(
+                    array('name'=>'Chemistry'),
+                    array('name'=>'Graduate education'),
+                    array('name'=>'Homework assistance'),
+                    array('name'=>'Mathematics'),
+                    array('name'=>'Physics'),
+                    array('name'=>'Biology'),
+                    array('name'=>'Languages'),
+                    array('name'=>'Test prep'),
+                    array('name'=>'Other'),
+                )
+            ),
+            array(
+                'name'=>'Art and Creativity',
+                'children'=>array(
+                    array('name'=>'Music'),
+                    array('name'=>'Animation'),
+                    array('name'=>'Video'),
+                    array('name'=>'Graphic design'),
+                    array('name'=>'Photography'),
+                    array('name'=>'Writing'),
+                    array('name'=>'Other'),
+                )
+            ),
+            array(
+                'name'=>'Business',
+                'children'=>array(
+                    array('name'=>'Accounting and Tax'),
+                    array('name'=>'Consulting'),
+                    array('name'=>'Business Plan'),
+                    array('name'=>'Finance'),
+                    array('name'=>'Insurance'),
+                    array('name'=>'Other'),
+                )
+            ),
+            array(
+                'name'=>'Coaching',
+                'children'=>array(
+                    array('name'=>'Career'),
+                    array('name'=>'Dating and Relationship'),
+                    array('name'=>'Communication'),
+                    array('name'=>'Motivation'),
+                    array('name'=>'Other'),
+                )
+            ),
+            array(
+                'name'=>'Health',
+                'children'=>array(
+                    array('name'=>'Diet'),
+                    array('name'=>'Alternative'),
+                    array('name'=>'Other'),
+                )
+            ),
+            array( 'name'=>'Lifestyle',
+                    'children'=>array(
+                        array('name'=>'Fashion'),
+                        array('name'=>'Automotive'),
+                        array('name'=>'Sports and Fitness'),
+                        array('name'=>'Pets'),
+                        array('name'=>'Home design'),
+                        array('name'=>'Travel'),
+                    )),
+            array(
+                'name'=>'Spirituality',
+                'children'=>array(
+                    array('name'=>'Astrology'),
+                    array('name'=>'Dream analysis'),
+                    array('name'=>'Fortune telling'),
+                    array('name'=>'Graphology'),
+                    array('name'=>'Religion'),
+                    array('name'=>'Tarot reading'),
+                    array('name'=>'Other'),
+                )
+            ),
+            array(
+                'name'=>'Other',
+                'children'=>array(
+                    array('name'=>'Other'),
+                )
+            )
+        );
+
+        $scObj->addBulk($categories);
+    }*/
+
+
    /* public function testAddCategory() {
         App::import('Model', 'SubjectCategory');
         $scObj = new SubjectCategory();

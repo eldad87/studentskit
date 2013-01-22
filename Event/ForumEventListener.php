@@ -10,10 +10,10 @@ class ForumEventListener implements CakeEventListener {
         return array(
             'Controller.Accounts.afterLogout'       => 'afterLogout',
             'Controller.Accounts.afterLogin'        => 'afterLogin',
-            //'Model.SubjectCategory.afterSave'  => 'afterSaveSubjectCategory',
-            'Model.Forum.Topic.afterSave'        => 'afterSaveTopic',
-            'Model.Forum.Post.afterSave'         => 'afterSavePost',
-            'Model.Forum.Topic.afterDelete'      => 'afterDeleteTopic',
+            'Model.SubjectCategory.afterSave'       => 'afterSaveSubjectCategory',
+            'Model.Forum.Topic.afterSave'           => 'afterSaveTopic',
+            'Model.Forum.Post.afterSave'            => 'afterSavePost',
+            'Model.Forum.Topic.afterDelete'         => 'afterDeleteTopic',
         );
     }
 
