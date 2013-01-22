@@ -1,7 +1,8 @@
 <div class="main-student fullwidth bod2<?php echo ($first ? ' space6' : null) ?>">
     <div class="inner-spots-box">
-        <div class="pull-right btn-width">
+        <div class="pull-right">
             <?php echo $this->Layout->priceTag($upcomingAvailableLesson['1_on_1_price'], $upcomingAvailableLesson['full_group_student_price'], 'space25 order-price'); ?>
+            <div class="clear"></div>
             <?php
             echo $this->Html->link('Join', array('controller'=>'Order', 'action'=>'init', 'join', $upcomingAvailableLesson['teacher_lesson_id']),
                 array('class'=>'btn-color-gry move-right space35 centered space3'));

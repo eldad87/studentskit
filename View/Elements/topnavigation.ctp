@@ -273,12 +273,12 @@
             <!-- Register / Login-->
 
             <?php
-            echo '<div class="label-txt pull-left space5 pointer">';
+            echo '<div class="label-txt pull-left space5">';
             if(!$user) {
                 echo '
-                            <a data-toggle="modal" data-target="#login-popup">',
+                            <a data-toggle="modal" data-target="#login-popup" class="pointer">',
                             __('Login/Register')
-                            ,'<i class="iconMedium-sign"></i>
+                            ,'<i class="iconMedium-sign space20"></i>
                             </a>';
             } else {
                 echo __('Welcome'),', ',$user['username'];
