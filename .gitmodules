@@ -22,3 +22,6 @@
 [submodule "Plugin/Utils"]
 	path = Plugin/Utils
 	url = https://github.com/eldad87/utils
+[submodule "Plugin/Comments"]
+	path = Plugin/Comments
+	url = https://github.com/eldad87/comments.git

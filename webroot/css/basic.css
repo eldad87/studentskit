@@ -255,6 +255,9 @@ small {
 	width: auto; 
 	height: auto; 
 }
+.clearright {
+    clear:right;
+}
 
 /* back computability*/
 .centered {

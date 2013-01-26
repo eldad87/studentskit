@@ -49,6 +49,8 @@
                                         'lang',
                                         /*'jquery.ba-bbq'*/));
         echo $this->fetch('script');
+
+        echo $this->Js->writeBuffer(); // Write cached scripts
     ?>
 </head>
 

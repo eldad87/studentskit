@@ -192,11 +192,13 @@ CakePlugin::loadAll(array(
         'facebook',
         'DebugKit',
         'Uploader',
+        'Comments',
     )
 );
 App::import('Vendor', 'Uploader.Uploader');
 
-Configure::write('template_languages', array('eng'=>'English', 'heb'=>'Hebrew'));
+Configure::write('template_languages_direction', array('eng'=>'rtr', 'heb'=>'rtl'));
+Configure::write('template_languages', array('eng'=>'English'/*, 'heb'=>'Hebrew'*/));
 Configure::write('public_domain', 'http://universito.com');
 
 
@@ -204,7 +206,7 @@ App::build(array('Event' => array('%s'.'Event'.DS)), App::REGISTER);
 
 
 //Payment commission in USD
-Configure::write('per_student_commission', 1);
+Configure::write('per_student_commission', 0.99);
 
 //Taken from: https://developer.paypal.com/cgi-bin/devscr?cmd=_certs-session
 Configure::write('paypal_api_username', 'web_1358609058_biz_api1.gmail.com'); //The API Username, Onchange make sure to update: /Vendor/AdaptivePayments/config/sdk_config.ini (API Username, API Password and Signature)

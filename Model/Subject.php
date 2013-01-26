@@ -171,6 +171,18 @@ class Subject extends AppModel {
         ),
 	);
 
+    /*
+     * Add image_source to comments
+     */
+    public function commentBeforeFind($options) {
+        $result = $this->Behaviors->dispatchMethod($this, 'commentBeforeFind', array($options));
+
+        $userModel = $this->Behaviors->Commentable->settings[$this->alias]['userModelAlias'];
+        $this->Comment->belongsTo[$userModel]['fields'][] = 'username';
+        $this->Comment->belongsTo[$userModel]['fields'][] = 'image_source';
+
+        return $result;
+    }
 
     public function fullGroupStudentPriceCheck( $price ) {
         if(!isSet($this->data[$this->name]['max_students']) || empty($this->data[$this->name]['max_students'])) {

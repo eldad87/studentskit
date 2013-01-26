@@ -149,7 +149,8 @@ class User extends AppModel {
     public function __construct($id = false, $table = null, $ds = null) {
         parent::__construct($id, $table, $ds);
         $this->virtualFields['username'] = sprintf('CONCAT(%s.first_name, " ", %s.last_name)', $this->alias, $this->alias);
-        $this->virtualFields['id'] = sprintf('%s.user_id', $this->alias); //Forum suppoer
+        $this->virtualFields['slug'] = sprintf('%s.user_id', $this->alias); //Comments
+        $this->virtualFields['id'] = sprintf('%s.user_id', $this->alias); //Forum
     }
 
     /*public function beforeSave($options) {

@@ -9,7 +9,7 @@
 class LessonsController extends AppController {
 	public $name = 'Lessons';
 	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson', 'FileSystem');
-	public $components = array('Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login'))/*, 'Security'*/);
+    public $components = array('Comments.Comments' => array('userModelClass' => 'User', 'actionNames'=>array('community', 'comments')));
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 	public $helpers = array('Watchitoo');
 
@@ -26,9 +26,34 @@ class LessonsController extends AppController {
 		$this->Auth->deny('submitOrder');*/
 	}
 
+    /////////////////
+
     /**
-     * TODO:
-     * forum
+     * Initializes the view type for comments widget
+     *
+     * @return string
+     * @access public
+     */
+    public function callback_commentsInitType() {
+        return 'tree'; // threaded, tree and flat supported
+    }
+
+
+    public function community($subjectId){
+        //viewVars
+        $this->Subject->recursive = -1;
+        $this->set('subject', $this->Subject->find('first', array('conditions'=>array('subject_id'=>$subjectId))));
+
+    }
+    public function comments($id = null) {
+        $subject = $this->Subject->find('first', array('conditions'=>array('subject_id'=>$id)));
+        $this->layout = 'ajax';
+        $this->set(compact('subject', 'id'));
+    }
+
+    /////////////////
+
+    /**
      *
      * if $teacherLessonId is provided - check if there is an existing recording on watchitoo
      * @param $subjectId
