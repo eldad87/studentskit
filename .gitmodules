@@ -16,12 +16,12 @@
 [submodule "Plugin/Utility"]
 	path = Plugin/Utility
 	url = https://github.com/eldad87/cake-utility.git
-[submodule "Plugin/Forum"]
-	path = Plugin/Forum
-	url = https://github.com/eldad87/cake-forum.git
 [submodule "Plugin/Utils"]
 	path = Plugin/Utils
 	url = https://github.com/eldad87/utils
 [submodule "Plugin/Comments"]
 	path = Plugin/Comments
 	url = https://github.com/eldad87/comments.git
+[submodule "Plugin/Forum"]
+	path = Plugin/Forum
+	url = https://github.com/eldad87/cake-forum.git
