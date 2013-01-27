@@ -23,7 +23,7 @@ if($page==1) {
                                                             'data-prepend-to'=>'user-lessons-requests', 'data-append-template'=>'user-panel'));
         echo $this->element('Home/subject_request_popup');
 
-        echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
+        echo $this->element('Panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
                                                         'title'=>__('Cancel your subject request'),
                                                         'description'=>__('Do you want to proceed?'),
                                                         'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'disableSubject', '{id}')));
@@ -35,7 +35,7 @@ if($page==1) {
 }
 
     foreach($response['response']['subjectRequests'] AS $subjectRequestData) {
-        echo $this->element('panel/user_subject_request_div', array('subjectRequestData'=>$subjectRequestData));
+        echo $this->element('Panel/user_subject_request_div', array('subjectRequestData'=>$subjectRequestData));
     }
 
 

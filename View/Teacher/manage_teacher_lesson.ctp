@@ -8,13 +8,13 @@
 <p class="fontsize1 space8"><?php echo __('Here you can find all booking requests that pending for your approval.'); ?></p>
 
 <?php
-echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
+echo $this->element('Panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
                                                                     'title'=>__('Cancel'),
                                                                     'description'=>__('This procedure may be irreversible.
                                                                                 Do you want to proceed?'),
                                                 'cancelUrl'=>array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')));
-echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-student'));
-echo $this->element('panel/accept_lesson_popup', array('buttonSelector'=>'.confirm-accept'));
+echo $this->element('Panel/send_msg_popup', array('buttonSelector'=>'.msg-student'));
+echo $this->element('Panel/accept_lesson_popup', array('buttonSelector'=>'.confirm-accept'));
 ?>
 
 <div class="cont-span15 cbox-space">

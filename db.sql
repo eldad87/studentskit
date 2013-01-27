@@ -54,6 +54,33 @@ CREATE TABLE `auto_approve_lesson_request` (
   PRIMARY KEY (`teacher_user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+/*Table structure for table `comments` */
+
+DROP TABLE IF EXISTS `comments`;
+
+CREATE TABLE `comments` (
+  `id` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `parent_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `foreign_key` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `lft` int(10) NOT NULL,
+  `rght` int(10) NOT NULL,
+  `model` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `approved` tinyint(1) NOT NULL DEFAULT '1',
+  `is_spam` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'clean',
+  `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `slug` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `body` text COLLATE utf8_unicode_ci,
+  `author_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `author_url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `author_email` varchar(128) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `language` varchar(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment_type` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'comment',
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 /*Table structure for table `file_system` */
 
 DROP TABLE IF EXISTS `file_system`;
@@ -252,7 +279,7 @@ CREATE TABLE `forum_profiles` (
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User profiles';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='User profiles';
 
 /*Table structure for table `forum_reported` */
 

@@ -19,13 +19,13 @@ if($page==1) {
     <p class="fontsize1 space8"><?php echo __('Here you can find all your future lessons.'); ?></p>
 
     <?php
-    echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
+    echo $this->element('Panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
                                                             'title'=>__('Cancel your participation'),
                                                             'description'=>__('This procedure may be irreversible.
                                                                 Do you want to proceed?'),
                                                             'cancelUrl'=>array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')));
-    echo $this->element('panel/invite_popup', array('buttonSelector'=>'.invite'));
-    echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
+    echo $this->element('Panel/invite_popup', array('buttonSelector'=>'.invite'));
+    echo $this->element('Panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
     ?>
 
     <div class="add-sub pull-left space3" id="user-lessons-upcoming">

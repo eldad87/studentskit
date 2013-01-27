@@ -20,7 +20,7 @@ if($page==1) {
 
     <p class="fontsize1 space8"><?php echo __('Here you can find all your past lessons.'); ?></p>
     <?php
-    echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
+    echo $this->element('Panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
     ?>
 
 

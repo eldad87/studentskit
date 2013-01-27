@@ -1,5 +1,5 @@
 <?php
-echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
+echo $this->element('Panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
 echo $this->fetch('popups');
 ?>
 <!-- Containeer

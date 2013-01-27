@@ -8,22 +8,22 @@ if(!empty($userData['TeacherAboutVideo'])) {
 }
 */
 
-echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-remove-certificate',
+echo $this->element('Panel/cancel_popup', array('buttonSelector'=>'.confirm-remove-certificate',
                                                 'appendId'=>1,
                                                 'title'=>__('Remove your certificate'),
                                                 'description'=>__('Do you want to proceed?'),
                                                 'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'removeCertificate', '{id}')));
 
 
-echo $this->element('panel/certificate_popup', array('buttonSelector'=>'.add-edit-certificate'));
+echo $this->element('Panel/certificate_popup', array('buttonSelector'=>'.add-edit-certificate'));
 
-echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-remove-teacher-about-video',
+echo $this->element('Panel/cancel_popup', array('buttonSelector'=>'.confirm-remove-teacher-about-video',
                                                                     'appendId'=>2,
                                                                     'title'=>__('Remove your about video'),
                                                                     'description'=>__('Do you want to proceed?'),
                                                                     'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'removeAboutVideo', '{id}')));
 
-echo $this->element('panel/teacher_about_video_popup', array('buttonSelector'=>'.add-edit-teacher-about-video'));
+echo $this->element('Panel/teacher_about_video_popup', array('buttonSelector'=>'.add-edit-teacher-about-video'));
 ?>
 
 <script type="text/javascript">

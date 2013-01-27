@@ -20,13 +20,13 @@ if($page==1) {
 <p class="fontsize1 space8"><?php echo __('Here you can find all invitations requests that still pending for the student\'s approval.'); ?></p>
 
 <?php
-echo $this->element('panel/cancel_popup', array('buttonSelector'=>'.confirm-cancel',
+echo $this->element('Panel/cancel_popup', array('buttonSelector'=>'.confirm-cancel',
     'title'=>__('Cancel an invitation'),
     'description'=>__('This procedure may be irreversible.
                                                                                 Do you want to proceed?'),
     'cancelUrl'=>array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')));
-echo $this->element('panel/send_msg_popup', array('buttonSelector'=>'.msg-student'));
-echo $this->element('panel/negotiate_popup', array('buttonSelector'=>'.negotiate'));
+echo $this->element('Panel/send_msg_popup', array('buttonSelector'=>'.msg-student'));
+echo $this->element('Panel/negotiate_popup', array('buttonSelector'=>'.negotiate'));
 ?>
 
     <div class="fullwidth pull-left">
