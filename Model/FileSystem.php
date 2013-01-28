@@ -9,7 +9,15 @@ class FileSystem extends AppModel {
                                 'fileUpload'=>array(
                                     'uploadDir'	            => 'file_system/',
                                     'dbColumn'              => 'file_source',
+                                    's3' => array(
+                                        'accessKey' => 'AKIAIV2BMVHTLRF64V7Q',
+                                        'secretKey' => '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',
+                                        'bucket'    => 'local_eldad',
+                                        'ssl'       => false,
+                                        'path'      => 'fs'
+                                    )
                                 ),
+
                             ),
                         );
 
