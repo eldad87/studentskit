@@ -16,4 +16,5 @@ webroot/vid/subjects/about_videos/*
 webroot/file_system/*
 webroot/img/teachers/certificates/*
 webroot/vid/teachers/about_videos/*
+webroot/files/uploads/*
 !empty
