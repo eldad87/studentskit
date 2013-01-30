@@ -195,7 +195,9 @@ CakePlugin::loadAll(array(
         'Comments',
     )
 );
-App::import('Vendor', 'Uploader.Uploader');
+
+//Amazon S3
+define('S3_BUCKET', 'local_eldad');
 
 Configure::write('template_languages_direction', array('eng'=>'rtr', 'heb'=>'rtl'));
 Configure::write('template_languages', array('eng'=>'English'/*, 'heb'=>'Hebrew'*/));

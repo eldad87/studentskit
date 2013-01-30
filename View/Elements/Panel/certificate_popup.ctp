@@ -78,7 +78,7 @@
 <div id="certificate-popup" class="modal hide fade">
     <div class="modal-header">
         <a href="#" class="close">&times;</a>
-        <h3><?php echo __('Negotiate'); ?></h3>
+        <h3><?php echo __('Certificate'); ?></h3>
     </div>
     <?php echo $this->Form->create('TeacherCertificate', array('class'=>'sk-form', 'id'=>'certificate-form', 'method'=>'post', 'type' => 'file',
                                                             'url'=>array('controller'=>'Teacher', 'action'=>'certificate', '{teacher_certificate_id}'))); ?>

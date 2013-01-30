@@ -5,26 +5,31 @@ class TeacherCertificate extends AppModel {
 	public $primaryKey = 'teacher_certificate_id';
     public $actsAs = array(
         'Uploader.Attachment' => array(
-            'imageUpload'=>array(
-                'uploadDir'	            => 'img/teachers/certificates/',
-                'appendNameToUploadDir' => true,
-                'flagColumn'            => array('dbColumn'=>'image', 'value'=>1), //Flag DB.table.image with value of IMAGE_SUBJECT_OWNER
-                'name'                  => 'formatImageName',
-                'dbColumn'              => 'image_source',
-                'transforms' => array(
-                    array('method'=>'resize','width'=> 100,  'height'=>100,  'append'=>'_resize',   'overwrite'=>true, 'dbColumn'=>'image_resize', 'aspect'=>true, 'mode'=>Uploader::MODE_HEIGHT, 'setAsTransformationSource'=>true),
-                    array('method'=>'crop', 'width' => 80,   'height'=>80,   'append'=>'_80x80',    'overwrite'=>true, 'dbColumn'=>'image_crop_80x80'),
+            'image_source' => array(
+                'finalPath'     => 'img/teachers/certificates/',
+                'nameCallback'  => 'formatImageName',
+                'overwrite'     => true,
+                'transforms'    => array(
+                    'image_resize'      => array('method'=>'resize','width'=> 100,  'height'=>100,  'append'=>'_resize',   'overwrite'=>true,  'aspect'=>true, 'mode'=>'height', 'nameCallback'  => 'formatImageName' ),
+                    'image_crop_80x80'  => array('method'=>'crop', 'width' => 80,   'height'=>80,   'append'=>'_80x80',    'overwrite'=>true, 'nameCallback'  => 'formatImageName' ),
+                ),
+                'transport' => array(
+                    'class'     => 's3',
+                    'accessKey' => 'AKIAIV2BMVHTLRF64V7Q',
+                    'secretKey' => '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',
+                    'bucket'    => S3_BUCKET,
+                    'region'    => 'us-east-1',
+                    'folder'    => 'img/teachers/certificates/'
                 )
             )
         ),
-
         'Uploader.FileValidation' => array(
-            'imageUpload' => array(
+            'image_source' => array(
                 'extension'	=> array('gif', 'jpg', 'png', 'jpeg'),
                 'filesize'	=> 1048576,
                 'minWidth'	=> 100,
                 'minHeight'	=> 100,
-                'required'	=> false
+                'required'	=> true
             )
         )
     );
@@ -68,8 +73,21 @@ class TeacherCertificate extends AppModel {
 			'allowEmpty' 	=> true,
 		),
 	);
-    public function formatImageName($name, $field, $file) {
-        return String::uuid();
+
+    public function __construct($id = false, $table = null, $ds = null) {
+        parent::__construct($id, $table, $ds);
+        $this->virtualFields['id'] = sprintf('%s.%s', $this->alias, $this->primaryKey); //Uploader
+    }
+
+    //Change upload folder
+    public function beforeTransport($options) {
+        $options['folder'] .= String::uuid() . '/';
+        return $options;
+    }
+
+    //Remove the "resize-100x100" from transformations file
+    public function formatImageName($name, $file) {
+        return $this->getUploadedFile()->name();
     }
 }
 ?>

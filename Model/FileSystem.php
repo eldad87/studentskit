@@ -5,21 +5,49 @@ class FileSystem extends AppModel {
     public $primaryKey = 'file_system_id';
 
     public $actsAs = array('Tree',
-                            'Uploader.Attachment' => array(
-                                'fileUpload'=>array(
-                                    'uploadDir'	            => 'file_system/',
-                                    'dbColumn'              => 'file_source',
-                                    's3' => array(
-                                        'accessKey' => 'AKIAIV2BMVHTLRF64V7Q',
-                                        'secretKey' => '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',
-                                        'bucket'    => 'local_eldad',
-                                        'ssl'       => false,
-                                        'path'      => 'fs'
-                                    )
-                                ),
+        'Uploader.Attachment' => array(
+            'file_source' => array(
+                'finalPath'     => 'file_system/',
+                'nameCallback'  => 'formatImageName',
+                'overwrite'     => true,
+                'allowEmpty'    => false,
+                'transport' => array(
+                    'class'     => 's3',
+                    'accessKey' => 'AKIAIV2BMVHTLRF64V7Q',
+                    'secretKey' => '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',
+                    'bucket'    => S3_BUCKET,
+                    'region'    => 'us-east-1',
+                    'folder'    => 'file_system/'
+                ),
+                'metaColumns' => array(
+                    'ext'       => 'extension',
+                    'size'      => 'size_kb',
+                    'basename'  => 'name'
+                )
+            )
+        ),
+        'Uploader.FileValidation' => array(
+            'file_source' => array(
+                'required'	=> true
+            )
+        )
+    );
 
-                            ),
-                        );
+    public function __construct($id = false, $table = null, $ds = null) {
+        parent::__construct($id, $table, $ds);
+        $this->virtualFields['id'] = sprintf('%s.%s', $this->alias, $this->primaryKey); //Uploader
+    }
+
+    //Change upload folder
+    public function beforeTransport($options) {
+        $options['folder'] .= String::uuid() . '/';
+        return $options;
+    }
+
+    //Remove the "resize-100x100" from transformations file
+    public function formatImageName($name, $file) {
+        return $this->getUploadedFile()->name();
+    }
 
     public function beforeSave($options = array()) {
         parent::beforeSave($options);
@@ -90,36 +118,36 @@ class FileSystem extends AppModel {
 
     /**
      * Fix threaded array, return better format data
-        Array
-        (
-            [1] => Array
-            (
-                [file_system_id] => 1
-                [type] => folder
-                [name] => Main folder
-                [size_kb] =>
-                [extension] =>
-                [children] => Array
-                    (
-                    [2] => Array
-                    (
-                        [file_system_id] => 2
-                        [type] => folder
-                        [name] => Sub 1
-                        [size_kb] =>
-                        [extension] =>
-                    )
+    Array
+    (
+    [1] => Array
+    (
+    [file_system_id] => 1
+    [type] => folder
+    [name] => Main folder
+    [size_kb] =>
+    [extension] =>
+    [children] => Array
+    (
+    [2] => Array
+    (
+    [file_system_id] => 2
+    [type] => folder
+    [name] => Sub 1
+    [size_kb] =>
+    [extension] =>
+    )
 
-                    [3] => Array
-                    (
-                        [file_system_id] => 3
-                        [type] => folder
-                        [name] => Sub 2
-                        [size_kb] =>
-                        [extension] =>
-                    )
-            )
-        )
+    [3] => Array
+    (
+    [file_system_id] => 3
+    [type] => folder
+    [name] => Sub 2
+    [size_kb] =>
+    [extension] =>
+    )
+    )
+    )
      *
      * @param $fs
      * @return array
@@ -130,7 +158,7 @@ class FileSystem extends AppModel {
         foreach($fs AS $f) {
 
             unset($f['FileSystem']['parent_id'], $f['FileSystem']['lft'], $f['FileSystem']['rght'],
-                    $f['FileSystem']['entity_id'], $f['FileSystem']['entity_type']);
+            $f['FileSystem']['entity_id'], $f['FileSystem']['entity_type']);
 
             $return[$f['FileSystem']['file_system_id']]  = $f['FileSystem'];
 

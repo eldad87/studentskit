@@ -112,6 +112,19 @@ class TeacherController extends AppController {
             if($subjectId) {
                 $this->Subject->id = $subjectId;
             }
+
+            //Bug in Uploader, empty files fields
+            if(isSet($this->request->data['Subject']['image_source']) &&
+                empty($this->request->data['Subject']['image_source'])) {
+
+                unset($this->request->data['Subject']['image_source']);
+            }
+            if(isSet($this->request->data['Subject']['video_source']) &&
+                empty($this->request->data['Subject']['video_source'])) {
+
+                unset($this->request->data['Subject']['video_source']);
+            }
+
             $this->Subject->set($this->request->data);
 
             if($this->Subject->save($this->request->data)) {
@@ -350,7 +363,14 @@ class TeacherController extends AppController {
 			$this->request->data = $userData;
 		} else {
             $this->User->id = $this->Auth->user('user_id');
-            $this->User->save($this->request->data, true, array('teacher_about', 'teacher_address', 'teacher_zipcode'));
+            $res = $this->User->save($this->request->data, true, array('teacher_about', 'teacher_address', 'teacher_zipcode'));
+
+            if($res) {
+                //Update Auth data
+                $this->User->recursive = -1;
+                $userData = $this->User->findByUserId($this->Auth->user('id'));
+                $this->Auth->login($userData['User']);
+            }
 		}
 
         $this->set('userData', $userData);

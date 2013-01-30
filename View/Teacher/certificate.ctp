@@ -25,7 +25,7 @@ $this->Form->create('TeacherCertificate', array('type' => 'file'));
     echo '<fieldset>';
         echo $this->Form->input('name', $this->Layout->styleForInput());
         echo $this->Form->input('description', $this->Layout->styleForInput());
-        echo $this->Form->input('imageUpload', $this->Layout->styleForInput(array('type'=>'file', 'label'=>array('class'=>'control-label', 'text'=>__('Image')))));
+        echo $this->Form->input('image_source', $this->Layout->styleForInput(array('type'=>'file', 'label'=>array('class'=>'control-label', 'text'=>__('Image')))));
         echo $this->Form->input('datetime', $this->Layout->styleForInput(array('type'=>'datetime', 'class'=>false)));
     echo '</fieldset>';
 $this->Form->end();

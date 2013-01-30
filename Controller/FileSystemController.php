@@ -1,4 +1,7 @@
 <?php
+
+use Transit\MimeType;
+
 class FileSystemController extends AppController {
 	public $name = 'FileSystem';
 	public $uses = array('Subject', 'User', 'UserLesson', 'FileSystem');
@@ -67,53 +70,29 @@ class FileSystemController extends AppController {
     }
 
     public function uploadFile() {
-
-        /**
-         * HACK STARTs
-         * AttachmentBehavior doesn't know how to handle ajax files.
-         * The code below, transform the ajax upload into regular FORM upload and add it to $this->request->data
-         */
-        $ajaxField = 'fileUpload';
-
-        $name = $_GET[$ajaxField];
-        $mime = Uploader::mimeType($name);
-        if ($mime) {
-            $input = fopen("php://input", "r");
-            $temp = tmpfile();
-
-            $this->request->data[$ajaxField] = array(
-                'name'      => $name,
-                'type'      => $mime,
-                'stream'    => true,
-                'tmp_name'  => $temp,
-                'error'     => 0,
-                'size'      => stream_copy_to_stream($input, $temp)
-            );
-
-            fclose($input);
-        }
-        /**
-         * HACK ENDs
-         */
+        $fileName = $_GET['fileUpload'];
 
         App::import('Model', 'FileSystem');
         $fsObj = new FileSystem();
 
-        $this->request->data['type']        = 'file';
-        $this->request->data['name']        = $name;
-        $this->request->data['size_kb']     = $this->request->data[$ajaxField]['size'];
-        $this->request->data['parent_id']   = $this->request->query['path'][count($this->request->query['path'])-1];;
+        $this->request->data['FileSystem']['file_source'] = $fileName;
+        $this->request->data['FileSystem']['type']        = 'file';
+        $this->request->data['FileSystem']['parent_id']   = $this->request->query['path'][count($this->request->query['path'])-1];;
 
         if(!$fsObj->save( $this->request->data )) {
-            echo json_encode(array('success' => false, 'data' => array()));
+            echo json_encode(array('error' => false, 'data' => array()));
         } else {
+            $fsObj->recursive = -1;
+            $fileData = $fsObj->findByFileSystemId($fsObj->id);
+
+
             echo json_encode(array('success' => true, 'data' => array(
-               'file_system_id' =>$fsObj->id,
-               'name'           =>$name,
-               'type'           =>'file',
-               'size_kb'        =>$this->request->data[$ajaxField]['size'],
-               'extension'      =>Uploader::ext($name),
-               'path'           =>isSet($this->request->query['path']) ? $this->request->query['path'] : array()
+               'file_system_id' => $fsObj->id,
+                'name'          => $fileData['FileSystem']['name'],
+                'type'          => 'file',
+                'size_kb'       => $fileData['FileSystem']['size_kb'],
+                'extension'     => $fileData['FileSystem']['extension'],
+                'path'          => isSet($this->request->query['path']) ? $this->request->query['path'] : array()
             )));
         }
 

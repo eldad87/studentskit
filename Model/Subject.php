@@ -33,46 +33,59 @@ class Subject extends AppModel {
     public $actsAs = array(
         'Lock',
         'LanguageFilter',
+
         'Uploader.Attachment' => array(
-            'videoUpload'=>array(
-                'uploadDir'	            => 'vid/subjects/about_videos/',
+            'video_source'=>array(
+                'finalPath'	            => 'vid/subjects/about_videos/',
                 'appendNameToUploadDir' => true,
                 'name'                  => 'formatFileName',
-                'dbColumn'              => 'video_source'
+                'allowEmpty'            => true,
+                'transport' => array(
+                    'class'     => 's3',
+                    'accessKey' => 'AKIAIV2BMVHTLRF64V7Q',
+                    'secretKey' => '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',
+                    'bucket'    => S3_BUCKET,
+                    'region'    => 'us-east-1',
+                    'folder'    => 'vid/subjects/about_videos/'
+                )
             ),
-            'imageUpload'=>array(
-                'uploadDir'	            => 'img/subjects/',
-                'appendNameToUploadDir' => true,
-                'flagColumn'            => array('dbColumn'=>'image', 'value'=>IMAGE_SUBJECT), //Flag DB.table.image with value of IMAGE_SUBJECT
-                'name'                  => 'formatFileName',
-                'dbColumn'              => 'image_source',
+
+            'image_source' => array(
+                'finalPath'     => 'img/subjects/',
+                'nameCallback'  => 'formatImageName',
+                'overwrite'     => true,
+                'allowEmpty'    => true,
                 'transforms' => array(
-                    array('method'=>'resize','width'=> 200,  'height'=>210,  'append'=>'_resize',   'overwrite'=>true, 'dbColumn'=>'image_resize', 'aspect'=>true, 'mode'=>Uploader::MODE_HEIGHT, 'setAsTransformationSource'=>true),
-                    array('method'=>'crop', 'width' => 38,   'height'=>38,   'append'=>'_38x38',    'overwrite'=>true, 'dbColumn'=>'image_crop_38x38'),
-                    array('method'=>'crop', 'width' => 58,   'height'=>58,   'append'=>'_58x58',    'overwrite'=>true, 'dbColumn'=>'image_crop_58x58'),
-                    array('method'=>'crop', 'width' => 60,   'height'=>60,   'append'=>'_60x60',    'overwrite'=>true, 'dbColumn'=>'image_crop_60x60'),
-                    array('method'=>'crop', 'width' => 63,   'height'=>63,   'append'=>'_63x63',    'overwrite'=>true, 'dbColumn'=>'image_crop_63x63'),
-                    array('method'=>'crop', 'width' => 72,   'height'=>72,   'append'=>'_72x72',    'overwrite'=>true, 'dbColumn'=>'image_crop_72x72'),
-                    array('method'=>'crop', 'width' => 78,   'height'=>78,   'append'=>'_78x78',    'overwrite'=>true, 'dbColumn'=>'image_crop_78x78'),
-                    array('method'=>'crop', 'width' => 80,   'height'=>80,   'append'=>'_80x80',    'overwrite'=>true, 'dbColumn'=>'image_crop_80x80'),
-                    array('method'=>'crop', 'width' => 100,  'height'=>100,  'append'=>'_100x100',  'overwrite'=>true, 'dbColumn'=>'image_crop_100x100'),
-                    array('method'=>'crop', 'width' => 128,  'height'=>95,   'append'=>'_128x95',   'overwrite'=>true, 'dbColumn'=>'image_crop_128x95'),
-                    array('method'=>'crop', 'width' => 149,  'height'=>182,  'append'=>'_149x182',  'overwrite'=>true, 'dbColumn'=>'image_crop_149x182'),
-                    array('method'=>'crop', 'width' => 200,  'height'=>210,  'append'=>'_200x210',  'overwrite'=>true, 'dbColumn'=>'image_crop_200x210'),
-                    array('method'=>'crop', 'width' => 436,  'height'=>214,  'append'=>'_436x214',  'overwrite'=>true, 'dbColumn'=>'image_crop_436x214'),
+                    'image_resize'=>array(  'method'=>'resize','width'=> 200,  'height'=>210,  'append'=>'_resize', 'overwrite'=>true,
+                                            'aspect'=>true, 'mode'=>'height', 'setAsTransformationSource'=>true,    'nameCallback'  => 'formatImageName', 'overwrite'     => true),
+                    'image_crop_38x38'  =>array('method'=>'crop', 'width' => 38,   'height'=>38,   'append'=>'_38x38',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_60x60'  =>array('method'=>'crop', 'width' => 60,   'height'=>60,   'append'=>'_60x60',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_63x63'  =>array('method'=>'crop', 'width' => 63,   'height'=>63,   'append'=>'_63x63',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_72x72'  =>array('method'=>'crop', 'width' => 72,   'height'=>72,   'append'=>'_72x72',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_78x78'  =>array('method'=>'crop', 'width' => 78,   'height'=>78,   'append'=>'_78x78',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_80x80'  =>array('method'=>'crop', 'width' => 80,   'height'=>80,   'append'=>'_80x80',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_100x100'=>array('method'=>'crop', 'width' => 100,  'height'=>100,  'append'=>'_100x100',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_149x182'=>array('method'=>'crop', 'width' => 149,  'height'=>182,  'append'=>'_149x182',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_200x210'=>array('method'=>'crop', 'width' => 200,  'height'=>210,  'append'=>'_200x210',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                ),
+                'transport' => array(
+                    'class'     => 's3',
+                    'accessKey' => 'AKIAIV2BMVHTLRF64V7Q',
+                    'secretKey' => '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',
+                    'bucket'    => S3_BUCKET,
+                    'region'    => 'us-east-1',
+                    'folder'    => 'img/subjects/'
                 )
             )
         ),
 
         'Uploader.FileValidation' => array(
-            'videoUpload' => array(
+            'video_source' => array(
                 'extension'	=> array('webm', 'ogv', 'mp4', 'flv', 'mov'),
                 'filesize'	=> 104857600, //100MB
-                /*'minWidth'	=> 100,
-                'minHeight'	=> 100,*/
                 'required'	=> false
             ),
-            'imageUpload' => array(
+            'image_source' => array(
                 'extension'	=> array('gif', 'jpg', 'png', 'jpeg'),
                 'filesize'	=> 1048576, //1MB
                 'minWidth'	=> 440,
@@ -81,11 +94,6 @@ class Subject extends AppModel {
             )
         )
     );
-
-
-    public function formatFileName($name, $field, $file) {
-        return String::uuid();
-    }
 
 	public $validate = array(
 		'name'=> array(
@@ -170,6 +178,22 @@ class Subject extends AppModel {
             )
         ),
 	);
+
+    //Change upload folder
+    public function beforeTransport($options) {
+        $options['folder'] .= String::uuid() . '/';
+        return $options;
+    }
+
+    //Remove the "resize-100x100" from transformations file
+    public function formatImageName($name, $file) {
+        return $this->getUploadedFile()->name();
+    }
+
+    public function __construct($id = false, $table = null, $ds = null) {
+        parent::__construct($id, $table, $ds);
+        $this->virtualFields['id'] = sprintf('%s.%s', $this->alias, $this->primaryKey); //Uploader
+    }
 
     /*
      * Add image_source to comments

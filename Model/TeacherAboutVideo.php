@@ -7,21 +7,24 @@ class TeacherAboutVideo extends AppModel {
         'LanguageFilter',
 
         'Uploader.Attachment' => array(
-            'videoUpload'=>array(
-                'uploadDir'	            => 'vid/teachers/about_videos/',
-                'appendNameToUploadDir' => true,
-                //'flagColumn'            => array('dbColumn'=>'image', 'value'=>1), //Flag DB.table.image with value of IMAGE_SUBJECT_OWNER
-                'name'                  => 'formatImageName',
-                'dbColumn'              => 'video_source'
+            'video_source' => array(
+                'finalPath'     => 'vid/teachers/about_videos/',
+                'nameCallback'  => 'formatImageName',
+                'overwrite'     => true,
+                'transport' => array(
+                    'class'     => 's3',
+                    'accessKey' => 'AKIAIV2BMVHTLRF64V7Q',
+                    'secretKey' => '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',
+                    'bucket'    => S3_BUCKET,
+                    'region'    => 'us-east-1',
+                    'folder'    => 'vid/teachers/about_videos/'
+                )
             )
         ),
-
         'Uploader.FileValidation' => array(
-            'videoUpload' => array(
+            'image_source' => array(
                 'extension'	=> array('webm', 'ogv', 'mp4', 'flv', 'mov'),
                 'filesize'	=> 104857600, //100MB
-                /*'minWidth'	=> 100,
-                'minHeight'	=> 100,*/
                 'required'	=> true
             )
         )
@@ -44,6 +47,22 @@ class TeacherAboutVideo extends AppModel {
 
 	);
 
+    public function __construct($id = false, $table = null, $ds = null) {
+        parent::__construct($id, $table, $ds);
+        $this->virtualFields['id'] = sprintf('%s.%s', $this->alias, $this->primaryKey); //Uploader
+    }
+
+    //Change upload folder
+    public function beforeTransport($options) {
+        $options['folder'] .= String::uuid() . '/';
+        return $options;
+    }
+
+    //Remove the "resize-100x100" from transformations file
+    public function formatImageName($name, $file) {
+        return $this->getUploadedFile()->name();
+    }
+
     public function beforeValidate($options=array()) {
         parent::beforeValidate($options);
 
@@ -58,8 +77,5 @@ class TeacherAboutVideo extends AppModel {
         ));
     }
 
-    public function formatImageName($name, $field, $file) {
-        return String::uuid();
-    }
 }
 ?>

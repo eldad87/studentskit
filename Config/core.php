@@ -1,4 +1,6 @@
 <?php
+require_once dirname(__DIR__) . '/Vendor/Composer/autoload.php';
+
 /**
  * This is core configuration file.
  *

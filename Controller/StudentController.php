@@ -290,9 +290,16 @@ class StudentController extends AppController {
 		if (empty($this->request->data)) {
 			$this->request->data = $this->User->findByUserId($this->Auth->user('user_id'));
 		} else {
+            //Bug in Uploader, empty files fields
+            if(isSet($this->request->data['User']['image_source']) &&
+                empty($this->request->data['User']['image_source'])) {
+
+                unset($this->request->data['User']['image_source']);
+            }
+
             $this->User->id = $this->Auth->user('user_id');
-		    $this->User->save($this->request->data, true, array('first_name', 'last_name', 'phone', 'student_about',
-                'imageUpload',
+		    $res = $this->User->save($this->request->data, true, array('first_name', 'last_name', 'phone', 'student_about',
+                'image_source',
                 'image',
                 'image_source',
                 'image_resize',
@@ -305,6 +312,14 @@ class StudentController extends AppController {
                 'image_crop_100x100',
                 'image_crop_149x182',
                 'image_crop_200x210'));
+
+            if($res) {
+                //Update Auth data
+                $this->User->recursive = -1;
+                $userData = $this->User->findByUserId($this->Auth->user('id'));
+                $this->Auth->login($userData['User']);
+            }
+
 		}
 	}
 	
