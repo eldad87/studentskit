@@ -1,9 +1,19 @@
 <?php
+$this->Html->scriptBlock('
+$(document).ready(function() {
+    $(document).ready(function(){
+        $(\'#orderNextButton\').click(function() {
+            $(\'#summaryForm\').submit();
+        });
+    });
+});
+', array('inline'=>false));
+$this->set('nextOrderStep', false);
 $this->extend('/Order/Common/common');
 
 $this->start('main');
 
-echo $this->Form->create(false, array('url'=>array('controller'=>'Order', 'action'=>'prerequisites'), 'type'=>'post'));
+echo $this->Form->create(false, array('url'=>array('controller'=>'Order', 'action'=>'prerequisites'), 'type'=>'post', 'id'=>'summaryForm'));
 ?>
 <div class="pull-left fullwidth space12">
     <h2  class="pull-left"><strong>Summary</strong></h2>
@@ -76,10 +86,8 @@ echo $this->Form->create(false, array('url'=>array('controller'=>'Order', 'actio
         <?php
         }
         ?>
-        <li><label></label><p><div class="order-billing-intext"><button class="btn-blue pull-right" type="submit">Submit</button></div></p></li>
     </ul>
 </div> <!-- /cpull-left space7 -->
-
 <?php
 echo $this->Form->end();
 $this->end();

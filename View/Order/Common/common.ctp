@@ -14,7 +14,6 @@
                                 echo _($orderData['lesson_type']).' '.__('lesson');
                             }
                             ?></p>
-
                         </div>
                         <?php
                             if(isSet($orderData)) {
@@ -28,7 +27,9 @@
                 </div> <!-- /cont-span6 -->
                 <?php
                 if(isSet($upcomingAvailableLessons) && isSet($teacherData)) {
-                    echo $this->element('Order/teacher_and_upcoming', array('upcomingAvailableLessons'=>$upcomingAvailableLessons, 'teacherData'=>$teacherData));
+                    echo $this->element('Order/teacher_and_upcoming', array('upcomingAvailableLessons'  =>$upcomingAvailableLessons,
+                                                                            'teacherData'               =>$teacherData,
+                                                                            'nextOrderStep'             =>(isSet($nextOrderStep) && $nextOrderStep)));
                 }
                 ?>
             </div> <!-- /cont-span12 -->

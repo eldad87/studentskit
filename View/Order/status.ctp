@@ -1,4 +1,5 @@
 <?php
+$this->set('nextOrderStep', true);
 $this->extend('/Order/Common/common');
 
 $this->start('main');

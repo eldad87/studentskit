@@ -40,7 +40,7 @@ $(document).ready(function(){
 
             $('#add-event-form').dialog('open');
         } else {
-            showError('#calendar-msg', 'Error' ,'Sorry, even cant added in backdate');
+            showError('#calendar-msg', 'Error' ,'Please select a future date');
         }
     };
 
@@ -192,7 +192,7 @@ $(document).ready(function(){
         close: function() {
             jQuery("#startHour option:eq(0)").attr("selected", "selected");
             jQuery("#startMin option:eq(0)").attr("selected", "selected");
-            jQuery("#startMeridiem option:eq(0)").attr("selected", "selected");
+            //jQuery("#startMeridiem option:eq(0)").attr("selected", "selected");
         }
     });
 

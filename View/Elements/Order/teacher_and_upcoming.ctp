@@ -31,6 +31,18 @@
     </div> <!-- /student-main-box -->
 
     <?php
+        if(isSet($nextOrderStep) && $nextOrderStep) {
+    ?>
+    <a href="#" class="greencentbutn pull-left radius3" id="orderNextButton">
+        <i class="iconBig-kart-icon pull-left"></i>
+        <span class="pull-left"><strong><?php echo __('Next step'); ?></strong></span>
+    </a>
+   <?php
+        }
+   ?>
+
+
+    <?php
     if($upcomingAvailableLessons) {
         ?>
         <div class="lesson-box pad8">

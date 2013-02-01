@@ -130,6 +130,19 @@ echo $this->Html->scriptBlock('
                                 <option value="10">10</option>
                                 <option value="11">11</option>
                                 <option value="12">12</option>
+
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23">23</option>
+                                <option value="24">24</option>
                             </select>
                         <td>
                         <td>
@@ -143,20 +156,24 @@ echo $this->Html->scriptBlock('
                                 <option value="50">50</option>
                             </select>
                         <td>
-                        <td>
+                       <!-- <td>
                             <label>Start AM/PM</label>
                             <select id="startMeridiem" class="text ui-widget-content ui-corner-all scheduleTime" name="data[UserLesson][datetime][meridian]">
                                 <option value="AM">AM</option>
                                 <option value="PM">PM</option>
                             </select>
-                        </td>
+                        </td>-->
                     </tr>
                 </table>
             </fieldset>
         </form>
-
     </div>
-    <ul class="colordetail">
+
+    <ul class="colordetail" <?php
+        if(!isSet($nextButton) || !$nextButton) {
+            echo ' style="width:100%"';
+        }
+        ?>>
         <li>
             <div class="colorbox colorbox-bgnd1"></div>
             <div class="colordetiail-bar">
