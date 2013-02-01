@@ -52,20 +52,13 @@
 
 
                 <!--Question list-->
-                <ul class="question-list space32">
+                <ul class="question-list space32 space12">
                     <!--Question block-->
-                    <li class="question-block" id="question_block_question_id">
-                        <!--Select right answer-->
-                        <div class="control-group" id="right_answer_block_question_id">
-                            <label class="control-label" for="right_answer_select_question_id"><?php echo __('Right Answer :'); ?></label>
-                            <div class="control">
-                                <select class="in-large-2" name="right_answer_name" id="right_answer_select_question_id"></select>
-                            </div>
-                        </div>
+                    <li class="question-block space12" id="question_block_question_id">
 
                         <!--Question-->
                         <div class="control-group" id="question_question_id">
-                            <label class="control-label" for="question_text_question_id"><?php echo __('Question'); ?> #</label>
+                            <label class="control-label" for="question_text_question_id"><strong><?php echo __('Question'); ?> #</strong></label>
                             <div class="control">
                                 <input type="text" class="x-large2 pull-left" name="question_name" value="" id="question_text_question_id" />
                                 <a href="#"><i class="iconSmall-red-cross redcross actionButton delete-question" id="delete_question_question_id"></i></a>
@@ -86,6 +79,14 @@
                             </li>
                         </ul>
 
+                        <!--Select right answer-->
+                        <div class="control-group right-answer-dd" id="right_answer_block_question_id">
+                            <label class="control-label" for="right_answer_select_question_id"><?php echo __('Right Answer :'); ?></label>
+                            <div class="control">
+                                <select class="in-large-2" name="right_answer_name" id="right_answer_select_question_id"></select>
+                            </div>
+                        </div>
+
                         <!--Add answer-->
                         <div class="control-group">
                             <label class="control-label"></label>
@@ -98,8 +99,7 @@
 
 
                 <!--Add question-->
-                <div class="control-group space7">
-                    <label class="control-label"></label>
+                <div class="control-group">
                     <div class="control">
                         <p class="pull-left space19 a-black"><a class="add-icon2 add-question" href="#"><i class="iconSmall-add-rang"></i><strong><?php echo __('Add Question'); ?></strong></a></p>
                     </div>
@@ -108,7 +108,7 @@
                 <div class="control-group">
                     <label class="control-label"></label>
                     <div class="control">
-                        <button type="button" class="btn-blue save-quiz" data-target="<?php echo Router::url(array('controller'=>'Tests', 'action'=>'save', $testId)); ?>"><?php echo __('Save'); ?></button>
+                        <button type="button" class="btn-blue save-quiz pull-right space5" data-target="<?php echo Router::url(array('controller'=>'Tests', 'action'=>'save', $testId)); ?>"><?php echo __('Save'); ?></button>
                     </div>
                 </div>
             </fieldset>

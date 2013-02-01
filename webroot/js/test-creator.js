@@ -18,8 +18,8 @@
             questionBlock.find('#right_answer_block_question_id').attr('id', 'right_answer_block_' + questionId);
 
             <!--Question-->
-            questionBlock.find('#question_question_id label').append( (questionId+1) + ' :');
-            questionBlock.find('#question_question_id label').attr('for', 'question_text_' + questionId);
+            questionBlock.find('#question_question_id label strong').append( (questionId+1) + ' :');
+            questionBlock.find('#question_question_id label strong').attr('for', 'question_text_' + questionId);
             questionBlock.find('#question_text_question_id').attr('id', 'question_text_' + questionId);
             questionBlock.find('#delete_question_question_id').attr('id', 'delete_question_' + questionId);
             questionBlock.find('#question_question_id').attr('id', 'question_' + questionId);
@@ -223,6 +223,8 @@
             $(this).data('quizBuilder', settings);
 
             $(this).quizBuilder('_renderQuestionBlock', questionId);
+            $(this).quizBuilder('addAnswer', questionId);
+            $(this).quizBuilder('addAnswer', questionId);
         },
 
         addAnswer: function( questionId ) {
