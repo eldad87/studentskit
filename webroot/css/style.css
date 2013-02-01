@@ -19,6 +19,8 @@ section{
 	left:0;
 	z-index:100;
 }
+
+
 	
 .navbar{
 	min-height:85px;
@@ -150,7 +152,16 @@ ul.board-msg li {
 
 .top-right{
 	float:right;
+    width: 250px
 }
+#ajaxInProgress {
+    width: 240px;
+}
+#ajaxInProgress .progress {
+    margin-bottom: 0px;
+    margin-top: 5px;
+}
+
 
 .label-txt{
 	font-size:14px;

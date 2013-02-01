@@ -268,12 +268,13 @@
         <!-- /Notifications -->
 
 
+
         <div class="top-right">
 
             <!-- Register / Login-->
 
             <?php
-            echo '<div class="label-txt pull-left space5">';
+            echo '<div class="label-txt pull-right space5">';
             if(!$user) {
                 echo '
                             <a data-toggle="modal" data-target="#login-popup" class="pointer">',
@@ -289,6 +290,13 @@
             //Show it always, because user can log-off due to timeout
             echo $this->element('login_register');
             ?>
+
+        </div>
+
+        <div class="pull-right hide" id="ajaxInProgress">
+            <div class="progress progress-info progress-striped active">
+                <div class="bar" style="width: 100%"></div>
+            </div>
 
         </div>
 </Section>

@@ -1160,26 +1160,47 @@ $(document).ready(function(){
     preventNullLinks();
 });
 ///////////////////////////////////////////// Login/registration management
+function globalAjaxHandler() {
+    this.currentRequests = 0;
+    this.status = 0;
+    this.showHideProgressBar = function() {
+        if(this.currentRequests<=0) {
+            if(this.status!=0) {
+                $('#ajaxInProgress').hide();
+                this.status = 0;
+            }
+        } else if(this.currentRequests>=1) {
+            if(this.status!=1) {
+                $('#ajaxInProgress').show();
+                this.status = 1;
+            }
+        }
+    }
+}
+globalAjaxHandler.prototype.beforeSend = function(event, request, options, error) {
+    //Show progress bar
+    this.currentRequests++;
+    this.showHideProgressBar();
+}
+globalAjaxHandler.prototype.complete = function(event, request, options, error) {
+    //Hide progress bar
+    this.currentRequests--;
+    this.showHideProgressBar();
+}
+globalAjaxHandler.prototype.error = function(event, request, options, error) {
+    switch (event.status) {
+        case 403: //Forbidden - caused by users that not logged in
+            $('#login-popup').modal('show');
+            break;
+    }
+}
+var gah = new globalAjaxHandler();
+
 
 $(document).ready(function(){
 
     //Make sure the user logged in
-    $.ajaxSetup({
-        error: function(event, request, options, error) {
-            switch (event.status) {
-                case 403: //Forbidden - caused by users that not logged in
-                    $('#login-popup').modal('show');
-                break;
-            }
-        }/*,
-        success: function (event, request, options, error) {
-            switch (event.status) {
-                case 500:
-
-                break;
-            }
-        }*/
-    });
+    $.ajaxSetup(gah);
 
     //Make sure .requireLogin elements will popup the login-form first and cancel other event-listeners
     $('.requireLogin').click(function() {
