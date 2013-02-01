@@ -33,8 +33,36 @@ class Subject extends AppModel {
     public $actsAs = array(
         'Lock',
         'LanguageFilter',
-
         'Uploader.Attachment' => array(
+            'image_source' => array(
+                'finalPath'     => 'img/subjects/',
+                'nameCallback'  => 'formatImageName',
+                'overwrite'     => true,
+                'allowEmpty'    => true,
+                'transforms'    => array(
+                    'image_resize'=>array(  'method'=>'resize','width'=> 200,  'height'=>210,  'append'=>'_resize', 'overwrite'=>true,
+                        'aspect'=>true, 'mode'=>'height', 'setAsTransformationSource'=>true,    'nameCallback'  => 'formatImageName' ),
+                    'image_crop_38x38'  =>array('method'=>'crop', 'width' => 38,   'height'=>38,   'append'=>'_38x38',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_58x58'  =>array('method'=>'crop', 'width' => 58,   'height'=>58,   'append'=>'_58x58',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_60x60'  =>array('method'=>'crop', 'width' => 60,   'height'=>60,   'append'=>'_60x60',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_63x63'  =>array('method'=>'crop', 'width' => 63,   'height'=>63,   'append'=>'_63x63',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_72x72'  =>array('method'=>'crop', 'width' => 72,   'height'=>72,   'append'=>'_72x72',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_78x78'  =>array('method'=>'crop', 'width' => 78,   'height'=>78,   'append'=>'_78x78',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_80x80'  =>array('method'=>'crop', 'width' => 80,   'height'=>80,   'append'=>'_80x80',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_100x100'=>array('method'=>'crop', 'width' => 100,  'height'=>100,  'append'=>'_100x100',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_149x182'=>array('method'=>'crop', 'width' => 149,  'height'=>182,  'append'=>'_149x182',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_200x210'=>array('method'=>'crop', 'width' => 200,  'height'=>210,  'append'=>'_200x210',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_436x214'=>array('method'=>'crop', 'width' => 436,  'height'=>214,  'append'=>'_436x214',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                ),
+                'transport' => array(
+                    'class'     => 's3',
+                    'accessKey' => 'AKIAIV2BMVHTLRF64V7Q',
+                    'secretKey' => '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',
+                    'bucket'    => S3_BUCKET,
+                    'region'    => 'us-east-1',
+                    'folder'    => 'img/user/'
+                )
+            ),
             'video_source'=>array(
                 'finalPath'	            => 'vid/subjects/about_videos/',
                 'appendNameToUploadDir' => true,
@@ -48,40 +76,8 @@ class Subject extends AppModel {
                     'region'    => 'us-east-1',
                     'folder'    => 'vid/subjects/about_videos/'
                 )
-            ),
-
-            'image_source' => array(
-                'finalPath'     => 'img/subjects/',
-                'nameCallback'  => 'formatImageName',
-                'overwrite'     => true,
-                'allowEmpty'    => true,
-                'transforms' => array(
-                    'image_resize'=>array(  'method'=>'resize','width'=> 200,  'height'=>210,  'append'=>'_resize', 'overwrite'=>true,
-                                            'aspect'=>true, 'mode'=>'height', 'setAsTransformationSource'=>true,    'nameCallback'  => 'formatImageName' ),
-                    'image_crop_38x38'  =>array('method'=>'crop', 'width' => 38,   'height'=>38,   'append'=>'_38x38',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
-                    'image_crop_58x58'  =>array('method'=>'crop', 'width' => 58,   'height'=>58,   'append'=>'_58x58',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
-                    'image_crop_60x60'  =>array('method'=>'crop', 'width' => 60,   'height'=>60,   'append'=>'_60x60',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
-                    'image_crop_63x63'  =>array('method'=>'crop', 'width' => 63,   'height'=>63,   'append'=>'_63x63',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
-                    'image_crop_72x72'  =>array('method'=>'crop', 'width' => 72,   'height'=>72,   'append'=>'_72x72',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
-                    'image_crop_78x78'  =>array('method'=>'crop', 'width' => 78,   'height'=>78,   'append'=>'_78x78',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
-                    'image_crop_80x80'  =>array('method'=>'crop', 'width' => 80,   'height'=>80,   'append'=>'_80x80',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
-                    'image_crop_100x100'=>array('method'=>'crop', 'width' => 100,  'height'=>100,  'append'=>'_100x100',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
-                    'image_crop_128x95' =>array('method'=>'crop', 'width' => 128,  'height'=>95,   'append'=>'_128x95',   'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
-                    'image_crop_149x182'=>array('method'=>'crop', 'width' => 149,  'height'=>182,  'append'=>'_149x182',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
-                    'image_crop_200x210'=>array('method'=>'crop', 'width' => 200,  'height'=>210,  'append'=>'_200x210',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
-                    'image_crop_436x214'=>array('method'=>'crop', 'width' => 436,  'height'=>214,  'append'=>'_436x214',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
-                ),
-                'transport' => array(
-                    'class'     => 's3',
-                    'accessKey' => 'AKIAIV2BMVHTLRF64V7Q',
-                    'secretKey' => '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',
-                    'bucket'    => S3_BUCKET,
-                    'region'    => 'us-east-1',
-                    'folder'    => 'img/subjects/'
-                )
             )
         ),
-
         'Uploader.FileValidation' => array(
             'video_source' => array(
                 'extension'	=> array('webm', 'ogv', 'mp4', 'flv', 'mov'),
@@ -90,7 +86,7 @@ class Subject extends AppModel {
             ),
             'image_source' => array(
                 'extension'	=> array('gif', 'jpg', 'png', 'jpeg'),
-                'filesize'	=> 1048576, //1MB
+                'filesize'	=> 1048576,
                 'minWidth'	=> 440,
                 'minHeight'	=> 215,
                 'required'	=> false

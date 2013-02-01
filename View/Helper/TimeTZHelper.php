@@ -5,12 +5,11 @@ App::import('Helper', 'Time');
  * This is usefully when the dates are already converted to user-timezone using TimeBehavior in models
  */
 class TimeTZHelper extends TimeHelper {
-
-    public function nice($dateString = null, $format = null) {
-        return $this->_engine->nice($dateString, date_default_timezone_get(), $format);
+    public function nice($dateString = null, $format = null, $timezone=null) {
+        return $this->_engine->nice($dateString, ($timezone ? $timezone : date_default_timezone_get()), $format);
     }
 
-    public function niceShort($dateString = null) {
-        return $this->_engine->niceShort($dateString, date_default_timezone_get());
+    public function niceShort($dateString = null, $timezone=null) {
+        return $this->_engine->niceShort($dateString, ($timezone ? $timezone : date_default_timezone_get()));
     }
 }
