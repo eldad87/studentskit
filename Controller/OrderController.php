@@ -15,7 +15,7 @@ class OrderController extends AppController {
 		$this->Auth->deny( array('prerequisites', 'status') );
         //$this->Security->requirePost('prerequisites');
 	}
-	
+
 	public function index() {
         $this->redirect('/');
     }
@@ -503,7 +503,9 @@ class OrderController extends AppController {
     }
 
     private function checkIfCanOrder($actionData) {
-
+        if(!$actionData) {
+            $this->redirect($this->getOrderData('redirect'));
+        }
         if(!$this->Auth->user('user_id')) {
             return false;
         }
@@ -586,6 +588,7 @@ class OrderController extends AppController {
             $action = $this->getOrderData('action');
         }
 
+        $data = false;
         switch($action) {
             //TeacherLesson
             case 'join':

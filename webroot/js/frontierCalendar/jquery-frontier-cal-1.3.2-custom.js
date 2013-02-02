@@ -1112,6 +1112,7 @@
 					if(showTodayStyle && dayNum == currentDayNum){
 						//calDayCell.removeClass();
 						calDayCell.addClass("JFrontierCal-Day-Cell-Today");
+                        calWeekHeaderCellObj.addClass("JFrontierCal-Day-Cell-Today");
 						calWeekHeaderCellObj.setHtml(/*"Today - "+*/dayNum+"&nbsp;");
 
 					}					
@@ -1200,6 +1201,7 @@
 					if(showTodayStyle && dayNum == currentDayNum){
 						//calDayCell.removeClass();
 						calDayCell.addClass("JFrontierCal-Day-Cell-Today");
+                        calWeekHeaderCellObj.addClass("JFrontierCal-Day-Cell-Today");
 						calWeekHeaderCellObj.setHtml(/*"Today - "+*/dayNum+"&nbsp;");
 												//alert("ok"+showTodayStyle+" "+ dayNum+"="+currentDayNum);
 					}
@@ -1266,6 +1268,7 @@
 				if(showTodayStyle && dayNum == currentDayNum){
 					//calDayCell.removeClass();
 					calDayCell.addClass("JFrontierCal-Day-Cell-Today");
+                    calWeekHeaderCellObj.addClass("JFrontierCal-Day-Cell-Today");
 					calWeekHeaderCellObj.setHtml(/*"Today - "+*/dayNum+"&nbsp;");
 				}					
 				dayNum += 1;

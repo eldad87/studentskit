@@ -5478,13 +5478,16 @@ img.star-student{
     top:1px !important;
 }
 
+.JFrontierCal-Day-Cell-Today {
+    background-color:#CCEDFF !important;
+}
 /*  same month prev days  */
 .JFrontierCal-Day-Cell-Today-prv{
-    background-color:#F8FFCC !important;
+    background-color:#f1f1f1 !important;
 }
-/* prev/next months days */
-.JFrontierCal-NextMonth-Day-Cell, .JFrontierCal-PrevMonth-Day-Cell{
-    background-color:#dbdbdb !important;
+/* prev months days */
+.JFrontierCal-PrevMonth-Day-Cell, .JFrontierCal-NextMonth-Day-Cell{
+    background-color:#f1f1f1 !important;
 }
 
 /* Month/Year */
