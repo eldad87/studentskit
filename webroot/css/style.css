@@ -2548,7 +2548,7 @@ ul.step-box li a h5{
 .inner-spots-box{
 	float:left;
 	width:100%;
-	padding:0 15px 10px;
+    padding-bottom: 10px;
 }
 
 
@@ -5624,6 +5624,13 @@ li.alert-error {
     padding-top: 5px;
 
 }
+
+/* element/order/teacher_and_upcomming.ctp - element
+-------------------------------------------------- */
+#orderNextButton {
+    width: 210px;
+}
+
 
 /* element/order/teacher_and_upcomming.ctp - element
 -------------------------------------------------- */

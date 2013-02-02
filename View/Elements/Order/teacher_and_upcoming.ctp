@@ -1,5 +1,5 @@
 <div class="cont-span18 cbox-space2">
-    <div class="student-main-box2 radius3 space8">
+    <div class="student-main-box2 radius3 space14">
         <div class="sec-main-box space2">
             <?php
             echo $this->Html->link($this->Html->image($this->Layout->image($teacherData['image_source'], 200, 210), array('alt' => 'Teacher Image'))
@@ -33,7 +33,7 @@
     <?php
         if(isSet($nextOrderStep) && $nextOrderStep) {
     ?>
-    <a href="#" class="greencentbutn pull-left radius3" id="orderNextButton">
+    <a href="#" class="greencentbutn pull-left radius3 space14" id="orderNextButton">
         <i class="iconBig-kart-icon pull-left"></i>
         <span class="pull-left"><strong><?php echo __('Next step'); ?></strong></span>
     </a>

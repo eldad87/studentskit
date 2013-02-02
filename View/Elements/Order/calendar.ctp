@@ -85,7 +85,7 @@ echo $this->Html->scriptBlock('
 </div>
 
 
-<div class="cal-all space8">
+<div class="cal-all space8 space37">
     <div class="heading-box fullwidth space14">
         <!--<a href="#" class="arrow-left pull-left arrws1" ></a>-->
         <div id="BtnPreviousMonth" class="pull-left"><a href="#" class="arrow-left pull-left arrws1" ></a></div>
