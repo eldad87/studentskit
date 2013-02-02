@@ -11,6 +11,9 @@
                     $i++;
                 }
             }
+            if(!$archiveLessons) {
+                echo '<p>',__('No latest lessons'),'</p>';
+            }
             ?>
         </div>
     </div>

@@ -50,6 +50,7 @@ class Subject extends AppModel {
                     'image_crop_78x78'  =>array('method'=>'crop', 'width' => 78,   'height'=>78,   'append'=>'_78x78',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
                     'image_crop_80x80'  =>array('method'=>'crop', 'width' => 80,   'height'=>80,   'append'=>'_80x80',    'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
                     'image_crop_100x100'=>array('method'=>'crop', 'width' => 100,  'height'=>100,  'append'=>'_100x100',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
+                    'image_crop_128x95' =>array('method'=>'crop', 'width' => 128,  'height'=>95,   'append'=>'_128x95',   'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
                     'image_crop_149x182'=>array('method'=>'crop', 'width' => 149,  'height'=>182,  'append'=>'_149x182',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
                     'image_crop_200x210'=>array('method'=>'crop', 'width' => 200,  'height'=>210,  'append'=>'_200x210',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),
                     'image_crop_436x214'=>array('method'=>'crop', 'width' => 436,  'height'=>214,  'append'=>'_436x214',  'nameCallback'  => 'formatImageName', 'overwrite'     => true ),

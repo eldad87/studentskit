@@ -39,7 +39,7 @@
                 <li><a href="#">Mark as Unread</a></li>
                 <li><a href="#">Forward...</a></li>
                 <li class="line"><hr></li>
-                <li><a href="#">Archive</a></li>
+                <li><a href="#">History</a></li>
                 <li><a href="#">Delete Messages</a></li>
                 <li><a href="#">Report as spam...</a></li>
                 <li><a href="#">Report Conversation...</a></li>

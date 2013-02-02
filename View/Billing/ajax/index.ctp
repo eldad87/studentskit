@@ -47,7 +47,7 @@ if($page==1) {
 }
 foreach($response['response']['billingHistory'] AS $billingHistory) {
     //Link to archive
-    $toArchive = $this->Html->link(__('To Archive'),
+    $toArchive = $this->Html->link(__('To History'),
         $this->Layout->getOrganizerUrl('/Teacher/lessons', '/Teacher/lessonsArchive/2/1/0/'.$billingHistory['TeacherLesson']['teacher_lesson_id']));
     $toSubject = $this->Html->link(__('To Subject'),
         $this->Layout->getOrganizerUrl('/Teacher/subjects/2/1/'.$billingHistory['TeacherLesson']['subject_id']));

@@ -56,11 +56,11 @@ echo $this->fetch('popups');
                     </div> <!-- /student-main-box -->
 
                     <?php
-                    if($teacherOtherSubjects) {
+                    //if($teacherOtherSubjects) {
                         echo $this->element('Home/other_subjects', array('teacherSubjects'=>$teacherOtherSubjects));
-                    }
+                    //  }
 
-                    if(!empty($upcomingAvailableLessons)) {
+                    if(isSet($upcomingAvailableLessons)) {
                         echo $this->element('Home/upcoming_lessons', array('upcomingAvailableLessons'=>$upcomingAvailableLessons));
                     }
                     ?>
@@ -111,9 +111,9 @@ echo $this->fetch('popups');
                     <!--<a href="#" class="more radius3 gradient2 space8"><strong><?php echo __('Load More'); ?></strong><i class="iconSmall-more-arrow"></i></a>-->
 
                     <?php
-                        if($subjectRatingByStudents) {
+                        //if($subjectRatingByStudents) {
                             echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$subjectRatingByStudents, 'title'=>__('What student say about this subject?')));
-                        }
+                        //}
                     ?>
 
 

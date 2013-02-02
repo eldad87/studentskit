@@ -774,12 +774,12 @@ $id = $scObj->id;
 
         $orderURL = array('controller'=>'Order', 'action'=>'init', 'order', $subjectId);
         $settings = array(
-            'order_text'=>__('Order LIVE lesson'),
-            'play_link'=>false,
-            'order_url'=>$orderURL,
-            'order_button_text'=>__('Order'),
-            'popup'=>array( 'description'=>__('You\'re latest order for this lesson is still pending for the teacher approval'),
-                            'button'=>array(array('name'=>__('I want to order again'), 'url'=>$orderURL)))
+            'order_text'        => ($subjectData['lesson_type']==LESSON_TYPE_LIVE ? __('Order a LIVE lesson') : __('Order a VIDEO lesson')),
+            'play_link'         => false,
+            'order_url'         => $orderURL,
+            'order_button_text' => __('Order'),
+            'popup'             => array(    'description'   =>__('You\'re latest order for this lesson is still pending for the teacher approval'),
+                                             'button'        =>array(array('name'=>__('I want to order again'), 'url'=>$orderURL)))
         );
 
 
@@ -876,7 +876,7 @@ $id = $scObj->id;
         $this->set('showJoinForFreeLessonButton', false);*/
 
         $orderURL = array('controller'=>'Order', 'action'=>'init', 'join', $teacherLessonId);
-        $settings = array(  'order_text'=>__('Join a LIVE lesson'),
+        $settings = array(  'order_text'=>sprintf(__('Join lesson at %s'), CakeTime::niceShort($teacherLessonData['datetime'])),
                             'play_link'=>false,
                             'order_url'=>$orderURL,
                             'order_button_text'=>__('Join'),
@@ -911,6 +911,13 @@ $id = $scObj->id;
         } else  {
             //$this->set('showOrderFreeLessonButton', true);
             $settings['popup'] = false;
+        }
+
+        if($teacherLessonData['lesson_type']==LESSON_TYPE_LIVE) {
+            $upcomingAvailableLessonsLimit = 2;
+            $this->set('upcomingAvailableLessonsLimit', $upcomingAvailableLessonsLimit);
+            $upcomingAvailableLessons = $this->TeacherLesson->getUpcomingOpenLessons(null, $teacherLessonData['subject_id'], $upcomingAvailableLessonsLimit);
+            $this->set('upcomingAvailableLessons', $upcomingAvailableLessons);
         }
 
 

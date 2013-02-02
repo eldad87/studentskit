@@ -315,7 +315,7 @@ Class Watchitoo extends Component {
         }
 
         //Create user on Watchitoo, email is changes to universito_email - in order to avoid existing users
-        $wUserData = $this->wObj->saveUser(null, 'test8_universito_'.($subjectId ? $subjectId.'_' : null).$userData['User']['email'], $this->getUserPassword($userId), $userData['User']['first_name'], $userData['User']['last_name']);
+        $wUserData = $this->wObj->saveUser(null, 'test9_universito_'.($subjectId ? $subjectId.'_' : null).$userData['User']['email'], $this->getUserPassword($userId), $userData['User']['first_name'], $userData['User']['last_name']);
         if(!isSet($wUserData['data']['user_id']) || !$wUserData['data']['user_id']) {
             $this->log('Cannot create watchitoo user', 'watchitoo');
             return false;

@@ -18,7 +18,7 @@ class TeacherController extends AppController {
         $postObj = new Post();
         $postObj->setLanguages($this->Session->read('languages_of_records'));
         $latestUpdatedTopics = $postObj->getGroupedLatestUpdatedTopicsByUser($this->Auth->user('user_id'), 3);
-					
+
 		$this->Set('upcomingLessons', $upcomingLessons);
         $this->Set('latestUpdatedTopics', $latestUpdatedTopics);
         $this->Set('limit', 3);

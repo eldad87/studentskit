@@ -1,7 +1,7 @@
 <!-- /reviews -->
 <div class="lesson-box pad8 space4">
     <h3 class="radius1"><strong><?php echo $title; ?></strong></h3>
-    <div class="box-subject2 radius3 fix-height">
+    <div class="box-subject2 radius3">
         <div class="reviews-by-students">
             <?php
             $i = 0;
@@ -12,6 +12,11 @@
             }
             ?>
         </div>
+        <?php
+        if(!$ratingByStudents) {
+            echo '<p>',__('No reviews yes'),'</p>';
+        }
+        ?>
     </div>
     <!-- /lesson-box -->
 </div>

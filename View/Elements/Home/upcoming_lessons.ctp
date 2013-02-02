@@ -1,4 +1,4 @@
-<div class="student-main-box radius3 fix-height">
+<div class="student-main-box radius3">
     <h5 class="fullwidth pad8 pull-left"><strong><?php echo __('Upcoming group lessons'); ?></strong></h5>
     <div class="up-coming">
         <ul class="subject-morelesson upcoming-more">
@@ -8,6 +8,11 @@
             }
 			?>
         </ul>
+        <?php
+        if(!$upcomingAvailableLessons) {
+            echo '<p>',__('No upcoming lessons'),'</p>';
+        }
+        ?>
     </div>
 </div>
 <?php

@@ -865,28 +865,6 @@ function initMenuLinks() {
 });*/
 
 
-
-$(document).ready(function(){
-    /* homepage - show latest board messages */
-
-    // For Search Selectbox
-    $(document).ready(function(){
-        $('.message-tm-stu').slimScroll({
-            height: '300px',
-            alwaysVisible: false,
-            start: 'bottom',
-            wheelStep: 10
-        });
-        $(".message-tm-more").click(function(){
-            var ht=$(".temphtml").load("/ajax/more.html", function(response, status, xhr){;
-                $('.message-tm-stu').append(response);
-                $(".message-tm-stu").slimScroll({scroll: '50px' });
-            });
-        });
-
-    });
-});
-
 /*
 
 //Boxes action buttons
@@ -1301,12 +1279,14 @@ $(document).ready(function(){
     /* My Subject */
 
     //Scroll
-    $('.my-subject-box').slimScroll({
-        height: '159px',
-        start: 'top',
-        width: '100%',
-        disableFadeOut: true
-    });
+    if($('ul.subject-box li div').length) {
+        $('.my-subject-box').slimScroll({
+            height: '159px',
+            start: 'top',
+            width: '100%',
+            disableFadeOut: true
+        });
+    }
 
     var url = '/Home/getTeacherSubjects/{teacher_user_id}/{limit}/{page}';
     if(jsSettings['subject_id']) {
@@ -1321,12 +1301,14 @@ $(document).ready(function(){
     /* Upcoming lessons */
 
     //Scroll
-    $('div.up-coming').slimScroll({
-        height: '90px',
-        start: 'top',
-        width: '100%',
-        disableFadeOut: true
-    });
+    if($('ul.upcoming-more li').length) {
+        $('div.up-coming').slimScroll({
+            height: '90px',
+            start: 'top',
+            width: '100%',
+            disableFadeOut: true
+        });
+    }
 
     var url = '/Home/getUpcomingOpenLesson/{teacher_user_id}/{limit}/{page}';
     if(jsSettings['subject_id']) {
@@ -1341,11 +1323,13 @@ $(document).ready(function(){
     /* Reviews by students for teacher/teacherSubject pages */
 
     $(document).ready(function(){
-        $('div.reviews-by-students').slimScroll({
-            height: '135px',
-            width: '100%',
-            start: 'top'
-        });
+        if($('div.reviews-by-students div.student-review').length) {
+            $('div.reviews-by-students').slimScroll({
+                height: '135px',
+                width: '100%',
+                start: 'top'
+            });
+        }
 
         var url = '/Home/getTeacherRatingByStudents/{teacher_user_id}/{limit}/{page}';
         if(jsSettings['subject_id']) {
@@ -1361,12 +1345,15 @@ $(document).ready(function(){
 $(document).ready(function(){
     /* Reviews by teachers for user page */
 
+
     $(document).ready(function(){
-        $('div.reviews-by-teachers').slimScroll({
-            height: '135px',
-            width: '100%',
-            start: 'top'
-        });
+        if($('div.reviews-by-teachers div.teacher-review').length) {
+            $('div.reviews-by-teachers').slimScroll({
+                height: '135px',
+                width: '100%',
+                start: 'top'
+            });
+        }
 
         lmObj.loadMoreButton('a.reviews-by-teachers', 'click', 'div.reviews-by-teachers', '/Home/getStudentRatingByTeachers/{student_user_id}/{limit}/{page}', jsSettings, 'get', 3);
         lmObj.setItemsCountSelector('a.reviews-by-teachers', 'div.reviews-by-teachers div.teacher-review' );
@@ -1377,12 +1364,14 @@ $(document).ready(function(){
     /* user latest lessons */
 
     //Scroll
-    $('div.latest-lessons').slimScroll({
-        height: '115px',
-        alwaysVisible: false,
-        start: 'top',
-        wheelStep: 6
-    });
+    if($('div.latest-lessons div.latest-lesson').length) {
+        $('div.latest-lessons').slimScroll({
+            height: '115px',
+            alwaysVisible: false,
+            start: 'top',
+            wheelStep: 6
+        });
+    }
 
     lmObj.loadMoreButton('a.latest-lessons', 'click', 'div.latest-lessons', '/Home/getStudentArchiveLessons/{student_user_id}/{limit}/{page}', jsSettings, 'get', 5);
     lmObj.setItemsCountSelector('a.latest-lessons', 'div.latest-lessons div.latest-lesson' );
@@ -1393,12 +1382,14 @@ $(document).ready(function() {
     /* Home last board posts */
 
     //Scroll
-    $('.board-msg').slimScroll({
-        height: '404px',
-        alwaysVisible: false,
-        start: 'top'
-    });
-
+    if($('ul.board-msg li').length) {
+        $('.board-msg').slimScroll({
+            height: '404px',
+            alwaysVisible: false,
+            start: 'top',
+            width: '100%'
+        });
+    }
     lmObj.loadMoreButton('a.more-btn1', 'click', 'ul.board-msg', '/Home/latestBoardPosts/{limit}/{page}', jsSettings, 'get', 5);
     lmObj.setItemsCountSelector('a.more-btn1', 'ul.board-msg li' );
 });

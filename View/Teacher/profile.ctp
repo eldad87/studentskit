@@ -64,6 +64,9 @@ echo $this->element('Panel/teacher_about_video_popup', array('buttonSelector'=>'
 
                     //echo $this->Html->link('Remove Certificate', array('controller'=>'Teacher', 'action'=>'removeCertificate', $cert['teacher_certificate_id']));
                 }
+                if(!$userData['TeacherCertificate']) {
+                    echo '<p>',__('No certificates'),'</p>';
+                }
                 ?>
             </ul>
             <button class="btn-blue pull-right add-edit-certificate" data-update-new-certificate-id="#certificate_container" type="Save"><?php echo __('Add'); ?></button>
@@ -78,6 +81,9 @@ echo $this->element('Panel/teacher_about_video_popup', array('buttonSelector'=>'
                 foreach($userData['TeacherAboutVideo'] AS $av) {
                     echo $this->element('Panel/Profile/teacher_about_video', array('video'=>$av, 'li'=>true));
                     /*echo $this->Html->link('Remove About Video', array('controller'=>'Teacher', 'action'=>'removeAboutVideo', $av['teacher_about_video_id']));*/
+                }
+                if(!$userData['TeacherAboutVideo']) {
+                    echo '<p>',__('No about videos'),'</p>';
                 }
                 ?>
             </ul>

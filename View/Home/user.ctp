@@ -45,18 +45,20 @@
                         </div>
                     </div>
 
-                    <?php echo $this->element('Home/latest_lessons', array('topics'=>$archiveLessons)); ?>
+                    <?php
+                        echo $this->element('Home/latest_lessons', array('topics'=>$archiveLessons));
+                    ?>
                 </div> <!-- /cont-span3 -->
                 <div class="cont-span17 cbox-space ">
 
                     <?php
-                        if($latestPosts) {
+                        //if($latestPosts) {
                             echo $this->element('Home/board_topics', array('topics'=>$latestPosts));
-                        }
+                        //}
 
-                        if($studentReviews) {
+                        //if($studentReviews) {
                             echo $this->element('Home/reviews_by_teachers', array('ratingByTeachers'=>$studentReviews));
-                        }
+                        //}
                     ?>
 
                 </div> <!-- /cont-span17 -->

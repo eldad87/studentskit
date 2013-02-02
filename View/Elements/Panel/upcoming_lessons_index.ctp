@@ -45,5 +45,9 @@
             </div><!-- /lesson-box-footer -->
         </div> <!-- /lesson-box -->
     </div><!-- /message-tm-left -->
-    <?php } ?>
+    <?php }
+    if(!$upcomingLessons) {
+        echo '<p>',__('No upcoming lessons'),'</p>';
+    }
+    ?>
 </div><!-- /message-tm-main -->

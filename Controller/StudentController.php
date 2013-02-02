@@ -32,7 +32,6 @@ class StudentController extends AppController {
 
 
 		//TODO: get lesson suggestions
-					
 		$this->Set('upcomingLessons', $upcomingLessons);
 		$this->Set('latestUpdatedTopics', $latestUpdatedTopics);
 		$this->Set('limit', 3);

@@ -57,7 +57,7 @@
                 </div>
             </div> <!-- /cont-span8 -->
             <div class="cont-span4 spc-mar">
-                <h2><i class="iconBig-mesg space1"></i><?php echo __('Board Messages'); ?></h2>
+                <h2><i class="iconBig-mesg space1"></i><?php echo __('Community Messages'); ?></h2>
                 <div class="board-msg-container">
                     <ul class="board-msg">
                         <?php
@@ -69,6 +69,10 @@
                                     $bgColor=0;
                                 }
                             }
+                        } else {
+                            echo '<li class="bg-color1">
+                                <p>',__('No community messages yet'),'</p>
+                            </li>';
                         }
                     ?>
                     </ul>

@@ -505,7 +505,7 @@ ul.row2 li.last{
 
 /* Lesson */
 .lesson-box{
-	min-height:100px;
+/*	min-height:100px; */
 }
 
 .lesson-box h4{
@@ -884,7 +884,6 @@ a.btn-color-blue{
 	border: 1px solid #CCCCCC;
 	margin-top:15px;
 	padding:0px 15px 15px 15px;
-	min-height:100px !important;
 }
 
 .student-pic{
@@ -2426,8 +2425,7 @@ ul.teacher-box3 li {
     border-right: 1px solid #CCCCCC;
     float: left;
     width: 100%;
-	min-height:100px;
-
+    padding: 10px 15px 10px 15px;
     /*padding-right: 15px;*/
 }
 
@@ -2608,7 +2606,6 @@ a.message-tm-more{
 	float:left;
 	width:100%;
 	height:auto;
-	padding:0px 0 0 20px;
 }
 
 .message-tm-left{
@@ -5224,7 +5221,6 @@ p.order-negotiat-billing1 span.costbox{
 ul.subject-morelesson{
 	width:100%;
 	float:left;
-	margin-top:10px;
 }
 
 ul.subject-morelesson li{

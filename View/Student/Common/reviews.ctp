@@ -128,12 +128,12 @@ $otherUserType = ($userType=='student' ? 'teacher' : 'student');
             <form class="sk-form">
                 <fieldset>
                     <div class="upr-heading-form radius3">
-                        <p class="fontsize1 first-tex-in-box">Description</p>
-                        <p class="fontsize1 first-tex-in-box2">Rating</p>
-                        <p class="fontsize1 first-tex-in-box3">Comments</p>
+                        <p class="fontsize1 first-tex-in-box"><?php echo __('Description'); ?></p>
+                        <p class="fontsize1 first-tex-in-box2"><?php echo __('Rating'); ?></p>
+                        <p class="fontsize1 first-tex-in-box3"><?php echo __('Comments'); ?></p>
                         <?php
                         if($allowRate) {
-                            echo '<p class="fontsize1 first-tex-in-box4">Send</p>';
+                            echo '<p class="fontsize1 first-tex-in-box4">',__('Send'),'</p>';
                         }
                         ?>
 
@@ -210,6 +210,10 @@ $otherUserType = ($userType=='student' ? 'teacher' : 'student');
                                 </div>
                             </li>
                             <?php
+                        }
+
+                        if(!$reviews) {
+                            echo '<p>',__('No lessons waiting for your review yet.'),'</p>';
                         }
                         ?>
 
