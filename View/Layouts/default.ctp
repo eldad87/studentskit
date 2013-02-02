@@ -81,4 +81,10 @@
         echo $this->element('footer');
         ?>
 </body>
+<?php echo $this->Facebook->init(array('loginCode'=>'
+        if(!jsSettings[\'user_id\']) {
+            $(\'#login-popup\').modal(\'hide\');
+            location.reload();
+        }
+')); ?>
 </html>

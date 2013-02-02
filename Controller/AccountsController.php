@@ -3,24 +3,26 @@ class AccountsController extends AppController {
 	public $name = 'Accounts';
 	public $uses = array('User');
 	public $components = array('Session',
-                                'Facebook.Connect'=>array(  'noAuth'=>false, 'model'=>'User' ),
-                                'RequestHandler', 'SignMeUp.SignMeUp'=>array(
-																'activation_field'=>false,
-																'useractive_field'=>false,
-																'password_reset_field'=>'password_reset',
-																'username_field'=>'first_name',
-															),
-															'Auth' => array(
-																'loginAction' => array(
-																	'controller' => 'Accounts',
-																	'action' => 'login',
-																),
-																'authenticate' => array(
-																	'Form' => array(
-																		'fields' => array('username' => 'email')
-																	)
-																)
-															));
+                                //'Facebook.Connect'=>array(  'noAuth'=>false, 'model'=>'User' ),
+                                'RequestHandler',
+                                'SignMeUp.SignMeUp'=>array(
+                                    'activation_field'=>false,
+                                    'useractive_field'=>false,
+                                    'password_reset_field'=>'password_reset',
+                                    'username_field'=>'first_name',
+                                ),
+                                'Auth' => array(
+                                    'loginAction' => array(
+                                        'controller' => 'Accounts',
+                                        'action' => 'login',
+                                    ),
+                                    'authenticate' => array(
+                                        'Form' => array(
+                                            'fields' => array('username' => 'email')
+                                        )
+                                    ),
+                                    'authorize' => 'Controller'
+                                ));
 
 
 	public function beforeFilter() {
@@ -115,8 +117,8 @@ class AccountsController extends AppController {
         if(array_key_exists($cookieName, $_COOKIE)) {
             unset($_COOKIE[$cookieName]);
         }*/
-//        $this->Connect->FB->destroySession();
-        $this->Session->delete('FB'); //delete the FB session data
+        $this->Connect->FB->destroySession();
+//        $this->Session->delete('FB'); //delete the FB session data
         //$this->Session->destroy();
         /*$this->Session->delete('locale');
         $this->Session->delete('timezone');*/

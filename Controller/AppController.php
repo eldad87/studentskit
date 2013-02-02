@@ -34,11 +34,20 @@ App::uses('Controller', 'Controller');
 class AppController extends Controller {
 	public $components = array('RequestHandler', 'Session',
                                 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login'), 'authenticate' => array('Form' => array('fields' => array('username' => 'email')))),
+                                'Facebook.Connect'=>array(  /*'noAuth'=>false, */'model'=>'User' ),
                                 'DebugKit.Toolbar');
     public $helpers = array('Facebook.Facebook', 'Layout', 'TimeTZ');
     public $jsSettings = array();
-	
+
+    public function isAuthorized() {
+        return $this->Auth->user('user_id');
+    }
+
 	public function beforeFilter() {
+        if (!$this->request->is('requested')) {
+            $this->set('facebookUser', $this->Connect->user());
+        }
+        //$this->set('localUser', $this->user());
         /** Language + Datetime
          *************************************/
         $this->_setLanguage();

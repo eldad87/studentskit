@@ -282,8 +282,13 @@
                             ,'<i class="iconMedium-sign space20"></i>
                             </a>';
             } else {
-                echo __('Welcome'),', ',$user['username'];
-                echo $this->Html->link(__('Logout'), '/logout', array('class'=>'space22'));
+                echo '<span class="space28">',__('Welcome'),', ',$user['username'],'</span>';
+
+                if(isSet($facebookUser) && $facebookUser) {
+                    echo $this->Facebook->logout(array('label'=>__('Logout'), 'redirect' => '/logout'));
+                } else {
+                    echo $this->Html->link(__('Logout'), '/logout');
+                }
             }
             echo '</div>';
 

@@ -24,7 +24,9 @@
             </div>
         </fieldset>
         <br />
-        <?php echo $this->Facebook->login(array('perms'=>'email', 'label'=>'FB login', 'redirect'=>array('controller'=>'/', 'action'=>'login', '?'=>array('login_client'=>'facebook')))); ?>
+        <?php
+
+        echo $this->Facebook->login(array('perms'=>'email')); ?>
     </div> <!-- /modal-body -->
 
     <div class="modal-footer">
