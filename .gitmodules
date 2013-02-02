@@ -4,9 +4,6 @@
 [submodule "Plugin/debug_kit"]
 	path = Plugin/debug_kit
 	url = https://github.com/eldad87/debug_kit
-[submodule "Plugin/facebook"]
-	path = Plugin/facebook
-	url = https://github.com/eldad87/CakePHP-Facebook-Plugin.git
 [submodule "Vendor/PHP-PayPal-IPN"]
 	path = Vendor/PHP-PayPal-IPN
 	url = https://github.com/eldad87/PHP-PayPal-IPN.git

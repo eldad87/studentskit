@@ -115,7 +115,7 @@ class AccountsController extends AppController {
         if(array_key_exists($cookieName, $_COOKIE)) {
             unset($_COOKIE[$cookieName]);
         }*/
-        $this->Connect->FB->destroySession();
+//        $this->Connect->FB->destroySession();
         $this->Session->delete('FB'); //delete the FB session data
         //$this->Session->destroy();
         /*$this->Session->delete('locale');

@@ -50,6 +50,7 @@ class AppController extends Controller {
 			$this->disableCache();
 		}
 
+
         $this->set('loginClient', $this->Session->read('login_client'));
 
         /** View params
