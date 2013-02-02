@@ -218,11 +218,9 @@ function addAgenda( teacherLessonId,
                     lessonType) {
 
     var sDate = new Date(startDate);
-    var eDate = new Date(sDate);
-    eDate.setMinutes( eDate.getMinutes()+durationMin );
+    var eDate = new Date(sDate.getTime() + durationMin*60000);
 
-
-var name = '';
+    var name = '';
     //userLessons
     var backgroundColor;
     if(currentStudentsCount<maxStudentsCount) {
@@ -259,8 +257,7 @@ var name = '';
 
 function addBlockedAgenda(startDate, durationMin) {
     var sDate = new Date(startDate);
-    var eDate = new Date(sDate);
-    eDate.setMinutes( eDate.getMinutes()+durationMin );
+    var eDate = new Date(sDate.getTime() + durationMin*60000);
 
     jfcalplugin.addAgendaItem(
         calendarSelector,
