@@ -109,10 +109,17 @@ class ForumEventListener implements CakeEventListener {
                 );
 
                 //If parent category - chain this new forum to it.
+                $forumData['forum_id'] = 0;
                 if($scData['parent_subject_category_id']) {
                     $parentData = $scObj->findBySubjectCategoryId($scData['parent_subject_category_id']);
                     $forumData['forum_id'] = $parentData['SubjectCategory']['forum_id'];
                 }
+
+                //Set order
+                $forumObj->cacheQueries = false;
+                $res = $forumObj->find('first', array('conditions'=>array('forum_id'=>$forumData['forum_id']), 'order'=>'orderNo DESC', 'fields'=>array('orderNo')));
+                $forumData['orderNo'] = ($res[$forumObj->alias]['orderNo']+1);
+
 
                 $forumObj->set($forumData);
                 $forumObj->save();
