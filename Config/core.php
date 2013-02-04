@@ -175,7 +175,9 @@ require_once dirname(__DIR__) . '/Vendor/Composer/autoload.php';
  *
  */
 	Configure::write('Session', array(
-		'defaults' => 'php'
+		'defaults'  => 'php',
+        'timeout'   => 15,
+        'checkAgent'=> true,
 	));
 
 /**

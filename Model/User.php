@@ -72,37 +72,6 @@ class User extends AppModel {
 				'message' => 'This field must be a numeric value'
 			)
 		),
-		'email' => array(
-			'email' => array(
-				'rule'		=> 'email',
-				'message'	=> 'Enter a valid email',
-			),
-            'isUnique' => array(
-				'rule'    		=> 'isUnique',
-				'message' 		=> 'This email has already been taken.',
-				'required'		=> true,
-				'on'			=> 'create',
-			),
-		),
-		/*'username' => array(
-			'isUnique' => array(
-				'rule'    		=> 'isUnique',
-				'message' 		=> 'This email has already been taken.',
-				'required'		=> true,
-				'on'			=> 'create',
-			),
-		),*/
-		
-		/*'password'=>array(
-			'minLengh' => array(
-				'rule'		=> array('minLength', '6'),
-				'message'	=> 'Minimum 6 characters long',
-				'required'		=> true,
-				'on'	=> 'create',
-				'allowEmpty' => false
-			)
-		),*/
-		
 		'first_name'=> array(
 			'alphaNumeric' => array(
 				'rule'		=> 'alphaNumeric',
@@ -118,12 +87,6 @@ class User extends AppModel {
 		),
 		
 		'last_name'=>array(
-			/*'alphaNumeric' => array(
-				'rule'		=> 'alphaNumeric',
-				'message'	=> 'Alphabets and numbers only',
-				'required'	=> false,
-				'allowEmpty'=>true
-            ),*/
 			'between' => array(
 				'rule'    => array('between', 2, 45),
                 'allowEmpty' => true,
