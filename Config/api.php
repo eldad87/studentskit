@@ -6,6 +6,9 @@ $config['Accounts.login.success.1.description'] = __('Logging success');
 
 $config['Accounts.login.error.1.title'] = __('Error');
 $config['Accounts.login.error.1.description'] = __('Email or password is incorrect');
+
+$config['Accounts.login.error.2.title'] = __('Error');
+$config['Accounts.login.error.2.description'] = __('Account is blocked, please try again in 5 minutes');
 /*-------------------- Accounts.register		--------------------*/
 $config['Accounts.register.success.1.title'] = __('Success');
 $config['Accounts.register.success.1.description'] = __('Registration success');

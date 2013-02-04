@@ -72,6 +72,12 @@ class User extends AppModel {
 				'message' => 'This field must be a numeric value'
 			)
 		),
+        'password' => array(
+            'confirmPasswordNotAWeakPassword' => array(
+                'rule'      => array('confirmPasswordNotAWeakPassword'),
+                'message'   => 'Password is too common, please try a different one'
+            ),
+        ),
 		'first_name'=> array(
 			'alphaNumeric' => array(
 				'rule'		=> 'alphaNumeric',
@@ -111,6 +117,13 @@ class User extends AppModel {
 			'allowEmpty' 	=> true,
 		),
 	);
+
+    public function confirmPasswordNotAWeakPassword($field) {
+        App::import('Model', 'WeakPassword');
+        $weakPassObj = new WeakPassword();
+
+        return $weakPassObj->isInDictionary($this->data[$this->alias]['password']) ? false : true;
+    }
 
     //Change upload folder
     public function beforeTransport($options) {

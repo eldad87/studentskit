@@ -27,7 +27,7 @@ class AccountsController extends AppController {
 
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Auth->allow(array('login', 'forgotten_password', 'register', 'activate', 'setTimezone', 'setLocale', 'setLanguage', 'setLanguagesOfRecords'));
+		$this->Auth->allow(array('login', 'logout', 'forgotten_password', 'register', 'activate', 'setTimezone', 'setLocale', 'setLanguage', 'setLanguagesOfRecords'));
 	}
 
     public function __construct($request = null, $response = null) {
@@ -62,6 +62,23 @@ class AccountsController extends AppController {
             $this->Auth->redirect($redirect);
         }
 
+
+        //Check if account is suspended due to too many failed login attempts
+        if(isSet($this->request->data['User']['email'])) {
+            $failedLoginAttempts = $this->User->getFailedLoginCount(
+                $this->request->data['User']['email'],
+                5
+            );
+            if($failedLoginAttempts>=5) {
+                if ($this->RequestHandler->isAjax()) {
+                    return $this->error(2, array('user_id'=>$this->Auth->user('user_id')));
+                }
+
+                return $this->redirect($this->Auth->redirect());
+            }
+        }
+
+
 		if ($this->request->is('post') || $this->Auth->user()) {
             //pr($this->request->data); die;
 			if ($this->Auth->login()) {
@@ -95,6 +112,11 @@ class AccountsController extends AppController {
 
                 return $this->redirect($this->Auth->redirect());
 			} else {
+                if(isSet($this->request->data['User']['email'])) {
+                    $this->User->updateFailedLoginCounter(
+                        $this->request->data['User']['email']
+                    );
+                }
                 if ($this->RequestHandler->isAjax()) {
                     return $this->error(1);
                 }
