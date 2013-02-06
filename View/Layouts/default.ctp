@@ -69,7 +69,7 @@
 
         <?php
 
-        $msg =  $this->Session->flash('flash', array('element'=>null));
+        $msg = $this->Session->flash('flash', array('element'=>null));
         if($msg) {
             echo '<div class="fullwidth pull-left"><div class="container-inner">';
             echo $this->Layout->flashMessage(__('Info'), $msg, 'alert-info space9');
@@ -81,10 +81,15 @@
         echo $this->element('footer');
         ?>
 </body>
-<?php echo $this->Facebook->init(array('loginCode'=>'
+<?php
+$loginRedirect = Router::url(
+    array('controller'=>'/', 'action'=>'login', '?'=>array('login_client'=>'facebook'))
+);
+echo $this->Facebook->init(array('loginCode'=>'
         if(!jsSettings[\'user_id\']) {
             $(\'#login-popup\').modal(\'hide\');
-            location.reload();
+            //location.reload();
+            window.location=\''.$loginRedirect.'\';
         }
 ')); ?>
 </html>

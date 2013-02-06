@@ -284,7 +284,7 @@
             } else {
                 echo '<span class="space28">',__('Welcome'),', ',$user['username'],'</span>';
 
-                if(isSet($facebookUser) && $facebookUser) {
+                if($loginClient=='facebook' || (isSet($facebookUser) && $facebookUser)) {
                     echo $this->Facebook->logout(array('label'=>__('Logout'), 'redirect' => '/logout'));
                 } else {
                     echo $this->Html->link(__('Logout'), '/logout');
