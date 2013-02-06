@@ -28,7 +28,9 @@
 </script>
 <fieldset>
     <?php
-    $this->Form->create('Subject');
+    echo $this->Form->create('Subject');
+    //echo preg_replace("/<form[^>]+\>/i", "", $form); //Remove <form>
+
     //echo $this->Form->hidden('subject_id');
     echo $this->Form->input('name', $this->Layout->styleForInput());
     echo $this->Form->input('description', $this->Layout->styleForInput(array('type'=>'textarea')));
@@ -47,7 +49,8 @@
     echo $this->Form->input('full_group_student_price', $this->Layout->styleForInput(array( 'type'=>'number', 'min'=>0, 'step'=>'any',
                                                                                             'div'=>array('style'=>'display:none', 'id'=>'fgspDiv', 'class'=>'control-group') ,
                                                                                             'tooltip'=>__('a max discount price for a full lesson, the discount will take place starting from 2 students and above'))));
+    echo $this->Form->end();
 
-    $this->Form->end();
+    //echo preg_replace("/</form[^>]+\>/i", "", $endForm); //Remove <form>
     ?>
 </fieldset>
