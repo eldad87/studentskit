@@ -8,7 +8,7 @@ $(document).ready(function() {
     });
 });
 ', array('inline'=>false));
-$this->set('nextOrderStep', false);
+$this->set('nextOrderStep', true);
 $this->extend('/Order/Common/common');
 
 $this->start('main');

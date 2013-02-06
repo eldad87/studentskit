@@ -5,15 +5,25 @@
 class OrderController extends AppController {
 	public $name = 'Order';
 	public $uses = array('User', 'Subject', 'TeacherLesson', 'UserLesson', 'PendingUserLesson', 'AdaptivePayment', 'PendingAdaptivePayment');
-	public $components = array('Utils.FormPreserver'=>array('directPost'=>true,'actions'=>array('prerequisites'), 'priority' => 1));
+	public $components = array('Utils.FormPreserver'=>array('directPost'=>true,'actions'=>array('prerequisites'), 'priority' => 1),
+                                /*'Security'=>array(
+                                    'csrfCheck'=>false,
+                                    'requireSecure'=>true,
+                                    'requirePost'=>array('prerequisites')
+                                )*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 
+    public function forceSSL() {
+        $this->redirect('https://' . env('SERVER_NAME') . $this->here);
+    }
 
 	public function beforeFilter() {
 		parent::beforeFilter();
 		$this->Auth->allow(	'index', 'init', 'calendar', 'setLessonDatetime', 'getLiveLessons', 'summary', 'paymentPreapprovalIpnNotificationUrl', 'paymentIpnNotificationUrl', 'paymentUpdateTest', 'getUpcomingOpenLessonForSubject');
-		$this->Auth->deny( array('prerequisites', 'status') );
-        //$this->Security->requirePost('prerequisites');
+		$this->Auth->deny( array('summary', 'prerequisites', 'status') );
+
+        //$this->Security->csrfCheck = false;
+        //$this->Security->blackHoleCallback = 'forceSSL';
 	}
 
 	public function index() {
@@ -267,8 +277,9 @@ class OrderController extends AppController {
     public function prerequisites() {
         //TODO: security - you cannot fore POST due to fore login (login redirect cannot be done using POST)
         //In addition, $this->referer() is build upon the client browser headers, therefore it can get manipulated, anyway - it good enough
-        if(!$this->request->is('post') && Router::normalize($this->referer())!=Router::normalize(Router::url($this->Auth->loginAction, true))) {
+        if(!$this->request->is('post')/* && Router::normalize($this->referer())!=Router::normalize(Router::url($this->Auth->loginAction, true))*/) {
             //Its not POST and the user was not redirected here right after login
+            $this->Session->setFlash(__('Error.'));
             $this->redirect($this->getOrderData('redirect'));
         }
 

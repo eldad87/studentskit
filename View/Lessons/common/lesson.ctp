@@ -16,14 +16,14 @@ $this->Html->css(array('fineuploader'), null, array('inline'=>false));
     <div class="container-inner">
 <?php
     //$showAds
-    //echo $this->Html->scriptBlock($this->Watchitoo->initJS($meetingSettings['meeting_id'], $meetingSettings), array('inline'=>(isSet($blank)), 'safe'=>false));
+    echo $this->Html->scriptBlock($this->Watchitoo->initJS($meetingSettings['meeting_id'], $meetingSettings), array('inline'=>(isSet($blank)), 'safe'=>false));
 ?>
 
         <div class="row">
             <div class="lesson-box pull-left pad8">
                 <h3 class="radius1"><!--5:30 - --><strong><?php echo $lessonName; ?></strong></h3>
                 <div class="lesson-box-content file-lesson no-padding-and-border">
-                    <?php //echo $this->Watchitoo->embedMeetingJS($meetingSettings['meeting_id'], $meetingSettings); ?>
+                    <?php echo $this->Watchitoo->embedMeetingJS($meetingSettings['meeting_id'], $meetingSettings); ?>
                 </div>
             </div>
 
