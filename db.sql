@@ -100,7 +100,7 @@ CREATE TABLE `file_system` (
   `file_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`file_system_id`),
   KEY `NewIndex1` (`entity_type`,`entity_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `forum_access` */
 
@@ -258,7 +258,7 @@ CREATE TABLE `forum_posts` (
   KEY `forum_id` (`forum_id`),
   KEY `topic_id` (`topic_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Posts to topics';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='Posts to topics';
 
 /*Table structure for table `forum_profiles` */
 
@@ -279,7 +279,7 @@ CREATE TABLE `forum_profiles` (
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='User profiles';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='User profiles';
 
 /*Table structure for table `forum_reported` */
 
@@ -324,7 +324,7 @@ CREATE TABLE `forum_subscriptions` (
   KEY `topic_id` (`topic_id`),
   KEY `forum_id` (`forum_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='User topic and forum subscriptions.';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='User topic and forum subscriptions.';
 
 /*Table structure for table `forum_topics` */
 
@@ -352,7 +352,7 @@ CREATE TABLE `forum_topics` (
   KEY `lastPost_id` (`lastPost_id`),
   KEY `lastUser_id` (`lastUser_id`),
   KEY `forum_id` (`forum_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Discussion topics';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='Discussion topics';
 
 /*Table structure for table `i18n` */
 
@@ -400,7 +400,7 @@ CREATE TABLE `notifications` (
   `unread` tinyint(2) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`notification_id`),
   KEY `NewIndex1` (`user_id`,`unread`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `payment_info` */
 
@@ -512,22 +512,22 @@ CREATE TABLE `subjects` (
   `root_file_system_id` int(11) unsigned DEFAULT NULL,
   `user_upload_root_file_system_id` int(11) unsigned DEFAULT NULL,
   `name` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
-  `video_source` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `video_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   `image` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `image_source` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_resize` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_38x38` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_58x58` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_60x60` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_63x63` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_72x72` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_78x78` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_80x80` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_100x100` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_128x95` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_149x182` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_200x210` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_436x214` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_resize` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_38x38` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_58x58` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_60x60` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_63x63` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_72x72` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_78x78` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_80x80` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_100x100` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_128x95` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_149x182` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_200x210` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_436x214` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_enable` tinyint(4) NOT NULL DEFAULT '1',
   `description` text COLLATE utf8_unicode_ci NOT NULL,
   `language` char(3) COLLATE utf8_unicode_ci NOT NULL,
@@ -548,7 +548,7 @@ CREATE TABLE `subjects` (
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`subject_id`),
   KEY `NewIndex1` (`type`,`language`,`is_public`,`is_enable`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `teacher_about_videos` */
 
@@ -557,7 +557,7 @@ DROP TABLE IF EXISTS `teacher_about_videos`;
 CREATE TABLE `teacher_about_videos` (
   `teacher_about_video_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `teacher_user_id` int(11) unsigned NOT NULL,
-  `video_source` varchar(120) COLLATE utf8_unicode_ci NOT NULL,
+  `video_source` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
   `language` char(3) COLLATE utf8_unicode_ci NOT NULL,
   `created` datetime NOT NULL,
   PRIMARY KEY (`teacher_about_video_id`),
@@ -575,9 +575,9 @@ CREATE TABLE `teacher_certificates` (
   `name` varchar(120) COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci NOT NULL,
   `image` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `image_resize` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_source` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_80x80` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_resize` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_80x80` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   `date` date DEFAULT NULL,
   PRIMARY KEY (`teacher_certificate_id`),
   KEY `teacher_user_id` (`teacher_user_id`)
@@ -603,20 +603,20 @@ CREATE TABLE `teacher_lessons` (
   `name` text COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci NOT NULL,
   `image` tinyint(2) NOT NULL DEFAULT '0',
-  `image_source` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_resize` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_38x38` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_58x58` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_60x60` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_63x63` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_72x72` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_78x78` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_80x80` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_100x100` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_128x95` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_149x182` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_200x210` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_436x214` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_resize` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_38x38` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_58x58` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_60x60` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_63x63` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_72x72` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_78x78` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_80x80` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_100x100` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_128x95` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_149x182` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_200x210` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_436x214` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   `language` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `duration_minutes` int(11) unsigned DEFAULT NULL,
   `1_on_1_price` float unsigned NOT NULL,
@@ -641,7 +641,7 @@ CREATE TABLE `teacher_lessons` (
   KEY `NewIndex3` (`subject_id`),
   KEY `subject_startdatetime` (`subject_id`,`datetime`),
   KEY `teacher_user_id_start_datetime_end_datetime` (`teacher_user_id`,`datetime`,`end_datetime`,`is_deleted`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `tests` */
 
@@ -679,7 +679,7 @@ CREATE TABLE `threads` (
   PRIMARY KEY (`thread_id`),
   KEY `by_user_id` (`by_user_id`,`by_user_unread_messages`),
   KEY `to_user_id` (`to_user_id`,`to_user_unread_messages`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `user_lessons` */
 
@@ -703,20 +703,20 @@ CREATE TABLE `user_lessons` (
   `name` text COLLATE utf8_unicode_ci NOT NULL,
   `description` text COLLATE utf8_unicode_ci NOT NULL,
   `image` tinyint(2) NOT NULL DEFAULT '0',
-  `image_source` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_resize` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_38x38` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_58x58` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_60x60` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_63x63` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_72x72` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_78x78` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_80x80` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_100x100` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_128x95` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_149x182` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_200x210` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_436x214` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_resize` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_38x38` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_58x58` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_60x60` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_63x63` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_72x72` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_78x78` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_80x80` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_100x100` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_128x95` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_149x182` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_200x210` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_436x214` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   `language` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `duration_minutes` int(11) DEFAULT NULL,
   `offer_message` text COLLATE utf8_unicode_ci,
@@ -737,7 +737,7 @@ CREATE TABLE `user_lessons` (
   KEY `NewIndex1` (`payment_status`,`stage`,`notification_status`,`teacher_lesson_id`),
   KEY `NewIndex3` (`subject_id`),
   KEY `student_user_id_start_datetime_end_datetime` (`student_user_id`,`datetime`,`end_datetime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `users` */
 
@@ -754,17 +754,17 @@ CREATE TABLE `users` (
   `first_name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `last_name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `image` tinyint(2) NOT NULL DEFAULT '0',
-  `image_source` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_resize` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_38x38` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_60x60` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_63x63` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_72x72` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_78x78` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_80x80` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_100x100` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_149x182` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `image_crop_200x210` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_resize` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_38x38` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_60x60` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_63x63` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_72x72` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_78x78` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_80x80` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_100x100` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_149x182` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_200x210` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   `dob` date DEFAULT NULL,
   `phone` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `address` text COLLATE utf8_unicode_ci,
@@ -789,11 +789,13 @@ CREATE TABLE `users` (
   `timezone` varchar(25) COLLATE utf8_unicode_ci DEFAULT 'UTC',
   `currentLogin` datetime DEFAULT NULL,
   `lastLogin` datetime DEFAULT NULL,
+  `last_failed_login` datetime DEFAULT NULL,
+  `failed_login_count` tinyint(2) unsigned NOT NULL DEFAULT '0',
   `created` datetime DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `NewIndex1` (`email`),
   KEY `NewIndex2` (`facebook_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `watchitoo_lesson_meetings` */
 
@@ -806,7 +808,7 @@ CREATE TABLE `watchitoo_lesson_meetings` (
   `created` datetime NOT NULL,
   PRIMARY KEY (`watchitoo_lesson_meeting_id`),
   KEY `NewIndex1` (`teacher_lesson_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `watchitoo_lesson_users` */
 
@@ -828,7 +830,7 @@ CREATE TABLE `watchitoo_subject_meetings` (
   `meeting_id` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`watchitoo_subject_meeting_id`),
   KEY `subject_id` (`subject_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `watchitoo_subject_teachers` */
 
@@ -840,6 +842,16 @@ CREATE TABLE `watchitoo_subject_teachers` (
   `subject_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`user_id`),
   KEY `NewIndex1` (`subject_id`,`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+/*Table structure for table `weak_passwords` */
+
+DROP TABLE IF EXISTS `weak_passwords`;
+
+CREATE TABLE `weak_passwords` (
+  `password` varchar(160) COLLATE utf8_unicode_ci NOT NULL,
+  `password_md5` char(32) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`password_md5`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
