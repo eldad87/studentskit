@@ -50,7 +50,7 @@ class WatchitooHelper extends AppHelper {
 
             var ws=document.getElementById("WatchitooPlayer");
 
-            var result=ws.Initialize('.Configure::read('Watchitoo.vendorId').', '.Configure::read('Watchitoo.accessToken').', '.$meetingId.', initializeParams );
+            var result=ws.Initialize(\''.Configure::read('Watchitoo.vendorId').'\', \''.Configure::read('Watchitoo.accessToken').'\', \''.$meetingId.'\', initializeParams );
             if(result!=null&&result.result)
             {
                 if(result.result=="fail"&&result.errorString)

@@ -4531,6 +4531,7 @@ ul.um-upcoming li{
 	display:block;
 	position:relative;
 	float:left;
+    margin-top: 2.4px;
 }
 
 .row .file-linkinput-bar{
