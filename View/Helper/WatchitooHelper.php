@@ -20,7 +20,6 @@ class WatchitooHelper extends AppHelper {
 
 
         function OnWatchitooPlayerEvent(playerID,eventName,eventParams) {
-
             switch(eventName) {
                 case "ready":
                     Init();
@@ -30,34 +29,31 @@ class WatchitooHelper extends AppHelper {
                         case 1003:
                             alert("Invalid vendorID/accessToken Credentials!");
                             break;
-
-                        default:
-                            alert(eventParams);
-                            break;
-
                     }
                     break;
             }
         }
 
-        function Init() {
-            var initializeParams = {
-                userID: "'.$initParams['user_id'].'",
-                watchitooUserID : "'.$initParams['watchitoo_user_id'].'",
-                displayName : "'.$initParams['display_name'].'",
-                isModerator : '.$initParams['is_moderator'].'
-            };
 
-            var ws=document.getElementById("WatchitooPlayer");
+            function Init() {
+				var vendorID="'.Configure::read('Watchitoo.vendorId').'";
+				var accessToken="'.Configure::read('Watchitoo.accessToken').'";
+				var showID="'.$meetingId.'";
 
-            var result=ws.Initialize(\''.Configure::read('Watchitoo.vendorId').'\', \''.Configure::read('Watchitoo.accessToken').'\', \''.$meetingId.'\', initializeParams );
-            if(result!=null&&result.result)
-            {
-                if(result.result=="fail"&&result.errorString)
-                    alert(result.errorString);
-            }
+				var initializeParams = {
+					watchitooUserID : "'.$initParams['watchitoo_user_email'].'",
+					watchitooPassword : "'.$initParams['watchitoo_password'].'"
+				};
 
-        }
+				var ws=document.getElementById("WatchitooPlayer");
+				var result=ws.Initialize(vendorID, accessToken, showID, initializeParams );
+
+				if(result!=null&&result.result)
+				{
+					if(result.result=="fail"&&result.errorString)
+						alert(result.errorString);
+				}
+			}
 
 ';
     }

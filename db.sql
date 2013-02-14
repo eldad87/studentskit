@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v8.4 
-MySQL - 5.1.50-community : Database - studentskit
+MySQL - 5.5.29-0ubuntu0.12.04.1 : Database - studentskit
 *********************************************************************
 */
 
@@ -100,7 +100,7 @@ CREATE TABLE `file_system` (
   `file_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`file_system_id`),
   KEY `NewIndex1` (`entity_type`,`entity_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=49 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `forum_access` */
 
@@ -439,6 +439,30 @@ CREATE TABLE `pending_user_lessons` (
   PRIMARY KEY (`pending_user_lesson_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+/*Table structure for table `profile` */
+
+DROP TABLE IF EXISTS `profile`;
+
+CREATE TABLE `profile` (
+  `user_id` int(10) unsigned NOT NULL,
+  `image` tinyint(2) NOT NULL DEFAULT '0',
+  `dob` date DEFAULT NULL,
+  `phone` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `user_address` text COLLATE utf8_unicode_ci,
+  `user_zipcode` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `user_avarage_rating` float unsigned NOT NULL DEFAULT '0',
+  `user_raters_amount` int(10) unsigned NOT NULL DEFAULT '0',
+  `teacher_about` text COLLATE utf8_unicode_ci,
+  `teacher_address` text COLLATE utf8_unicode_ci,
+  `teacher_zipcode` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `teacher_total_teaching_minutes` int(11) unsigned NOT NULL,
+  `teacher_students_amount` int(11) unsigned NOT NULL DEFAULT '0',
+  `teacher_total_lessons` int(11) unsigned NOT NULL DEFAULT '0',
+  `teacher_avarage_rating` float unsigned NOT NULL DEFAULT '0',
+  `teacher_raters_amount` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 /*Table structure for table `student_tests` */
 
 DROP TABLE IF EXISTS `student_tests`;
@@ -548,7 +572,7 @@ CREATE TABLE `subjects` (
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`subject_id`),
   KEY `NewIndex1` (`type`,`language`,`is_public`,`is_enable`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `teacher_about_videos` */
 
@@ -641,7 +665,7 @@ CREATE TABLE `teacher_lessons` (
   KEY `NewIndex3` (`subject_id`),
   KEY `subject_startdatetime` (`subject_id`,`datetime`),
   KEY `teacher_user_id_start_datetime_end_datetime` (`teacher_user_id`,`datetime`,`end_datetime`,`is_deleted`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `tests` */
 
@@ -808,7 +832,7 @@ CREATE TABLE `watchitoo_lesson_meetings` (
   `created` datetime NOT NULL,
   PRIMARY KEY (`watchitoo_lesson_meeting_id`),
   KEY `NewIndex1` (`teacher_lesson_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `watchitoo_lesson_users` */
 
@@ -817,6 +841,7 @@ DROP TABLE IF EXISTS `watchitoo_lesson_users`;
 CREATE TABLE `watchitoo_lesson_users` (
   `user_id` int(11) unsigned NOT NULL,
   `watchitoo_user_id` int(11) unsigned NOT NULL,
+  `watchitoo_user_email` varchar(399) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -830,7 +855,7 @@ CREATE TABLE `watchitoo_subject_meetings` (
   `meeting_id` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`watchitoo_subject_meeting_id`),
   KEY `subject_id` (`subject_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `watchitoo_subject_teachers` */
 
@@ -839,10 +864,11 @@ DROP TABLE IF EXISTS `watchitoo_subject_teachers`;
 CREATE TABLE `watchitoo_subject_teachers` (
   `user_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `watchitoo_user_id` int(11) unsigned NOT NULL,
+  `watchitoo_user_email` varchar(300) COLLATE utf8_unicode_ci NOT NULL,
   `subject_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`user_id`),
   KEY `NewIndex1` (`subject_id`,`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `weak_passwords` */
 
