@@ -57,7 +57,10 @@ class LessonNotificationShell extends AppShell {
 
 
                 //Email teacher
-                if(!$this->notifyTeacher($pendingTeacherLesson, $notificationSettings, $teacherUserData)) {
+                if(!$teacherUserData['teacher_receive_notification']) {
+                    $this->out('Teacher ('.$teacherUserData['user_id'].') disabled his notifications');
+
+                } else if(!$this->notifyTeacher($pendingTeacherLesson, $notificationSettings, $teacherUserData)) {
                     $this->out('Cannot notify teacher');
                     $this->TeacherLesson->unlock($pendingTeacherLesson['teacher_lesson_id']);
                     continue; //Try again later
@@ -70,7 +73,9 @@ class LessonNotificationShell extends AppShell {
                 while($userLessonCandidates) {
                     foreach($userLessonCandidates AS $userLessonCandidate) {
                         //Email user
-                        if(!$this->notifyUser(
+                        if(!$userLessonCandidate['Student']['student_receive_notification']) {
+                            $this->out('User ('.$userLessonCandidate['Student']['user_id'].') disabled his notifications');
+                        } else if(!$this->notifyUser(
                             $pendingTeacherLesson,
                             $notificationSettings,
                             $userLessonCandidate['Student'])) {
@@ -217,7 +222,8 @@ class LessonNotificationShell extends AppShell {
             'fields'=>array('TeacherLesson.teacher_lesson_id', 'TeacherLesson.name',
                             'TeacherLesson.lesson_type','TeacherLesson.subject_id',
                             'TeacherLesson.num_of_students',
-                            'User.user_id','User.email', 'User.first_name', 'User.last_name' ),
+                            'User.user_id','User.email', 'User.first_name', 'User.last_name',
+                            'User.teacher_receive_notification'),
             'limit'=>$limit));
     }
     private function getUserLessonCandidates($teacherLessonId, $notificationStatus) {
@@ -234,7 +240,7 @@ class LessonNotificationShell extends AppShell {
         );
         //$conditions = $this->TeacherLesson->getUnlockedRecordsFindConditions($conditions);
         return $this->UserLesson->find('all', array( 'conditions'=>$conditions,
-            'fields'=>array('Student.user_id', 'Student.email', 'Student.first_name', 'Student.last_name',
+            'fields'=>array('Student.user_id', 'Student.email', 'Student.first_name', 'Student.last_name', 'Student.student_receive_notification',
                             'UserLesson.user_lesson_id'),
             'limit'=>10));
     }
