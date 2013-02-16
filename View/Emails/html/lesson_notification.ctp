@@ -6,7 +6,8 @@
     <p>We just want to let you know, that your lessons "<?php
         echo $this->Html->link($lessonData['name'], array('controller'=>'Lessons',
             'action'=>($lessonData['lesson_type']==LESSON_TYPE_LIVE ? 'index' : 'video'),
-            ($lessonData['lesson_type']==LESSON_TYPE_LIVE ? $lessonData['teacher_lesson_id'] : $lessonData['subject_id'])
+            ($lessonData['lesson_type']==LESSON_TYPE_LIVE ? $lessonData['teacher_lesson_id'] : $lessonData['subject_id']),
+            'full_base'=>true
         ));
         ?>" will start in <strong><?php echo $startsInMin; ?> minutes</strong>.</p>
     <?php

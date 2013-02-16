@@ -276,6 +276,7 @@ class LayoutHelper extends AppHelper {
             'user_id'   =>$userId
         ));
 
+        App::uses('Security', 'Utility');
         $dataEncoded = Security::rijndael(
             $data,
             Configure::READ('Security.key'),
