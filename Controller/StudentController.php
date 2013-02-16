@@ -297,7 +297,7 @@ class StudentController extends AppController {
             }
 
             $this->User->id = $this->Auth->user('user_id');
-		    $res = $this->User->save($this->request->data, true, array('first_name', 'last_name', 'phone', 'student_about',
+		    $res = $this->User->save($this->request->data, true, array('first_name', 'last_name', 'phone', 'student_about', 'student_receive_notification',
                 'image_source',
                 'image',
                 'image_source',

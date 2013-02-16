@@ -363,7 +363,7 @@ class TeacherController extends AppController {
 			$this->request->data = $userData;
 		} else {
             $this->User->id = $this->Auth->user('user_id');
-            $res = $this->User->save($this->request->data, true, array('teacher_about', 'teacher_address', 'teacher_zipcode'));
+            $res = $this->User->save($this->request->data, true, array('teacher_about', 'teacher_address', 'teacher_zipcode', 'teacher_receive_notification'));
 
             if($res) {
                 //Update Auth data
