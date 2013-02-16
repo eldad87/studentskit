@@ -329,14 +329,15 @@ Class Watchitoo extends Component {
         //Create link user_id-watchitoo_user_id
         $userObj = is_null($subjectId) ? $this->wluObj : $this->wstObj;
         $userObj->create(false);
-        $userObj->set(array('user_id'=>$userId, 'watchitoo_user_id'=>$wUserData['data']['user_id'], 'watchitoo_user_email'=>$watchitooUserEmail, 'subject_id'=>$subjectId));
+        $saveData = array('user_id'=>$userId, 'watchitoo_user_id'=>$wUserData['data']['user_id'], 'watchitoo_user_email'=>$watchitooUserEmail, 'subject_id'=>$subjectId);
+        $userObj->set($saveData);
         if(!$userObj->save()) {
             $this->log('Cannot create user_id-watchitoo_user_id link', 'watchitoo');
             return false;
         }
 
 
-        return $wUserData['data']['user_id'];
+        return $saveData;
     }
 
     public static function getUserPassword($userId) {

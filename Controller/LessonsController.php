@@ -145,13 +145,27 @@ class LessonsController extends AppController {
                     //Show countdown
 
                     if($liveRequestStatus['payment_needed']) {
-                        //Check payment - if did not pass, the user canceled his approval.
-                        /*App::import('Model', 'AdaptivePayment');
-                        $apObj = new AdaptivePayment();
-                        $enterLesson = $apObj->isPaid($liveRequestStatus['user_lesson_id']);*/
 
-                        $this->Session->setFlash(__('Please wait for the lesson to start'));
-                        $this->redirect(array('controller'=>'Home', 'action'=>'teacherLesson', $liveRequestStatus['teacher_lesson_id']));
+                        //Check payment - if did not pass, the user canceled his approval.
+                        App::import('Model', 'AdaptivePayment');
+                        $apObj = new AdaptivePayment();
+
+                        //Check if payment did not processed yet
+                        $isValidPendingPaymentApproval = $apObj->isValidPendingPaymentApproval($liveRequestStatus['user_lesson_id']);
+                        if($isValidPendingPaymentApproval) {
+                            $errorMessage = __('Your payment is not yet processed, please try again in a few minutes');
+                            $enterLesson = false;
+
+                        //Payment processed, check if success
+                        } else {
+                            $enterLesson = $apObj->isPaid($liveRequestStatus['user_lesson_id']);
+                            $errorMessage = __('Your payment failed.');
+                        }
+
+                        if(!$enterLesson) {
+                            $this->Session->setFlash($errorMessage);
+                            $this->redirect(array('controller'=>'Home', 'action'=>'teacherLesson', $liveRequestStatus['teacher_lesson_id']));
+                        }
                     } else {
                         $enterLesson = true;
                     }

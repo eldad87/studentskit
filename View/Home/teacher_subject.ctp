@@ -8,7 +8,7 @@ $this->start('popups');
         if($user) {
             $settings['popup']['user'] = $user;
         }
-        echo $this->element('Home\popup', $settings['popup']);
+        echo $this->element('Home'.DS.'popup', $settings['popup']);
     }
 $this->end();
 

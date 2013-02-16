@@ -349,6 +349,17 @@ class AdaptivePayment extends AppModel {
         return $this->findByUserLessonIdAndIsUsed($userLessonId, 1) ? true : false;
     }
 
+    public function isValidPendingPaymentApproval($userLessonId) {
+        $this->recursive = - 1;
+        return $this->find('first', array(
+            'conditions'=>array(
+                'user_lesson_id'=>$userLessonId,
+                'is_used'=>0,
+                'is_approved'=>1
+            )
+        )) ? true : false;
+    }
+
     public function isValidApproval($userLessonId, $amount=null, $datetime=null) {
         //User ask for a FREE lesson
         if(!is_null($amount) && !$amount) {
