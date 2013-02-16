@@ -28,6 +28,21 @@ class HomeController extends AppController {
         pr($orderURL); die;
     }
 
+    public function testEmail() {
+        App::uses('CakeEmail', 'Network/Email');
+        //CakeEmail::deliver('eldad87@gmail.com', 'Subject', 'Message', array('from' => 'support@universito.com'));
+
+        $emailObj = new CakeEmail('gmail');
+        $emailObj->viewVars(array('title' => 'Lesson about to start', 'header'=>'Hi ', 'body'=>'Body'));
+        $result = $emailObj->to('eldad87@gmail.com')
+            ->template('default')
+            ->domain(Configure::read('public_domain'))
+            ->emailFormat('both')
+            ->from('support@universito.com')
+            ->subject('Teacher notification')
+            ->send();
+    }
+
     public function cleanSession() {
         $this->Session->destroy();
     }

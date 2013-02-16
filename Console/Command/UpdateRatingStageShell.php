@@ -1,4 +1,11 @@
 <?php
+/**
+ * 1. Go over all finished lessons
+ * 2. Count how many successful students the lesson had
+ * 3. Update subject counters: students_amount and total_lessons
+ * 4. Update teacher profile teacher_total_teaching_minutes, teacher_students_amount, teacher_total_lessons and lesson stage
+ * 5, Update student student_total_lessons, students_total_learning_minutes and lesson stage
+ */
 class UpdateRatingStageShell extends AppShell {
     public $uses = array('UserLesson', 'TeacherLesson', 'Subject');
 
@@ -13,15 +20,16 @@ class UpdateRatingStageShell extends AppShell {
         //Build find conditions
         $conditions = array(
             'end_datetime < NOW()',
-            'payment_status'=>array(PAYMENT_STATUS_DONE, PAYMENT_STATUS_NO_NEED),
+            'payment_status'=>array(PAYMENT_STATUS_DONE, PAYMENT_STATUS_NO_NEED, PAYMENT_STATUS_PARTIAL),
             'rating_status' =>RATING_STATUS_PENDING,
 
         );
 
+        // 1
         $this->TeacherLesson->recursive = -1;
         $conditions = $this->TeacherLesson->getUnlockedRecordsFindConditions($conditions);
 
-        //Check if payment needed
+
         $this->out('Finding ended lessons...');
         $teacherLessons = $this->TeacherLesson->find('all', array('conditions'=>$conditions, 'limit'=>10));
         $i=1;
@@ -38,26 +46,30 @@ class UpdateRatingStageShell extends AppShell {
 
                 $this->out('Processing status...');
 
-                //Get all UserLesson with status accepted and payment_status as TeacherLesson.payment_status
+                // 2
                 $this->UserLesson->recursive = -1;
                 $userLessonsCount = $this->countUserLessonCandidates($teacherLesson['TeacherLesson']['teacher_lesson_id']);
                 $this->out($userLessonsCount.' students found');
 
+                // 3
                 $this->out('Updating subject');
-                $this->updateTeacherSubject($teacherLesson['TeacherLesson']['subject_id'], $userLessonsCount);
+                $this->updateTeacherSubjectCounters($teacherLesson['TeacherLesson']['subject_id'], $userLessonsCount);
 
+
+                // 4
                 $this->out('Updating teacher lesson');
-                $this->updateTeacherLesson($teacherLesson['TeacherLesson']['teacher_lesson_id'], $teacherLesson['TeacherLesson']['duration_minutes'], $userLessonsCount);
+                $this->updateTeacherProfileAndLessonStatus($teacherLesson['TeacherLesson']['teacher_lesson_id'], $teacherLesson['TeacherLesson']['duration_minutes'], $userLessonsCount);
 
+                // 5
                 if($userLessonsCount) {
                     $this->out('Updating user lesson');
-                    $this->updateUserLesson($teacherLesson['TeacherLesson']['teacher_lesson_id'], $teacherLesson['TeacherLesson']['lesson_type'], $teacherLesson['TeacherLesson']['duration_minutes']);
+                    $this->updateUserProfileAndLessonStage($teacherLesson['TeacherLesson']['teacher_lesson_id'], $teacherLesson['TeacherLesson']['lesson_type'], $teacherLesson['TeacherLesson']['duration_minutes']);
                 }
 
                 //Release lock
                 $this->TeacherLesson->unlock($teacherLesson['TeacherLesson']['teacher_lesson_id']);
             }
-            //Find the next payment
+            // 1 Find the next payment
             $teacherLessons = $this->TeacherLesson->find('all', array('conditions'=>$conditions, 'limit'=>10));
             $this->out('Finding ended lessons...');
         }
@@ -66,8 +78,8 @@ class UpdateRatingStageShell extends AppShell {
 
 
 
-    //3. Update teacher teacher_total_teaching_minutes, teacher_students_amount, teacher_total_lessons
-    private function updateTeacherLesson( $teacherLessonId, $lessonDurationMinutes, $studentsAmount ) {
+    // Update teacher profile teacher_total_teaching_minutes, teacher_students_amount, teacher_total_lessons
+    private function updateTeacherProfileAndLessonStatus( $teacherLessonId, $lessonDurationMinutes, $studentsAmount ) {
         $totalLessons = 1;
         if(!$studentsAmount) { //if no students - no need to increase counters
             $totalLessons = 0;
@@ -76,17 +88,12 @@ class UpdateRatingStageShell extends AppShell {
         }
 
         $this->TeacherLesson->create(false);
-        //$this->TeacherLesson->id = $teacherLessonId;
+
         $this->TeacherLesson->updateAll(array(
             $this->TeacherLesson->User->alias.'.teacher_total_teaching_minutes' =>$this->TeacherLesson->User->alias.'.teacher_total_teaching_minutes+'.$lessonDurationMinutes,
             $this->TeacherLesson->User->alias.'.teacher_students_amount'        =>$this->TeacherLesson->User->alias.'.teacher_students_amount+'.$studentsAmount,
             $this->TeacherLesson->User->alias.'.teacher_total_lessons'          =>$this->TeacherLesson->User->alias.'.teacher_total_lessons+'.$totalLessons,
             $this->TeacherLesson->alias.'.rating_status'                        =>RATING_STATUS_DONE,
-
-            //$this->TeacherLesson->getDataSource()->expression('teacher_total_teaching_minutes'.   ' +'.$lessonDurationMinutes),
-            //'teacher_students_amount'       =>$this->TeacherLesson->getDataSource()->expression('teacher_students_amount'.          ' +'.$studentsAmount),
-            //'teacher_total_lessons'         =>$this->TeacherLesson->getDataSource()->expression('teacher_total_lessons'.            ' +'.$totalLessons),
-            //'rating_status'                 =>RATING_STATUS_DONE
         ),array(
             $this->TeacherLesson->alias.'.teacher_lesson_id'=>$teacherLessonId
         ));
@@ -94,8 +101,8 @@ class UpdateRatingStageShell extends AppShell {
         return $this->TeacherLesson->save();
     }
 
-    //2. Update subject students_amount, total_lessons
-    private function updateTeacherSubject( $subjectId, $studentsAmount ) {
+    // Update subject students_amount, total_lessons
+    private function updateTeacherSubjectCounters( $subjectId, $studentsAmount ) {
         if(!$studentsAmount) { //if no students - no need to increase counters
             return true;
         }
@@ -110,8 +117,8 @@ class UpdateRatingStageShell extends AppShell {
         return $this->Subject->save();
     }
 
-    //4. Update student student_total_lessons, students_total_learning_minutes
-    private function updateUserLesson($teacherLessonId, $lessonType, $lessonDurationMinutes) {
+    // Update student student_total_lessons, students_total_learning_minutes
+    private function updateUserProfileAndLessonStage($teacherLessonId, $lessonType, $lessonDurationMinutes) {
         $this->UserLesson->create(false);
         return $this->UserLesson->updateAll(array(
                 $this->UserLesson->Student->alias.'.student_total_lessons'          =>$this->UserLesson->Student->alias.'.student_total_lessons+1',
@@ -124,6 +131,7 @@ class UpdateRatingStageShell extends AppShell {
         );
     }
 
+    // Get all successful students in lesson
     private function countUserLessonCandidates($teacherLessonId) {
         $this->UserLesson->recursive = -1;
         return $this->UserLesson->find('count', array('conditions'=>array('payment_status'  =>array(PAYMENT_STATUS_DONE, PAYMENT_STATUS_NO_NEED),

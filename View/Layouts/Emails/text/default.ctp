@@ -18,4 +18,9 @@
 ?>
 <?php echo $content_for_layout;?>
 
-This email was sent using the CakePHP Framework, http://cakephp.org.
+
+
+Don't want to receive these emails anymore? Unsubscribe here:
+Link1
+Manage your email notification preferences:
+Link2

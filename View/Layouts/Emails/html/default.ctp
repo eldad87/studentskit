@@ -1,29 +1,66 @@
-<?php
-/**
- *
- * PHP 5
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       Cake.View.Layouts.Emails.html
- * @since         CakePHP(tm) v 0.10.0.1076
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<title><?php echo $title_for_layout;?></title>
-</head>
-<body>
-	<?php echo $content_for_layout;?>
+    <meta charset="utf-8">
+    <title>Universito</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<p>This email was sent using the <a href="http://cakephp.org">CakePHP Framework</a></p>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+
+</head>
+
+<body>
+<div style="width:100%; background: #FAFAFA; color:#333;">
+    <table cellpadding="0" cellspacing="0" border="0" width="620" align="center" style="font-family:Calibri, Arial, Helvetica, sans-serif; font-size:15px;">
+        <tr valign="top">
+            <td style="padding-top:20px;">
+                <img src="<?php echo Configure::read('public_domain'); ?>/img/logo.png" alt="" />
+            </td>
+        </tr>
+        <tr valign="top">
+            <td width="620" style="line-height:11px">
+                <img src="<?php echo Configure::read('public_domain'); ?>/img/newletter-tooltip.png"  alt="" />
+            </td>
+        </tr>
+
+        <tr valign="top">
+            <td>
+                <table  cellpadding="0" cellspacing="0" border="0"
+                        style="background:#eee; border-left:solid 1px #dcdcdc; border-right:solid 1px #dcdcdc; width:620px;">
+                    <tr valign="top">
+                        <td style="padding:10px;">
+                            <?php echo $content_for_layout;?>
+
+                            <div style="margin-left: 5px">
+                                <p ><br />Regards,<br />
+                                    Universito.com Staff</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="620" style="background:#1d90d5; height:8px; line-height: 8px;">&nbsp;</td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+        <tr >
+            <td>
+                <img src="<?php echo Configure::read('public_domain'); ?>/img/newletter-footer.png" width="620" height="30" alt="" />
+            </td>
+        </tr>
+        <tr >
+            <td>
+                <p style="font-size: 11px; color: #555;">
+                    Don't want to receive these emails anymore? Unsubscribe <a href="Link1">here</a>, Manage your email notification preferences <a href="Link2">here</a>
+                </p>
+            </td>
+        </tr>
+    </table>
+</div>
 </body>
 </html>
