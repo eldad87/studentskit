@@ -108,7 +108,10 @@ class LessonNotificationShell extends AppShell {
 
         try {
             $emailObj = new CakeEmail('gmail');
-            $emailObj->viewVars(array('fullName'=>trim($teacherData['first_name'].' '.$teacherData['last_name']), 'lessonData'=>$lessonData, 'isTeacher'=>true, 'startsInMin'=>$notificationSettings['starts_in_minutes']));
+            $emailObj->helpers(array('Html', 'Layout'));
+            $emailObj->viewVars(array(  'fullName'=>trim($teacherData['first_name'].' '.$teacherData['last_name']),
+                                        'lessonData'=>$lessonData, 'isTeacher'=>true, 'startsInMin'=>$notificationSettings['starts_in_minutes'],
+                                        'email'=>$teacherData['email'], 'userId'=>$teacherData['user_id']));
             $result = $emailObj->to($teacherData['email'])
                 ->template('lesson_notification', 'default')
                 ->domain(Configure::read('public_domain'))
@@ -130,7 +133,10 @@ class LessonNotificationShell extends AppShell {
 
         try {
             $emailObj = new CakeEmail('gmail');
-            $emailObj->viewVars(array( 'fullName'=>trim($UserData['first_name'].' '.$UserData['last_name']), 'lessonData'=>$lessonData, 'isTeacher'=>false, 'startsInMin'=>$notificationSettings['starts_in_minutes']));
+            $emailObj->helpers(array('Html', 'Layout'));
+            $emailObj->viewVars(array(  'fullName'=>trim($UserData['first_name'].' '.$UserData['last_name']),
+                                        'lessonData'=>$lessonData, 'isTeacher'=>false, 'startsInMin'=>$notificationSettings['starts_in_minutes'],
+                                        'email'=>$UserData['email'], 'userId'=>$UserData['user_id']));
             $result = $emailObj->to($UserData['email'])
                 ->template('lesson_notification', 'default')
                 ->domain(Configure::read('public_domain'))

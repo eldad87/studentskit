@@ -268,4 +268,30 @@ class LayoutHelper extends AppHelper {
     public function stringToJSVar($str) {
         return preg_replace("/\r?\n/", "\\n", addslashes($str));
     }
+
+
+    public function getTurnNotificationsOffUrl($email, $userId, $isTeacher) {
+        $data = json_encode(array(
+            'email'     =>$email,
+            'user_id'   =>$userId
+        ));
+
+        $dataEncoded = Security::rijndael(
+            $data,
+            Configure::READ('Security.key'),
+            'encrypt'
+        );
+
+        $isTeacher = isSet($isTeacher) ? $isTeacher : false;
+
+        $disableNotifications = array(
+            'controller'=> ($isTeacher ? 'Teacher' : 'Student'),
+            'action'    => 'turnNotificationsOff',
+            '?'         => array(
+                'data'=>base64_encode($dataEncoded)
+            )
+        );
+
+        return $disableNotifications;
+    }
 }

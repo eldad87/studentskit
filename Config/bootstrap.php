@@ -205,6 +205,12 @@ Configure::write('template_languages_direction', array('eng'=>'rtr', 'heb'=>'rtl
 Configure::write('template_languages', array('eng'=>'English'/*, 'heb'=>'Hebrew'*/));
 Configure::write('public_domain', 'http://demo.universito.com');
 
+//For shell's that using emails with images/links that require full path
+if(!defined('FULL_BASE_URL')) {
+    define('FULL_BASE_URL', Configure::read('public_domain'));
+}
+
+
 
 App::build(array('Event' => array('%s'.'Event'.DS)), App::REGISTER);
 

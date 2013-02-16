@@ -8,6 +8,8 @@ class TeacherController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
+
+        $this->Auth->allow(	'turnNotificationsOff' );
     }
 	
 	public function index() {
@@ -354,6 +356,10 @@ class TeacherController extends AppController {
 		$this->set('subjectData', $teacherLessonData['Subject']);
 		$this->set('allStudents',	 $students);
 	}
+
+    public function turnNotificationsOff() {
+        $this->requestAction(array('controller'=>'Student', 'action'=>'turnNotificationsOff'), $this->request->query);
+    }
 	
 	public function profile() {
         $this->User->unbindAll(array('hasMany'=>array('TeacherCertificate', 'TeacherAboutVideo')));

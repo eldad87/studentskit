@@ -56,7 +56,27 @@
         <tr >
             <td>
                 <p style="font-size: 11px; color: #555;">
-                    Don't want to receive these emails anymore? Unsubscribe <a href="Link1">here</a>, Manage your email notification preferences <a href="Link2">here</a>
+                    <?php
+                    App::uses('Router', 'Routing');
+                    config('routes');
+
+                    $isTeacher = isSet($isTeacher) ? $isTeacher : false;
+                    $turnNotificationsOff = $this->Layout->getTurnNotificationsOffUrl($email, $userId, $isTeacher);
+                    $turnNotificationsOff['full_base'] = true;
+
+                    if($isTeacher) {
+                        $profileUrl = $this->Layout->getOrganizerUrl('/Teacher/profile');
+                    } else {
+                        $profileUrl = $this->Layout->getOrganizerUrl('/Student/profile');
+                    }
+                    $profileUrl['full_base'] = true;
+                    ?>
+
+
+
+
+                    Don't want to receive these emails anymore? Unsubscribe <?php echo $this->Html->link('here', $turnNotificationsOff);
+                    ?>, Manage your email notification preferences <?php echo $this->Html->link('here', $profileUrl); ?>
                 </p>
             </td>
         </tr>
