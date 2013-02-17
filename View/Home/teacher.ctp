@@ -16,7 +16,7 @@
                             ?>
                             </a>
                             <p class="onliestatus">
-                                <a href="#" class="msg-teacher" data-to_user_id="<?php echo $teacherData['User']['user_id']; ?>"><i class="iconMedium-mail pull-left"></i></a>
+                                <a href="#" class="msg-teacher requireLogin" data-to_user_id="<?php echo $teacherData['User']['user_id']; ?>"><i class="iconMedium-mail pull-left"></i></a>
                                 <i class="iconSmall-green-dot pull-left space23"></i>
                                 <span class="pull-left online">Online</span>
                             </p>

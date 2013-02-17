@@ -72,7 +72,10 @@ echo $this->fetch('popups');
                                 <div class="student-main-box radius3 fix-height">
                                     <a title="" href="#" class="teacher-pic radius3"><?php echo $this->Html->image($this->Layout->image($teacherData['image_source'], 149, 182), array('alt' => 'Topic image')); ?></a>
                                     <p class="onliestatus">
-                                        <a href="#" class="msg-teacher" data-to_user_id="<?php echo $teacherData['user_id']; ?>"<?php
+                                        <?php
+
+                                        ?>
+                                        <a href="#" class="msg-teacher requireLogin" data-to_user_id="<?php echo $teacherData['user_id']; ?>"<?php
                                             if($subjectData['lesson_type']==LESSON_TYPE_LIVE && !empty($teacherLessonData)) {
                                                 //Join lesson
                                                 echo ' data-entity_type="teacher_lesson" data-entity_id="'.$teacherLessonData['teacher_lesson_id'].'"';
@@ -82,7 +85,7 @@ echo $this->fetch('popups');
                                             }
                                             ?>><i class="iconMedium-mail pull-left"></i></a>
                                         <i class="iconSmall-green-dot pull-left space23"></i>
-                                        <span class="pull-left online">Online</span>
+                                        <span class="pull-left online"><?php echo __('Online'); ?></span>
                                     </p>
                                     <div class="head-text3">
                                         <div class="pull-left tutorname-wrapeper">
