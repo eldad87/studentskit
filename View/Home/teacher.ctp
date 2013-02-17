@@ -1,5 +1,5 @@
 <?php
-    echo $this->element('Panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
+    echo $this->element('Panel'.DS.'send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
 ?>
 <!-- Containeer
 ================================================== -->
@@ -47,9 +47,9 @@
                     </div> <!-- /student-main-box -->
 
                     <?php
-                        echo $this->element('Home/other_subjects', array('teacherSubjects'=>$teacherSubjects));
+                        echo $this->element('Home'.DS.'other_subjects', array('teacherSubjects'=>$teacherSubjects));
 
-                        echo $this->element('Home/upcoming_lessons', array('upcomingAvailableLessons'=>$upcomingAvailableLessons));
+                        echo $this->element('Home'.DS.'upcoming_lessons', array('upcomingAvailableLessons'=>$upcomingAvailableLessons));
                     ?>
                 </div> <!-- /cont-span3 -->
 
@@ -105,11 +105,11 @@
                     ?>
                     <?php
                         if($latestPosts) {
-                            echo $this->element('Home/board_topics', array('latestPosts'=>$latestPosts));
+                            echo $this->element('Home'.DS.'board_topics', array('latestPosts'=>$latestPosts));
                         }
 
                         if($teacherReviews) {
-                            echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$teacherReviews, 'title'=>__('What student say about me?')));
+                            echo $this->element('Home'.DS.'reviews_by_students', array('ratingByStudents'=>$teacherReviews, 'title'=>__('What student say about me?')));
                         }
                     ?>
                     <!---->

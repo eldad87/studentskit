@@ -1,4 +1,4 @@
-<?php echo $this->element('Panel/menu');  ?>
+<?php echo $this->element('Panel'.DS.'menu');  ?>
 
 <h3>Subject Lessons</h3>
 <?php 

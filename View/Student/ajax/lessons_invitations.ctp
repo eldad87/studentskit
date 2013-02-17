@@ -20,14 +20,14 @@ if($page==1) {
     <p class="fontsize1 space8"><?php echo __('Here you can find all invitations that still pending for your approval.'); ?></p>
 
     <?php
-    echo $this->element('Panel/cancel_popup', array('buttonSelector'=>'.confirm-deny',
+    echo $this->element('Panel'.DS.'cancel_popup', array('buttonSelector'=>'.confirm-deny',
         'title'=>__('Cancel an invitation'),
         'description'=>__('This procedure may be irreversible.
                                                                                     Do you want to proceed?'),
         'cancelUrl'=>array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')));
-    echo $this->element('Panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
-    echo $this->element('Panel/negotiate_popup', array('buttonSelector'=>'.negotiate'));
-    echo $this->element('Panel/accept_lesson_popup', array('buttonSelector'=>'.confirm-accept'));
+    echo $this->element('Panel'.DS.'send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
+    echo $this->element('Panel'.DS.'negotiate_popup', array('buttonSelector'=>'.negotiate'));
+    echo $this->element('Panel'.DS.'accept_lesson_popup', array('buttonSelector'=>'.confirm-accept'));
     ?>
 
         <div class="fullwidth pull-left">
@@ -110,7 +110,7 @@ if($page==1) {
 
 
                     <?php
-                        echo $this->element('Panel/lesson_box_li', array(
+                        echo $this->element('Panel'.DS.'lesson_box_li', array(
                             'lessonData'        => $lessonInvitation,
                             'id'                => 'lesson_box_'.$lessonInvitation['UserLesson']['user_lesson_id']
                         ));

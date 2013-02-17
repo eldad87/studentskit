@@ -4,7 +4,7 @@
         <ul class="subject-morelesson upcoming-more">
 			<?php
             foreach($upcomingAvailableLessons AS $upcomingAvailableLesson) {
-                echo $this->element('Home/upcoming_lesson_li', array('upcomingAvailableLesson'=>$upcomingAvailableLesson));
+                echo $this->element('Home'.DS.'upcoming_lesson_li', array('upcomingAvailableLesson'=>$upcomingAvailableLesson));
             }
 			?>
         </ul>

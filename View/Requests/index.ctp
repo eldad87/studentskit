@@ -1,6 +1,6 @@
 <?php
-    echo $this->element('Home/search', array('controller'=>'Requests'));
-    echo $this->element('Requests/offer_popups');
+    echo $this->element('Home'.DS.'search', array('controller'=>'Requests'));
+    echo $this->element('Requests'.DS.'offer_popups');
 ?>
 <Section class="container">
     <div class="container-inner">
@@ -9,7 +9,7 @@
                 <h2 class="pull-left"><i class="iconBig-about space1"></i><?php echo __('Newest requests'); ?></h2>
                 <?php
                     echo $this->Layout->subjectRequestPopupButton();
-                    echo $this->element('Home/subject_request_popup');
+                    echo $this->element('Home'.DS.'subject_request_popup');
                 ?>
 
                 <ul class="row">

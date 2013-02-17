@@ -14,6 +14,6 @@ $this->set('nextOrderStep', true);
 $this->extend('/Order/Common/common');
 
 $this->start('main');
-echo $this->element('Order/calendar', array('allLiveLessons'=>$allLiveLessons));
+echo $this->element('Order'.DS.'calendar', array('allLiveLessons'=>$allLiveLessons));
 $this->end();
 ?>

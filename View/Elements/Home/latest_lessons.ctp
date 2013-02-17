@@ -7,7 +7,7 @@
             if($archiveLessons) {
                 $i=0;
                 foreach($archiveLessons AS $archiveLesson) {
-                    echo $this->element('Home/latest_lessons_div', array('archiveLesson'=>$archiveLesson, 'first'=>!$i));
+                    echo $this->element('Home'.DS.'latest_lessons_div', array('archiveLesson'=>$archiveLesson, 'first'=>!$i));
                     $i++;
                 }
             }

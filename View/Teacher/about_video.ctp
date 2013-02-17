@@ -7,12 +7,12 @@
 
     if(isSet($updateExisting)) {
         //$certificateData
-        echo 'var cert = \''.preg_replace('/\s\s+/', ' ', $this->element('Panel/Profile/teacher_about_video', array('video'=>$aboutVideoData))).'\';';
+        echo 'var cert = \''.preg_replace('/\s\s+/', ' ', $this->element('Panel'.DS.'Profile'.DS.'teacher_about_video', array('video'=>$aboutVideoData))).'\';';
         echo '$(\''.$updateExisting.'\').html(cert);';
     }
     if(isSet($updateNew)) {
         //$certificateData
-        echo 'var cert = \''.preg_replace('/\s\s+/', ' ', $this->element('Panel/Profile/teacher_about_video', array('video'=>$aboutVideoData, 'li'=>true))).'\';';
+        echo 'var cert = \''.preg_replace('/\s\s+/', ' ', $this->element('Panel'.DS.'Profile'.DS.'teacher_about_video', array('video'=>$aboutVideoData, 'li'=>true))).'\';';
         echo '$(\''.$updateNew.'\').append(cert);';
     }
     ?>

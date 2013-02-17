@@ -1,6 +1,6 @@
 <?php
-echo $this->element('Home/search', array('controller'=>'Requests'));
-echo $this->element('Requests/offer_popups');
+echo $this->element('Home'.DS.'search', array('controller'=>'Requests'));
+echo $this->element('Requests'.DS.'offer_popups');
 ?>
 
 <!-- Containeer
@@ -12,19 +12,19 @@ echo $this->element('Requests/offer_popups');
                 <p class="pull-left bodytop-leftlink">
                     <?php
                     if(isSet($subjectsData['breadcrumbs'])) {
-                        echo $this->element('Home/subject_categories_breadcrumbs', array('subject_categories_breadcrumbs'=>$subjectsData['breadcrumbs'])),'<br /><br />';
+                        echo $this->element('Home'.DS.'subject_categories_breadcrumbs', array('subject_categories_breadcrumbs'=>$subjectsData['breadcrumbs'])),'<br /><br />';
                     }
                     ?>
                 </p>
 
                 <?php
                 echo $this->Layout->subjectRequestPopupButton();
-                echo $this->element('Home/subject_request_popup');
+                echo $this->element('Home'.DS.'subject_request_popup');
                 ?>
                 <div class="pull-left space6">
                     <!-- category filter -->
                     <?php if($subjectsData) {
-                        echo $this->element('Home/facet_subject_categories', array('facet_categories'=>$subjectsData['categories']));
+                        echo $this->element('Home'.DS.'facet_subject_categories', array('facet_categories'=>$subjectsData['categories']));
                     } ?>
                     <!-- end of category filter -->
                     <div class="lesson-wrapper">

@@ -26,7 +26,7 @@ if(isSet($paymentPage)) {
                     //Change lesson box
                     echo '$(\'#',$updateLessonBoxAfterNegotiate['element'],'\').replaceWith(\'',
                                                                                     $this->Layout->stringToJSVar(
-                                                                                        $this->element('Panel/lesson_box_li',
+                                                                                        $this->element('Panel'.DS.'lesson_box_li',
                                                                                             array('lessonData'=>$updateLessonBoxAfterNegotiate['data'],
                                                                                             'id'=>$updateLessonBoxAfterNegotiate['element'])))
                         ,   '\');';

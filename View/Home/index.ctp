@@ -1,4 +1,4 @@
-<?php echo $this->element('Home/search');  ?>
+<?php echo $this->element('Home'.DS.'search');  ?>
 
 
 <Section class="container">
@@ -8,7 +8,7 @@
                 <h2 class="pull-left"><i class="iconBig-about space1"></i><?php echo __('Newest'); ?></h2>
                 <?php
                     echo $this->Layout->subjectRequestPopupButton();
-                    echo $this->element('Home/subject_request_popup');
+                    echo $this->element('Home'.DS.'subject_request_popup');
                 ?>
                 <ul class="row">
                     <?php
@@ -64,7 +64,7 @@
                         if($latestTopics) {
                             $bgColor=0;
                             foreach($latestTopics AS $latestTopic) {
-                                echo $this->element('Home/last_board_msg_li', array('latestTopic'=>$latestTopic, 'bgColor'=>++$bgColor));
+                                echo $this->element('Home'.DS.'last_board_msg_li', array('latestTopic'=>$latestTopic, 'bgColor'=>++$bgColor));
                                 if($bgColor==2) {
                                     $bgColor=0;
                                 }

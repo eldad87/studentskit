@@ -1,5 +1,5 @@
 <?php
-    //echo $this->element('Teacher\webinar_popup', array('buttonSelector'=>'.webinar'));
+    //echo $this->element('Teacher'.DS.'webinar_popup', array('buttonSelector'=>'.webinar'));
 ?>
 <script type="text/javascript">
     $(document).ready(function(){

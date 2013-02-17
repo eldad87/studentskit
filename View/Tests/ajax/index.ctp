@@ -8,7 +8,7 @@
     });
 </script>
 <?php
-echo $this->element('Panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
+echo $this->element('Panel'.DS.'cancel_popup', array('buttonSelector'=>'.confirm-delete',
     'title'=>__('Delete a test'),
     'description'=>__('This procedure may be irreversible.
                        Do you want to proceed?'),

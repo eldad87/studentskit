@@ -8,22 +8,22 @@ if(!empty($userData['TeacherAboutVideo'])) {
 }
 */
 
-echo $this->element('Panel/cancel_popup', array('buttonSelector'=>'.confirm-remove-certificate',
+echo $this->element('Panel'.DS.'cancel_popup', array('buttonSelector'=>'.confirm-remove-certificate',
                                                 'appendId'=>1,
                                                 'title'=>__('Remove your certificate'),
                                                 'description'=>__('Do you want to proceed?'),
                                                 'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'removeCertificate', '{id}')));
 
 
-echo $this->element('Panel/certificate_popup', array('buttonSelector'=>'.add-edit-certificate'));
+echo $this->element('Panel'.DS.'certificate_popup', array('buttonSelector'=>'.add-edit-certificate'));
 
-echo $this->element('Panel/cancel_popup', array('buttonSelector'=>'.confirm-remove-teacher-about-video',
+echo $this->element('Panel'.DS.'cancel_popup', array('buttonSelector'=>'.confirm-remove-teacher-about-video',
                                                                     'appendId'=>2,
                                                                     'title'=>__('Remove your about video'),
                                                                     'description'=>__('Do you want to proceed?'),
                                                                     'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'removeAboutVideo', '{id}')));
 
-echo $this->element('Panel/teacher_about_video_popup', array('buttonSelector'=>'.add-edit-teacher-about-video'));
+echo $this->element('Panel'.DS.'teacher_about_video_popup', array('buttonSelector'=>'.add-edit-teacher-about-video'));
 ?>
 
 <script type="text/javascript">
@@ -67,7 +67,7 @@ echo $this->element('Panel/teacher_about_video_popup', array('buttonSelector'=>'
                 <?php
                 if(isSet($userData['TeacherCertificate'])) {
                     foreach($userData['TeacherCertificate'] AS $cert) {
-                        echo $this->element('Panel/Profile/certificate', array('cert'=>$cert, 'li'=>true));
+                        echo $this->element('Panel'.DS.'Profile'.DS.'certificate', array('cert'=>$cert, 'li'=>true));
 
                         //echo $this->Html->link('Remove Certificate', array('controller'=>'Teacher', 'action'=>'removeCertificate', $cert['teacher_certificate_id']));
                     }
@@ -87,7 +87,7 @@ echo $this->element('Panel/teacher_about_video_popup', array('buttonSelector'=>'
                 <?php
                 if(isSet($userData['TeacherAboutVideo'])) {
                     foreach($userData['TeacherAboutVideo'] AS $av) {
-                        echo $this->element('Panel/Profile/teacher_about_video', array('video'=>$av, 'li'=>true));
+                        echo $this->element('Panel'.DS.'Profile'.DS.'teacher_about_video', array('video'=>$av, 'li'=>true));
                         /*echo $this->Html->link('Remove About Video', array('controller'=>'Teacher', 'action'=>'removeAboutVideo', $av['teacher_about_video_id']));*/
                     }
                 } else {

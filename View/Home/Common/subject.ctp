@@ -1,5 +1,5 @@
 <?php
-echo $this->element('Panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
+echo $this->element('Panel'.DS.'send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
 echo $this->fetch('popups');
 ?>
 <!-- Containeer
@@ -57,11 +57,11 @@ echo $this->fetch('popups');
 
                     <?php
                     //if($teacherOtherSubjects) {
-                        echo $this->element('Home/other_subjects', array('teacherSubjects'=>$teacherOtherSubjects));
+                        echo $this->element('Home'.DS.'other_subjects', array('teacherSubjects'=>$teacherOtherSubjects));
                     //  }
 
                     if(isSet($upcomingAvailableLessons)) {
-                        echo $this->element('Home/upcoming_lessons', array('upcomingAvailableLessons'=>$upcomingAvailableLessons));
+                        echo $this->element('Home'.DS.'upcoming_lessons', array('upcomingAvailableLessons'=>$upcomingAvailableLessons));
                     }
                     ?>
                 </div>
@@ -112,7 +112,7 @@ echo $this->fetch('popups');
 
                     <?php
                         //if($subjectRatingByStudents) {
-                            echo $this->element('Home/reviews_by_students', array('ratingByStudents'=>$subjectRatingByStudents, 'title'=>__('What student say about this subject?')));
+                            echo $this->element('Home'.DS.'reviews_by_students', array('ratingByStudents'=>$subjectRatingByStudents, 'title'=>__('What student say about this subject?')));
                         //}
                     ?>
 

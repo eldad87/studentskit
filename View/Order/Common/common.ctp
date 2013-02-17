@@ -17,7 +17,7 @@
                         </div>
                         <?php
                             if(isSet($orderData)) {
-                                echo $this->element('Order/nav', array('orderData'=>$orderData));
+                                echo $this->element('Order'.DS.'nav', array('orderData'=>$orderData));
                             }
                         ?>
                     </div>
@@ -27,7 +27,7 @@
                 </div> <!-- /cont-span6 -->
                 <?php
                 if(isSet($upcomingAvailableLessons) && isSet($teacherData)) {
-                    echo $this->element('Order/teacher_and_upcoming', array('upcomingAvailableLessons'  =>$upcomingAvailableLessons,
+                    echo $this->element('Order'.DS.'teacher_and_upcoming', array('upcomingAvailableLessons'  =>$upcomingAvailableLessons,
                                                                             'teacherData'               =>$teacherData,
                                                                             'nextOrderStep'             =>(isSet($nextOrderStep) && $nextOrderStep)));
                 }
