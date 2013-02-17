@@ -6,6 +6,8 @@ App::uses('AppHelper', 'Helper');
  * @property Html $Html
  * @property Session $Session
  * @property Form $Form
+ * @property Layout $Layout
+ * @property Watchitoo $Watchitoo
  */
 class this extends AppHelper
 {
@@ -19,6 +21,8 @@ class this extends AppHelper
         $this->Html = new HtmlHelper($View);
         $this->Session = new SessionHelper($View);        
         $this->Form = new FormHelper($View);        
+        $this->Layout = new LayoutHelper($View);
+        $this->Watchitoo = new WatchitooHelper($View);
     }
 }
 

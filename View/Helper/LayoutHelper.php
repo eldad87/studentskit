@@ -83,11 +83,14 @@ class LayoutHelper extends AppHelper {
     public function image($imageSource, $width=null, $height=null) {
         $imageSource = str_replace(array('\/','/\\'), array('/', '/'), $imageSource); //Fix image on calendar tooltip
 
+        if(!$imageSource) {
+            if(!$width || !$height) {
+                return '/img/img-200x210-blank.jpg';
+            }
+            return '/img/img-'.$width.'x'.$height.'-blank.jpg';
+        }
         if(!$width || !$height) {
             return $imageSource;
-        }
-        if(!$imageSource) {
-            return 'img-'.$width.'x'.$height.'-blank.jpg';
         }
 
 

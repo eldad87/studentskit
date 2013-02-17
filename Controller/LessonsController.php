@@ -11,7 +11,7 @@ class LessonsController extends AppController {
 	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson', 'FileSystem');
     public $components = array('Comments.Comments' => array('userModelClass' => 'User', 'actionNames'=>array('community', 'comments')));
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
-	public $helpers = array('Watchitoo');
+	public $helpers = array('Watchitoo', 'Html', 'Layout');
 
     public function __construct($request = null, $response = null) {
         parent::__construct($request, $response);
@@ -84,8 +84,11 @@ class LessonsController extends AppController {
         }
 
 
+        //$this->Auth->user('image_source')
         $this->set('meetingSettings', $meetingSettings);
         $this->set('lessonName', $subjectData['Subject']['name']);
+        /*$this->set('lessonType', $subjectData['Subject']['lesson_type']);
+        $this->set('isTeacher', true);*/
 
         $this->set('subjectId', $subjectId);
         $this->set('blank', true); //Draw only the flash
@@ -275,7 +278,6 @@ class LessonsController extends AppController {
 
         $this->set('subjectId', $data['subject_id']);
         //$this->set('datetime', $liveRequestStatus['datetime']);
-        $this->set('is_teacher', $data['is_teacher']);
         $this->set('lessonName', $data['lesson_name']);
     }
 

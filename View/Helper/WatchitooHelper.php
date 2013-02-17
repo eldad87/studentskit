@@ -9,16 +9,13 @@
 
 class WatchitooHelper extends AppHelper {
 
-    public function __construct() {
-
+    public function __construct(View $View, $settings = array()) {
+        parent::__construct($View, $settings);
         Configure::load('watchitoo');
-
     }
 
     public function initJS( $meetingId, $initParams=array() ) {
         return '
-
-
         function OnWatchitooPlayerEvent(playerID,eventName,eventParams) {
             switch(eventName) {
                 case "ready":
@@ -42,7 +39,13 @@ class WatchitooHelper extends AppHelper {
 
 				var initializeParams = {
 					watchitooUserID : "'.$initParams['watchitoo_user_email'].'",
-					watchitooPassword : "'.$initParams['watchitoo_password'].'"
+					watchitooPassword : "'.$initParams['watchitoo_password'].'",
+					userAvatarURL : "'.Router::url(
+                                            $this->_View->Layout->image( $initParams['user_image_source'] ),
+                                            true
+                                        ).'",
+
+                    isModerator : '.($initParams['is_teacher'] || $initParams['lesson_type']==LESSON_TYPE_VIDEO ? 'true' : 'false' ).'
 				};
 
 				var ws=document.getElementById("WatchitooPlayer");
@@ -58,7 +61,18 @@ class WatchitooHelper extends AppHelper {
 ';
     }
 
-    public function embedMeetingJS() {
-        return '<script type="text/javascript" src="http://www.watchitoo.com/swf/watchitooShowEmbed.php?playerid=WatchitooPlayer&tp=1&scale=false&width=960&height=530&layout=11"></script>';
+    public function embedMeetingJS($isModerator, $lessonType) {
+        if($isModerator) {
+            //Top/Right menu + playlist
+            return '<script type="text/javascript" src="http://www.watchitoo.com/swf/watchitooShowEmbed.php?playerid=WatchitooPlayer&tp=1&scale=false&width=960&height=530&layout=11"></script>';
+        }
+
+        if($lessonType==LESSON_TYPE_LIVE) {
+            //No top menu
+            return '<script type="text/javascript" src="http://www.watchitoo.com/swf/watchitooShowEmbed.php?playerid=WatchitooPlayer&tp=1&scale=false&width=960&height=506&layout=15"></script>';
+        }
+
+        //Default Video/Student. No right/top menu + playlist
+        return '<script type="text/javascript" src="http://www.watchitoo.com/swf/watchitooShowEmbed.php?playerid=WatchitooPlayer&tp=1&scale=false&width=640&height=506&layout=16"></script>';
     }
 }

@@ -75,13 +75,15 @@ Class Watchitoo extends Component {
         }
 
         return array(
-            'user_id'=>$subjectData['user_id'],
-            'watchitoo_user_id'=>$wU['watchitoo_user_id'],
-            'watchitoo_user_email'=>$wU['watchitoo_user_email'],
-            'watchitoo_password'=>$this->getUserPassword($subjectData['user_id']),
-            'display_name'=>$displayName,
-            'is_moderator'=>'true',
-            'meeting_id'=>$meetingId
+            'user_id'               => $subjectData['user_id'],
+            'watchitoo_user_id'     => $wU['watchitoo_user_id'],
+            'watchitoo_user_email'  => $wU['watchitoo_user_email'],
+            'watchitoo_password'    => $this->getUserPassword($subjectData['user_id']),
+            'display_name'          => $displayName,
+            'is_teacher'            => true,
+            'lesson_type'           => $subjectData['lesson_type'],
+            'meeting_id'            => $meetingId,
+            'user_image_source'     => $userData['User']['image_source']
         );
 
     }
@@ -112,15 +114,18 @@ Class Watchitoo extends Component {
             $displayName .= ' '.$userData['User']['last_name'];
         }
 
+        $return['user_image_source']  = $userData['User']['image_source'];
 
         return array(
             'user_id'=>$userId,
-            'watchitoo_user_id'=>$wU['watchitoo_user_id'],
-            'watchitoo_user_email'=>$wU['watchitoo_user_email'],
-            'watchitoo_password'=>$this->getUserPassword($userId),
-            'display_name'=>$displayName,
-            'is_moderator'=>$tlData['teacher_user_id']==$userId ? 'true' : 'false',
-            'meeting_id'=>$meetingId
+            'watchitoo_user_id'     => $wU['watchitoo_user_id'],
+            'watchitoo_user_email'  => $wU['watchitoo_user_email'],
+            'watchitoo_password'    => $this->getUserPassword($userId),
+            'display_name'          => $displayName,
+            'is_teacher'            => $tlData['teacher_user_id']==$userId,
+            'lesson_type'           => $tlData['lesson_type'],
+            'meeting_id'            => $meetingId,
+            'user_image_source'     => $userData['User']['image_source']
         );
     }
 
