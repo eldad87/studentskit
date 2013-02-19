@@ -7,7 +7,7 @@
             $i = 0;
             if($ratingByStudents) {
                 foreach($ratingByStudents AS $ratingByStudent) {
-                    echo $this->element('Home/reviews_by_students_div', array('ratingByStudent'=>$ratingByStudent, 'first'=>!$i++));
+                    echo $this->element('Home'.DS.'reviews_by_students_div', array('ratingByStudent'=>$ratingByStudent, 'first'=>!$i++));
                 }
             }
             ?>

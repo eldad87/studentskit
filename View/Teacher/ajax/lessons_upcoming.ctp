@@ -11,13 +11,13 @@
 
 ////////////// Page 1 - start
 if($page==1) {
-    echo $this->element('Panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
+    echo $this->element('Panel'.DS.'cancel_popup', array('buttonSelector'=>'.confirm-delete',
                                                             'title'=>__('Cancel your lesson'),
                                                             'description'=>__('This procedure may be irreversible.
                                                                                     Do you want to proceed?'),
                                                             'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'cancelTeacherLesson', '{id}')));
-    echo $this->element('Panel/invite_popup', array('buttonSelector'=>'.invite'));
-    echo $this->element('Panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
+    echo $this->element('Panel'.DS.'invite_popup', array('buttonSelector'=>'.invite'));
+    echo $this->element('Panel'.DS.'send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
     ?>
 
     <script type="text/javascript">

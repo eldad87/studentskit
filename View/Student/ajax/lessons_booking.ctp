@@ -23,13 +23,13 @@
 
 
 <?php
-echo $this->element('Panel/cancel_popup', array('buttonSelector'=>'.confirm-cancel',
+echo $this->element('Panel'.DS.'cancel_popup', array('buttonSelector'=>'.confirm-cancel',
                                                 'title'=>__('Cancel your booking request'),
                                                 'description'=>__('This procedure may be irreversible.
                                                                     Do you want to proceed?'),
                                                 'cancelUrl'=>array('controller'=>'Student', 'action'=>'cancelUserLesson', '{id}')));
-echo $this->element('Panel/send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
-echo $this->element('Panel/negotiate_popup', array('buttonSelector'=>'.negotiate'));
+echo $this->element('Panel'.DS.'send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
+echo $this->element('Panel'.DS.'negotiate_popup', array('buttonSelector'=>'.negotiate'));
 ?>
 
     <div class="fullwidth pull-left">
@@ -114,7 +114,7 @@ echo $this->element('Panel/negotiate_popup', array('buttonSelector'=>'.negotiate
 
 
                     <?php
-                    echo $this->element('Panel/lesson_box_li', array(
+                    echo $this->element('Panel'.DS.'lesson_box_li', array(
                         'lessonData'        => $lessonBooking,
                         'id'                => 'lesson_box_'.$lessonBooking['UserLesson']['user_lesson_id']
                     ));

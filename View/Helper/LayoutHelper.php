@@ -83,11 +83,14 @@ class LayoutHelper extends AppHelper {
     public function image($imageSource, $width=null, $height=null) {
         $imageSource = str_replace(array('\/','/\\'), array('/', '/'), $imageSource); //Fix image on calendar tooltip
 
+        if(!$imageSource) {
+            if(!$width || !$height) {
+                return '/img/img-200x210-blank.jpg';
+            }
+            return '/img/img-'.$width.'x'.$height.'-blank.jpg';
+        }
         if(!$width || !$height) {
             return $imageSource;
-        }
-        if(!$imageSource) {
-            return 'img-'.$width.'x'.$height.'-blank.jpg';
         }
 
 
@@ -267,5 +270,32 @@ class LayoutHelper extends AppHelper {
 
     public function stringToJSVar($str) {
         return preg_replace("/\r?\n/", "\\n", addslashes($str));
+    }
+
+
+    public function getTurnNotificationsOffUrl($email, $userId, $isTeacher) {
+        $data = json_encode(array(
+            'email'     =>$email,
+            'user_id'   =>$userId
+        ));
+
+        App::uses('Security', 'Utility');
+        $dataEncoded = Security::rijndael(
+            $data,
+            Configure::READ('Security.key'),
+            'encrypt'
+        );
+
+        $isTeacher = isSet($isTeacher) ? $isTeacher : false;
+
+        $disableNotifications = array(
+            'controller'=> ($isTeacher ? 'Teacher' : 'Student'),
+            'action'    => 'turnNotificationsOff',
+            '?'         => array(
+                'data'=>base64_encode($dataEncoded)
+            )
+        );
+
+        return $disableNotifications;
     }
 }

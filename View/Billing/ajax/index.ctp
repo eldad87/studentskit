@@ -93,7 +93,7 @@ foreach($response['response']['billingHistory'] AS $billingHistory) {
 
         <?php
         unset($billingHistory['TeacherLesson']['datetime']);
-        echo $this->element('Panel/lesson_box_li', array(
+        echo $this->element('Panel'.DS.'lesson_box_li', array(
             'lessonData'        => $billingHistory,
             'id'                => 'lesson_box_'.$billingHistory['TeacherLesson']['teacher_lesson_id']
         ));

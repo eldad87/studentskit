@@ -64,8 +64,8 @@ class DATABASE_CONFIG {
 		'persistent' => false,
 		'host' => 'localhost',
 		'login' => 'student',
-		'password' => 'skit',
-		'database' => 'studentskit', //Student#1z
+		'password' => 'skit', //Student#1z
+		'database' => 'studentskit',
 		'prefix' => '',
 		'encoding' => 'utf8',
 		'unix_socket' => '/var/run/mysqld/mysqld.sock',

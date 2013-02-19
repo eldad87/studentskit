@@ -1358,10 +1358,19 @@ class UserLesson extends AppModel {
             'teacher_lesson_id'         =>false,
             'subject_id'                =>$subjectId,
             'lesson_name'               =>$subjectData['name'],
+            'lesson_type'               =>$subjectData['lesson_type'],
             'user_lesson_id'            =>false,
             'datetime'                  =>false,
             'end_datetime'              =>false,
+            'user_image_source'         =>null
         );
+
+
+        //If user not found
+        if(!$userId) {
+            return $return;
+        }
+
 
         if(!$userLessonsData) {
             return $return;
@@ -1569,8 +1578,10 @@ class UserLesson extends AppModel {
             'teacher_lesson_id'         =>$teacherLessonId,
             'subject_id'                =>$tlData['subject_id'],
             'lesson_name'               =>$tlData['name'],
+            'lesson_type'               =>$tlData['lesson_type'],
             'user_lesson_id'            =>false,
             'datetime'                  =>$tlData['datetime'],
+            'user_image_source'         =>null
         );
 
 
@@ -1580,6 +1591,13 @@ class UserLesson extends AppModel {
         $return[$timing] = true;
 
         //If no user passed - return
+        if(!$userId) {
+            return $return;
+        }
+
+
+
+        //If user not found
         if(!$userId) {
             return $return;
         }

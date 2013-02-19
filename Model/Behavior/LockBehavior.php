@@ -117,7 +117,7 @@ class LockBehavior extends ModelBehavior {
             'AND'=>array(
             'OR'=>array(
                 array($model->alias.'.'.$this->getSetting($model, 'lock_field')=>0),
-                array($model->alias.'.'.$this->getSetting($model, 'lock_field')=>1, $this->getSetting($model, 'lock_ends_field').' <'=>date('Y-m-d H:i:s')),
+                array($model->alias.'.'.$this->getSetting($model, 'lock_field')=>1, $model->alias.'.'.$this->getSetting($model, 'lock_ends_field').' <'=>date('Y-m-d H:i:s')),
                 $model->alias.'.'.$this->getSetting($model, 'lock_ends_field').' IS NULL'
             ))
         );

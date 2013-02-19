@@ -218,7 +218,7 @@
                             <?php
                             $notifications = $this->requestAction(array('controller'=>'Notifications', 'action'=>'index', 3, 1, 0));
                             if($notifications['notifications']) {
-                                echo $this->element('Topnav/notifications', array('notifications'=>$notifications['notifications']));
+                                echo $this->element('Topnav'.DS.'notifications', array('notifications'=>$notifications['notifications']));
                             }
                             ?>
                         </ul>
@@ -251,7 +251,7 @@
 
 
                             if($threads['threads']) {
-                                echo $this->element('Topnav/threads', array('threads'=>$threads['threads']));
+                                echo $this->element('Topnav'.DS.'threads', array('threads'=>$threads['threads']));
                             }
                             ?>
                         </ul>

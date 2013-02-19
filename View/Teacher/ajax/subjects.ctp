@@ -12,13 +12,13 @@
 ////////////// Page 1 - start
 if($page==1) {
 
-    echo $this->element('Panel/cancel_popup', array('buttonSelector'=>'.confirm-delete',
+    echo $this->element('Panel'.DS.'cancel_popup', array('buttonSelector'=>'.confirm-delete',
         'title'=>__('Cancel your lesson'),
         'description'=>__('This procedure may be irreversible.
                            Do you want to proceed?'),
         'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'disableSubject', '{id}')));
 
-    echo $this->element('Panel/schedule_teacher_lesson_popup', array('buttonSelector'=>'.schedule'));
+    echo $this->element('Panel'.DS.'schedule_teacher_lesson_popup', array('buttonSelector'=>'.schedule'));
     ?>
 
     <script type="text/javascript">

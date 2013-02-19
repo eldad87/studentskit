@@ -15,7 +15,7 @@ class StudentController extends AppController {
             $this->layout = false;
         }
 
-
+        $this->Auth->allow(	'turnNotificationsOff' );
     }
 
 	public function index() {
@@ -284,7 +284,48 @@ class StudentController extends AppController {
                 $this->set('groupPrice', $groupPrice);
         }
     }
-	
+
+    public function turnNotificationsOff() {
+
+        //Check that we got encoded params
+        if(!isSet($this->params->query['data'])) {
+            $this->redirect('/');
+        }
+
+
+        //Decode data
+        $data = Security::rijndael( base64_decode($this->params->query['data']), Configure::READ('Security.key'), 'decrypt');
+        $data = json_decode($data, true);
+
+        //Validate
+        if(!$data || !isSet($data['email']) || !isSet($data['user_id'])) {
+            $this->redirect('/');
+        }
+
+        //Find user
+        $userData = $this->User->find('first', array('email'=>$data['email']));
+        if(!$userData || $data['user_id']!=$userData['User']['user_id']) {
+            $this->Session->setFlash(__('Cannot turn off notifications.'));
+            $this->redirect('/');
+        }
+
+        //Update notifications
+        $this->User->create(false);
+        $this->User->id = $userData['User']['user_id'];
+
+        //This action was called from the TeacherController.turnNotificationsOff
+        $notificationsFlag = (empty($this->request->params['requested']) ? 'student_receive_notification' : 'teacher_receive_notification') ;
+
+        if(!$this->User->save(array($notificationsFlag=>0))) {
+            $this->Session->setFlash(__('Internal error. Cannot turn off notifications.'));
+            $this->redirect('/');
+        }
+
+        //Success
+        $this->Session->setFlash(__('Notifications turned off'));
+        $this->redirect('/');
+    }
+
 	public function profile() {
 		if (empty($this->request->data)) {
 			$this->request->data = $this->User->findByUserId($this->Auth->user('user_id'));
@@ -297,7 +338,7 @@ class StudentController extends AppController {
             }
 
             $this->User->id = $this->Auth->user('user_id');
-		    $res = $this->User->save($this->request->data, true, array('first_name', 'last_name', 'phone', 'student_about',
+		    $res = $this->User->save($this->request->data, true, array('first_name', 'last_name', 'phone', 'student_about', 'student_receive_notification',
                 'image_source',
                 'image',
                 'image_source',

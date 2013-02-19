@@ -75,10 +75,12 @@ class WatchitooService {
             'user_id'           =>$userId,
             'title'             =>$title,
             'description'       =>$description,
+            'only_moderators_can_see_participants_list' => 'true'
         );
         if($eventDate) {
             //Only live lessons have a datetime
-            $save['event_date'] = $eventDate;
+            $eventDate = new DateTime($eventDate);
+            $save['event_date'] = $eventDate->format('Y-m-d H:i'); //I.e 2011-10-20 11:00
         }
         $requestUrl = $this->signature('saveMeeting', $save);
         $results = $this->fetchRequest($requestUrl);

@@ -181,8 +181,6 @@ CakeLog::config('error', array(
 
 define('FORUM_USER', 'User'); //Forum user DB
 
-//define('DEFAULT_LANGUAGE', 'eng');
-//Configure::write('Config.languages', array('eng'=>'English', 'heb'=>'Hebrew'));
 
 CakePlugin::loadAll(array(
         'Utils',
@@ -199,9 +197,19 @@ CakePlugin::loadAll(array(
 //Amazon S3
 define('S3_BUCKET', 'local_eldad');
 
+
+//Language
+//define('DEFAULT_LANGUAGE', 'eng');
+//Configure::write('Config.languages', array('eng'=>'English', 'heb'=>'Hebrew'));
 Configure::write('template_languages_direction', array('eng'=>'rtr', 'heb'=>'rtl'));
 Configure::write('template_languages', array('eng'=>'English'/*, 'heb'=>'Hebrew'*/));
-Configure::write('public_domain', 'http://universito.com');
+Configure::write('public_domain', 'http://demo.universito.com');
+
+//For shell's that using emails with images/links that require full path
+if(!defined('FULL_BASE_URL')) {
+    define('FULL_BASE_URL', Configure::read('public_domain'));
+}
+
 
 
 App::build(array('Event' => array('%s'.'Event'.DS)), App::REGISTER);

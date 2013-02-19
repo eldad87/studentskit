@@ -9,18 +9,14 @@
 
 class WatchitooHelper extends AppHelper {
 
-    public function __construct() {
-
+    public function __construct(View $View, $settings = array()) {
+        parent::__construct($View, $settings);
         Configure::load('watchitoo');
-
     }
 
     public function initJS( $meetingId, $initParams=array() ) {
         return '
-
-
         function OnWatchitooPlayerEvent(playerID,eventName,eventParams) {
-
             switch(eventName) {
                 case "ready":
                     Init();
@@ -30,39 +26,53 @@ class WatchitooHelper extends AppHelper {
                         case 1003:
                             alert("Invalid vendorID/accessToken Credentials!");
                             break;
-
-                        default:
-                            alert(eventParams);
-                            break;
-
                     }
                     break;
             }
         }
 
-        function Init() {
-            var initializeParams = {
-                userID: "'.$initParams['user_id'].'",
-                watchitooUserID : "'.$initParams['watchitoo_user_id'].'",
-                displayName : "'.$initParams['display_name'].'",
-                isModerator : '.$initParams['is_moderator'].'
-            };
 
-            var ws=document.getElementById("WatchitooPlayer");
+            function Init() {
+				var vendorID="'.Configure::read('Watchitoo.vendorId').'";
+				var accessToken="'.Configure::read('Watchitoo.accessToken').'";
+				var showID="'.$meetingId.'";
 
-            var result=ws.Initialize('.Configure::read('Watchitoo.vendorId').', '.Configure::read('Watchitoo.accessToken').', '.$meetingId.', initializeParams );
-            if(result!=null&&result.result)
-            {
-                if(result.result=="fail"&&result.errorString)
-                    alert(result.errorString);
-            }
+				var initializeParams = {
+					watchitooUserID : "'.$initParams['watchitoo_user_email'].'",
+					watchitooPassword : "'.$initParams['watchitoo_password'].'",
+					userAvatarURL : "'.Router::url(
+                                            $this->_View->Layout->image( $initParams['user_image_source'] ),
+                                            true
+                                        ).'",
 
-        }
+                    isModerator : '.($initParams['is_teacher'] || $initParams['lesson_type']==LESSON_TYPE_VIDEO ? 'true' : 'false' ).'
+				};
+
+				var ws=document.getElementById("WatchitooPlayer");
+				var result=ws.Initialize(vendorID, accessToken, showID, initializeParams );
+
+				if(result!=null&&result.result)
+				{
+					if(result.result=="fail"&&result.errorString)
+						alert(result.errorString);
+				}
+			}
 
 ';
     }
 
-    public function embedMeetingJS() {
-        return '<script type="text/javascript" src="http://www.watchitoo.com/swf/watchitooShowEmbed.php?playerid=WatchitooPlayer&tp=1&scale=false&width=960&height=530&layout=11"></script>';
+    public function embedMeetingJS($isModerator, $lessonType) {
+        if($isModerator) {
+            //Top/Right menu + playlist
+            return '<script type="text/javascript" src="http://www.watchitoo.com/swf/watchitooShowEmbed.php?playerid=WatchitooPlayer&tp=1&scale=false&width=960&height=530&layout=11"></script>';
+        }
+
+        if($lessonType==LESSON_TYPE_LIVE) {
+            //No top menu
+            return '<script type="text/javascript" src="http://www.watchitoo.com/swf/watchitooShowEmbed.php?playerid=WatchitooPlayer&tp=1&scale=false&width=960&height=506&layout=15"></script>';
+        }
+
+        //Default Video/Student. No right/top menu + playlist
+        return '<script type="text/javascript" src="http://www.watchitoo.com/swf/watchitooShowEmbed.php?playerid=WatchitooPlayer&tp=1&scale=false&width=640&height=506&layout=16"></script>';
     }
 }

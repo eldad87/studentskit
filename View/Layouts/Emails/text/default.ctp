@@ -18,4 +18,31 @@
 ?>
 <?php echo $content_for_layout;?>
 
-This email was sent using the CakePHP Framework, http://cakephp.org.
+
+<?php
+App::uses('Router', 'Routing');
+config('routes');
+
+$isTeacher = isSet($isTeacher) ? $isTeacher : false;
+?>
+Don't want to receive these emails anymore? Unsubscribe here:
+<?php
+    echo Router::url(
+            $this->Layout->getTurnNotificationsOffUrl($email, $userId, $isTeacher),
+            true
+        );
+?>
+Manage your email notification preferences:
+<?php
+    if($isTeacher) {
+        $profileUrl = $this->Layout->getOrganizerUrl('/Teacher/profile');
+    } else {
+        $profileUrl = $this->Layout->getOrganizerUrl('/Student/profile');
+    }
+
+    echo Router::url(
+        $profileUrl,
+        true
+    );
+?>
+

@@ -176,7 +176,7 @@ class OrderController extends AppController {
 
         $datetime = $this->data['UserLesson']['datetime'];
 
-        $datetime = mktime((strtolower($datetime['meridian'])=='pm' ? $datetime['hour']+12 : $datetime['hour']), $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
+        $datetime = mktime($datetime['hour'], $datetime['min'], 0, $datetime['month'], $datetime['day'], $datetime['year']);
         $datetime = $this->UserLesson->timeExpression($datetime, false);
         $this->Session->write('order.datetime', $datetime);
 

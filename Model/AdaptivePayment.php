@@ -349,6 +349,17 @@ class AdaptivePayment extends AppModel {
         return $this->findByUserLessonIdAndIsUsed($userLessonId, 1) ? true : false;
     }
 
+    public function isValidPendingPaymentApproval($userLessonId) {
+        $this->recursive = - 1;
+        return $this->find('first', array(
+            'conditions'=>array(
+                'user_lesson_id'=>$userLessonId,
+                'is_used'=>0,
+                'is_approved'=>1
+            )
+        )) ? true : false;
+    }
+
     public function isValidApproval($userLessonId, $amount=null, $datetime=null) {
         //User ask for a FREE lesson
         if(!is_null($amount) && !$amount) {
@@ -508,15 +519,33 @@ class AdaptivePayment extends AppModel {
     }
 
     /**
-     * Calc commission
+     * Calc our commission
      * @param $perStudentPrice
      * @param $lessonType
      * @param $duration
      * @return mixed
      */
     private function calcCommission($perStudentPrice, $lessonType, $duration) {
+
+
+        // 1. Max potential Paypal's commission
+        $payPalMaxCommission = $this->calcPayPalMaxCommission($perStudentPrice);
+
+        // 2. Teacher final payment
         $perStudentCommission = Configure::read('per_student_commission');
-        return $perStudentPrice<$perStudentCommission ? $perStudentPrice : $perStudentCommission;
+        $teacherPayment = $perStudentPrice - $perStudentCommission;
+
+        // 3. Commission is paid by the teacher, therefore:
+        if($teacherPayment>$payPalMaxCommission) {
+            return $perStudentCommission;
+        }
+
+        // 4. We cannot take commission
+        return 0;
+    }
+
+    private function calcPayPalMaxCommission($perStudentPrice) {
+        return ($perStudentPrice * 0.05) + 0.30 + 0.30; // 5% + 0.30 cents + 0.30 cents
     }
 
     private function cancelDuplications($pendingUserLessonData, $status) {

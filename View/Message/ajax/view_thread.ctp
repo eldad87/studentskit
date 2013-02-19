@@ -54,7 +54,7 @@
 
             <?php
                 foreach($response['response']['thread']['messages'] AS $message) {
-                    echo $this->element('Panel/Message/replay_li', array('message'=>$message, 'other_user'=>$response['response']['thread']['other_user']));
+                    echo $this->element('Panel'.DS.'Message'.DS.'replay_li', array('message'=>$message, 'other_user'=>$response['response']['thread']['other_user']));
                 }
             ?>
         </ul>

@@ -96,7 +96,7 @@
                     $i=0;
                     foreach($upcomingAvailableLessons AS $upcomingAvailableLesson) {
                         $upcomingAvailableLesson = $upcomingAvailableLesson['TeacherLesson'];
-                        echo $this->element('Order/upcoming_lesson_div', array('upcomingAvailableLesson'=>$upcomingAvailableLesson, 'first'=>!++$i));
+                        echo $this->element('Order'.DS.'upcoming_lesson_div', array('upcomingAvailableLesson'=>$upcomingAvailableLesson, 'first'=>!++$i));
                     }
                     ?>
                 </div> <!-- /modal-body -->

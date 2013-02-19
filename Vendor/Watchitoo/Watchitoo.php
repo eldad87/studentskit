@@ -49,8 +49,8 @@ Class Watchitoo extends Component {
         }
 
         //Find teacher watchitoo user_id
-        $wUID = $this->getWatchitooUserId($subjectData['user_id'], $subjectId);
-        if(!$wUID) {
+        $wU = $this->getWatchitooUser($subjectData['user_id'], $subjectId);
+        if(!$wU) {
             return false;
         }
 
@@ -75,11 +75,15 @@ Class Watchitoo extends Component {
         }
 
         return array(
-            'user_id'=>$subjectData['user_id'],
-            'watchitoo_user_id'=>$wUID,
-            'display_name'=>$displayName,
-            'is_moderator'=>'true',
-            'meeting_id'=>$meetingId
+            'user_id'               => $subjectData['user_id'],
+            'watchitoo_user_id'     => $wU['watchitoo_user_id'],
+            'watchitoo_user_email'  => $wU['watchitoo_user_email'],
+            'watchitoo_password'    => $this->getUserPassword($subjectData['user_id']),
+            'display_name'          => $displayName,
+            'is_teacher'            => true,
+            'lesson_type'           => $subjectData['lesson_type'],
+            'meeting_id'            => $meetingId,
+            'user_image_source'     => $userData['User']['image_source']
         );
 
     }
@@ -92,7 +96,7 @@ Class Watchitoo extends Component {
             $userId = $tlData['teacher_user_id'];
         }
 
-        $wUID = $this->getWatchitooUserId($userId, $tlData['teacher_user_id']==$userId ? $tlData['subject_id'] : null);
+        $wU = $this->getWatchitooUser($userId, $tlData['teacher_user_id']==$userId ? $tlData['subject_id'] : null);
 
         //get  user data
         $this->wluObj->User->recursive = -1;
@@ -100,7 +104,7 @@ Class Watchitoo extends Component {
 
         $meetingId = $this->getMeetingId($teacherLessonId);
 
-        if(!$tlData || !$wUID || /*!$userData || */!$meetingId) {
+        if(!$tlData || !$wU || /*!$userData || */!$meetingId) {
             return false;
         }
 
@@ -110,13 +114,18 @@ Class Watchitoo extends Component {
             $displayName .= ' '.$userData['User']['last_name'];
         }
 
+        $return['user_image_source']  = $userData['User']['image_source'];
 
         return array(
             'user_id'=>$userId,
-            'watchitoo_user_id'=>$wUID,
-            'display_name'=>$displayName,
-            'is_moderator'=>$tlData['teacher_user_id']==$userId ? 'true' : 'false',
-            'meeting_id'=>$meetingId
+            'watchitoo_user_id'     => $wU['watchitoo_user_id'],
+            'watchitoo_user_email'  => $wU['watchitoo_user_email'],
+            'watchitoo_password'    => $this->getUserPassword($userId),
+            'display_name'          => $displayName,
+            'is_teacher'            => $tlData['teacher_user_id']==$userId,
+            'lesson_type'           => $tlData['lesson_type'],
+            'meeting_id'            => $meetingId,
+            'user_image_source'     => $userData['User']['image_source']
         );
     }
 
@@ -253,8 +262,8 @@ Class Watchitoo extends Component {
     private function _createMeeting($userId, $subjectId, $meetingName, $meetingDescription, $meetingDatetime=null) {
         //Get Watchitoo's user_id
         $this->log('Get watchitoo user_id', 'watchitoo');
-        $wUID = $this->getWatchitooUserId($userId, $subjectId);
-        if(!$wUID) {
+        $wU = $this->getWatchitooUser($userId, $subjectId);
+        if(!$wU) {
             $this->log('Cannot create watchitoo user_id', 'watchitoo');
             //$this->tlObj->unlock($teacherLessonId);
             return false;
@@ -264,7 +273,7 @@ Class Watchitoo extends Component {
 
         //Create meeting
         $this->log('Create meeting', 'watchitoo');
-        $meetingData = $this->wObj->saveMeeting(null, $wUID, $meetingName, $meetingDescription, $meetingDatetime);
+        $meetingData = $this->wObj->saveMeeting(null, $wU['watchitoo_user_id'], $meetingName, $meetingDescription, $meetingDatetime);
         if(!isSet($meetingData['data']['meeting_id']) || !$meetingData['data']['meeting_id']) {
             $this->log('Cannot create meeting', 'watchitoo');
             //$this->tlObj->unlock($teacherLessonId);
@@ -281,7 +290,7 @@ Class Watchitoo extends Component {
         return true;
     }
 
-    private function getWatchitooUserId($userId, $subjectId=null, $createNewUser=true) {
+    private function getWatchitooUser($userId, $subjectId=null, $createNewUser=true) {
         //Student
         if(is_null($subjectId)) {
             $this->wluObj->recursive = -1;
@@ -302,7 +311,7 @@ Class Watchitoo extends Component {
             return $this->createWatchitooUser($userId, $subjectId);
         }
 
-        return $wUserData['watchitoo_user_id'];
+        return $wUserData;
     }
 
     private function createWatchitooUser($userId, $subjectId=null) {
@@ -315,27 +324,36 @@ Class Watchitoo extends Component {
         }
 
         //Create user on Watchitoo, email is changes to universito_email - in order to avoid existing users
-        $wUserData = $this->wObj->saveUser(null, 'test9_universito_'.($subjectId ? $subjectId.'_' : null).$userData['User']['email'], $this->getUserPassword($userId), $userData['User']['first_name'], $userData['User']['last_name']);
+        Configure::load('watchitoo');
+        $accountPrefix = Configure::read('Watchitoo.accountPrefix');
+        $watchitooUserEmail = $accountPrefix.($subjectId ? $subjectId.'_' : null).$userData['User']['email'];
+        $wUserData = $this->wObj->saveUser(null, $watchitooUserEmail, $this->getUserPassword($userId), $userData['User']['first_name'], $userData['User']['last_name']);
         if(!isSet($wUserData['data']['user_id']) || !$wUserData['data']['user_id']) {
             $this->log('Cannot create watchitoo user', 'watchitoo');
             return false;
         }
 
         //Create link user_id-watchitoo_user_id
-        $userObj = is_null($subjectId) ? $this->wluObj   : $this->wstObj;
+        $userObj = is_null($subjectId) ? $this->wluObj : $this->wstObj;
         $userObj->create(false);
-        $userObj->set(array('user_id'=>$userId, 'watchitoo_user_id'=>$wUserData['data']['user_id'], 'subject_id'=>$subjectId));
+        $saveData = array('user_id'=>$userId, 'watchitoo_user_id'=>$wUserData['data']['user_id'], 'watchitoo_user_email'=>$watchitooUserEmail, 'subject_id'=>$subjectId);
+        $userObj->set($saveData);
         if(!$userObj->save()) {
             $this->log('Cannot create user_id-watchitoo_user_id link', 'watchitoo');
             return false;
         }
 
 
-        return $wUserData['data']['user_id'];
+        return $saveData;
     }
 
     public static function getUserPassword($userId) {
-        return $userId*100;
+        return substr(
+            Security::hash($userId, null, true),
+            0,
+            20
+        );
+
     }
 
 

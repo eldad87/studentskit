@@ -8,6 +8,6 @@
             ?></p>
     </div>
 <?php
-echo $this->element('Order/calendar', array('allLiveLessons'=>$allLiveLessons, 'inline'=>true, 'isTeacher'=>true));
+echo $this->element('Order'.DS.'calendar', array('allLiveLessons'=>$allLiveLessons, 'inline'=>true, 'isTeacher'=>true));
 ?>
 </div>

@@ -8,7 +8,7 @@ if($response['response']['results']) {
         $bgColor = 1;
     }
     foreach($response['response']['results'] AS $latestTopic) {
-        echo $this->element('Home/last_board_msg_li', array('latestTopic'=>$latestTopic, 'bgColor'=>++$bgColor));
+        echo $this->element('Home'.DS.'last_board_msg_li', array('latestTopic'=>$latestTopic, 'bgColor'=>++$bgColor));
 
         if($bgColor==2) {
             $bgColor = 0;

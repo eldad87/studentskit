@@ -11,7 +11,7 @@ class LessonsController extends AppController {
 	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson', 'FileSystem');
     public $components = array('Comments.Comments' => array('userModelClass' => 'User', 'actionNames'=>array('community', 'comments')));
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
-	public $helpers = array('Watchitoo');
+	public $helpers = array('Watchitoo', 'Html', 'Layout');
 
     public function __construct($request = null, $response = null) {
         parent::__construct($request, $response);
@@ -84,8 +84,11 @@ class LessonsController extends AppController {
         }
 
 
+        //$this->Auth->user('image_source')
         $this->set('meetingSettings', $meetingSettings);
         $this->set('lessonName', $subjectData['Subject']['name']);
+        /*$this->set('lessonType', $subjectData['Subject']['lesson_type']);
+        $this->set('isTeacher', true);*/
 
         $this->set('subjectId', $subjectId);
         $this->set('blank', true); //Draw only the flash
@@ -145,13 +148,27 @@ class LessonsController extends AppController {
                     //Show countdown
 
                     if($liveRequestStatus['payment_needed']) {
-                        //Check payment - if did not pass, the user canceled his approval.
-                        /*App::import('Model', 'AdaptivePayment');
-                        $apObj = new AdaptivePayment();
-                        $enterLesson = $apObj->isPaid($liveRequestStatus['user_lesson_id']);*/
 
-                        $this->Session->setFlash(__('Please wait for the lesson to start'));
-                        $this->redirect(array('controller'=>'Home', 'action'=>'teacherLesson', $liveRequestStatus['teacher_lesson_id']));
+                        //Check payment - if did not pass, the user canceled his approval.
+                        App::import('Model', 'AdaptivePayment');
+                        $apObj = new AdaptivePayment();
+
+                        //Check if payment did not processed yet
+                        $isValidPendingPaymentApproval = $apObj->isValidPendingPaymentApproval($liveRequestStatus['user_lesson_id']);
+                        if($isValidPendingPaymentApproval) {
+                            $errorMessage = __('Your payment is not yet processed, please try again in a few minutes');
+                            $enterLesson = false;
+
+                        //Payment processed, check if success
+                        } else {
+                            $enterLesson = $apObj->isPaid($liveRequestStatus['user_lesson_id']);
+                            $errorMessage = __('Your payment failed.');
+                        }
+
+                        if(!$enterLesson) {
+                            $this->Session->setFlash($errorMessage);
+                            $this->redirect(array('controller'=>'Home', 'action'=>'teacherLesson', $liveRequestStatus['teacher_lesson_id']));
+                        }
                     } else {
                         $enterLesson = true;
                     }
@@ -261,7 +278,6 @@ class LessonsController extends AppController {
 
         $this->set('subjectId', $data['subject_id']);
         //$this->set('datetime', $liveRequestStatus['datetime']);
-        $this->set('is_teacher', $data['is_teacher']);
         $this->set('lessonName', $data['lesson_name']);
     }
 

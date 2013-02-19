@@ -1,0 +1,36 @@
+# run as:
+# sudo su -c "crontab -e" www-data
+
+#
+# # Email users
+#
+
+# 1 hour before lesson starts
+# Run every 5 minutes
+* */5 * * * /var/www/lib/Cake/Console/cake -app /var/www/studentskit/ lesson_notification "1 hour"
+
+# 10 minutes before lesson starts
+# Run every 20 seconds
+*/20 * * * * /var/www/lib/Cake/Console/cake -app /var/www/studentskit/ lesson_notification "10 minutes"
+
+
+
+
+#
+# # Payment
+#
+
+# Charge users 1 hour before lesson starts
+# Run every 20 seconds
+*/20 * * * * /var/www/lib/Cake/Console/cake -app /var/www/studentskit/ live_payment
+
+
+
+
+#
+# # Change lesson stage
+#
+
+# After lesson ends, allow users/teacher to rate the lesson/students
+# Run every 20 seconds
+*/20 * * * * /var/www/lib/Cake/Console/cake -app /var/www/studentskit/ update_rating_stage
