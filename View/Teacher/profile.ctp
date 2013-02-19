@@ -65,7 +65,7 @@ echo $this->element('Panel'.DS.'teacher_about_video_popup', array('buttonSelecto
 
             <ul class="certificate-container" id="certificate_container">
                 <?php
-                if(isSet($userData['TeacherCertificate'])) {
+                if(isSet($userData['TeacherCertificate']) && $userData['TeacherCertificate']) {
                     foreach($userData['TeacherCertificate'] AS $cert) {
                         echo $this->element('Panel'.DS.'Profile'.DS.'certificate', array('cert'=>$cert, 'li'=>true));
 
@@ -85,7 +85,7 @@ echo $this->element('Panel'.DS.'teacher_about_video_popup', array('buttonSelecto
 
             <ul class="certificate-container" id="about_video_container">
                 <?php
-                if(isSet($userData['TeacherAboutVideo'])) {
+                if(isSet($userData['TeacherAboutVideo']) && $userData['TeacherAboutVideo']) {
                     foreach($userData['TeacherAboutVideo'] AS $av) {
                         echo $this->element('Panel'.DS.'Profile'.DS.'teacher_about_video', array('video'=>$av, 'li'=>true));
                         /*echo $this->Html->link('Remove About Video', array('controller'=>'Teacher', 'action'=>'removeAboutVideo', $av['teacher_about_video_id']));*/
