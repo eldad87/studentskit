@@ -519,7 +519,7 @@ class Subject extends AppModel {
             $rootFS = $fsObj->id;
 
             //Create users upload root dir
-            $fsObj->addFolder($rootFS, __('Users uploads')); //TODO: use subject language
+            $fsObj->addFolder($rootFS, __('Users uploads'), false); //TODO: use Teacher language/subject language
             $usersUploadRoot = $fsObj->id;
 
             //$this->set(array('root_file_system_id'=>$rootFS, 'user_upload_root_file_system_id'=>$usersUploadRoot));

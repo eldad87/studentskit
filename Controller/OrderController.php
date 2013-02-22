@@ -11,7 +11,7 @@ class OrderController extends AppController {
                                     'requireSecure'=>true,
                                     'requirePost'=>array('prerequisites')
                                 )*/);
-	//public $helpers = array('Form', 'Html', 'Js', 'Time');
+	public $helpers = array('Layout');//'Form', 'Html', 'Js', 'Time'
 
     public function forceSSL() {
         $this->redirect('https://' . env('SERVER_NAME') . $this->here);

@@ -40,8 +40,8 @@ echo $this->Html->scriptBlock('
 
                     $addAgendaJS .= "
                         addAgenda(  '{$lLesson['teacher_lesson_id']}',
-                                    '{$lLesson['name']}',
-                                    '{$lLesson['description']}',
+                                    '{$this->Layout->stringToJSVar($lLesson['name'])}',
+                                    '{$this->Layout->stringToJSVar($lLesson['description'])}',
                                     '{$lLesson['num_of_students']}',
                                     '{$lLesson['max_students']}',
                                     '{$lLesson['datetime']}',

@@ -3,6 +3,7 @@ class AccountsController extends AppController {
 	public $name = 'Accounts';
 	public $uses = array('User');
 	public $components = array('Session',
+                                'Email',
                                 //'Facebook.Connect'=>array(  'noAuth'=>false, 'model'=>'User' ),
                                 'RequestHandler',
                                 'SignMeUp.SignMeUp'=>array(

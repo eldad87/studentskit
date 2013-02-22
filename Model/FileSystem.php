@@ -84,15 +84,22 @@ class FileSystem extends AppModel {
         return $this->getFS( $subjectData['Subject']['root_file_system_id'] );
     }*/
 
-    public function getFS($fileSystemId) {
+    public function getFS($fileSystemId, $permission=null) {
 
         //Find root
         $this->recursive = -1;
         $fsData = $this->findByFileSystemId($fileSystemId);
 
+
+        $conditions = array('entity_type'=>$fsData['FileSystem']['entity_type'], 'entity_id'=>$fsData['FileSystem']['entity_id']);
+        if($permission) {
+            //Make sure that student see only his content/public content
+            $conditions['permission'] = array(0, $permission);
+        }
+
         //Find children
         $this->recursive = -1;
-        $fsFromDB = $this->find('threaded', array('conditions'=>array('entity_type'=>$fsData['FileSystem']['entity_type'], 'entity_id'=>$fsData['FileSystem']['entity_id'])));
+        $fsFromDB = $this->find('threaded', array('conditions'=>$conditions));
 
         $fsFromDB = $this->fixThreaded($fsFromDB);
 
@@ -178,7 +185,7 @@ class FileSystem extends AppModel {
      * Create root file system
      * @param $entityType - subject|user_lesson|teacher_lesson
      * @param $entityId
-     * @param $permission - 0, all can browse/download, >0, can rename/delete/upload to
+     * @param $permission - 0, all can browse/download, (student user id) >0, can rename/delete/upload to
      * @param $parentId
      * @param $name
      *
@@ -220,18 +227,70 @@ class FileSystem extends AppModel {
             'permission'    =>$permission,
             'parent_id'     =>$parentId,
             'name'          =>$name ? $name : $entityData[$obj->alias]['name'],
-            'type'          =>'folder'
+            'type'          =>'folder',
+            'deletable'     =>0
         ));
 
         return $this->save();
     }
 
-    public function addFolder($parentId, $name ) {
+    public function isRootFS($fileSystemId) {
+        $this->recursive = -1;
+        $fsData = $this->findByFileSystemId($fileSystemId);
+        if(!$fsData) {
+            return false;
+        }
+
+        if($fsData['FileSystem']['type']!='folder') {
+            return false;
+        }
+
+
+        //Find the entity that his FS belongs to
+        $entity = strtolower($fsData['FileSystem']['entity_type']);
+        switch($entity) {
+            case 'subject':
+                App::import('Model', 'Subject');
+                $obj = new Subject();
+                break;
+            case 'teacher_lesson':
+                App::import('Model', 'TeacherLesson');
+                $obj = new TeacherLesson();
+                break;
+            case 'user_lesson':
+                App::import('Model', 'UserLesson');
+                $obj = new UserLesson();
+                break;
+        }
+
+        if(!isSet($obj)) {
+            return false;
+        }
+
+        $obj->recursive = -1;
+        $entityData = $obj->find('first', array('conditions'=>array($obj->primaryKey=>$fsData['FileSystem']['entity_id'])));
+        if(!$entityData) {
+            return false;
+        }
+
+        //Check if this is the -users-upload main folder
+        if($entity=='subject') {
+            if($entityData[$obj->alias]['user_upload_root_file_system_id']==$fileSystemId) {
+                return true;
+            }
+        }
+
+        //Check if root
+        return $entityData[$obj->alias]['root_file_system_id']==$fileSystemId;
+    }
+
+    public function addFolder($parentId, $name, $deletable=true ) {
         $this->create(false);
         $this->set(array(
             'parent_id' =>$parentId,
             'name'      =>$name,
-            'type'      =>'folder'
+            'type'      =>'folder',
+            'deletable' => ($deletable ? 1 : 0)
         ));
 
         return $this->save();

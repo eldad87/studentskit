@@ -10,7 +10,7 @@
         'privateKey'=>'evgnATl7WaMaCTI7LC8f561SaM1VpTMI',
   		'accessToken' => 'A0e9ecb58d7c5480e8b208cd75e23b2198',
   		'domain' => 'http://www.watchitoo.com/',
-  		'accountPrefix' => 'test11_universito_',
+  		'accountPrefix' => 'test12_universito_',
   		)
   	);
 ?>

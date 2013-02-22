@@ -11,9 +11,12 @@ class FileSystemController extends AppController {
     public function beforeFilter() {
         parent::beforeFilter();
 
-        $res = $this->_validateFS($this->request['action'], $this->request['pass']);
+        $res = $this->_validateFS($this->request->params['action'], $this->request->params['pass']);
         if($res!==true) {
-            return $res;
+            //Prevent from executing an action
+            $this->response->send();
+            $this->_stop();
+            return false;
         }
     }
 
@@ -28,6 +31,10 @@ class FileSystemController extends AppController {
             $ulData = $ulData['UserLesson'];
 
             $subjectId = $ulData['subject_id'];
+
+             $this->setJSSetting('is_teacher', false);
+        } else {
+            $this->setJSSetting('is_teacher', true);
         }
 
         //Find subject data
@@ -36,7 +43,8 @@ class FileSystemController extends AppController {
         $subjectData = $subjectData['Subject'];
 
         //Load subject FS
-        $fs = $this->FileSystem->getFS($subjectData['root_file_system_id']);
+        $permission = ($subjectData['user_id']!=$this->Auth->user('user_id') ? $this->Auth->user('user_id') : null);
+        $fs = $this->FileSystem->getFS($subjectData['root_file_system_id'], $permission);
 
         /**
          * For UserLesson:
@@ -70,6 +78,7 @@ class FileSystemController extends AppController {
     }
 
     public function uploadFile() {
+
         $fileName = $_GET['fileUpload'];
 
         App::import('Model', 'FileSystem');
@@ -87,7 +96,7 @@ class FileSystemController extends AppController {
 
 
             echo json_encode(array('success' => true, 'data' => array(
-               'file_system_id' => $fsObj->id,
+                'file_system_id'=> $fsObj->id,
                 'name'          => $fileData['FileSystem']['name'],
                 'type'          => 'file',
                 'size_kb'       => $fileData['FileSystem']['size_kb'],
@@ -160,11 +169,11 @@ class FileSystemController extends AppController {
                 }
                 $obj->recursive-1;
                 $objData = $obj->find('first', array('conditions'=>array($obj->primaryKey=>$params[1])));
-
                 $parentId = $objData[$obj->alias]['root_file_system_id'];
                 $fsData = $this->_findByFileSystemId($parentId);
                 break;
         }
+
 
         if(!isSet($fsData) || !$fsData) {
             return $this->error(1);
@@ -185,10 +194,6 @@ class FileSystemController extends AppController {
             return $this->error(2);
         }
 
-        if($userRelation=='teacher') {
-            return true;
-        }
-
 
         //Check if student have permission
         switch($action) {
@@ -200,16 +205,24 @@ class FileSystemController extends AppController {
                 }
                 break;
             case 'delete':
+                //Make sure its an object that teacher/user can delete
+                if(!$fsData['deletable']) {
+                    return $this->error(3);
+                }
             case 'rename':
             case 'addFolder':
-            case 'upload':
+            case 'uploadFile':
                 if($fsData['permission']==$this->Auth->user('user_id')) {
                     return true;
                 }
                 break;
         }
 
-        return $this->error(3);
+        if($userRelation=='teacher') {
+            return true;
+        }
+
+        return $this->error(4);
     }
 
     private function _findByFileSystemId($fileSystemId) {
