@@ -1,3 +1,4 @@
+<?php if(isSet($jsSettings)) { echo $this->element('js_settings', array('jsSettings'=>$jsSettings, 'inline'=>true)); }  ?>
 <script type="text/javascript">
 
     $(document).ready(function(){
@@ -47,6 +48,23 @@
         //Bind trigger that will be fired right when fileSystem will be loaded
         $('#file-list').on('pathChange', function(e, data){ //When path changes, apply the changes to the fineUploader
 
+            //Show/Hide upload/create folder button
+            var parent = data['parent'];
+            delete data['parent'];
+            var uploadButton = (parent['permission']==jsSettings['user_id'] || jsSettings['is_teacher']);
+            var createFolderButton = (parent['permission']==jsSettings['user_id'] || jsSettings['is_teacher']);
+            if(uploadButton) {
+                $('#new-folder').show();
+            } else {
+                $('#new-folder').hide();
+            }
+
+            if(createFolderButton) {
+                $('#fileUpload').show();
+            } else {
+                $('#fileUpload').hide();
+            }
+
             //Set the new path, will be used for uploading new files
             $('#bootstrapped-fine-uploader').fineUploader('setParams', data);
 
@@ -62,7 +80,14 @@
             newFolderAction: {button: '#new-folder',model: '#rename-popup', nameField: '#newName', url: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'addFolder', '{id}')); ?>'},
             renameAction: {model: '#rename-popup', nameField: '#newName', url: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'rename', '{id}')); ?>'},
             deleteAction: {url: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'delete', '{id}')); ?>', errorElement: '#errorElement'},
-            downloadAction: {url: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'download', '{id}')); ?>'}
+            downloadAction: {url: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'download', '{id}')); ?>'},
+            resourcePermissions: function(parent, resource) {
+                return {
+                    'delete': ( resource['deletable']==1 && (parent['permission']==jsSettings['user_id'] || jsSettings['is_teacher']) ),
+                    'rename_folder': ( resource['permission']==jsSettings['user_id'] || jsSettings['is_teacher'] )
+                };
+            }
+
         });
 
         //if(jQuery.isFunction('initNextButton') ) {
@@ -80,7 +105,7 @@
                 <div class="control-group">
                     <div class="control m-none-left ">
                         <p class="x-large8 advicebar">
-                            The files will be available for download.
+                            <?php echo __('The files will be available for download.'); ?>
                         </p>
                     </div>
                 </div>
@@ -150,13 +175,13 @@
 <div id="rename-popup" class="modal hide fade myModal">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">×</button>
-        <h3>Rename file</h3>
+        <h3><?php echo __('Rename file'); ?></h3>
     </div> <!-- /modal-header -->
     <form class="sk-form" id="rename-form" method="post" action="">
         <div class="modal-body">
             <fieldset>
                 <div class="control-group">
-                    <label class="control-label" for="newName">Name :</label>
+                    <label class="control-label" for="newName"><?php echo __('Name'); ?> :</label>
                     <div class="control control1">
                         <input type="text" class="x-large2" name="FileSystem[name]" value="" id="newName">
                     </div>

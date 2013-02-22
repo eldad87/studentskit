@@ -9,7 +9,7 @@ class OrganizerController extends AppController {
 	//public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
 	public $components = array('Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')), 'Security');
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
-	///public $helpers = array('Watchitoo');
+	public $helpers = array('Layout');
 
     public function beforeFilter() {
         parent::beforeFilter();

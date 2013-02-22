@@ -194,6 +194,8 @@ $config['Tests.save.error.1.description'] = __('Cannot find resource');
 $config['Tests.save.error.2.title'] = __('Error');
 $config['Tests.save.error.2.description'] = __('Permission error');
 $config['Tests.save.error.3.title'] = __('Error');
+$config['Tests.save.error.3.description'] = __('Cannot remove root folder');
+$config['Tests.save.error.3.title'] = __('Error');
 $config['Tests.save.error.3.description'] = __('Validation error');
 
 /*-------------------- FileSystem.delete	--------------------*/

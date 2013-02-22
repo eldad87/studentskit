@@ -1,4 +1,4 @@
-(function( $ ){
+    (function( $ ){
     var methods = {
         _getSetting: function(name) {
             var settings = $(this).data('settings');
@@ -88,13 +88,15 @@
                     type: 'post',
                     dataType: 'json'
                 }).done(function ( data ) {
-                        if(data['response']['title'][0]=='Success') {
+                        if(data && data['response']['title'][0]=='Success') {
                             //remove old error message
                             showError(deleteSettings['errorElement']);
                             self.fileSystem('removeResource', id);
                         } else {
                             //Set new error message
-                            showError(deleteSettings['errorElement'], data['response']['description'][0], '');
+                            if(data) {
+                                showError(deleteSettings['errorElement'], data['response']['description'][0], '');
+                            }
                         }
                     });
 
@@ -103,7 +105,7 @@
 
         },
 
-        _drawResource: function(resource) {
+        _drawResource: function(parent, resource) {
             resource['class'] = (resource['type']=='folder' ? 'norm' : 'black');
 
             //Build element
@@ -111,11 +113,26 @@
                 '<i class="iconMedium-folder-{class} pull-left space20"></i>' +
                 '<span class="pull-left">{name}</span>' +
                 '<div class="pull-right">';
-            if(resource['type']=='folder') {
+
+
+            var settings = $(this).data('settings');
+            if(settings.resourcePermissions) {
+                var permission = settings.resourcePermissions( parent, resource );
+            } else {
+                var permission = $(this).fileSystem( '_resourcePermissions', parent, resource );
+            }
+
+            if(resource['type']=='folder' && permission['rename_folder']) {
                 //Rename is available only for folders
                 element +=          '<i class="iconSmall-pencil pencilicon actionButton" id="rename_{file_system_id}"></i>';
             }
-            element +=              '<i class="iconSmall-red-cross redcross actionButton" id="delete_{file_system_id}"></i>' +
+
+            if(permission['delete']) {
+                element +=          '<i class="iconSmall-red-cross redcross actionButton" id="delete_{file_system_id}"></i>';
+            }
+
+
+            element +=
                 '</div>' +
                 '</li>';
 
@@ -130,16 +147,31 @@
             return $(this);
         },
 
+        _resourcePermissions: function(parent, resource) {
+            return {
+                'delete': false,
+                'rename_folder': false
+            };
+        },
+
+        _folderPermissions: function(parent) {
+            return {
+                'upload': false,
+                'create_folder': false
+            };
+        },
+
         _showResources: function(path) {
 
             //1. Find the right resources matching path
             var resources = $(this).data('fileSystem');
-
+            var parent;
 
             //2. build path display
             var pathDisplay = '/';
             for(var i in path) {
                 pathDisplay += resources[path[i]]['name'] + '/';
+                parent = resources[path[i]];
                 resources = resources[path[i]]['children'];
             }
 
@@ -153,8 +185,12 @@
 
             //Render resources
             for(var i in resources) {
-                $(this).fileSystem('_drawResource', resources[i]);
+                $(this).fileSystem('_drawResource', parent, resources[i]);
             }
+
+            //TODO: based on parent - show upload/add folder
+            $(this).trigger('pathChange', {path: path, parent: parent} );
+
 
             return $(this);
         },
@@ -234,8 +270,6 @@
                 $(this).data('path', p);
 
             }
-
-            $(this).trigger('pathChange', {path: $(this).data('path')} );
 
             $(this).fileSystem('render');
 
