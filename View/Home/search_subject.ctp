@@ -21,6 +21,8 @@
                     <!-- category filter -->
                     <?php if($subjectsData) {
                         echo $this->element('Home'.DS.'facet_subject_categories', array('facet_categories'=>$subjectsData['categories']));
+                    } else {
+                        echo '<p>',__('No lessons found.'),'</p>';
                     } ?>
                     <!-- end of category filter -->
                     <div class="lesson-wrapper">

@@ -247,6 +247,9 @@ small {
 	width: auto; 
 	height: auto; 
 }
+.clearleft {
+    clear:left;
+}
 
 .clear-right { 
 	display: block; 

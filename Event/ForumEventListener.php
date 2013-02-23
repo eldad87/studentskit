@@ -118,7 +118,7 @@ class ForumEventListener implements CakeEventListener {
                 //Set order
                 $forumObj->cacheQueries = false;
                 $res = $forumObj->find('first', array('conditions'=>array('forum_id'=>$forumData['forum_id']), 'order'=>'orderNo DESC', 'fields'=>array('orderNo')));
-                $forumData['orderNo'] = ($res[$forumObj->alias]['orderNo']+1);
+                $forumData['orderNo'] = isSet($res[$forumObj->alias]['orderNo']) ?($res[$forumObj->alias]['orderNo']+1) : 1;
 
 
                 $forumObj->set($forumData);

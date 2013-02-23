@@ -318,6 +318,10 @@ function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
     $(maxStudentsInputSelector).unbind();
     $(lessonTypeInputSelector).unbind();
 
+
+    //Chrome fix, hidden inputs that are required
+    $(oneOnOnePriceInputSelector).closest('form').attr('novalidate', 'novalidate');
+
     //Make Full-group-student-price invisible until the user set max-students>1
     $(fullGroupStudentPriceDivSelector).hide();
 
@@ -1417,5 +1421,14 @@ $(document).ready(function(){
 
     $("html").click(function(ev){
         $(".alltip").hide(300);
+    });
+});
+
+
+//Fix moal when is biger then the screen height
+$(document).ready(function(){
+    //Scroll
+    $('body').delegate('.modal', 'show', function(event) {
+        $('.modal .modal-body').slimScroll({height: ($(window).height()/1.7)+'px', width: '97%', start: 'top', disableFadeOut: true });
     });
 });

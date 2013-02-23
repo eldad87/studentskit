@@ -46,7 +46,7 @@
                             <li><a href="#">Course </a></li>
                         </ul>
                     </div>--><!-- /btn-group -->
-                    <button type="submit" class="btn-search">SEARCH</button>
+                    <button type="submit" class="btn-search"><?php echo __('SEARCH'); ?></button>
                 </div>
             </div>
             <?php echo $this->Form->end(); ?>

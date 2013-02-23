@@ -28,7 +28,7 @@
 </script>
 <fieldset>
     <?php
-    echo $this->Form->create('Subject');
+    $this->Form->create('Subject');
     //echo preg_replace("/<form[^>]+\>/i", "", $form); //Remove <form>
 
     //echo $this->Form->hidden('subject_id');

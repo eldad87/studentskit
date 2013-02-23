@@ -8,7 +8,7 @@
     <div class="right-student-box">
         <div class="pad8">
             <h6 class="pull-left space10"><strong><?php echo $archiveLesson['UserLesson']['name']; ?></strong></h6>
-            <em class="fontsize1 space31">(Studied at <?php echo $archiveLesson['UserLesson']['datetime']; ?>)</em></div>
+            <em class="fontsize1 space31">(<?php echo __('Studied at'); ?> <?php echo $archiveLesson['UserLesson']['datetime']; ?>)</em></div>
         <p class="studeenmsg"><?php echo $archiveLesson['UserLesson']['description']; ?></p>
     </div>
 </div>
