@@ -423,7 +423,7 @@ class HomeController extends AppController {
         //die;
     }*/
 
-    /*public function categories() {
+    public function categories() {
         App::import('Model', 'SubjectCategory');
         $scObj = new SubjectCategory();
 
@@ -537,7 +537,7 @@ class HomeController extends AppController {
         );
 
         $scObj->addBulk($categories);
-    }*/
+    }
 
 
    /* public function testAddCategory() {
@@ -669,10 +669,15 @@ $id = $scObj->id;
 
 
             //Add category name
-            $foundCategories = $scObj->find('list', array('conditions'=>array('subject_category_id'=>$categoryIds), 'fields'=>array('subject_category_id', 'name')));
-
-            foreach($foundCategories AS $subjectCategoryId=>$name) {
+            //$scObj->locale = 'eng';
+            $foundCategories = $scObj->find('all', array('conditions'=>array('subject_category_id'=>$categoryIds)));
+            /*foreach($foundCategories AS $subjectCategoryId=>$name) {
                 $categories[$subjectCategoryId]['name'] = $name;
+            }*/
+
+            //Bug fix in CakePHP
+            foreach($foundCategories AS $data) {
+                $categories[$data['SubjectCategory']['subject_category_id']]['name'] = $data['0']['SubjectCategory__i18n_name'];
             }
             $subjectsData['categories'] = $categories;
         }
@@ -682,14 +687,24 @@ $id = $scObj->id;
             $subjectsData['breadcrumbs'] = array();
             if(isSet($this->request->query['category_id'])) {
                 $scData = $scObj->findBySubjectCategoryId($this->request->query['category_id']);
+                $scName = $scData['0']['SubjectCategory__i18n_name']; //Bug fix in CakePHP
                 $scData = $scData['SubjectCategory'];
 
-                if(!empty($scData['path'])); {
-                    $subjectsData['breadcrumbs'] = $scObj->find('list', array('fields'=>array('subject_category_id', 'name'), 'conditions'=>array('subject_category_id'=>explode(',', $scData['path']))));
+                if(!is_null($scData['path']) && !empty($scData['path'])) {
+                    //$subjectsData['breadcrumbs'] = $scObj->find('list', array('fields'=>array('subject_category_id', 'name'), 'conditions'=>array('subject_category_id'=>explode(',', $scData['path']))));
+
+                    //Bug fix in CakePHP
+                    $subjectsData['breadcrumbs'] = array();
+                    $breadcrumbs = $scObj->find('all', array('conditions'=>array('subject_category_id'=>explode(',', $scData['path']))));
+                    foreach($breadcrumbs AS $data) {
+                        $subjectsData['breadcrumbs'][$data['SubjectCategory']['subject_category_id']] = $data['0']['SubjectCategory__i18n_name'];
+                    }
+
                 }
-                $subjectsData['breadcrumbs'][$this->request->query['category_id']] = $scData['name'];
+                $subjectsData['breadcrumbs'][$this->request->query['category_id']] = $scName;
             }
         }
+
 
 
 		if(isSet($this->params['ext'])) {
@@ -743,19 +758,35 @@ $id = $scObj->id;
 
 
         $this->Subject; //For loading the const
-        $searchTerms = !empty($this->request->query['term'])        ? $this->request->query['term']                             : '*';
+        $searchTerms = !empty($this->request->query['term'])        ? $this->request->query['term']                                 : '*';
 
-        $categoryId  = (isSet($this->request->query['category_id'])         ? $this->request->query['category_id']	            : 0);
-        $limit       = (isSet($this->request->query['limit']) 			    ? $this->request->query['limit']		            : 8);
-        $page        = (isSet($this->request->query['page']) 			    ? $this->request->query['page']		                : 1);
-        $language    = (isSet($this->request->query['languages_of_records'])? $this->request->query['languages_of_records'] 	:
-                        ($this->Session->read('languagesOfRecords')         ? $this->Session->read('languagesOfRecords')        : null));
+        $categoryId     = (isSet($this->request->query['category_id'])          ? (int) $this->request->query['category_id']	    : 0);
+        $limit          = (isSet($this->request->query['limit']) 			    ? (int) $this->request->query['limit']		        : 8);
+        $page           = (isSet($this->request->query['page']) 			    ? (int) $this->request->query['page']		        : 1);
+        $language       = (isSet($this->request->query['languages_of_records']) ? $this->request->query['languages_of_records'] 	:
+                            ($this->Session->read('languagesOfRecords')         ? $this->Session->read('languagesOfRecords')        : null));
+
+        //1_on_1_price handle
+        $priceFrom      = (isSet($this->request->query['1_on_1_price_from'])  &&
+            $this->request->query['1_on_1_price_from']          ? max(min( (int) $this->request->query['1_on_1_price_from'], 1024), 0)	 : 0);
+
+        $priceTo        = (isSet($this->request->query['1_on_1_price_to'])    &&
+            $this->request->query['1_on_1_price_to']            ? max(min( (int) $this->request->query['1_on_1_price_to'], 1024), 0)	 : 1024); //Bug: we can't use wildecard *, therefore, put the max price that int can hold - UL validation for 1_on_1_price
+
+
+
+        $avarageRatingFrom      = (isSet($this->request->query['avarage_rating_from'])  &&
+            $this->request->query['avarage_rating_from']          ?   max(min( (int) $this->request->query['avarage_rating_from'], 5), 0): 0);
+
+        $avarageRatingTo        = (isSet($this->request->query['avarage_rating_to'])    &&
+            $this->request->query['avarage_rating_to']            ? max(min( (int) $this->request->query['avarage_rating_to'], 5), 0)	 : 5);
+
 
         $lessonType = array();
-        if(isSet($this->request->query['lesson_type_video'])) {
+        if(isSet($this->request->query['lesson_type_video']) && $this->request->query['lesson_type_video']) {
             $lessonType[]  = LESSON_TYPE_VIDEO;
         }
-        if(isSet($this->request->query['lesson_type_live'])) {
+        if(isSet($this->request->query['lesson_type_live']) && $this->request->query['lesson_type_live']) {
             $lessonType[]  = LESSON_TYPE_LIVE;
         }
 
@@ -774,6 +805,18 @@ $id = $scObj->id;
         if($lessonType) {
             $query['fq']['lesson_type'] = '('.implode(' OR ',$lessonType).')';
         }
+
+
+        //From-To-Price
+        if( $priceFrom<=$priceTo && ($priceFrom!=0 || $priceTo!=1024)) {
+            $query['fq']['1_on_1_price'] = '['.$priceFrom.' TO '.$priceTo.',USD]';
+        }
+
+        //From-To-avarage_rating
+        if( $avarageRatingFrom<=$avarageRatingTo && ($avarageRatingFrom!=0 || $avarageRatingTo!=0)) {
+            $query['fq']['avarage_rating'] = '['.$avarageRatingFrom.' TO '.$avarageRatingTo.']';
+        }
+
 
         $this->set('subjectSearchLimit', $limit);
         return $query;

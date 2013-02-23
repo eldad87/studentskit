@@ -101,7 +101,7 @@ class UserLesson extends AppModel {
                 'range' 		=> array(
                     'required'	=> 'create',
                     'allowEmpty'=> true,
-                    'rule'    	=> array('range', 0, 1025),
+                    'rule'    	=> array('range', 0, 1025), //Change Home,1_on_1_price_to accordingly
                     'message' 	=> 'Lesson must have more then %d or less then %d students'
                 ),
 				'numeric' => array(

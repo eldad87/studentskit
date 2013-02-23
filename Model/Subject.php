@@ -591,6 +591,7 @@ class Subject extends AppModel {
             $return['facet']['results'] = (array) $results['facet_counts']['facet_fields'][$facetName];
         }
 
+        //pr($return);
         return $return;
     }
 
