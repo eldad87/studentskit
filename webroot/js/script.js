@@ -318,6 +318,10 @@ function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
     $(maxStudentsInputSelector).unbind();
     $(lessonTypeInputSelector).unbind();
 
+
+    //Chrome fix, hidden inputs that are required
+    $(oneOnOnePriceInputSelector).closest('form').attr('novalidate', 'novalidate');
+
     //Make Full-group-student-price invisible until the user set max-students>1
     $(fullGroupStudentPriceDivSelector).hide();
 
