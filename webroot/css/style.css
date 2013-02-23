@@ -5410,6 +5410,10 @@ p.head-countrytext{
     cursor:pointer;
 }
 
+.modal .slimScrollDiv{
+    float: none;
+}
+
 .modal-backdrop {
     z-index: 0;
 }
