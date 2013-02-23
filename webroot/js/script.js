@@ -1423,12 +1423,3 @@ $(document).ready(function(){
         $(".alltip").hide(300);
     });
 });
-
-
-//Fix moal when is biger then the screen height
-$(document).ready(function(){
-    //Scroll
-    $('body').delegate('.modal', 'show', function(event) {
-        $('.modal .modal-body').slimScroll({height: ($(window).height()/1.7)+'px', width: '97%', start: 'top', disableFadeOut: true });
-    });
-});
