@@ -108,13 +108,13 @@ $otherUserType = ($userType=='student' ? 'teacher' : 'student');
 ?>
 <div class="cont-span15 cbox-space">
     <div class="fullwidth pull-left">
-        <h2 class="space2"><strong>User Rating</strong></h2>
+        <h2 class="space2"><strong><?php echo __('User Rating'); ?></strong></h2>
         <div class="fullwidth pull-left space12">
 
-            <p class="pull-left clear-left fontsize1"><?php echo 'Here you can find all the lessons that pending for your rating'?><br /><br /></p>
+            <p class="pull-left clear-left fontsize1"><?php echo __('Here you can find all the lessons that pending for your rating'); ?><br /><br /></p>
 
             <p class="fontsize1 pull-left clear-left">
-                <strong>Your Average Rate :</strong>
+                <strong><?php echo __('Your Average Rate'); ?> :</strong>
             </p>
             <a href="#" class="pull-left load2" rel="<?php echo Router::url(array('controller'=>ucfirst($userType),
                                                                                     'action'=>($allowRate ? 'myReviews' : 'awaitingReview'))); ?>"><?php
