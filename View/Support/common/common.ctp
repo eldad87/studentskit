@@ -25,7 +25,7 @@
 
                     <!-- end of category filter -->
                     <div class="lesson-wrapper">
-                            <div class="pull-left space22">
+                            <div class="pull-left space22 fullwidth">
                                 <?php echo $this->fetch('main'); ?>
                             </div>
                     </div>

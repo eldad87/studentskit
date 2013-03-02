@@ -5645,3 +5645,7 @@ li.alert-error {
 #orderNextButton {
     width: 210px;
 }
+
+.justify {
+    text-align: justify
+}
