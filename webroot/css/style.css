@@ -5414,6 +5414,9 @@ p.head-countrytext{
     float: none;
 }
 
+.modal .modal-body {
+    max-height:20%;
+}
 .modal-backdrop {
     z-index: 0;
 }

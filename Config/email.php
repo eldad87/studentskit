@@ -5,7 +5,7 @@ class EmailConfig {
         'port' => 465,
         'username' => 'support@universito.com',
         'password' => 'Create#Two!',
-        'transport' => 'smtp'
+        'transport' => 'Smtp'
     );
 }
 ?>

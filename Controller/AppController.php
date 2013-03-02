@@ -91,7 +91,8 @@ class AppController extends Controller {
             'board'         =>false,
             'account'       =>false,
             'request'       =>false,
-            'howItWorks'    =>false,
+            'support'       =>false,
+            //'howItWorks'    =>false,
         );
         switch(strtolower($this->name)) {
             case 'home':
@@ -119,6 +120,9 @@ class AppController extends Controller {
             case 'users':
             case 'requests':
                 $navButtons['board']=true;
+                break;
+            case 'support':
+                $navButtons['support']=true;
                 break;
             default:
                 $navButtons['home']=true;
