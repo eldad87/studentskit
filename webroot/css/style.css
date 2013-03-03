@@ -5649,3 +5649,11 @@ li.alert-error {
 .justify {
     text-align: justify
 }
+
+#faq li {
+    color: #000;
+}
+#faq li p {
+    color: #333;
+    margin: 5px 0 10px 25px;
+}

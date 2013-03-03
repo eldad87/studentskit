@@ -5,7 +5,7 @@ class SupportController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-		$this->Auth->allow(array('index','about', 'contact', 'FAQ', 'termsAndConditions', 'privacyAndPolicy', 'refundPolicy'));
+		$this->Auth->allow(array('index','about', 'contact', 'FAQ', 'termsAndConditions', 'privacyAndPolicy'));
     }
 
 
@@ -53,10 +53,6 @@ class SupportController extends AppController {
     }
 
     public function privacyAndPolicy() {
-
-    }
-
-    public function refundPolicy() {
 
     }
 }

@@ -4,32 +4,107 @@ $this->start('main');
 
 <div class="cont-span6 cbox-space fullwidth">
     <div class="fullwidth pull-left space17">
-        <div class="form-first" id="contact-area">
-            <h2 class="space15"><?php echo __('Privacy And Policy'); ?></h2>
-            <p class="justify">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tincidunt tellus sed enim fermentum venenatis. Praesent lectus lorem, dapibus ultricies rhoncus id, aliquet eu enim. Phasellus eget lacus erat, in suscipit leo. Morbi fermentum nisl eget nisi bibendum adipiscing. Curabitur erat magna, bibendum ut consectetur quis, imperdiet quis nibh. Integer elementum mattis mauris id tristique. Nam velit leo, molestie vitae sodales sed, vulputate vitae orci. Vestibulum nibh ligula, fermentum a auctor ut, ornare eu tortor. Suspendisse ut nibh nec purus interdum sodales lacinia at neque.
-            </p>
-
-            <h2 class="space15 space4"><?php echo __('Privacy And Policy'); ?></h2>
-            <p class="justify">
-                Nulla pretium ipsum ut dui interdum commodo vehicula enim posuere. Sed pellentesque lectus nec lorem volutpat consectetur. Maecenas fermentum pellentesque augue, quis sollicitudin risus lacinia et. Mauris fringilla felis pretium ante tincidunt a tempus sapien adipiscing. Mauris dignissim faucibus felis ut molestie. Nulla arcu libero, interdum quis ultrices ut, sollicitudin et lorem. Fusce sagittis erat nec quam vestibulum quis pharetra quam eleifend. Nunc nec ligula non nulla sodales ultricies non accumsan arcu. Suspendisse rutrum, elit a dictum tristique, lectus dolor auctor augue, sit amet consequat libero dui id velit. Donec eu commodo augue. Nam sodales orci quis dolor ornare porta.
-            </p>
-
-            <h2 class="space15 space4"><?php echo __('Privacy And Policy'); ?></h2>
+        <div class="form-first justify" id="contact-area">
             <p>
-                Nulla fermentum urna at justo mattis at convallis urna suscipit. Sed consectetur, dui non malesuada sagittis, lectus elit lacinia libero, et adipiscing ipsum eros quis mauris. Vivamus porttitor fringilla turpis sit amet fringilla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum mollis, est vel venenatis cursus, lacus mi consequat dolor, eget suscipit lacus nisl in est. Ut imperdiet vehicula dictum. Fusce id lacinia felis. Vestibulum venenatis vulputate urna, sed cursus nisl ultrices id. Aenean convallis, elit a tempus ullamcorper, arcu nulla bibendum nisi, at ultricies est dolor a nulla. Vestibulum ut felis tortor. Praesent mattis, enim nec ullamcorper rhoncus, velit justo facilisis sapien, sed gravida sapien nisl sit amet felis. Ut pretium nibh vel ligula feugiat faucibus adipiscing diam eleifend. Suspendisse potenti. Donec lobortis purus a urna egestas ultrices. Maecenas accumsan auctor dolor nec lobortis.
+                This Privacy Policy governs the manner in which Universito collects, uses, maintains and discloses information collected from users (each, a "User") of the <?php echo $this->Html->link(Configure::read('public_domain'), Configure::read('public_domain')) ?> website ("Site"). This privacy policy applies to the Site and all products and services offered by Universito.
             </p>
 
-            <h2 class="space15 space4"><?php echo __('Privacy And Policy'); ?></h2>
+            <h2 class="space15 space4"><?php echo __('Personal identification information'); ?></h2>
             <p>
-                Pellentesque aliquam euismod sodales. Morbi sodales pulvinar metus, sit amet ultrices urna dignissim vitae. Curabitur nibh leo, consequat eget varius sit amet, porta quis arcu. Nam vitae arcu quis felis tempor hendrerit. Quisque augue diam, vestibulum et porttitor eu, accumsan sed nibh. Nulla dictum convallis turpis ac tincidunt. Aliquam erat volutpat. Cras sit amet turpis mauris. In placerat pulvinar nisi lobortis feugiat. Cras luctus aliquet velit et adipiscing. Integer tristique sapien eget quam tincidunt non ultricies diam hendrerit. Nunc tristique erat eget ipsum accumsan sed dapibus mi dignissim. Vestibulum sed diam interdum leo luctus luctus sit amet ut elit. Pellentesque porttitor felis at eros varius non euismod justo pharetra. Vestibulum pellentesque tincidunt odio, suscipit tempus sem dictum in.
+                We may collect personal identification information from Users in a variety of ways, including, but not limited to, when Users visit our site, register on the site, place an order, subscribe to the newsletter, respond to a survey, fill out a form, and in connection with other activities, services, features or resources we make available on our Site. Users may be asked for, as appropriate, name, email address, mailing address, credit card information. We will collect personal identification information from Users only if they voluntarily submit such information to us. Users can always refuse to supply personally identification information, except that it may prevent them from engaging in certain Site related activities.
             </p>
 
-            <h2 class="space15 space4"><?php echo __('Privacy And Policy'); ?></h2>
+
+            <h2 class="space15 space4"><?php echo __('Non-personal identification information'); ?></h2>
             <p>
-                Praesent aliquam commodo augue, a mattis arcu porttitor sed. Aliquam justo elit, molestie sed aliquet ut, dapibus id neque. Curabitur et justo nisl, in lacinia sapien. Etiam tristique, felis ac varius placerat, felis metus consectetur ligula, quis aliquam felis urna sollicitudin eros. Cras molestie congue nisi nec commodo. Cras metus sem, fringilla eu luctus vitae, sodales vel mauris. Aliquam imperdiet cursus nisi. Aenean et dui sit amet dolor suscipit facilisis.
-
+                We may collect non-personal identification information about Users whenever they interact with our Site. Non-personal identification information may include the browser name, the type of computer and technical information about Users means of connection to our Site, such as the operating system and the Internet service providers utilized and other similar information.
             </p>
+
+
+            <h2 class="space15 space4"><?php echo __('Web browser cookies'); ?></h2>
+            <p>
+                Our Site may use "cookies" to enhance User experience. User's web browser places cookies on their hard drive for record-keeping purposes and sometimes to track information about them. User may choose to set their web browser to refuse cookies, or to alert you when cookies are being sent. If they do so, note that some parts of the Site may not function properly.
+            </p>
+
+
+            <h2 class="space15 space4"><?php echo __('How we use collected information'); ?></h2>
+            <p>
+                Universito collects and uses Users personal information for the following purposes:
+            </p>
+            <ul class="disc-list space22">
+                <li>
+                    To personalize user experience
+                    We may use information in the aggregate to understand how our Users as a group use the services and resources provided on our Site.
+                </li>
+                <li>
+                    To improve our Site
+                    We continually strive to improve our website offerings based on the information and feedback we receive from you
+                </li>
+                <li>
+                    To improve customer service
+                    Your information helps us to more effectively respond to your customer service requests and support needs.
+                </li>
+                <li>
+                    To process transactions
+                    We may use the information Users provide about themselves when placing an order only to provide service to that order. We do not share this information with outside parties except to the extent necessary to provide the service.
+                </li>
+                <li>
+                    To administer a content, promotion, survey or other Site feature
+                    To send Users information they agreed to receive about topics we think will be of interest to them.
+                </li>
+                <li>
+                    To send periodic emails
+                    The email address Users provide for order processing, will only be used to send them information and updates pertaining to their order. It may also be used to respond to their inquiries, and/or other requests or questions. If User decides to opt-in to our mailing list, they will receive emails that may include company news, updates, related product or service information, etc. If at any time the User would like to unsubscribe from receiving future emails, we include detailed unsubscribe instructions at the bottom of each email or User may contact us via our Site.
+                </li>
+            </ul>
+
+            <h2 class="space15 space4"><?php echo __('How we protect your information'); ?></h2>
+            <p>
+                We adopt appropriate data collection, storage and processing practices and security measures to protect against unauthorized access, alteration, disclosure or destruction of your personal information, username, password, transaction information and data stored on our Site.
+            </p>
+            <p>
+                Sensitive and private data exchange between the Site and its Users happens over a SSL secured communication channel and is encrypted and protected with digital signatures.
+            </p>
+
+            <h2 class="space15 space4"><?php echo __('Sharing your personal information'); ?></h2>
+            <p>
+                We do not sell, trade, or rent Users personal identification information to others. We may share generic aggregated demographic information not linked to any personal identification information regarding visitors and users with our business partners, trusted affiliates and advertisers for the purposes outlined above.We may use third party service providers to help us operate our business and the Site or administer activities on our behalf, such as sending out newsletters or surveys. We may share your information with these third parties for those limited purposes provided that you have given us your permission.
+            </p>
+
+            <h2 class="space15 space4"><?php echo __('Third party websites'); ?></h2>
+            <p>
+                Users may find advertising or other content on our Site that link to the sites and services of our partners, suppliers, advertisers, sponsors, licensors and other third parties. We do not control the content or links that appear on these sites and are not responsible for the practices employed by websites linked to or from our Site. In addition, these sites or services, including their content and links, may be constantly changing. These sites and services may have their own privacy policies and customer service policies. Browsing and interaction on any other website, including websites which have a link to our Site, is subject to that website's own terms and policies.
+            </p>
+
+            <h2 class="space15 space4"><?php echo __('Compliance with children\'s online privacy protection act'); ?></h2>
+            <p>
+                Protecting the privacy of the very young is especially important. For that reason, we never collect or maintain information at our Site from those we actually know are under 13, and no part of our website is structured to attract anyone under 13.
+            </p>
+
+            <h2 class="space15 space4"><?php echo __('Changes to this privacy policy'); ?></h2>
+            <p>
+                Universito has the discretion to update this privacy policy at any time. When we do, we will revise the updated date at the bottom of this page. We encourage Users to frequently check this page for any changes to stay informed about how we are helping to protect the personal information we collect. You acknowledge and agree that it is your responsibility to review this privacy policy periodically and become aware of modifications.
+            </p>
+
+            <h2 class="space15 space4"><?php echo __('Your acceptance of these terms'); ?></h2>
+            <p>
+                By using this Site, you signify your acceptance of this policy. If you do not agree to this policy, please do not use our Site. Your continued use of the Site following the posting of changes to this policy will be deemed your acceptance of those changes.
+            </p>
+
+            <h2 class="space15 space4"><?php echo __('Contacting us'); ?></h2>
+            <p>
+                If you have any questions about this Privacy Policy, the practices of this site, or your dealings with this site, please contact us at:
+            </p>
+            <p>
+                Universito Education Inc.<br />
+                Emma Tauber Fridman 8/11,<br />
+                Herzliya, Israel<br />
+                Tel:  +972-054-409-4095<br />
+            </p>
+            <p class="space4">
+                <i>This document was last updated on March 3, 2013</i>
+            </p>
+
         </div>
     </div>
 </div>

@@ -16,7 +16,6 @@
                             <li class="<?php echo ($this->params['action']=='FAQ'               ? 'activecategory' : null); ?>"><?php echo $this->Html->link('FAQ', array('action'=>'FAQ')) ?></li>
                             <li class="<?php echo ($this->params['action']=='termsAndConditions'? 'activecategory' : null); ?>"><?php echo $this->Html->link('Terms & Conditions', array('action'=>'termsAndConditions')) ?></li>
                             <li class="<?php echo ($this->params['action']=='privacyAndPolicy'  ? 'activecategory' : null); ?>"><?php echo $this->Html->link('Privacy & Policy', array('action'=>'privacyAndPolicy')) ?></li>
-                            <li class="<?php echo ($this->params['action']=='refundPolicyAQ'    ? 'activecategory' : null); ?>"><?php echo $this->Html->link('Refund Policy', array('action'=>'refundPolicy')) ?></li>
                         </ul>
                     </div>
                     <!--<div class="categorybox radius3 clearleft">

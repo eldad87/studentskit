@@ -53,7 +53,14 @@ h6{
 
 li{
 	list-style:none;
-}	
+}
+ul.decimal-list li {
+    list-style: decimal;
+}
+ul.disc-list li {
+    list-style: disc;
+}
+
 
 audio,
 canvas,
