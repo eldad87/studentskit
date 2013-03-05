@@ -11,7 +11,7 @@
                         <h3 class="radius1"><strong><?php echo __('Support'); ?></strong></h3>
 
                         <ul class="categorystripbox">
-                            <li class="<?php echo ($this->params['action']=='about'             ? 'activecategory' : null); ?>"><?php echo $this->Html->link('About', array('action'=>'about')) ?></li>
+                            <!--<li class="<?php /*echo ($this->params['action']=='about'             ? 'activecategory' : null); */?>"><?php /*echo $this->Html->link('About', array('action'=>'about')) */?></li>-->
                             <li class="<?php echo ($this->params['action']=='contact'           ? 'activecategory' : null); ?>"><?php echo $this->Html->link('Contact', array('action'=>'contact')) ?></li>
                             <li class="<?php echo ($this->params['action']=='FAQ'               ? 'activecategory' : null); ?>"><?php echo $this->Html->link('FAQ', array('action'=>'FAQ')) ?></li>
                             <li class="<?php echo ($this->params['action']=='termsAndConditions'? 'activecategory' : null); ?>"><?php echo $this->Html->link('Terms & Conditions', array('action'=>'termsAndConditions')) ?></li>
