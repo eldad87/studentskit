@@ -1,0 +1,98 @@
+# http://nadarei.co/mina/
+# http://rubydoc.info/gems/mina-cakephp/1.0.1/
+# https://github.com/mobvox/mina-cakephp
+require 'mina/git'
+# Load tasks of mina-cakephp
+require 'mina-cakephp'
+
+# Mina default configuration
+# more info at http://nadarei.co/mina
+set :domain, '54.235.177.1'
+set :deploy_to, '/var/www/app'
+set :repository, 'git@github.com:eldad87/studentskit.git'
+set :user, 'ubuntu'
+set :forward_agent, true
+
+# Shared file or folder between deploys
+# more at http://nadarei.co/mina/tasks/deploy_link_shared_paths.html
+set :shared_paths, ['Config', 'tmp']
+
+## mina-cakephp Settings
+# Defines the  CakePHP core path. 
+# This path is used to execute bake commands and update webroot/index.php if needed.
+set :cake_path, '/var/www/cake'
+# Database connection settings.
+# This will be used to create Config/database.php
+set :cake_database, {
+    'datasource' => 'Database/Mysql',
+    'persistent' => false,
+    'host' => 'localhost',
+    'login' => 'user',
+    'password' => 'my-password',
+    'database' => 'my-db',
+    'prefix' => ''
+}
+
+## Deploy Task
+task :deploy do
+  deploy do
+    # Clone project, more at http://nadarei.co/mina/tasks/git_clone.html
+    invoke :'git:clone'
+    # Create symlinks
+    # more at http://nadarei.co/mina/tasks/deploy_link_shared_paths.html
+    invoke :'deploy:link_shared_paths'
+
+
+    # If you do not have CakePHP in your include_path, you will need to set CakePHP core path at webroot/index.php.
+    # This task will do it for you.
+    invoke :'cakephp:cake_core_path'
+    # This task changes the debug level to 0 at Config/core.php
+    invoke :'cakephp:debug_disable'
+    # This task will delete all temporary files at tmp/
+    invoke :'cakephp:tmp:clean_cache'
+
+    # This task will create a folder and set correct permissions 
+    # to receive build files of AssetCompress plugin (https://github.com/markstory/asset_compress)
+    # invoke :'cakephp:asset_compress:setup'
+    # Build asset files
+    # invoke :'cakephp:asset_compress:build'
+
+    #to :launch do
+    #    # If you are using the Migrations plugin of CakeDC
+    #    # you need to invoke this task to run all migrations before launching the application.
+    #    invoke :'cakephp:migrations:run_all'
+    #end
+
+    invoke :'composer'
+    invoke :'permissions'
+  end
+end
+
+# Taks to prepare the environment
+task :setup do
+    # Invoke this task if you need to clone CakePHP core when setting up the enviroment.
+    invoke :'cakephp:git:clone'
+end
+
+# Task to run composer
+task :composer do
+    # run composer
+    queue 'composer install'
+end
+
+# Task to change to apache's user
+task :permissions do
+    # tmp folder
+    # queue 'sudo chmod 777 -R #{deploy_to}/tmp'
+
+    # http://serverfault.com/questions/6895/whats-the-best-way-of-handling-permissions-for-apache2s-user-www-data-in-var
+
+    # Change the ownership of everything
+
+    queue echo_cmd %{sudo chown -R root:www-pub #{deploy_to}}
+
+    # Change the permissions of all the folders to 2775, ## 2=set group id, 7=rwx for owner (root), 7=rwx for group (www-pub), 5=rx for world (including apache www-data user)
+    queue echo_cmd %{sudo chmod 2775  #{deploy_to}}
+    queue echo_cmd %{sudo find #{deploy_to} -type d -exec chmod 2775 {} +}
+    queue echo_cmd %{sudo find #{deploy_to} -type f -exec chmod 0664 {} +}
+end
