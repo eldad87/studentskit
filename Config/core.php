@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__DIR__) . '/Vendor/Composer/autoload.php';
+require_once ROOT . DS . APP_DIR . '/Vendor/Composer/autoload.php';
 
 /**
  * This is core configuration file.
