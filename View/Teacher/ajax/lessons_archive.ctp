@@ -13,7 +13,7 @@ if($page==1) {
     <script type="text/javascript">
         $(document).ready(function(){
             var url = '/Teacher/lessonsArchive/{limit}/{page}';
-            lmObj.loadMoreButton('#teacher-lessons-archive-load-more', 'click', '#teacher-lessons-archive', url, {}, 'get', <? echo $limit; ?>);
+            lmObj.loadMoreButton('#teacher-lessons-archive-load-more', 'click', '#teacher-lessons-archive', url, {}, 'get', <?php echo $limit; ?>);
             lmObj.setItemsCountSelector('#teacher-lessons-archive-load-more', '#teacher-lessons-archive div.lesson-box' );
         });
     </script>

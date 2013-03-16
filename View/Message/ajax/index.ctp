@@ -11,7 +11,7 @@ if($page==1){
         });
 
         var url = '/Message/index/{limit}/{page}';
-        lmObj.loadMoreButton('#pm-load-more', 'click', '#pm', url, {}, 'get', <? echo $limit; ?>);
+        lmObj.loadMoreButton('#pm-load-more', 'click', '#pm', url, {}, 'get', <?php echo $limit; ?>);
         lmObj.setItemsCountSelector('#pm-load-more', '#pm li' );
     });
 </script>

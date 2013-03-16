@@ -24,7 +24,7 @@ if($page==1) {
     <script type="text/javascript">
         $(document).ready(function(){
             var url = '/Teacher/subjects/{limit}/{page}';
-            lmObj.loadMoreButton('#teacher-subjects-load-more', 'click', '#teacher-subjects', url, {}, 'get', <? echo $limit; ?>);
+            lmObj.loadMoreButton('#teacher-subjects-load-more', 'click', '#teacher-subjects', url, {}, 'get', <?php echo $limit; ?>);
             lmObj.setItemsCountSelector('#teacher-subjects-load-more', '#teacher-subjects div.lesson-box' );
         });
     </script>

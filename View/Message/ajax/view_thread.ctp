@@ -30,7 +30,7 @@
     <div class="fullwidth pull-left">
         <h2 class="pull-left"><?php echo ($response['response']['thread']['title'] ? $response['response']['thread']['title'] : sprintf(__('Conversation with %s'), $response['response']['thread']['other_user']['username'])); ?></h2>
         <div class="pull-right skmsg-headerbtn">
-           <a class="btn-blue long-wid2 fontsize1 text-color load2" href="#" rel="<? echo Router::url(array('controller'=>'Message', 'action'=>'index')); ?>">
+           <a class="btn-blue long-wid2 fontsize1 text-color load2" href="#" rel="<?php echo Router::url(array('controller'=>'Message', 'action'=>'index')); ?>">
                <i class="iconSmall-sidearrow sidearrow" /><?php echo __('Message'); ?>
            </a>
            <!--<a class="btn-blue long-wid2 fontsize1 text-color show-tip" id="action-blue" href="#">

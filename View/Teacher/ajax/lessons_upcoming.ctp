@@ -23,7 +23,7 @@ if($page==1) {
     <script type="text/javascript">
         $(document).ready(function(){
             var url = '/Teacher/lessonsUpcoming/{limit}/{page}';
-            lmObj.loadMoreButton('#teacher-lessons-upcoming-load-more', 'click', '#teacher-lessons-upcoming', url, {}, 'get', <? echo $limit; ?>);
+            lmObj.loadMoreButton('#teacher-lessons-upcoming-load-more', 'click', '#teacher-lessons-upcoming', url, {}, 'get', <?php echo $limit; ?>);
             lmObj.setItemsCountSelector('#teacher-lessons-upcoming-load-more', '#teacher-lessons-upcoming div.lesson-box' );
         });
     </script>

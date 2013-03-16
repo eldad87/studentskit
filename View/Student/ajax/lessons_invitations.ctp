@@ -12,7 +12,7 @@ if($page==1) {
 <script type="text/javascript">
     $(document).ready(function(){
         var url = '/Student/lessonsInvitations/{limit}/{page}';
-        lmObj.loadMoreButton('#user-lessons-invitations-load-more', 'click', '#user-lessons-invitations', url, {}, 'get', <? echo $limit; ?>);
+        lmObj.loadMoreButton('#user-lessons-invitations-load-more', 'click', '#user-lessons-invitations', url, {}, 'get', <?php echo $limit; ?>);
         lmObj.setItemsCountSelector('#user-lessons-invitations-load-more', '#user-lessons-invitations li' );
     });
 </script>

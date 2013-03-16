@@ -13,7 +13,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
             var url = '/Student/lessonsBooking/{limit}/{page}';
-            lmObj.loadMoreButton('#user-lessons-booking-load-more', 'click', '#user-lessons-booking', url, {}, 'get', <? echo $limit; ?>);
+            lmObj.loadMoreButton('#user-lessons-booking-load-more', 'click', '#user-lessons-booking', url, {}, 'get', <?php echo $limit; ?>);
             lmObj.setItemsCountSelector('#user-lessons-booking-load-more', '#user-lessons-booking li' );
         });
     </script>

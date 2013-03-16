@@ -21,7 +21,7 @@ if($page==1) {
 <script type="text/javascript">
     $(document).ready(function(){
         var url = '/Billing/index/{limit}/{page}';
-        lmObj.loadMoreButton('#billing-history-load-more', 'click', '#billing-history', url, {}, 'get', <? echo $limit; ?>);
+        lmObj.loadMoreButton('#billing-history-load-more', 'click', '#billing-history', url, {}, 'get', <?php echo $limit; ?>);
         lmObj.setItemsCountSelector('#billing-history-load-more', '#billing-history li' );
     });
 </script>

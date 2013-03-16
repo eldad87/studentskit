@@ -11,7 +11,7 @@ if($page==1) {
     <script type="text/javascript">
         $(document).ready(function(){
             var url = '/Student/lessonsUpcoming/{limit}/{page}';
-            lmObj.loadMoreButton('#user-lessons-upcoming-load-more', 'click', '#user-lessons-upcoming', url, {}, 'get', <? echo $limit; ?>);
+            lmObj.loadMoreButton('#user-lessons-upcoming-load-more', 'click', '#user-lessons-upcoming', url, {}, 'get', <?php echo $limit; ?>);
             lmObj.setItemsCountSelector('#user-lessons-upcoming-load-more', '#user-lessons-upcoming div.lesson-box' );
         });
     </script>
