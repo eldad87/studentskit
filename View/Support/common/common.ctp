@@ -11,10 +11,12 @@
                         <h3 class="radius1"><strong><?php echo __('Support'); ?></strong></h3>
 
                         <ul class="categorystripbox">
-                            <!--<li class="<?php /*echo ($this->params['action']=='about'             ? 'activecategory' : null); */?>"><?php /*echo $this->Html->link('About', array('action'=>'about')) */?></li>-->
+                            <li class="<?php echo ($this->params['action']=='about'             ? 'activecategory' : null); ?>"><?php echo $this->Html->link('About', array('action'=>'about')) ?></li>
                             <li class="<?php echo ($this->params['action']=='contact'           ? 'activecategory' : null); ?>"><?php echo $this->Html->link('Contact', array('action'=>'contact')) ?></li>
                             <li class="<?php echo ($this->params['action']=='FAQ'               ? 'activecategory' : null); ?>"><?php echo $this->Html->link('FAQ', array('action'=>'FAQ')) ?></li>
-                            <li class="<?php echo ($this->params['action']=='termsAndConditions'? 'activecategory' : null); ?>"><?php echo $this->Html->link('Terms & Conditions', array('action'=>'termsAndConditions')) ?></li>
+                            <li class="<?php echo ($this->params['action']=='termsOfUse'        ? 'activecategory' : null); ?>"><?php echo $this->Html->link('Terms of Use', array('action'=>'termsOfUse')) ?></li>
+                            <li class="<?php echo ($this->params['action']=='dosAndDonts'       ? 'activecategory' : null); ?>"><?php echo $this->Html->link('DOs and Don\'ts', array('action'=>'dosAndDonts')) ?></li>
+                            <li class="<?php echo ($this->params['action']=='copyright'         ? 'activecategory' : null); ?>"><?php echo $this->Html->link('Copyright and Intellectual Property Policy', array('action'=>'copyright')) ?></li>
                             <li class="<?php echo ($this->params['action']=='privacyAndPolicy'  ? 'activecategory' : null); ?>"><?php echo $this->Html->link('Privacy & Policy', array('action'=>'privacyAndPolicy')) ?></li>
                         </ul>
                     </div>

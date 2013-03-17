@@ -17,6 +17,9 @@ class SupportController extends AppController {
     }
 
     public function contact() {
+
+
+        $this->set('topics', $this->Contact->getTopics());
         $this->set('post', false);
         if (!empty($this->request->data)) {
             $this->set('post', true);
@@ -48,11 +51,18 @@ class SupportController extends AppController {
 
     }
 
-    public function termsAndConditions() {
+    public function termsOfUse() {
 
     }
 
     public function privacyAndPolicy() {
+
+    }
+
+    public function dosAndDonts() {
+
+    }
+    public function ip() {
 
     }
 }

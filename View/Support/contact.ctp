@@ -49,6 +49,8 @@ if($post && isSet($sent)) {
                                                                 'method'=>'post', 'id'=>'contact-form',
                                                                 'novalidate'=>'novalidate')); ?>
                 <fieldset>
+                    <?php echo $this->Form->input('topic', $this->Layout->styleForInput(array('div'=>array('class'=>'control-group control2'),
+                                                                                                            'options'=>$topics))); ?>
                     <?php echo $this->Form->input('subject', $this->Layout->styleForInput(array('div'=>array('class'=>'control-group control2')))); ?>
                     <?php echo $this->Form->input('full_name', $this->Layout->styleForInput(array('div'=>array('class'=>'control-group control2')))); ?>
                     <?php echo $this->Form->input('email', $this->Layout->styleForInput(array('div'=>array('class'=>'control-group control2')))); ?>
