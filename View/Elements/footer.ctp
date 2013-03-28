@@ -57,7 +57,10 @@
                 <p>Copyright ©2012 StudentKit. All rights reserved.</p>
             </div>
             <div class="footer-bottom-right">
-                <p><a href="#" title="">Privacy Policy</a><a href="#" title="">Terms of Use</a></p>
+                <p>
+                    <?php echo $this->Html->link('Privacy & Policy', array('controller'=>'Support', 'action'=>'privacyAndPolicy')) ?>
+                    <?php echo $this->Html->link('Terms of Use', array('controller'=>'Support', 'action'=>'termsOfUse')) ?>
+                </p>
             </div>
         </div>
     </Section>

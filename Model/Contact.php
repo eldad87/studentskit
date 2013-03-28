@@ -3,6 +3,17 @@ class Contact extends AppModel {
     public $name = 'Contact';
     public $useTable = false;
 
+    const CONTACT_SUPPORT           = 1;
+    const CONTACT_SUGGESTION        = 2;
+    const CONTACT_SALES             = 3;
+    const CONTACT_REFUND            = 4;
+    const CONTACT_ABUSE             = 5;
+    const CONTACT_LEGAL             = 6;
+    const CONTACT_FEEDBACK_REMOVAL  = 7;
+    const CONTACT_FLAG              = 8;
+    const CONTACT_OTHER             = 9;
+
+
     public $_schema = array(
         'subject'   => array('type' => 'string' , 'null' => false, 'default' => '', 'length' => '255'),
         'subject'   => array('type' => 'string' , 'null' => false, 'default' => '', 'length' => '255'),
@@ -65,16 +76,17 @@ class Contact extends AppModel {
 
     public function getTopics() {
         return array(
-            1=>__('Support'),
-            2=>__('Suggestion'),
-            3=>__('Sales'),
-            4=>__('Refund'),
-            5=>__('Abuse'),
-            6=>__('Legal'),
-            7=>__('Feedback removal'),
-            8=>__('Flag'),
-            9=>__('Other')
+            Contact::CONTACT_SUPPORT            => __('Support'),
+            Contact::CONTACT_SUGGESTION         => __('Suggestion'),
+            Contact::CONTACT_SALES              => __('Sales'),
+            Contact::CONTACT_REFUND             => __('Refund'),
+            Contact::CONTACT_ABUSE              => __('Abuse'),
+            Contact::CONTACT_LEGAL              => __('Legal'),
+            Contact::CONTACT_FEEDBACK_REMOVAL   => __('Feedback removal'),
+            Contact::CONTACT_FLAG               => __('Flag'),
+            Contact::CONTACT_OTHER              => __('Other')
         );
     }
+
 }
 ?>

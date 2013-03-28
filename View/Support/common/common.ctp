@@ -16,7 +16,7 @@
                             <li class="<?php echo ($this->params['action']=='FAQ'               ? 'activecategory' : null); ?>"><?php echo $this->Html->link('FAQ', array('action'=>'FAQ')) ?></li>
                             <li class="<?php echo ($this->params['action']=='termsOfUse'        ? 'activecategory' : null); ?>"><?php echo $this->Html->link('Terms of Use', array('action'=>'termsOfUse')) ?></li>
                             <li class="<?php echo ($this->params['action']=='dosAndDonts'       ? 'activecategory' : null); ?>"><?php echo $this->Html->link('DOs and Don\'ts', array('action'=>'dosAndDonts')) ?></li>
-                            <li class="<?php echo ($this->params['action']=='copyright'         ? 'activecategory' : null); ?>"><?php echo $this->Html->link('Copyright and Intellectual Property Policy', array('action'=>'copyright')) ?></li>
+                            <li class="<?php echo ($this->params['action']=='ip'                ? 'activecategory' : null); ?>"><?php echo $this->Html->link('Copyright and Intellectual Property Policy', array('action'=>'ip')) ?></li>
                             <li class="<?php echo ($this->params['action']=='privacyAndPolicy'  ? 'activecategory' : null); ?>"><?php echo $this->Html->link('Privacy & Policy', array('action'=>'privacyAndPolicy')) ?></li>
                         </ul>
                     </div>

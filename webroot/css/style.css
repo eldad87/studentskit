@@ -1392,6 +1392,10 @@ select.x-large{
 	width:13px;
 }
 
+.iconSmall-flag{
+    background-position: -15px -35px;
+}
+
 .iconSmall-clip{
 	background-position:-182px -1px;
 }
