@@ -4,6 +4,8 @@
 
 $config['billingHistory.student.add']      = __('{creditPoints} been added to your account');
 
+$config['billingHistory.student.reduce']      = __('{creditPoints} been removed to your account');
+
 //Order/Accept/Negotiate funds add
 $config['billingHistory.student.lesson.add']      = __('{creditPoints} credit points has been reallocated from your account to "{lessonName}"');
 //Accept/Negotiatio funds reduce/Invalid request
