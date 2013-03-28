@@ -238,14 +238,6 @@ class HomeController extends AppController {
         ));
     }*/
 
-    /*public function testGeneratePaymentRecivers() {
-        App::import('model', 'AdaptivePayment');
-        $apObj = new AdaptivePayment();
-        //DONT FORGET TO MAKE THIS FUNCTION PUBLIC - generatePaymentRecivers
-        $recivers = $apObj->generatePaymentRecivers(55);
-        pr($recivers);
-        die;
-    }*/
 
     /*public function calcStudentPriceAfterDiscount() {
         pr($this->Subject->calcStudentPriceAfterDiscount(100, 20, 20, 30));
@@ -334,86 +326,7 @@ class HomeController extends AppController {
         die;
     }
 
-    public function testPreapprovalRequest() {
-        $userLessonId   = 8;
-        $customerId     = 1;
-        $amount         = 10;
-        $cancelUrl = Router::url(array('controller'=>'Home', 'action'=>'cancelUserLesson', $userLessonId), true);
-        $returnUrl = Router::url(array('controller'=>'Home', 'action'=>'orderApproval', $userLessonId), true);
 
-
-        app::import('Model', 'AdaptivePayment');
-        $ap = new AdaptivePayment();
-        $url = $ap->getPreApprovalURL($userLessonId, $cancelUrl, $returnUrl, $this->request->clientIp());
-        pr($url);
-        die;
-
-        App::import('Vendor', 'AdaptivePayments'.DS.'AdaptivePayments');
-        $ap = new AdaptivePayments();
-
-
-
-
-        $response = $ap->preapproval( $amount, $customerId, $this->request->clientIp(), $cancelUrl, $returnUrl );
-        pr($response);
-        pr($response->responseEnvelope->ack);
-        pr($response->preapprovalKey);
-        pr('https://www.sandbox.paypal.com/webscr&cmd=_ap-preapproval&preapprovalkey='.$response->preapprovalKey);
-        pr(Router::url(array('controller'=>'Home', 'action'=>'testPaymentDetails', $response->preapprovalKey), true));
-        die;
-    }
-
-    public function testPaymentDetails( $preapprovalKey ) {
-        App::import('Vendor', 'AdaptivePayments'.DS.'AdaptivePayments');
-        $ap = new AdaptivePayments();
-        $response = $ap->preapprovalDetails($preapprovalKey);
-        pr($response);
-        die;
-    }
-    public function testConfirmPreapproval( $preapprovalKey ) {
-        App::import('Vendor', 'AdaptivePayments'.DS.'AdaptivePayments');
-        $ap = new AdaptivePayments();
-        $response = $ap->confirmPreapproval($preapprovalKey);
-        pr($response);
-        die;
-    }*/
-    /*public function testCancelPreapproval( $preapprovalKey ) {
-        App::import('Vendor', 'AdaptivePayments'.DS.'AdaptivePayments');
-        $ap = new AdaptivePayments();
-        $response = $ap->cancelPreapproval($preapprovalKey);
-        pr($response);
-        pr($response->responseEnvelope->ack);
-        die;
-    }*/
-
-    /*public function testPay( $preapprovalKey ) {
-        App::import('Vendor', 'AdaptivePayments'.DS.'AdaptivePayments');
-        $ap = new AdaptivePayments();
-
-        $userLessonId   = time();
-        $cancelUrl = Router::url(array('controller'=>'Home', 'action'=>'cancelUserLesson', $userLessonId), true);
-        $returnUrl = Router::url(array('controller'=>'Home', 'action'=>'orderApproval', $userLessonId), true);
-
-        $receivers = array();
-        $receivers[] = array(
-            'email'         =>'seller_1345633766_biz@gmail.com',
-            'amount'        =>1,
-            'paymentType'   =>'DIGITALGOODS',
-            'primary'       =>true,
-        );
-        $receivers[] = array(
-            'email'         =>'caller_1345633979_biz@gmail.com',
-            'amount'        =>0.5,
-            'paymentType'   =>'DIGITALGOODS',
-            'primary'       =>false,
-        );
-
-
-        $response = $ap->pay( $receivers, $userLessonId, $preapprovalKey, $cancelUrl, $returnUrl );
-        pr($response);
-        pr($response->paymentExecStatus);
-        die;
-    }*/
 
     /*public function testForumMessages() {
         app::import('Model', 'Forum.Topic');

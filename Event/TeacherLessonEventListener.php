@@ -9,10 +9,8 @@ class TeacherLessonEventListener implements CakeEventListener {
     private function __construct() {
     //public function UserLessonEventListener() {
         App::import('Model', 'Notification');
-        App::import('Model', 'AdaptivePayment');
 
         $this->notification = New Notification();
-        $this->adaptivePayment = new AdaptivePayment();
     }
 
     public static function &getInstance() {

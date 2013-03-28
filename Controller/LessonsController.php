@@ -126,14 +126,7 @@ class LessonsController extends AppController {
                     $enterLesson = true; //Lesson in process + it's the teacher
 
                 } else if($liveRequestStatus['approved']) {
-                    $enterLesson = true; //Lesson in process + user is authorized (paid if needed)
-
-                    if($liveRequestStatus['payment_needed']) {
-                        //Check payment - if did not pass, the user canceled his approval.
-                        App::import('Model', 'AdaptivePayment');
-                        $apObj = new AdaptivePayment();
-                        $enterLesson = $apObj->isPaid($liveRequestStatus['user_lesson_id']);
-                    }
+                    $enterLesson = true; //Lesson in process + user is authorized
                 }
 
                 if(!$enterLesson) {
@@ -143,35 +136,11 @@ class LessonsController extends AppController {
 
 
             } else if( $liveRequestStatus['about_to_start'] ) {
+                $enterLesson = flase;
 
                 if($liveRequestStatus['approved']) {
                     //Show countdown
-
-                    if($liveRequestStatus['payment_needed']) {
-
-                        //Check payment - if did not pass, the user canceled his approval.
-                        App::import('Model', 'AdaptivePayment');
-                        $apObj = new AdaptivePayment();
-
-                        //Check if payment did not processed yet
-                        $isValidPendingPaymentApproval = $apObj->isValidPendingPaymentApproval($liveRequestStatus['user_lesson_id']);
-                        if($isValidPendingPaymentApproval) {
-                            $errorMessage = __('Your payment is not yet processed, please try again in a few minutes');
-                            $enterLesson = false;
-
-                        //Payment processed, check if success
-                        } else {
-                            $enterLesson = $apObj->isPaid($liveRequestStatus['user_lesson_id']);
-                            $errorMessage = __('Your payment failed.');
-                        }
-
-                        if(!$enterLesson) {
-                            $this->Session->setFlash($errorMessage);
-                            $this->redirect(array('controller'=>'Home', 'action'=>'teacherLesson', $liveRequestStatus['teacher_lesson_id']));
-                        }
-                    } else {
-                        $enterLesson = true;
-                    }
+                    $enterLesson = true;
 
                 } else if($liveRequestStatus['is_teacher']) {
                     $enterLesson = true;
@@ -219,35 +188,16 @@ class LessonsController extends AppController {
             $this->redirect('/');
         }
 
-        if(!$canWatchData['approved']) {
+        if(!$canWatchData['approved'] && !$canWatchData['is_teacher']) {
             if($canWatchData['pending_teacher_approval']) {
                 $this->Session->setFlash(__('You\'re order is pending for the teacher approval'));
 
-            } /*else if($canWatchData['pending_user_approval']) {
-                $this->Session->setFlash(__('You must order the lesson first'));
-            }*/ else {
+            } else if($canWatchData['pending_user_approval']) {
+                $this->Session->setFlash(__('An invitation is waiting for your approval, You must approve it or order the lesson first'));
+            } else {
                 $this->Session->setFlash(__('You must order the lesson first'));
             }
             $this->redirect(array('controller'=>'Home', 'action'=>'teacherSubject', $subjectId));
-        }
-
-        if($canWatchData['payment_needed'] && !$canWatchData['is_teacher']) {
-            App::import('Model', 'AdaptivePayment');
-            $apObj = new AdaptivePayment();
-
-            //Check if user paid
-            if(!$apObj->isPaid($canWatchData['user_lesson_id'])) {
-                $returnUrl = Router::url(null, true);
-
-                $this->TeacherLesson->pay($canWatchData['teacher_lesson_id'], $returnUrl, $returnUrl);
-
-                //Pay for lesson
-                if(!$apObj->isPaid($canWatchData['user_lesson_id'])) {
-                    $this->log(var_export($canWatchData, true), 'payment_failed');
-                    $this->Session->setFlash(__('Payment error, please contact us'));
-                    $this->redirect(array('controller'=>'Home', 'action'=>'teacherSubject', $subjectId));
-                }
-            }
         }
 
         if(empty($canWatchData['datetime']) && empty($canWatchData['end_datetime'])) {

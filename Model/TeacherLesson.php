@@ -6,7 +6,7 @@ define('PAYMENT_STATUS_PENDING', 1);
 define('PAYMENT_STATUS_DONE', 2);
 define('PAYMENT_STATUS_PARTIAL', 3);
 define('PAYMENT_STATUS_ERROR', 4);
-define('PAYMENT_STATUS_ERROR_MISSING_TEACHER_ACCOUNT', 5);
+define('PAYMENT_STATUS_RETURN_DUE_TO_OVERDUE_REQUEST', 5);
 
 define('RATING_STATUS_PENDING', 0);
 define('RATING_STATUS_DONE', 1);
@@ -674,10 +674,8 @@ class TeacherLesson extends AppModel {
 		));
 	} */
 
-    public function pay($teacherLessonId, $cancelURL=null, $returnURL=null) {
-        App::import('Model', 'AdaptivePayment');
-        $apObj = new AdaptivePayment();
-        $payRes = $apObj->pay($teacherLessonId, $cancelURL, $returnURL);
+    public function pay($teacherLessonId) {
+        $payRes = $this->_pay($teacherLessonId);
 
         $this->create(false);
         $this->id = $teacherLessonId;
@@ -686,21 +684,190 @@ class TeacherLesson extends AppModel {
             $update = array('payment_status'=>$payRes);
         } else {
             $update = array(
-                            'payment_status'                    =>$payRes['status'],
-                            'payment_success_transactions_count'=>$payRes['successTransactionsCount'],
-                            'payment_per_student_price'         =>$payRes['perStudentPrice'],
-                            'payment_per_student_commission'    =>$payRes['perStudentCommission'],
+                            'payment_status'                            =>$payRes['status'],
+                            'payment_success_transactions_count'        =>$payRes['success_transactions_count'],
+                            'payment_per_student_price'                 =>$payRes['per_student_price'],
+                            'payment_per_student_commission'            =>$payRes['per_student_commission'],
+                            'payment_per_student_gateway_max_commission'=>$payRes['per_student_gateway_max_commission'],
 
             );
         }
-
 
         $this->set($update);
         if(!$this->save()) {
             return false;
         }
 
+        //Billing history for teacher
+        App::import('Model', 'TeacherLesson');
+        $teacherLessonModel = new TeacherLesson();
+        $teacherLessonModel->recursive = -1;
+        $tlData = $teacherLessonModel->findByTeacherLessonId($teacherLessonId);
+
+
+        App::import('Model', 'BillingHistory');
+        $billingHistoryModel = new BillingHistory();
+        $billingHistoryModel->addHistory(
+            ($payRes['success_transactions_count']*$payRes['per_student_price']),
+            $tlData['TeacherLesson']['teacher_user_id'],
+            'teacher.payment',
+            $teacherLessonId,
+            null,
+            array(
+                'creditPoints'  => $payRes['per_student_price']                         * $payRes['success_transactions_count'],
+                'commission'    => $payRes['per_student_commission']                    * $payRes['success_transactions_count'],
+                'gatewayFee'    => $payRes['payment_per_student_gateway_max_commission']* $payRes['success_transactions_count'],
+
+            )
+        );
+
+
         return $payRes['status'];
+    }
+
+    /**
+     * Charge all students of TeacherLessonId
+     * @param $teacherLessonId
+     * @return int, on success an array of success_transactions_count, status, per_student_price, per_student_commission, per_student_gateway_max_commission
+     */
+    public function _pay( $teacherLessonId ) {
+        $this->recursive = -1;
+        $tlData = $this->findByTeacherLessonId($teacherLessonId);
+        if(!$tlData || $tlData['TeacherLesson']['is_deleted'] || !$tlData['TeacherLesson']['1_on_1_price']) {
+            return PAYMENT_STATUS_ERROR;
+        }
+        //Check if already used for payment
+        if($tlData['TeacherLesson']['payment_status']!=PAYMENT_STATUS_PENDING) {
+            return $tlData['TeacherLesson']['payment_status'];
+        }
+
+
+        //Get student price and comissions
+        $studentPriceAndComissions = $this->calcFinalStudentPriceAndCommissions($teacherLessonId);
+
+        App::import('Model', 'UserLesson');
+        $ulObj = new UserLesson();
+
+        //Find all UL that approved
+        $ulObj->recursive = -1;
+        $uls = $ulObj->find('all', array('conditions'=>array(
+                                                        'teacher_lesson_id'=>$teacherLessonId,
+                                                        'stage'=>array( USER_LESSON_ACCEPTED, USER_LESSON_PENDING_RATING, USER_LESSON_PENDING_TEACHER_RATING,
+                                                                        USER_LESSON_PENDING_STUDENT_RATING, USER_LESSON_DONE ),
+                                                        'payment_status'=>PAYMENT_STATUS_PENDING
+                                                    ),
+                                            'fields'=>array('user_lesson_id', 'student_user_id') ));
+        if(!$uls) {
+            //There are no users in lesson
+            return PAYMENT_STATUS_DONE;
+        }
+
+        App::import('Model', 'BillingHistory');
+        $billingHistoryModel = new BillingHistory();
+
+        //Go over all ULs
+        $successTransactionsCount = 0;
+        foreach($uls AS $ul) {
+            $ul = $ul['UserLesson'];
+
+
+            //Make sure there are enough CP
+            if($ulObj->haveEnoughTotalCreditPoints(null, $studentPriceAndComissions['per_student_price'], $ul['user_lesson_id'])
+                !==true) {
+                $paymentStatus = PAYMENT_STATUS_ERROR;
+
+                $this->log('TeacherLesson::Pay - not enough CP!: UserLesson'.$ul['user_lesson_id'], 'credit_points');
+            } else {
+                $paymentStatus = PAYMENT_STATUS_DONE;
+
+                //Balance CP for UL, any remainder should go to the student
+                $ulObj->setTotalCreditPoints($ul['user_lesson_id'], $studentPriceAndComissions['per_student_price']);
+
+
+
+                //Calc who need to get and how much
+                $transferToUs = $studentPriceAndComissions['per_student_commission'] + $studentPriceAndComissions['per_student_gateway_max_commission'];
+                $transferToTeacher = $studentPriceAndComissions['per_student_price'] - $transferToUs;
+
+                //Transfer to teacher account per_student_price-per_student_commission-per_student_gateway_max_commission
+                $ulObj->transferCPToUser($ul['user_lesson_id'], $transferToTeacher, $tlData['TeacherLesson']['teacher_user_id']);
+
+                //Transfer remainder to us :)
+                $ulObj->transferCPToUser($ul['user_lesson_id'], $transferToUs, Configure::read('system_user_id'));
+
+
+
+
+                //Billing history for user
+                $billingHistoryModel->addHistory(
+                    $studentPriceAndComissions['per_student_price'],
+                    $ul['student_user_id'],
+                    'student.payment',
+                    $teacherLessonId,
+                    $ul['user_lesson_id'],
+                    array(
+                        'creditPoints'=>$studentPriceAndComissions['per_student_price']
+                    )
+                );
+
+                $successTransactionsCount++;
+
+                $event = new CakeEvent('Model.AdaptivePayment.AfterUserLessonPaid', $this, array('user_lesson_id'=>$ul['user_lesson_id'], 'teacher_lesson_id'=>$teacherLessonId, 'status'=>$paymentStatus) );
+                $this->getEventManager()->dispatch($event);
+            }
+
+            ///Update UL payment status
+            $ulObj->create(false);
+            $ulObj->id = $ul['user_lesson_id'];
+            $ulObj->save(array('payment_status'=>$paymentStatus));
+        }
+
+
+        $return = $studentPriceAndComissions;
+        $return['success_transactions_count'] = $successTransactionsCount;
+
+
+        if($return['success_transactions_count']==$tlData['TeacherLesson']['num_of_students']) {
+            $return['status'] = PAYMENT_STATUS_DONE; //All payments was successful
+        } else if(!$return['successTransactionsCount']) {
+            $return['status'] = PAYMENT_STATUS_ERROR; //No successful payments
+        } else {
+            $return['status'] = PAYMENT_STATUS_PARTIAL; //Partial payments
+        }
+
+        return $return;
+    }
+
+    /**
+     * Calc how much each student should pay, in addition our commission and gateway commission
+     * @param $teacherLessonId
+     * @return array (
+     *      per_student_price
+     *      per_student_commission
+     *      per_student_gateway_max_commission
+     * );
+     */
+    public function calcFinalStudentPriceAndCommissions($teacherLessonId) {
+        $return = array();
+
+        $this->recursive = -1;
+        $tlData = $this->findByTeacherLessonId($teacherLessonId);
+        $tlData = $tlData['TeacherLesson'];
+
+        //1. Calc student price
+        if($tlData['lesson_type']=='video' || $tlData['max_students']==1 || $tlData['num_of_students']==1) {
+            $return['per_student_price'] = $tlData['1_on_1_price'];
+        } else {
+            $return['per_student_price'] = $this->Subject->calcStudentPriceAfterDiscount( $tlData['1_on_1_price'], $tlData['max_students'], $tlData['num_of_students'], $tlData['full_group_student_price'] );
+        }
+
+        //Calc our commission
+        $return['per_student_commission'] = Configure::read('per_student_commission');
+
+        //PayPal fees
+        $return['per_student_gateway_max_commission']  = ($return['per_student_price'] * 0.05) + 0.30; // 5% + 0.30 cents
+
+        return $return;
     }
 
 

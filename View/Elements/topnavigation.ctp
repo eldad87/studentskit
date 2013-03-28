@@ -225,6 +225,7 @@
 
                         <div class="headerdropdown"><a href="#" id="notification-load-more" class="loadMore centered"><strong><?php echo __('Next'); ?></strong></a></div>
                     </div>
+
                 </div>
                 <!-- /Notifications -->
 
@@ -262,6 +263,18 @@
                 </div>
                 <!-- /Messages -->
 
+                <!-- CreditPoints -->
+                <div class="pull-left position">
+                    <a href="<?php
+                        $urlArr = $this->Layout->getOrganizerUrl('/Billing');
+                        echo Router::url($urlArr);
+                    ?>">
+                        <div class="requst-number" id="creditPointsCounter"><?php echo $user['credit_points']; ?></div>
+                        <i class="pull-left iconMedium-dollar-tool space11 icon show-tip"></i>
+                    </a>
+                </div>
+                <!-- /CreditPoints -->
+
            </div>
             <!-- world icon and messageicon box -->
         <?php } ?>
@@ -282,7 +295,11 @@
                             ,'<i class="iconMedium-sign space20"></i>
                             </a>';
             } else {
-                echo '<span class="space28">',__('Welcome'),', ',$user['username'],'</span>';
+                $username = $user['username'];
+                if(mb_strlen($username)>14) {
+                    $username = substr($username, 0, 14).'..';
+                }
+                echo '<span class="space28">',__('Welcome'),', ',$username,'</span>';
 
                 if($loginClient=='facebook' || (isSet($facebookUser) && $facebookUser)) {
                     echo $this->Facebook->logout(array('label'=>__('Logout'), 'redirect' => '/logout'));

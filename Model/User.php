@@ -125,6 +125,34 @@ class User extends AppModel {
         return $weakPassObj->isInDictionary($this->data[$this->alias]['password']) ? false : true;
     }
 
+
+    public function setCreditPoints($userId, $creditPoints) {
+
+        $expression = (($creditPoints>0) ? '+' : '-') . abs($creditPoints);
+
+        $this->create(false);
+        $this->id = $userId;
+        $save = array(
+            'credit_points' => $this->getDataSource()->expression('credit_points'.$expression)
+        );
+
+        return $this->save(
+            $save
+        );
+    }
+
+    public function getCreditPoints($userId) {
+        $this->recursive = -1;
+        $this->cacheQueries = false;
+        $u = $this->find('first', array(    'conditions'=>array('user_id'=>$userId),
+                                            'fields'=>array('credit_points')));
+        if(!$u) {
+            return 0;
+        }
+
+        return $u[$this->alias]['credit_points'];
+    }
+
     //Change upload folder
     public function beforeTransport($options) {
         $options['folder'] .= String::uuid() . '/';

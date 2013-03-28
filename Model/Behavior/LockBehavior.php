@@ -12,6 +12,12 @@ class LockBehavior extends ModelBehavior {
         'locking_time_out'  =>30
     );
 
+    /**
+     * Hold all the current locked resources
+     * @var array
+     */
+    private $lockThread = array();
+
     public function setup(Model $model, $config = array()) {
         $this->settings[$model->alias] = array_merge($this->defaultSettings, $config);
 
@@ -41,6 +47,14 @@ class LockBehavior extends ModelBehavior {
     }
 
     public function lock(Model $model, $id, $lockTimeOut=null, $maxLockTime=HOUR) {
+
+        //Check if locked by this thread
+        if($this->isLockedInThisThread($model, $id)) {
+            $this->addToLockThread($model, $id);
+            return true;
+        }
+
+
         if(is_null($lockTimeOut)) {
             $lockTimeOut = $this->getSetting($model, 'locking_time_out');
         }
@@ -90,10 +104,57 @@ class LockBehavior extends ModelBehavior {
         }
 
         $model->getDataSource()->commit();
+
+        $this->addToLockThread($model, $id);
+
         return true;
     }
 
+    /**
+     * Check if any object is locking this resources in this thread
+     * @param Model $model
+     * @param $id
+     * @return bool
+     */
+    private function isLockedInThisThread(Model $model, $id) {
+        return (isSet($this->lockThread[$model->alias][$id]) && $this->lockThread[$model->alias][$id]);
+    }
+
+    /**
+     * Indicate that another object is locking this resource in this thread
+     * @param Model $model
+     * @param $id
+     * @return mixed
+     */
+    private function addToLockThread(Model $model, $id) {
+        if(!isSet($this->lockThread[$model->alias][$id])) {
+            $this->lockThread[$model->alias][$id] = 0;
+        }
+
+        $this->lockThread[$model->alias][$id]++;
+
+        return $this->lockThread[$model->alias][$id];
+    }
+
+    /**
+     * Return the amount of objects that still locking this resource (in this thread)
+     * @param Model $model
+     * @param $id
+     * @return int
+     */
+    private function removeFromLockThread(Model $model, $id) {
+        $this->lockThread[$model->alias][$id]--;
+
+        return $this->lockThread[$model->alias][$id];
+    }
+
+
     public function unlock(Model $model, $id) {
+        //Check if there are any other objects that still locking this resource
+        if($this->removeFromLockThread($model, $id)) {
+            return true;
+        }
+
         $model->getDataSource()->begin();
         $results = $this->selectForUpdate($model, $id);
         if(!$results) {

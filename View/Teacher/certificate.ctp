@@ -7,12 +7,15 @@
 
         if(isSet($updateExisting)) {
             //$certificateData
-            echo 'var cert = \''.preg_replace('/\s\s+/', ' ', $this->element('Panel'.DS.'Profile'.DS.'certificate', array('cert'=>$certificateData))).'\';';
+
+            //echo 'var cert = \''.preg_replace('/\s\s+/', ' ', $this->element('Panel'.DS.'Profile'.DS.'certificate', array('cert'=>$certificateData))).'\';';
+            echo 'var cert = \''.$this->Layout->stringToJSVar($this->element('Panel'.DS.'Profile'.DS.'certificate', array('cert'=>$certificateData))).'\';';
             echo '$(\''.$updateExisting.'\').html(cert);';
         }
         if(isSet($updateNew)) {
             //$certificateData
-            echo 'var cert = \''.preg_replace('/\s\s+/', ' ', $this->element('Panel'.DS.'Profile'.DS.'certificate', array('cert'=>$certificateData, 'li'=>true))).'\';';
+            //echo 'var cert = \''.preg_replace('/\s\s+/', ' ', $this->element('Panel'.DS.'Profile'.DS.'certificate', array('cert'=>$certificateData, 'li'=>true))).'\';';
+            echo 'var cert = \''.$this->Layout->stringToJSVar($this->element('Panel'.DS.'Profile'.DS.'certificate', array('cert'=>$certificateData, 'li'=>true))).'\';';
             echo '$(\''.$updateNew.'\').append(cert);';
         }
     ?>
