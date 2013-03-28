@@ -269,7 +269,7 @@
                         $urlArr = $this->Layout->getOrganizerUrl('/Billing');
                         echo Router::url($urlArr);
                     ?>">
-                        <div class="requst-number" id="creditPointsCounter"><?php echo $user['credit_points']; ?></div>
+                        <div class="requst-number requst-number-green" id="creditPointsCounter"><?php echo $user['credit_points']; ?></div>
                         <i class="pull-left iconMedium-dollar-tool space11 icon show-tip"></i>
                     </a>
                 </div>
