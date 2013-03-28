@@ -1,11 +1,4 @@
-<div class="fullwidth pull-left cont-span15">
-    <?php
-    if(!$response['response']['billingHistory']) {
-        echo $this->Layout->flashMessage(__('Info'), __( 'You didn\'t received any payments yet.'), 'alert-info');
-        die;
-    }
-    ?>
-</div>
+
 
 
 
@@ -20,6 +13,15 @@
 ////////////// Page 1 - start
 if($page==1) {
 ?>
+    <div class="fullwidth pull-left cont-span15">
+        <?php
+        if(!$response['response']['billingHistory']) {
+            echo $this->Layout->flashMessage(__('Info'), __( 'You didn\'t received any payments yet.'), 'alert-info');
+            die;
+        }
+        ?>
+    </div>
+
     <script type="text/javascript">
         $(document).ready(function(){
             var url = '/Billing/index/{limit}/{page}';

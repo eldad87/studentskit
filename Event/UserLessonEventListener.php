@@ -66,7 +66,7 @@ class UserLessonEventListener implements CakeEventListener {
         switch($event->data['current']['payment_status']) {
             case PaypalComponent::PAYMENT_STATUS_COMPLETED:
 
-                //This should aplay on the first attempt only
+                //This should apply on the first attempt only
                 if($event->data['old']['payment_status']==PaypalComponent::PAYMENT_STATUS_COMPLETED) {
                     break;
                 }
@@ -74,14 +74,14 @@ class UserLessonEventListener implements CakeEventListener {
                 //Transfer funds to user account
                 App::import('Model', 'User');
                 $userObj = new User();
-                $userObj->setCreditPoints($event->data['old']['student_user_id'], $event->data['old']['amount']);
+                $userObj->setCreditPoints($event->data['old']['student_user_id'], $event->data['current']['gross_amount']);
 
 
                 //Add billing history
                 App::import('Model', 'BillingHistory');
                 $billingHistoryModel = new BillingHistory();
                 $billingHistoryModel->addHistory(
-                    $event->data['old']['amount'],
+                    $event->data['current']['gross_amount'],
                     $event->data['old']['student_user_id'],
                     'student.add',
                     null,
@@ -98,6 +98,9 @@ class UserLessonEventListener implements CakeEventListener {
                 );
                 break;
 
+            /**
+             * IPN ONLY operations
+             */
             case PaypalComponent::PAYMENT_STATUS_COMPLETED_FUNDS_HELD:
             case PaypalComponent::PAYMENT_STATUS_IN_PROGRESS:
             case PaypalComponent::PAYMENT_STATUS_PENDING:
@@ -105,6 +108,38 @@ class UserLessonEventListener implements CakeEventListener {
                 $pulObj->cancel(
                     $event->data['old']['pending_user_lesson_id']
                 );
+                break;
+
+            case PaypalComponent::PAYMENT_STATUS_PARTIALLY_REFUNDED:
+            case PaypalComponent::PAYMENT_STATUS_REFUNDED:
+            case PaypalComponent::PAYMENT_STATUS_REVERSED:
+
+                //Transfer funds to user account
+                App::import('Model', 'User');
+                $userObj = new User();
+                $userObj->setCreditPoints($event->data['old']['student_user_id'], $event->data['current']['gross_amount']);
+
+
+                //Add billing history
+                App::import('Model', 'BillingHistory');
+                $billingHistoryModel = new BillingHistory();
+                $billingHistoryModel->addHistory(
+                    $event->data['current']['gross_amount'],
+                    $event->data['old']['student_user_id'],
+                    'student.reduce',
+                    null,
+                    null,
+                    array(
+                        'creditPoints'  => $event->data['old']['amount']
+                    )
+                );
+
+
+                //If PendingUserLesson - execute
+                $pulObj->cancel(
+                    $event->data['old']['pending_user_lesson_id']
+                );
+
                 break;
 
             default:

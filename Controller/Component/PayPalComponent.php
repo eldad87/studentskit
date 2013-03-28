@@ -7,11 +7,27 @@ class PaypalComponent extends Component {
     const CHECKOUT_STATUS_PAYMENT_ACTION_INPROGRESS     = 'PaymentActionInProgress';
     const CHECKOUT_STATUS_PAYMENT_ACTION_COMPLETED      = 'PaymentActionCompleted';
 
+
     const PAYMENT_STATUS_NONE                           = 'None';
     const PAYMENT_STATUS_COMPLETED                      = 'Completed';
     const PAYMENT_STATUS_PENDING                        = 'Pending';
     const PAYMENT_STATUS_COMPLETED_FUNDS_HELD           = 'Completed-Funds-Held';
     const PAYMENT_STATUS_IN_PROGRESS                    = 'In-Progress';
+
+    const PAYMENT_STATUS_PARTIALLY_REFUNDED             = 'Partially-Refunded';
+    const PAYMENT_STATUS_REFUNDED                       = 'Refunded';
+    const PAYMENT_STATUS_REVERSED                       = 'Reversed';
+    /**
+     * Not handled:
+     * Canceled-Reversal
+     * Denied
+     * Expired
+     * Failed
+     * Processed
+     * Voided
+     */
+
+
 
     const PAYER_STATUS_VERIFIED                         = 'verified';
     const PAYER_STATUS_UNVERIFIED                       = 'unverified';
@@ -195,7 +211,78 @@ class PaypalComponent extends Component {
         return true;
     }
 
-    public function DoExpressCheckout($pendingUserLessonId) {
+    public function DoExpressCheckoutIPN($pendingUserLessonId) {
+        App::import('Model', 'ExpressCheckout');
+        $ecObj = new ExpressCheckout();
+
+        //Find
+        $ecObj->recursive = -1;
+        $ecData = $ecObj->findByPendingUserLessonId($pendingUserLessonId);
+        if(!$ecData) {
+            return false;
+        }
+        $ecData = $ecData['ExpressCheckout'];
+
+        //Try locking
+        if(!$ecObj->lock($ecData['express_checkout_id'], 10)) {
+            return false;
+        }
+
+
+        $ipnMessage = new PPIPNMessage();
+        if(!$ipnMessage->validate()) {
+            return false;
+        }
+
+        $ipnData = $ipnMessage->getRawData();
+
+        //Save into DB
+        $save = array(
+            'history'           => $this->createHistory($ecData['history'], null, $ipnData)
+        );
+
+        if(isSet($ipnData['payment_status']) && $ipnData['payment_status']) {
+            $save['payment_status'] = $ipnData['payment_status'];
+        }
+        $transactionId = $ipnMessage->getTransactionId();
+        if(isSet($transactionId) && $transactionId) {
+            $save['transaction_id'] = $transactionId;
+        }
+        if(isSet($ipnData['mc_fee']) && $ipnData['mc_fee']) {
+            $save['fee_amount'] = $ecObj->getDataSource()->expression('fee_amount+'.$ipnData['mc_fee']);
+        }
+        if(isSet($ipnData['mc_gross']) && $ipnData['mc_gross']) {
+            $save['gross_amount'] = $ecObj->getDataSource()->expression('gross_amount+'.$ipnData['mc_gross']);
+        }
+
+        $ecObj->create(false);
+        $ecObj->id = $ecData['express_checkout_id'];
+        if(!$ecObj->save($save)) {
+            //TODO: log
+            $ecObj->unlock($ecData['express_checkout_id']);
+            return false;
+        }
+
+        $ecObj->unlock($ecData['express_checkout_id']);
+
+
+
+        $save['gross_amount'] = $ipnData['mc_gross']; //Add how much money did we received
+        if($save['gross_amount']<0) {
+            //TODO: log refund
+        }
+
+        //Dispatch event
+        App::import('Model', 'UserLesson');
+        new UserLesson(); //Bind events
+        $event = new CakeEvent('Model.PayPal.afterPaymentUpdate', $this, array('current'=>$save, 'old'=>$ecData) );
+        CakeEventManager::instance()->dispatch($event);
+
+
+        return $ipnData['payment_status'];
+    }
+
+    public function DoExpressCheckout($pendingUserLessonId, $ipn=null) {
         App::import('Model', 'ExpressCheckout');
         $ecObj = new ExpressCheckout();
 
@@ -257,6 +344,9 @@ class PaypalComponent extends Component {
         $paymentDetails= new PaymentDetailsType();
         $paymentDetails->OrderTotal = $orderTotal;
 
+        if($ipn) {
+            $paymentDetails->NotifyURL = $ipn;
+        }
 
         $DoECRequestDetails = new DoExpressCheckoutPaymentRequestDetailsType();
         $DoECRequestDetails->PayerID = $ecData['payer_id'];
@@ -297,7 +387,11 @@ class PaypalComponent extends Component {
         }
         if(isSet($DoECResponse->DoExpressCheckoutPaymentResponseDetails->PaymentInfo[0]->FeeAmount->value) &&
             $DoECResponse->DoExpressCheckoutPaymentResponseDetails->PaymentInfo[0]->FeeAmount->value) {
-            $save['fee_amount'] = $DoECResponse->DoExpressCheckoutPaymentResponseDetails->PaymentInfo[0]->FeeAmount->value;
+            $save['fee_amount'] = $ecObj->getDataSource()->expression('fee_amount+'.$DoECResponse->DoExpressCheckoutPaymentResponseDetails->PaymentInfo[0]->FeeAmount->value);
+        }
+        if(isSet($DoECResponse->DoExpressCheckoutPaymentResponseDetails->PaymentInfo[0]->GrossAmount->value) &&
+            $DoECResponse->DoExpressCheckoutPaymentResponseDetails->PaymentInfo[0]->GrossAmount->value) {
+            $save['gross_amount'] = $ecObj->getDataSource()->expression('gross_amount+'.$DoECResponse->DoExpressCheckoutPaymentResponseDetails->PaymentInfo[0]->GrossAmount->value);
         }
 
 
@@ -316,6 +410,8 @@ class PaypalComponent extends Component {
         if($DoECResponse->Ack!='Success' || $DoECResponse->Errors) {
             return false;
         }
+
+        $save['gross_amount'] = $DoECResponse->DoExpressCheckoutPaymentResponseDetails->PaymentInfo[0]->GrossAmount->value; //Add how much money did we received
 
         //Dispatch event
         App::import('Model', 'UserLesson');

@@ -288,7 +288,6 @@ class OrderController extends AppController {
         $this->set('orderData', $this->getOrderData());
     }
 
-
     /**
      * Generate userLesson on-the-fly if needed
      */
@@ -472,9 +471,10 @@ class OrderController extends AppController {
         }
 
 
+        $ipn = Router::url(array('controller'=>'Order', 'action'=>'expressPaidStatus', 'expressPaidIPN', $pendingUserLessonId), true);
 
         //Charge user
-        $paymentStatus = $this->PayPal->DoExpressCheckout($pendingUserLessonId);
+        $paymentStatus = $this->PayPal->DoExpressCheckout($pendingUserLessonId, $ipn);
         if(!$paymentStatus) {
             $this->Session->setFlash(__('We couldn\'t process your payment.'));
             $this->redirect($this->getOrderData('redirect'));
@@ -485,6 +485,11 @@ class OrderController extends AppController {
         }
 
         //TODO::Handle PaymentStatus - show to user
+    }
+
+    public function expressPaidIPN($pendingUserLessonId) {
+        echo $this->PayPal->DoExpressCheckoutIPN($pendingUserLessonId);
+        die;
     }
 
 
