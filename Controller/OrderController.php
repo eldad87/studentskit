@@ -1,11 +1,14 @@
 <?php
 /**
  *@property Subject $Subject
+ *@property PayPalComponent $PayPal
+ *@property PendingUserLesson $PendingUserLesson
  */
 class OrderController extends AppController {
 	public $name = 'Order';
-	public $uses = array('User', 'Subject', 'TeacherLesson', 'UserLesson', 'PendingUserLesson', 'AdaptivePayment', 'PendingAdaptivePayment');
+	public $uses = array('User', 'Subject', 'TeacherLesson', 'UserLesson', 'PendingUserLesson', 'PendingUserLesson');
 	public $components = array('Utils.FormPreserver'=>array('directPost'=>true,'actions'=>array('prerequisites'), 'priority' => 1),
+                                'PayPal'
                                 /*'Security'=>array(
                                     'csrfCheck'=>false,
                                     'requireSecure'=>true,
@@ -74,7 +77,7 @@ class OrderController extends AppController {
                     $this->redirect($this->getOrderData('redirect'));
                 }
 
-                $extraParams = Security::rijndael($this->params->query['negotiate'], Configure::read('Security.key'), 'decrypt');
+                $extraParams = Security::rijndael(base64_decode($this->params->query['negotiate']), Configure::read('Security.key'), 'decrypt');
                 $extraParams = json_decode($extraParams, true);
                 if(isSet($extraParams['1_on_1_price'])) {
                     $price = $extraParams['1_on_1_price'];
@@ -227,6 +230,7 @@ class OrderController extends AppController {
         $viewParameters['duration_minutes'] = $actionData['Subject']['duration_minutes'];
         $viewParameters['datetime']         = $this->getOrderData('datetime');
         $viewParameters['price']            = $this->getOrderData('price');
+
         if($actionData['Subject']['lesson_type']=='live') {
             $viewParameters['max_students']  = $actionData['Subject']['max_students'];
         }
@@ -241,7 +245,12 @@ class OrderController extends AppController {
                     $viewParameters['full_group_student_price'] = $actionData['Subject']['full_group_student_price'];
                     $viewParameters['full_group_total_price']   = $actionData['Subject']['full_group_total_price'];
                 }
-            break;
+
+                //Calc how much CP the user need to buy
+                $haveEnought = $this->UserLesson->haveEnoughTotalCreditPoints($this->Auth->user('user_id'), $viewParameters['price']);
+                $viewParameters['price_actual_purchase'] = ($haveEnought===true ? 0 : $haveEnought);
+
+                break;
 
             case 'join':
                 if($actionData['TeacherLesson']['max_students']>1) {
@@ -249,6 +258,10 @@ class OrderController extends AppController {
                     $viewParameters['full_group_total_price']   = $actionData['TeacherLesson']['full_group_total_price'];
                 }
                 $viewParameters['num_of_students']              = $actionData['TeacherLesson']['num_of_students'];
+
+                //Calc how much CP the user need to buy
+                $haveEnought = $this->UserLesson->haveEnoughTotalCreditPoints($this->Auth->user('user_id'), $viewParameters['price']);
+                $viewParameters['price_actual_purchase'] = ($haveEnought===true ? 0 : $haveEnought);
             break;
 
             case 'negotiate':
@@ -258,6 +271,10 @@ class OrderController extends AppController {
                     $viewParameters['full_group_total_price']   = $actionData['UserLesson']['full_group_total_price'];
                 }
                 $viewParameters['num_of_students']              = $actionData['TeacherLesson']['num_of_students'];
+
+                //Calc how much CP the user need to buy
+                $haveEnought = $this->UserLesson->haveEnoughTotalCreditPoints($this->Auth->user('user_id'), $viewParameters['price'], $actionData['id']);
+                $viewParameters['price_actual_purchase'] = ($haveEnought===true ? 0 : $haveEnought);
             break;
         }
         if($extra = $this->getOrderData('extra')) {
@@ -270,6 +287,7 @@ class OrderController extends AppController {
         $this->set($viewParameters);
         $this->set('orderData', $this->getOrderData());
     }
+
 
     /**
      * Generate userLesson on-the-fly if needed
@@ -289,7 +307,9 @@ class OrderController extends AppController {
         }
         $orderData = $this->getOrderData();
 
-        $this->checkIfCanOrder($this->getActionData());
+
+        $this->checkIfCanOrder($this->getActionData(), true);
+
 
         $orderData['datetime'] = isSet($orderData['datetime']) ? $orderData['datetime'] : null;
         $this->Session->delete('order.viewedSummary');
@@ -337,7 +357,9 @@ class OrderController extends AppController {
                 $this->redirect($this->getOrderData('redirect'));
             }
 
-        } else if($orderData['action']=='negotiate' && !$this->AdaptivePayment->isValidApproval($orderData['id'], $orderData['price'], $orderData['datetime'])) {
+        } else if($orderData['action']=='negotiate' &&
+                    $this->UserLesson->haveEnoughTotalCreditPoints(null, $orderData['price'], $orderData['id'])!==true ) {
+
             //Negotiation
             $success = $this->PendingUserLesson->reProposeRequest($orderData['id'], $this->Auth->user('user_id'), $orderData['extra']);
             $pendingUserLessonId = $this->PendingUserLesson->id;
@@ -346,7 +368,9 @@ class OrderController extends AppController {
                 $this->redirect($this->getOrderData('redirect'));
             }
 
-        } else if($orderData['action']=='accept' && !$this->AdaptivePayment->isValidApproval($orderData['id'], $orderData['price'], $orderData['datetime'])) {
+        } else if($orderData['action']=='accept' &&
+                    $this->UserLesson->haveEnoughTotalCreditPoints(null, $orderData['price'], $orderData['id'])!==true ) {
+
             //Accept offer
             $success = $this->PendingUserLesson->acceptRequest($orderData['id'], $this->Auth->user('user_id'));
             $pendingUserLessonId = $this->PendingUserLesson->id;
@@ -364,37 +388,105 @@ class OrderController extends AppController {
 
         if($pendingUserLessonId) {
             //Lesson that cost money need to go through PayPal
-            $this->paymentPreapproval($pendingUserLessonId);
+            //$this->paymentPreapproval($pendingUserLessonId);
+            $paymentGateway = 'paypalExpressCheckout'; //Can be change dynamically by the use choice
+            $this->_gateway($pendingUserLessonId, $orderData['action'], $paymentGateway);
         }
 
         $this->redirect(array('controller'=>'Order', 'action'=>'status', $orderData['action'], $userLessonId));
     }
 
     /**
-     * Redirect users to the preapproval-paypal page
+     * Determent which gateway should be used, if any
+     *
+     * @param $pendingUserLessonId
+     * @param $action
+     * @param string $gateway
+     * @return bool
      */
-    private function paymentPreapproval($pendingUserLessonId) {
-        $action = $this->getOrderData('action');
+    private function _gateway($pendingUserLessonId, $action, $gateway='paypalExpressCheckout') {
 
-        //Get UserLesson/PendingUserLesson data
-        $pendingUserLessonData = $this->PendingUserLesson->findByPendingUserLessonId($pendingUserLessonId);
-        if(!$pendingUserLessonData) {
-            $this->redirect($this->getOrderData('redirect'));
+        //Check if user have enough funds + check if UL have any funds (in case of negotiation)
+        //1. Get pendingUserLesson.1_on_1_price
+        $this->PendingUserLesson->recursive = -1;
+        $pulData = $this->PendingUserLesson->find('first', array('conditions'=>array('pending_user_lesson_id'=>$pendingUserLessonId)));
+        if(!$pulData) {
+            return false;
         }
-        $pendingUserLessonData = $pendingUserLessonData['PendingUserLesson'];
+        $pulData = $pulData['PendingUserLesson'];
 
-        //Make sure this student made the request
-        if($pendingUserLessonData['student_user_id']!=$this->Auth->user('user_id') ) {
-            $this->redirect($this->getOrderData('redirect'));
+
+        //Check if user have enought CP - if so, no need to ask him to pay more
+        $haseEnought = $this->UserLesson->haveEnoughTotalCreditPoints(  $pulData['student_user_id'],
+                                                                $pulData['1_on_1_price'],
+                                                                $pulData['user_lesson_id']);
+        if($haseEnought===true) {
+
+            //execute, credit-points will be taken after PendingUserLesson will be execute
+            $result = $this->PendingUserLesson->execute(
+                $pendingUserLessonId
+            );
+
+            $this->clearSession();
+            if($result) {
+                $this->redirect(array('action'=>'status', $action, $pulData['user_lesson_id']));
+            } else {
+                $this->Session->setFlash(__('Error, please try again later.'));
+                $this->redirect($this->getOrderData('redirect'));
+            }
         }
 
-        //http://80.230.10.163/Order/paymentPreapprovalIpnNotificationUrl/order/15
-        $ipnNotificationUrl = Configure::read('public_domain').Router::url(array('controller'=>'Order', 'action'=>'paymentPreapprovalIpnNotificationUrl', $action, $pendingUserLessonId), (Configure::read('public_domain') ? false : true) );
-        $returnUrl = Router::url(array('controller'=>'Order', 'action'=>'paidStatus', $action, $pendingUserLessonId), true);
+        //Ask user to pay
+        $this->{$gateway}($pendingUserLessonId, $action, max($haseEnought, 1));
+    }
 
-        $url = $this->AdaptivePayment->getPreApprovalURL($pendingUserLessonId, $action, $returnUrl, $returnUrl, $this->request->clientIp(), $ipnNotificationUrl );
+
+    /**
+     * Paypal express checkout - redirect to paypal
+     *
+     * @param $pendingUserLessonId
+     * @param $action
+     * @param $paymentRequire
+     */
+    private function paypalExpressCheckout($pendingUserLessonId, $action, $paymentRequire) {
+
+        $returnUrl = Router::url(array('controller'=>'Order', 'action'=>'expressPaidStatus', $action, $pendingUserLessonId), true);
+        $cancelUrl = Router::url($this->getOrderData('redirect'), true);
+        $url = $this->PayPal->setExpressCheckout($pendingUserLessonId, $paymentRequire, $returnUrl, $cancelUrl);
+
         $this->redirect($url);
     }
+
+    /**
+     * Landing page - when the user finish the payment process
+     * @param $action
+     * @param $pendingUserLessonId
+     */
+    public function expressPaidStatus($action, $pendingUserLessonId) {
+        //Check if this use owns this PUL
+        $this->PendingUserLesson->recursive = -1;
+        $pulData = $this->PendingUserLesson->findByPendingUserLessonId($pendingUserLessonId);
+        if(!$pulData || $pulData['PendingUserLesson']['student_user_id']!=$this->Auth->user('user_id')) {
+            $this->Session->setFlash(__('Error.'));
+            $this->redirect($this->getOrderData('redirect'));
+        }
+
+
+
+        //Charge user
+        $paymentStatus = $this->PayPal->DoExpressCheckout($pendingUserLessonId);
+        if(!$paymentStatus) {
+            $this->Session->setFlash(__('We couldn\'t process your payment.'));
+            $this->redirect($this->getOrderData('redirect'));
+        }
+
+        if($paymentStatus==PaypalComponent::PAYMENT_STATUS_COMPLETED) {
+            $this->redirect(array('action'=>'status', $action, $pulData['PendingUserLesson']['user_lesson_id']));
+        }
+
+        //TODO::Handle PaymentStatus - show to user
+    }
+
 
     /**
      * Tells if the order was successful or not
@@ -422,104 +514,38 @@ class OrderController extends AppController {
             $this->set('subjectId', $ulData['UserLesson']['subject_id']);
             $this->set('name', $ulData['UserLesson']['name']);
             $this->set('orderData', array('action'=>$action, 'price'=>$ulData['UserLesson']['1_on_1_price'], 'lesson_type'=>$ulData['UserLesson']['lesson_type']));
+
+
+            //Set credit points
+            $creditPoints = $this->User->getCreditPoints($this->Auth->user('user_id'));
+            $userData = $this->Auth->user();
+            $userData['credit_points'] = $creditPoints;
+            $this->Auth->login($userData);
         }
-    }
-
-    public function paidStatus($action, $pendingUserLessonId) {
-
-
-        if(!$this->AdaptivePayment->updateUsingPreapprovalDetails($pendingUserLessonId, $action)) {
-            $this->redirect($this->getOrderData('redirect'));
-        }
-        $status = $this->AdaptivePayment->getStatus($pendingUserLessonId);
-
-        $this->redirect(array('action'=>'status', $action, $status['user_lesson_id']));
-    }
-
-    public function paymentPreapprovalIpnNotificationUrl($action, $pendingUserLessonId) {
-        $data = $this->data;
-        $data['action'] = $action;
-        $data['pending_user_lesson_id'] = $pendingUserLessonId;
-
-        $this->log(var_export($data, true), 'paypal_log');
-
-        //Validate the request
-        if($this->isValidIPN()) {
-            $this->AdaptivePayment->paymentUpdate($data);
-        } else {
-            $this->log(var_export($data, true), 'paypal_hack');
-        }
-
-        echo 1; die;
-    }
-
-    /*public function testIPN() {
-        $data = array (
-            'max_number_of_payments' => 'null',
-            'starting_date' => '2012-09-27T00:00:15.000Z',
-            'pin_type' => 'NOT_REQUIRED',
-            'currency_code' => 'USD',
-            'sender_email' => 'buyer2_1347221285_per@gmail.com',
-            'verify_sign' => 'AJ80yD.Z43pQ3jYcyXt6oA-ZB0gEAQeE.vVMpmpO7Juu0vN2lE6yxhWl',
-            'test_ipn' => '1',
-            'date_of_month' => '0',
-            'current_number_of_payments' => '0',
-            'preapproval_key' => 'PA-5V621152JG1461356',
-            'ending_date' => '2013-09-27T23:59:15.000Z',
-            'approved' => 'true',
-            'transaction_type' => 'Adaptive Payment PREAPPROVAL',
-            'day_of_week' => 'NO_DAY_SPECIFIED',
-            'status' => 'ACTIVE',
-            'current_total_amount_of_all_payments' => '0.00',
-            'current_period_attempts' => '0',
-            'charset' => 'windows-1252',
-            'payment_period' => '0',
-            'notify_version' => 'UNVERSIONED',
-            'max_total_amount_of_all_payments' => '2.00',
-            'action' => 'join',
-            'pending_user_lesson_id' => '31',
-        );
-        /*$data['action'] = 'order';
-        $data['pending_user_lesson_id'] = 51;* /
-//echo 1; die;
-        $this->AdaptivePayment->paymentUpdate($data);
-    }*/
-
-    private function isValidIPN() {
-        App::import('Vendor', 'PHP-PayPal-IPN'.DS.'ipnlistener');
-        $ipnListenerObj = new IpnListener();
-        $ipnListenerObj->use_sandbox = true;
-        $ipnListenerObj->force_ssl_v3 = true;
-
-        try {
-            $ipnListenerObj->requirePostMethod();
-            $verified = $ipnListenerObj->processIpn();
-        } catch (Exception $e) {
-            $this->log($e->getMessage(), 'paypal_hack');
-            return false;
-        }
-
-        if(!$verified) {
-            return false;
-        }
-
-        return true;
     }
 
     private function getOrderData($parameter=null) {
         if($parameter) {
             $parameter = '.'.$parameter;
         }
+
+        if($parameter=='redirect') {
+            $redirect = $this->Session->read('order'.$parameter);
+            if(!$redirect) {
+                return '/';
+            }
+        }
         return $this->Session->read('order'.$parameter);
     }
 
-    private function checkIfCanOrder($actionData) {
+    private function checkIfCanOrder($actionData, $a=false) {
         if(!$actionData) {
             $this->redirect($this->getOrderData('redirect'));
         }
         if(!$this->Auth->user('user_id')) {
             return false;
         }
+
 
         //Check if there are existing requests
         if($actionData['Subject']['lesson_type']==LESSON_TYPE_LIVE) {
@@ -530,7 +556,6 @@ class OrderController extends AppController {
                 $this->Session->setFlash(__('Please select a minimum +1 hour future date-time'));
                 $this->redirect($this->getOrderData('redirect'));
             }
-
 
             //Join request
             if(isSet($actionData['TeacherLesson'])) {
@@ -551,7 +576,6 @@ class OrderController extends AppController {
                     $this->redirect($this->getOrderData('redirect'));
                 }*/
             }
-
 
         } else if($actionData['Subject']['lesson_type']=='video') {
             $canWatchData = $this->UserLesson->getVideoLessonStatus($actionData['Subject']['subject_id'], $this->Auth->user('user_id'), false);

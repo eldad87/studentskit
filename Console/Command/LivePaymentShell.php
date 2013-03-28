@@ -8,14 +8,12 @@ class LivePaymentShell extends AppShell {
         $this->Subject;
         $this->TeacherLesson;
 
-
-        $returnUrl = Configure::read('public_domain').'/';
-
         //Build find conditions
+
         $conditions = array(
             $this->TeacherLesson->alias.'.lesson_type'      =>LESSON_TYPE_LIVE,
             $this->TeacherLesson->alias.'.payment_status'   =>PAYMENT_STATUS_PENDING,
-            $this->TeacherLesson->alias.'.datetime <'       =>$this->TeacherLesson->timeExpression('now +1 hour', false));
+            $this->TeacherLesson->alias.'.datetime <'       =>$this->TeacherLesson->timeExpression('now -'.Configure::read('transfer_cp_to_teacher_after_x_hours').' hour', false)); //72 hours old lesson
 
         $this->TeacherLesson->recursive = -1;
         $conditions = $this->TeacherLesson->getUnlockedRecordsFindConditions($conditions);
@@ -23,6 +21,7 @@ class LivePaymentShell extends AppShell {
         //Check if payment needed
         $this->out('Finding next pending payment...');
         $paymentNeeded = $this->TeacherLesson->find('first', array('conditions'=>$conditions));
+
         $i=1;
         while($paymentNeeded) {
             $this->out( $i++.'. Payment needed for: '.'('.$paymentNeeded['TeacherLesson']['teacher_lesson_id'].') '.$paymentNeeded['TeacherLesson']['name']);
@@ -34,7 +33,7 @@ class LivePaymentShell extends AppShell {
 
             //Pay
             $this->out('Processing payment...');
-            $status = $this->TeacherLesson->pay($paymentNeeded['TeacherLesson']['teacher_lesson_id'], $returnUrl, $returnUrl);
+            $status = $this->TeacherLesson->pay($paymentNeeded['TeacherLesson']['teacher_lesson_id']);
             switch($status) {
                 case PAYMENT_STATUS_DONE:
                     $this->out('Done');

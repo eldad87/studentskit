@@ -3,6 +3,7 @@
         "vendor-dir": "Vendor/Composer"
     },
     "require": {
-        "mjohnson/uploader": "4.*"
+        "mjohnson/uploader": "4.*",
+        "paypal/merchant-sdk-php": "dev-master"
     }
 }

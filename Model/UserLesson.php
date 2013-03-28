@@ -181,13 +181,206 @@ class UserLesson extends AppModel {
         static $eventListenerAttached = false;
 
         if(!$eventListenerAttached) {
+            $eventListenerAttached = true;
+
             //Connect the event manager of this model
             App::import( 'Event', 'UserLessonEventListener');
             $ulel =& UserLessonEventListener::getInstance();
             CakeEventManager::instance()->attach($ulel);
-            $eventListenerAttached = true;
         }
     }
+
+    public function getCreditPoints($userLessonId) {
+        $this->recursive = -1;
+        $this->cacheQueries = false;
+        $ul = $this->find('first', array(   'conditions'=>array('user_lesson_id'=>$userLessonId),
+                                            'fields'=>array('credit_points')));
+        if(!$ul) {
+            return 0;
+        }
+
+        return $ul[$this->alias]['credit_points'];
+    }
+
+    /**
+     * @param $userId
+     * @param $totalAmount - total amount of the lesson price (1_on_1_price)
+     * @param $userLessonId - userLessonId may be non-exisiting one (due to PendingUserLesson), therefore UserId is must!
+     * @return true | int - how much the user is short (abs number)
+     */
+    public function haveEnoughTotalCreditPoints($userId=null, $totalAmount, $userLessonId=null) {
+        if(!$totalAmount) {
+            return true;
+        }
+
+        //Get student CreditPoints
+        $totalCreditPoints = 0;
+        if($userId) {
+            $totalCreditPoints = $this->Student->getCreditPoints($userId);
+            if($totalCreditPoints >= $totalAmount) {
+                return true;
+            }
+        }
+
+        //Get UL CreditPoints
+        if($userLessonId) {
+            $totalCreditPoints += $this->getCreditPoints($userLessonId);
+            if( $totalCreditPoints >= $totalAmount) {
+                return true;
+            }
+        }
+
+        return $totalAmount-$totalCreditPoints;
+    }
+
+
+    /**
+     * Used to transfer funds from UL to a User
+     * @param $userLessonId
+     * @param $amount
+     * @param $toUserId
+     * @return bool
+     */
+    public function transferCPToUser($userLessonId, $amount, $toUserId) {
+        if(!$amount) {
+            return false;
+        }
+
+        //Validate that student have enough CP (just in case of transfer from User to UL
+        if($this->haveEnoughTotalCreditPoints(  null,
+                                                $amount,
+                                                $userLessonId)!==true) {
+
+            $this->log('Cannot transfer credit points to user (1), UserLessonId: '.$userLessonId.', UserId: '.$toUserId, 'credit_points');
+            return false;
+        }
+
+
+        //Start transaction
+        $dataSource = $this->getDataSource();
+        $dataSource->begin();
+
+        if(!$this->setCreditPoints( $userLessonId, -1*$amount )) {
+            $this->log('Cannot transfer credit points to user (2), UserLessonId: '.$userLessonId.', UserId: '.$toUserId, 'credit_points');
+            $dataSource->rollback();
+            return false;
+        }
+
+        //Set CP to User
+        if(!$this->Student->setCreditPoints($toUserId, $amount )) {
+            $this->log('Cannot transfer credit points to user (3), UserLessonId: '.$userLessonId.', UserId: '.$toUserId, 'credit_points');
+            $dataSource->rollback();
+            return false;
+        }
+
+        return $dataSource->commit();
+    }
+
+    /**
+     * Used to set a TOTAL of CP per lesson
+     *  if lesson need additional CP, they will be taken from the user and vise versa
+     * @param $userLessonId
+     * @param $totalCreditPoints
+     * @param null $setULPaymentStatus
+     * @return bool
+     */
+    public function setTotalCreditPoints($userLessonId, $totalCreditPoints, $setULPaymentStatus=null) {
+
+        //Find UL
+        $this->recursive = -1;
+        $this->cacheQueries = false;
+        $ulData = $this->find('first', array('conditions'=>array('user_lesson_id'=>$userLessonId)));
+        if(!$ulData) {
+            return false;
+        }
+
+
+        //Get UL credit points
+        $ulCreditPoints = $this->getCreditPoints($userLessonId);
+
+
+        if($ulCreditPoints==$totalCreditPoints) {
+            return true;
+        }
+
+
+        //Validate that student have enough CP (just in case of transfer from User to UL
+        if($this->haveEnoughTotalCreditPoints(  $ulData['UserLesson']['student_user_id'],
+                                                $totalCreditPoints,
+                                                $userLessonId)!==true) {
+
+            $this->log('Cannot transfer credit points back to student (1), UserLessonId: '.$userLessonId, 'credit_points');
+            return false;
+        }
+
+
+        /**
+         * If POSITIVE = amount of funds to be transfer to Student, else move to UL
+         */
+        $addReduceCP = $ulCreditPoints-$totalCreditPoints;
+
+
+        //Start transaction
+        $dataSource = $this->getDataSource();
+        $dataSource->begin();
+
+
+        //Set CP to UL
+        if(!$this->setCreditPoints( $userLessonId, (-1*$addReduceCP), $setULPaymentStatus) ) {
+
+            $this->log('Cannot transfer credit points back to student (2), UserLessonId: '.$userLessonId, 'credit_points');
+            $dataSource->rollback();
+            return false;
+        }
+
+        //Set CP to Student
+        if(!$this->Student->setCreditPoints($ulData['UserLesson']['student_user_id'],
+            $addReduceCP )) {
+            $this->log('Cannot transfer credit points back to student (3), UserLessonId: '.$userLessonId, 'credit_points');
+            $dataSource->rollback();
+            return false;
+        }
+
+
+        //Add billing history
+        App::import('Model', 'BillingHistory');
+        $billingHistoryModel = new BillingHistory();
+        $billingHistoryModel->addHistory(
+            abs($addReduceCP),
+            $ulData['UserLesson']['student_user_id'],
+            ($addReduceCP > 0 ? 'student.lesson.reduce' : 'student.lesson.add'),
+            $ulData['UserLesson']['teacher_lesson_id'],
+            $ulData['UserLesson']['user_lesson_id'],
+            array(
+                'creditPoints'  => abs($addReduceCP),
+                'lessonName'    => $ulData['UserLesson']['name']
+            )
+        );
+
+
+        return $dataSource->commit();
+    }
+
+    private function setCreditPoints($userLessonId, $creditPoints, $setULPaymentStatus=null) {
+
+        $expression = (($creditPoints>0) ? '+' : '-') . abs($creditPoints);
+
+        $this->create(false);
+        $this->id = $userLessonId;
+        $save = array(
+            'credit_points' => $this->getDataSource()->expression('credit_points'.$expression)
+        );
+        if($setULPaymentStatus) {
+            $save['payment_status'] = $setULPaymentStatus;
+        }
+
+        return $this->save(
+            $save
+        );
+    }
+
+
+
     public function isFutureDatetime($datetime) {
         if(isSet($datetime['datetime']) && is_array($datetime)) {
             $datetime = $datetime['datetime'];

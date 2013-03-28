@@ -48,9 +48,18 @@ echo $this->Form->create(false, array('url'=>array('controller'=>'Order', 'actio
         <li>
             <label>Price </label>
             <div class="order-billing-intext"><p>
-                <span>:</span><span class="space11"><?php echo $price ? $price.'$' : 'Free'; ?></span>
+                <span>:</span><span class="space11"><?php
+                        if($price) {
+                            echo $price.'$';
+                            if($price_actual_purchase) {
+                                echo ' ('.sprintf(__('%1.2f$ short'), $price_actual_purchase).')';
+                            }
+                        } else {
+                            echo 'Free';
+                        }
+                        ?></span>
                 <?php if(isSet($max_students) && $max_students>1 && $full_group_student_price) {?>
-                <p class="full-lesson"><label class="fulllesson">(Full lesson discount price:</label><span><?php echo $full_group_student_price; ?>$ PER STUDENT)</span></p>
+                <p class="full-lesson"><label class="fulllesson">(<?php echo __('Full lesson discount price'); ?>:</label><span><?php echo $full_group_student_price; ?>$ <?php echo __('PER STUDENT'); ?>)</span></p>
                 <?php } ?>
                 </p>
             </div>

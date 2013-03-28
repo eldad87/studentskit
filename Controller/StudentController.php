@@ -4,7 +4,7 @@
  */
 class StudentController extends AppController {
 	public $name = 'Student';
-	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson', 'AdaptivePayment');
+	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
 	public $components = array('Utils.FormPreserver'=>array('directPost'=>true), 'Session',  'RequestHandler'/*, 'Security'*/, 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),/* 'Security'*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 
@@ -110,8 +110,14 @@ class StudentController extends AppController {
 		if(!$this->UserLesson->cancelRequest( $userLessonId, $this->Auth->user('user_id') )) {
 			return $this->error(1, array('results'=>array('user_lesson_id'=>$userLessonId, 'validation_errors'=>$this->UserLesson->validationErrors)));
 		}
-		
-		return $this->success(1, array('results'=>array('user_lesson_id'=>$userLessonId)));
+
+        //Update credit points - this is ONLY needed when student accept
+        $creditPoints = $this->User->getCreditPoints($this->Auth->user('user_id'));
+        $userData = $this->Auth->user();
+        $userData['credit_points'] = $creditPoints;
+        $this->Auth->login($userData);
+
+		return $this->success(1, array('results'=>array('user_lesson_id'=>$userLessonId, 'credit_points'=>$creditPoints)));
 	}
 	
 	public function acceptUserLesson( $userLessonId ) {
@@ -128,8 +134,11 @@ class StudentController extends AppController {
             //if done by the student - Check if preapproval is OK
             if($userLessonData['UserLesson']['student_user_id']==$this->Auth->user('user_id')) {
                 $maxAmount = (isSet($userLessonData['UserLesson']['1_on_1_price']) ? $userLessonData['UserLesson']['1_on_1_price'] : null );
-                $datetime = (isSet($userLessonData['UserLesson']['datetime']) ? $userLessonData['UserLesson']['datetime'] : null );
-                if(!$this->AdaptivePayment->isValidApproval($userLessonId, $maxAmount, $datetime)) {
+
+                $haveEnough = $this->UserLesson->haveEnoughTotalCreditPoints(   $this->Auth->user('user_id'),
+                                                                                $maxAmount,
+                                                                                $userLessonId);
+                if($haveEnough!==true) {
                     $paymentPage = array('controller'=>'Order', 'action'=>'init', 'accept', $userLessonId, '?'=>array('returnURL'=>urlencode(Router::url(null, true))));
 
                     if(isSet($this->params['ext'])) {
@@ -137,10 +146,11 @@ class StudentController extends AppController {
                         return $this->error(1,  array('results'=>array('user_lesson_id'=>$userLessonId, 'orderURL'=>$paymentPage)));
                     }
                     $this->set('paymentPage', $paymentPage);
+                    $this->set('paymentShortAmount', $haveEnough);
                 }
             }
 
-            //No payment needed
+            //No additional payment needed
             if(!$paymentPage) {
 
                 if(!$this->UserLesson->acceptRequest( $userLessonId, $this->Auth->user('user_id') )) {
@@ -158,6 +168,12 @@ class StudentController extends AppController {
 
                     //Success
                     $this->set('success', true);
+                    //Update credit points - this is ONLY needed when student accept
+                    $creditPoints = $this->User->getCreditPoints($this->Auth->user('user_id'));
+                    $this->set('creditPoints', $creditPoints);
+                    $userData = $this->Auth->user();
+                    $userData['credit_points'] = $creditPoints;
+                    $this->Auth->login($userData);
 
                     if(isSet($this->request->data['removeElementAfterAccept'])) {
                         $this->set('removeElement', $this->request->data['removeElementAfterAccept']);
@@ -211,7 +227,11 @@ class StudentController extends AppController {
                     $this->request->data['UserLesson']['datetime'] = $datetime;
                 }
 
-                if(!$this->AdaptivePayment->isValidApproval($userLessonId, $maxAmount, $datetime)) {
+
+                $haveEnough = $this->UserLesson->haveEnoughTotalCreditPoints(   $this->Auth->user('user_id'),
+                                                                                $maxAmount,
+                                                                                $userLessonId);
+                if($haveEnough!==true) {
                     /*if($isRestoredData) {
                         $this->request->data = $userLessonData; //so we won't redirect him if he comes back from the shopping cart manually in the middle of the process.
                     } else {*/
@@ -219,7 +239,7 @@ class StudentController extends AppController {
                         //Create negotiation parameters
                         $params = Security::rijndael(json_encode($this->request->data['UserLesson']), Configure::read('Security.key'), 'encrypt');
 
-                        $paymentPage = array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId, '?'=>array('negotiate'=>$params));
+                        $paymentPage = array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId, '?'=>array('negotiate'=>base64_encode($params)));
 
                         if(isSet($this->params['ext'])) {
 
@@ -229,6 +249,7 @@ class StudentController extends AppController {
                         //$this->FormPreserver->preserve($this->data);
                         //$this->redirect(array('controller'=>'Order', 'action'=>'init', 'negotiate', $userLessonId, '?'=>array('negotiate'=>$params)));
                         $this->set('paymentPage', $paymentPage);
+                        $this->set('paymentShortAmount', $haveEnough);
                     //}
                 }
             }
@@ -250,6 +271,12 @@ class StudentController extends AppController {
 
                     //Success
                     $this->set('success', true);
+                    //Update credit points - this is ONLY needed when student accept
+                    $creditPoints = $this->User->getCreditPoints($this->Auth->user('user_id'));
+                    $this->set('creditPoints', $creditPoints);
+                    $userData = $this->Auth->user();
+                    $userData['credit_points'] = $creditPoints;
+                    $this->Auth->login($userData);
 
                     //Need to refresh the tooltip info
                     /*if(isSet($this->request->data['updateTooltipAfterNegotiate'])) {

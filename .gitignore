@@ -17,5 +17,6 @@ webroot/file_system/*
 webroot/img/teachers/certificates/*
 webroot/vid/teachers/about_videos/*
 webroot/files/uploads/*
+webroot/paypal*
 !empty
 .DS_Store
