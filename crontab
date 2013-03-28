@@ -20,7 +20,7 @@
 # # Payment
 #
 
-# Charge users 1 hour before lesson starts
+# Transfer CP 3 days after lesson starts to the teacher
 # Run every 20 seconds
 */20 * * * * /var/www/cake/lib/Cake/Console/cake -app /var/www/app/current live_payment
 
@@ -34,3 +34,13 @@
 # After lesson ends, allow users/teacher to rate the lesson/students
 # Run every 20 seconds
 */20 * * * * /var/www/cake/lib/Cake/Console/cake -app /var/www/app/current update_rating_stage
+
+
+#
+# # Return CP to students on overdue/invalid request
+#
+
+# Join request - After lesson starts, all join requests to it are invalid
+# Order - After lesson request date is overdue, the request is invalid
+# Run every 1 minute
+*/1 * * * * /var/www/cake/lib/Cake/Console/cake -app /var/www/app/current update_rating_stage

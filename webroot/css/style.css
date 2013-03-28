@@ -1320,8 +1320,13 @@ select.x-large{
 }
 
 .iconMedium-blue-tool{
-	background-position:-168px -26px;
-	
+    background-position:-168px -26px;
+
+}
+
+.iconMedium-dollar-tool{
+    background-position:-190px -26px;
+
 }
 
 /* Icon Small */ 
@@ -3461,7 +3466,7 @@ ul.booking-nav.nav-tabs.back-more li.active{
 
 
 .requst-number{
-	width:17px;
+	min-width:17px;
 	height:17px;
 	border-radius:15px;
 	-webkit-border-radius:15px;
@@ -3475,6 +3480,7 @@ ul.booking-nav.nav-tabs.back-more li.active{
 	right:-8px;
 	top:-8px;
 	font-size:10px;
+    padding: 0px 2px;
 }
 
 /* studentkit-homepage-serps-listview */
@@ -4168,7 +4174,7 @@ td#para20:hover .time-tooltip-box{
 }
 .time-tooltip{
 	display:block;
-	position:relative
+	position:relative;
 	border: solid 1px #cccccc;
 	float:left;
 	background:#fff;
@@ -4465,7 +4471,6 @@ ul.certificate-container li:first-child{
 .certificateicon-bar{
 	float:left;
 	width:100%;
-	height:px;
 	position:absolute;
 	z-index:1;
 	background:rgba(0,0,0, 0.5);

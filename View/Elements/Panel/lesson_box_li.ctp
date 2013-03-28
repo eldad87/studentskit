@@ -1,4 +1,4 @@
-<?
+<?php
 $lessonMainData = $lessonData['TeacherLesson'];
 if(isSet($lessonData['UserLesson'])) {
     $lessonMainData = $lessonData['UserLesson'];

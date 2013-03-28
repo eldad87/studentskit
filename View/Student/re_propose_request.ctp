@@ -1,12 +1,18 @@
 
 <?php
 if(isSet($paymentPage)) {
-    echo '<p><strong>'.__('In order for those changes to take effect, please continue through the').'</strong> '.$this->Html->link(__('Order page'), $paymentPage).'</p>';
+    echo '<p><strong>'.sprintf(__('In order for those changes to take effect, additional payment (%0.2f%s) is require; please continue through the'), $paymentShortAmount, 'USD').'</strong> '.$this->Html->link(__('Order page'), $paymentPage).'</p>';
 } else {
 ?>
     <script type="text/javascript">
         $(document).ready(function() {
             <?php
+
+
+                if(isSet($creditPoints)) {
+                    echo '$(\'#creditPointsCounter\').html('.$creditPoints.');';
+                }
+
                 if(isSet($success)) {
                     echo '$(\'#negotiate-popup\').modal(\'hide\');';
                 } else if(isSet($error)) {

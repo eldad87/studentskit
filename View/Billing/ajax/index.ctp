@@ -1,11 +1,13 @@
 <div class="fullwidth pull-left cont-span15">
-<?php
-if(!$response['response']['billingHistory']) {
-    echo $this->Layout->flashMessage(__('Info'), __( 'You didn\'t received any payments yet.'), 'alert-info');
-    die;
-}
-?>
+    <?php
+    if(!$response['response']['billingHistory']) {
+        echo $this->Layout->flashMessage(__('Info'), __( 'You didn\'t received any payments yet.'), 'alert-info');
+        die;
+    }
+    ?>
 </div>
+
+
 
 <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
     $(document).ready(function(){
@@ -14,109 +16,54 @@ if(!$response['response']['billingHistory']) {
     });
 </script>
 
-    <?php
-////////////// Page 1 - start
-if($page==1) {
-    ?>
-<script type="text/javascript">
-    $(document).ready(function(){
-        var url = '/Billing/index/{limit}/{page}';
-        lmObj.loadMoreButton('#billing-history-load-more', 'click', '#billing-history', url, {}, 'get', <?php echo $limit; ?>);
-        lmObj.setItemsCountSelector('#billing-history-load-more', '#billing-history li' );
-    });
-</script>
-
-
-
-
-<div class="fullwidth pull-left cont-span15">
-    <h2><strong><?php echo __('Billing History'); ?></strong></h2>
-
-    <div class="fullwidth pull-left space7">
-        <ul id="billing-history">
-            <li>
-                <div class="space2 space6 left-student-box2 left-student-newbox2">
-                    <h5 class="pull-left"><strong><?php echo __('Billing info'); ?></strong></h5>
-                </div>
-                <div class="space2 space6 right-student-box2 right-student-newbox2">
-                    <h5 class=" pull-left"><strong><?php echo __('Lesson\'s info'); ?></strong></h5>
-                </div>
-            </li>
-
-    <?php
-}
-foreach($response['response']['billingHistory'] AS $billingHistory) {
-    //Link to archive
-    $toArchive = $this->Html->link(__('To History'),
-        $this->Layout->getOrganizerUrl('/Teacher/lessons', '/Teacher/lessonsArchive/2/1/0/'.$billingHistory['TeacherLesson']['teacher_lesson_id']));
-    $toSubject = $this->Html->link(__('To Subject'),
-        $this->Layout->getOrganizerUrl('/Teacher/subjects/2/1/'.$billingHistory['TeacherLesson']['subject_id']));
-    ?>
-
-    <li id="teacher_lesson_id_<?php echo $billingHistory['TeacherLesson']['teacher_lesson_id']; ?>">
-        <div class="fullwidth pull-left"></div>
-        <div class="lesson-box space2 left-student-box2 left-student-newbox2 pull-left">
-            <div class="head-back radius1">
-                <h1><?php echo $this->TimeTz->niceShort($billingHistory['TeacherLesson']['datetime']); ?></h1>
-                <div class="dropdown pull-right">
-                    <a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" href="#">
-                        <i class="iconSmall-drop-arrow"></i>
-                    </a>
-                    <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">
-                        <li><?php echo $toArchive; ?></li>
-                        <li><?php echo $toSubject; ?></li>
-                    </ul>
-                </div>
-
-            </div>
-
-            <div class="lesson-box-content" id="lesson_box_<?php echo $billingHistory['TeacherLesson']['teacher_lesson_id']; ?>_msg">
-                <p>
-                    <strong><?php echo __('Total students'); ?>:</strong> <?php echo $billingHistory['TeacherLesson']['num_of_students']; ?><br />
-                    <strong><?php echo __('Successful transactions'); ?>:</strong> <?php echo $billingHistory['TeacherLesson']['payment_success_transactions_count']; ?><br />
-                    <strong><?php echo __('Student cost'); ?>:</strong> <?php echo $billingHistory['TeacherLesson']['payment_per_student_price']; ?>$<br />
-                    <strong><?php echo __('Fees per student'); ?>:</strong> <?php echo $billingHistory['TeacherLesson']['payment_per_student_commission']; ?>$<br />
-                </p>
-            </div>
-
-            <div class="lesson-box-footer radius2">
-                <span class="pull-left space22 space3"><strong>
-                <?php echo __('Total'); ?>: <?php
-                    echo $billingHistory['TeacherLesson']['payment_success_transactions_count'] *
-                        ($billingHistory['TeacherLesson']['payment_per_student_price'] - $billingHistory['TeacherLesson']['payment_per_student_commission']);
-                ?>$</strong</span>
-            </div><!-- /lesson-box-footer -->
-
-        </div><!-- /lesson-box  -->
-
-
-
-        <?php
-        unset($billingHistory['TeacherLesson']['datetime']);
-        echo $this->element('Panel'.DS.'lesson_box_li', array(
-            'lessonData'        => $billingHistory,
-            'id'                => 'lesson_box_'.$billingHistory['TeacherLesson']['teacher_lesson_id']
-        ));
-        ?>
-    </li>
-    <?php
-}
-
-////////////// Page 1 - start
-if($page==1) {
-    ?>
-
-        </ul>
-        <div class="fullwidth pull-left">
-            <?php
-            if(count($response['response']['billingHistory'])>=$limit) {
-                echo '<a href="#" class="more radius3 gradient2 space8" id="billing-history-load-more"><strong>', __('Load More') ,'</strong><i class="iconSmall-more-arrow"></i></a>';
-            }
-            ?>
-        </div>
-    </div><!-- /left-student-box-->
-</div>
-
 <?php
 ////////////// Page 1 - start
+if($page==1) {
+?>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var url = '/Billing/index/{limit}/{page}';
+            lmObj.loadMoreButton('#billing-history-load-more', 'click', '#billing-history', url, {}, 'get', <?php echo $limit; ?>);
+            lmObj.setItemsCountSelector('#billing-history-load-more', '#billing-history li.history' );
+        });
+    </script>
+
+
+
+    <div class="fullwidth pull-left cont-span15" id="billing-history">
+        <h2 class="space2"><strong><?php echo __('Billing History'); ?></strong></h2>
+
+<?php
 }
+$i = $page*$limit;
+foreach($response['response']['billingHistory'] AS $bh) {
+    $i++;
+?>
+
+        <div class="fullwidth history pull-left  bg-color<?php echo $i%2==0 ? '2' : '1'; ?>">
+            <div class="headeruser space20 space23 space15">
+                <?php
+                    echo $this->Html->image($this->Layout->image($bh['Subject']['image_source'], 38, 38), array('alt' => 'Subject image'));
+                ?>
+            </div>
+            <div class="pull-left space11 space4">
+                <p><?php echo sprintf(__('On %s'), $bh['BillingHistory']['created']) ;?>, <?php echo $bh['BillingHistory']['message'] ;?></p>
+            </div>
+        </div>
+
+<?php
+}
+////////////// Page 1 - start
+if($page==1) {
+?>
+    </div>
+    <div class="fullwidth pull-left cont-span15 space4">
+        <?php
+        if(count($response['response']['billingHistory'])>=$limit) {
+            echo '<a href="#" class="more radius3 gradient2 space8" id="billing-history-load-more"><strong>', __('Load More') ,'</strong><i class="iconSmall-more-arrow"></i></a>';
+        }
+        ?>
+    </div>
+<?php
+}
+?>

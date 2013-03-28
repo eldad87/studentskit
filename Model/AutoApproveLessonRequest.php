@@ -19,6 +19,7 @@ class AutoApproveLessonRequest extends AppModel {
 		if(!$aalrData) {
 			return array('teacher_user_id'=>$teacherUserId, 'live'=>false, 'live_range_of_time'=>array(), 'video'=>true);//default
 		}
+        $aalrData['AutoApproveLessonRequest']['live_range_of_time'] = json_decode($aalrData['AutoApproveLessonRequest']['live_range_of_time'], true);
 		return $aalrData['AutoApproveLessonRequest'];
 	}
 	
@@ -32,7 +33,7 @@ class AutoApproveLessonRequest extends AppModel {
             if(!is_numeric($date)) {
                 $date = strtotime($date);
             }
-			$weekRange = new WeekRange(json_decode($aalrData['live_range_of_time'], true));
+			$weekRange = new WeekRange($aalrData['live_range_of_time']);
 			return $weekRange->isInRange(date('N', $date), date('G', $date));
 		}
         return false;

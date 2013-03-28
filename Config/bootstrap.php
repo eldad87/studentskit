@@ -214,11 +214,17 @@ if(!defined('FULL_BASE_URL')) {
 
 App::build(array('Event' => array('%s'.'Event'.DS)), App::REGISTER);
 
+//PayPal - the location of the sdk_config.ini
+define('PP_CONFIG_PATH', ROOT . DS . APP_DIR . DS . 'Config' );
 
 //Payment commission in USD
 Configure::write('per_student_commission', 0.99);
+//fees will go to this user eventuall
+Configure::write('system_user_id', 1);
+//How many hours before CP will be moved to the teacher's account
+Configure::write('transfer_cp_to_teacher_after_x_hours', 72);
 
 //Taken from: https://developer.paypal.com/cgi-bin/devscr?cmd=_certs-session
-Configure::write('paypal_api_username', 'web_1358609058_biz_api1.gmail.com'); //The API Username, Onchange make sure to update: /Vendor/AdaptivePayments/config/sdk_config.ini (API Username, API Password and Signature)
+Configure::write('paypal_api_username', 'web_1358609058_biz_api1.gmail.com'); //The API Username, Onchange make sure to update: /Config/sdk_config.ini (API Username, API Password and Signature)
 Configure::write('paypal_site_username', 'web_1358609058_biz@gmail.com');//user that will get commission (Test Account)
 Configure::write('paypal_preapproval_url', 'https://www.sandbox.paypal.com/webscr&cmd=_ap-preapproval&preapprovalkey=');
