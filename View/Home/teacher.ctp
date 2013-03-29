@@ -22,7 +22,16 @@
                             </p>
                             <div class="head-text3">
                                 <div class="pull-left tutorname-wrapeper">
-                                    <a href="#" class="tutroaname"><span class="pad5"><strong><?php echo $teacherData['User']['username']; ?></strong></span></a>
+                                    <!--<a href="#" class="tutroaname"><span class="pad5"><strong><?php /*echo $teacherData['User']['username']; */?></strong></span></a>-->
+                                    <h6>
+                                        <i class="iconSmall-flag pointer contact-request"
+                                           data-subject="<?php
+                                           echo __('Report on teacher '), $teacherData['User']['user_id'];
+                                           ?>"
+                                           data-topic="<?php App::import('Model', 'Contact'); echo Contact::CONTACT_FLAG; ?>"></i>
+
+                                        <?php echo $teacherData['User']['username']; ?>
+                                    </h6>
 
                                 </div>
                                 <span class="fontsize1 pad6 pull-left">Since <?php echo $teacherData['User']['created']; ?></span>
@@ -31,9 +40,12 @@
                         </div>
                         <div class="icon-box-social  bod2">
                             <div class="social-icons pad2 pad8">
-                                <a href="#" class="fb"></a>
+                                <div class="pull-left">
+                                    <?php echo $this->Facebook->like(array('show_faces'=>'false', 'layout'=>'button_count')); ?>
+                                </div>
+                                <!--<a href="#" class="fb"></a>
                                 <a href="#" class="twit"></a>
-                                <a href="#" class="g-one"></a>
+                                <a href="#" class="g-one"></a>-->
                             </div>
                         </div>
                         <div class="log-box">

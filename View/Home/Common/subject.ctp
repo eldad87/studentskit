@@ -17,16 +17,30 @@ echo $this->fetch('popups');
 
                             <?php echo $this->fetch('topic_image'); ?>
 
-                            <h6><?php
-                                echo $this->Html->link($subjectData['name'], array('controller'=>'Home', 'action'=>'teacherSubject', $subjectData['subject_id']))
+                            <h6 class="space4 pad8">
+                                <i class="iconSmall-flag pointer contact-request"
+                                            data-subject="<?php
+                                                                if(isSet($teacherLessonData)) {
+                                                                    echo __('Report on teacher lesson '), $teacherLessonData['teacher_lesson_id'];
+                                                                } else {
+                                                                    echo __('Report on teacher subject '), $subjectData['subject_id'];
+                                                                }
+                                            ?>"
+                                            data-topic="<?php App::import('Model', 'Contact'); echo Contact::CONTACT_FLAG; ?>"></i>
+                                <?php
+                                echo $subjectData['name'];
+                                //echo $this->Html->link($subjectData['name'], array('controller'=>'Home', 'action'=>'teacherSubject', $subjectData['subject_id']), array('class'=>'clear'))
                                 ?></h6>
                             <p class="pad2"><?php echo $subjectData['description']; ?></p>
                         </div>
-                        <div class="icon-box-social  bod2">
+                        <div class="icon-box-social bod2">
                             <div class="social-icons pad2">
-                                <a href="#" class="fb"></a>
+                                <div class="pull-left">
+                                    <?php echo $this->Facebook->like(array('show_faces'=>'false', 'layout'=>'button_count')); ?>
+                                </div>
+                                <!--<a href="#" class="fb"></a>
                                 <a href="#" class="twit"></a>
-                                <a href="#" class="g-one"></a>
+                                <a href="#" class="g-one"></a>-->
                                 <p class="maxstudntbar"><span class="maxstudent">
                                     <?php
                                     if($subjectData['max_students'] && $subjectData['lesson_type']==LESSON_TYPE_LIVE) {
@@ -37,11 +51,14 @@ echo $this->fetch('popups');
                                         }
                                     }
                                     ?>
-                                </span><span class="duration">
+                                </span>
+                                    <span class="duration">
                                     <?php
                                     echo sprintf(__('Duration %s min'), $subjectData['duration_minutes']);
                                     ?></span></p>
-                                <div class="pull-right price-margn"><?php echo $this->Layout->priceTag($subjectData['1_on_1_price'], $subjectData['full_group_student_price']); ?></div>
+                                <div class="pull-right price-margn">
+                                    <?php echo $this->Layout->priceTag($subjectData['1_on_1_price'], $subjectData['full_group_student_price']); ?>
+                                </div>
                             </div>
                         </div>
                         <div class="log-box">

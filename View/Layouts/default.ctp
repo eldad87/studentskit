@@ -62,6 +62,7 @@
     <?php
         echo $this->element('topnavigation');
         echo $this->element('header');
+        echo $this->element('Home'.DS.'contact_popup');
     ?>
 
     <!-- Content
