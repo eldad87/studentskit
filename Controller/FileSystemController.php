@@ -4,7 +4,7 @@ use Transit\MimeType;
 
 class FileSystemController extends AppController {
 	public $name = 'FileSystem';
-	public $uses = array('Subject', 'User', 'UserLesson', 'FileSystem');
+	public $uses = array('Subject', 'User', 'UserLesson', 'FileSystem', 'Thread');
 	public $components = array('Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),/* 'Security'*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 
@@ -86,7 +86,7 @@ class FileSystemController extends AppController {
 
         $this->request->data['FileSystem']['file_source'] = $fileName;
         $this->request->data['FileSystem']['type']        = 'file';
-        $this->request->data['FileSystem']['parent_id']   = $this->request->query['path'][count($this->request->query['path'])-1];;
+        $this->request->data['FileSystem']['parent_id']   = $this->request->query['path'][count($this->request->query['path'])-1];
 
         if(!$fsObj->save( $this->request->data )) {
             echo json_encode(array('error' => false, 'data' => array()));
@@ -188,11 +188,26 @@ class FileSystemController extends AppController {
             $ulData = $this->UserLesson->findByUserLessonId($fsData['entity_id']);
             $subjectId = $ulData['UserLesson']['subject_id'];
         }
-        $userRelation = $this->Subject->getUserRelationToSubject($subjectId, $this->Auth->user('user_id'));
-        if(!$userRelation) {
-            //Not a teacher/student
-            return $this->error(2);
+        
+        if($fsData['entity_type']=='user_lesson' || $fsData['entity_type']=='subject') {
+            $userRelation = $this->Subject->getUserRelationToSubject($subjectId, $this->Auth->user('user_id'));
+            if(!$userRelation) {
+                //Not a teacher/student
+                return $this->error(2);
+            }
+
+        } else if($fsData['entity_type']='thread') {
+            $this->Thread->recursive = -1;
+            $threadData = $this->Thread->findByThreadId($fsData['entity_id']);
+
+            //Check if this user is in this converstation, if so - override permissions and make this user as the owner
+            if( $threadData['Thread']['by_user_id']==$this->Auth->user('user_id') ||
+                $threadData['Thread']['to_user_id']==$this->Auth->user('user_id')) {
+
+                $fsData['permission'] = $this->Auth->user('user_id');
+            }
         }
+
 
 
         //Check if student have permission
@@ -218,7 +233,7 @@ class FileSystemController extends AppController {
                 break;
         }
 
-        if($userRelation=='teacher') {
+        if(isSet($userRelation) && $userRelation=='teacher') {
             return true;
         }
 

@@ -53,13 +53,13 @@
             delete data['parent'];
             var uploadButton = (parent['permission']==jsSettings['user_id'] || jsSettings['is_teacher']);
             var createFolderButton = (parent['permission']==jsSettings['user_id'] || jsSettings['is_teacher']);
-            if(uploadButton) {
+            if(createFolderButton) {
                 $('#new-folder').show();
             } else {
                 $('#new-folder').hide();
             }
 
-            if(createFolderButton) {
+            if(uploadButton) {
                 $('#fileUpload').show();
             } else {
                 $('#fileUpload').hide();
