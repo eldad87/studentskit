@@ -5,7 +5,8 @@
         $('#quiz').quizRun({
             questionsContainer: '.question-list',
             questionsSelector: '.question-block',
-            nextSelector: '.next-question'
+            nextSelector: '.next-question',
+            prevSelector: '.prev-question'
         });
 
         initTabs(false);
@@ -45,6 +46,7 @@
                 ?>
                 <li>
                     <div class="control-group">
+                        <button class="btn-blue pull-left prev-question" type="button"><i class="iconSmall-add-arrow-left"></i> Prev</button>
                         <button class="btn-blue pull-right next-question" type="button">Next <i class="iconSmall-add-arrow"></i></button>
                     </div>
                 </li>

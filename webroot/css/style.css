@@ -1392,10 +1392,6 @@ select.x-large{
 	width:13px;
 }
 
-.iconSmall-flag{
-    background-position: -15px -35px;
-}
-
 .iconSmall-clip{
 	background-position:-182px -1px;
 }
@@ -1510,7 +1506,7 @@ select.x-large{
 		color-stop(0.01, rgb(29,143,213)),
 		color-stop(0.51, rgb(65,188,245))
 	);
-}	
+}
 
 		
 /* +++++++++++++++++ Calender +++++++++++++++++ */
@@ -3487,8 +3483,8 @@ ul.booking-nav.nav-tabs.back-more li.active{
     padding: 0px 2px;
 }
 
-.requst-number-green {
-    background:green;
+.requst-number .green {
+    background:;
 }
 
 /* studentkit-homepage-serps-listview */
