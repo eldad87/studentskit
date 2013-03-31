@@ -90,6 +90,26 @@ class Thread extends AppModel {
         return true;
     }
 
+    public function getAllAttachmentIds($threadId) {
+        $this->recursive = -1;
+        $threadData = $this->findByThreadId($threadId);
+        if(!$threadData) {
+            return false;
+        }
+        $messages = json_decode($threadData[$this->alias]['messages'], true);
+
+        $attachments = array();
+        foreach($messages AS $message) {
+            if($message['attachment']) {
+                foreach($message['attachment'] AS $attachment) {
+                    $attachments[] = $attachment['id'];
+                }
+            }
+        }
+
+        return array_unique($attachments);
+    }
+
     /**
      * Add a replay message to the thread.
      * if it was invisible (deleted) any of the users - make if visible

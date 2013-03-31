@@ -188,7 +188,7 @@ class FileSystemController extends AppController {
             $ulData = $this->UserLesson->findByUserLessonId($fsData['entity_id']);
             $subjectId = $ulData['UserLesson']['subject_id'];
         }
-        
+
         if($fsData['entity_type']=='user_lesson' || $fsData['entity_type']=='subject') {
             $userRelation = $this->Subject->getUserRelationToSubject($subjectId, $this->Auth->user('user_id'));
             if(!$userRelation) {
