@@ -75,7 +75,6 @@
                 $(renameSettings['model']).modal('show');
             });
 
-            //Delete popup
             $('#delete_' + id).click(function(e) {
                 e.stopPropagation();
 
@@ -92,6 +91,7 @@
                             //remove old error message
                             showError(deleteSettings['errorElement']);
                             self.fileSystem('removeResource', id);
+
                         } else {
                             //Set new error message
                             if(data) {
@@ -162,14 +162,17 @@
         },
 
         _showResources: function(path) {
-
             //1. Find the right resources matching path
             var resources = $(this).data('fileSystem');
             var parent;
 
             //2. build path display
             var pathDisplay = '/';
+
             for(var i in path) {
+                if(!resources[path[i]]) {
+                    break;
+                }
                 pathDisplay += resources[path[i]]['name'] + '/';
                 parent = resources[path[i]];
                 resources = resources[path[i]]['children'];
@@ -226,6 +229,9 @@
         removeResource: function(fileSystemId, path) {
             var resources = $(this).fileSystem('_getResourcesInPath', path);
             delete resources[fileSystemId];
+
+
+            $(this).trigger('removeResource', {id: fileSystemId, path: path} );
 
             $(this).fileSystem('render');
             return $(this);
@@ -299,20 +305,22 @@
 
 
             //New folder button
-            var newFolderSettings = self.fileSystem('_getSetting', 'newFolderAction');
-            $(newFolderSettings['button']).click(function(e) {
-                e.stopPropagation();
+            var newFolderSettings = $this.fileSystem('_getSetting', 'newFolderAction');
+            if(newFolderSettings) {
+                $(newFolderSettings['button']).click(function(e) {
+                    e.stopPropagation();
 
-                var id = self.fileSystem('_getCurrentFileSystemId');
-                //Set form url
-                $(newFolderSettings['model'] + ' form').attr('action', jQuery.nano(newFolderSettings['url'], {id: id}));
+                    var id = self.fileSystem('_getCurrentFileSystemId');
+                    //Set form url
+                    $(newFolderSettings['model'] + ' form').attr('action', jQuery.nano(newFolderSettings['url'], {id: id}));
 
-                //Reset element name in popup
-                $(newFolderSettings['nameField']).val('');
+                    //Reset element name in popup
+                    $(newFolderSettings['nameField']).val('');
 
-                //Show popup
-                $(newFolderSettings['model']).modal('show');
-            });
+                    //Show popup
+                    $(newFolderSettings['model']).modal('show');
+                });
+            }
 
 
             //});
