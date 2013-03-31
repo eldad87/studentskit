@@ -84,14 +84,15 @@ class FileSystem extends AppModel {
         return $this->getFS( $subjectData['Subject']['root_file_system_id'] );
     }*/
 
-    public function getFS($fileSystemId, $permission=null) {
+    public function getFS($fileSystemId, $permission=null, $conditions=array()) {
 
         //Find root
         $this->recursive = -1;
         $fsData = $this->findByFileSystemId($fileSystemId);
 
+        $conditions['entity_type'] = $fsData['FileSystem']['entity_type'];
+        $conditions['entity_id'] = $fsData['FileSystem']['entity_id'];
 
-        $conditions = array('entity_type'=>$fsData['FileSystem']['entity_type'], 'entity_id'=>$fsData['FileSystem']['entity_id']);
         if($permission) {
             //Make sure that student see only his content/public content
             $conditions['permission'] = array(0, $permission);
@@ -205,6 +206,10 @@ class FileSystem extends AppModel {
                 App::import('Model', 'UserLesson');
                 $obj = new UserLesson();
                 break;
+            case 'thread':
+                App::import('Model', 'Thread');
+                $obj = new Thread();
+                break;
         }
 
         if(!isSet($obj)) {
@@ -220,13 +225,14 @@ class FileSystem extends AppModel {
         }
 
         //Create root folder
+        $defaultName = isSet($entityData[$obj->alias]['name']) ? $entityData[$obj->alias]['name'] : $entityData[$obj->alias]['title'];
         $this->create(false);
         $this->set(array(
             'entity_type'   =>$entityType,
             'entity_id'     =>$entityId,
             'permission'    =>$permission,
             'parent_id'     =>$parentId,
-            'name'          =>$name ? $name : $entityData[$obj->alias]['name'],
+            'name'          =>$name ? $name : $defaultName,
             'type'          =>'folder',
             'deletable'     =>0
         ));

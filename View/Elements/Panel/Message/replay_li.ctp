@@ -17,4 +17,21 @@
         <p class="fullwidth"><?php echo $message['message']; ?></p>
         <!-- <p class="msgbottom-text"><a href="#" class="rly">Reply</a><a href="#" class="trash">Trash</a></p>-->
     </div>
+
+    <?php
+    if(isSet($message['attachment'])) {
+    ?>
+        <div class="fullwidth pull-left clearleft space3">
+            <?php
+            foreach ($message['attachment'] AS $attachment) {?>
+                <div class="fullwidth">
+                    <?php echo $this->Html->link($attachment['name'], array('controller'=>'FileSystem', 'action'=>'download', $attachment['id']), array('target'=>'_blank')) ?>
+                </div>
+            <?php
+                }
+            ?>
+        </div>
+    <?php
+    }
+    ?>
 </li>

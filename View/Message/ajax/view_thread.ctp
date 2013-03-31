@@ -9,11 +9,13 @@
 
         pfObj.loadForm('#replay-form', '#replay-form', 'post');
         pfObj.setAppendCallback('.cancelThread', 'beforeAjax', function(data){
+
             //Find textarea, if no value - cancel
             return true;
         });
 
         pfObj.setAppendCallback('#replay-form', 'before', function(data){
+
             //Append new message
             $('#messageList').append(data);
 
@@ -21,8 +23,21 @@
             $('#replay').val('');
             $('#replay').blur();
 
+
+            //Remove all current attachments
+            $('#attachments input').each(function() {
+                $('#file-list').fileSystem('removeResource', $(this).val());
+            });
+
+            //Bug fix the height of listed attachments
+            $('#bootstrapped-fine-uploader .qq-upload-list').height('0px')
+            $('#bootstrapped-fine-uploader .qq-upload-list').height('auto')
+
             return false; //So it won't replace the replay form
         });
+
+
+
 
     });
 </script>
@@ -73,13 +88,103 @@
                                     <textarea id="replay" name="message" class="fullwidth" required="required"></textarea>
 
                                     <input type="hidden" name="thread_id" value="<?php echo $response['response']['thread']['thread_id']; ?>" />
+
+                                    <div id="attachments"></div>
                                 </div>
                                 <div class="fullwidth space23">
-                                    <!--<a href="#"><i class="iconSmall-clip pull-left"></i></a>
-                                    <a href="#"><i class="iconSmall-camera pull-left space27"></i></a>
+                                    <div id="fileUpload" class="pull-left">
+                                        <i class="iconSmall-clip pull-left"></i>
+                                    </div>
+                                    <!--<a href="#"><i class="iconSmall-camera pull-left space27"></i></a>
                                     <i class="iconSmall-enter-arrow pull-right space27"></i>
                                     <input type="checkbox" name="enter" class="pull-right">-->
                                 </div>
+
+                                <!-- Attachments -->
+                                <div class="fullwidth space23 pull-left">
+                                    <script type="text/javascript">
+                                        $(document).ready(function(){
+
+
+                                            $('#bootstrapped-fine-uploader').fineUploader({
+                                                button: $('#fileUpload'),
+                                                request: {
+                                                    endpoint: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'uploadFile')); ?>',
+                                                    //endpoint: '/Upload/ajax_upload',
+                                                    inputName: 'fileUpload'
+                                                },
+                                                template:   '<div class="qq-uploader span12 pull-left">' +
+                                                            '<pre class="qq-upload-drop-area span12 qq-uploader span12"><span>{dragZoneText}</span></pre>' +
+                                                            '<ul class="qq-upload-list" id="uploadList" style="margin-top: 10px; text-align: center;"></ul>' +
+                                                            '</div>',
+                                                classes: {
+                                                    success: 'alert alert-success',
+                                                    fail: 'alert alert-error'
+                                                },
+                                                debug: true
+
+                                            //Add events
+                                            }).on('complete', function(event, id, filename, reason) {
+                                                if(event.type='complete') {
+                                                    //1. remove the success files indication.
+                                                    $('#uploadList').find('li.alert-success').remove();
+
+                                                    //2. add new resource
+                                                    $('#file-list').fileSystem( 'addResource', {path: reason['data']['path'],
+                                                        resource: {
+                                                            file_system_id: reason['data']['file_system_id'],
+                                                            type:           'file',
+                                                            name:           reason['data']['name'],
+                                                            size_kb:        reason['data']['size'],
+                                                            extension:      reason['data']['ext']
+                                                        }
+                                                    });
+
+                                                    //3. Add new file as hidden field
+                                                    $('#attachments').append('<input type="hidden" name="attachment[]" id="attachment_' + reason['data']['file_system_id'] + '" value="' + reason['data']['file_system_id'] + '" />');
+                                                }
+
+                                                return true;
+                                            });
+
+                                            //Delete attachment from form
+                                            $('#file-list').on('removeResource', function(e, data){
+                                                $('#attachment_' + data.id).remove();
+                                            });
+
+                                            //Bind trigger that will be fired right when fileSystem will be loaded
+                                            $('#file-list').on('pathChange', function(e, data){ //When path changes, apply the changes to the fineUploader
+
+                                                //Show/Hide upload/create folder button
+                                                delete data['parent'];
+
+                                                //Set the new path, will be used for uploading new files
+                                                $('#bootstrapped-fine-uploader').fineUploader('setParams', data);
+                                            });
+
+                                            //init FS - just use the root_file_system_id (we don't want to show existing files yet)
+                                            var fs =  jQuery.parseJSON('<?php echo json_encode($fs) ?>');;
+                                            $('#file-list').fileSystem( fs, {
+                                                deleteAction: {url: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'delete', '{id}')); ?>', errorElement: '#errorElement'},
+                                                downloadAction: {url: '<?php echo Router::url(array('controller'=>'FileSystem', 'action'=>'download', '{id}')); ?>'},
+                                                resourcePermissions: function(parent, resource) {
+                                                    return {
+                                                        'delete': true
+                                                    };
+                                                }
+
+                                            });
+                                        });
+                                    </script>
+
+                                    <div id="errorElement" class="pull-left fullwidth"></div>
+                                    <ul class="file-box-all" id="file-list"></ul>
+                                    <div id="bootstrapped-fine-uploader"></div>
+                                </div>
+                                <!-- /Attachments -->
+
+
+
                             </div>
                         </form>
                     </div>

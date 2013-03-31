@@ -17,7 +17,7 @@ class Thread extends AppModel {
 				)
 			);
 			
-	public function createThread($msg, $byUserId, $toUserId, $entityType=null, $entityId=null) {
+	public function createThread($msg=null, $byUserId, $toUserId, $entityType=null, $entityId=null, $attachments=array()) {
 		$set = array(
 			'by_user_id'				=>$byUserId,
 			'by_user_unread_messages'	=>0,
@@ -47,7 +47,7 @@ class Thread extends AppModel {
                     $set['title'] = $tlData['TeacherLesson']['name'];
                     break;
 
-                    case 'subject':
+                case 'subject':
                     $ulObj->Subject->recursive = -1;
                     $sData = $ulObj->Subject->findBySubjectId($entityId);
                     $set['title'] = $sData['Subject']['name'];
@@ -60,10 +60,55 @@ class Thread extends AppModel {
 		if(!$this->save()) {
 			return false;
 		}
+
+        //In case just a thread is needed (I.e first message can upload files)
+        if(!$msg) {
+            return true;
+        }
 		
 		//We do it in another query so 'modify' will be set.
-		return $this->replayMessage($this->id, $byUserId, $msg);
+		return $this->replayMessage($this->id, $byUserId, $msg, $attachments);
 	}
+
+
+    public function afterSave($created) {
+        parent::afterSave($created);
+
+        //Set file system
+        if($created) {
+            App::import('Model', 'FileSystem');
+            $fsObj = new FileSystem();
+
+            //Create root filesystem
+            $fsObj->createFS('thread', $this->id, 0, 0, $this->data[$this->alias]['title']);
+            $rootFS = $fsObj->id;
+
+
+            return $this->updateAll(array('root_file_system_id'=>$rootFS), array($this->primaryKey=>$this->id));
+        }
+
+        return true;
+    }
+
+    public function getAllAttachmentIds($threadId) {
+        $this->recursive = -1;
+        $threadData = $this->findByThreadId($threadId);
+        if(!$threadData) {
+            return false;
+        }
+        $messages = json_decode($threadData[$this->alias]['messages'], true);
+
+        $attachments = array();
+        foreach($messages AS $message) {
+            if($message['attachment']) {
+                foreach($message['attachment'] AS $attachment) {
+                    $attachments[] = $attachment['id'];
+                }
+            }
+        }
+
+        return array_unique($attachments);
+    }
 
     /**
      * Add a replay message to the thread.
@@ -71,9 +116,10 @@ class Thread extends AppModel {
      * @param $threadId
      * @param $byUserId
      * @param $msg
+     * @param $attachments
      * @return bool|mixed
      */
-    public function replayMessage($threadId, $byUserId, $msg) {
+    public function replayMessage($threadId, $byUserId, $msg, $attachments=array()) {
 		$this->recursive = -1;
 		$msgData 	= $this->findByThreadId($threadId);
 		
@@ -87,7 +133,7 @@ class Thread extends AppModel {
 		}
 		
 		$messages 	= json_decode($msgData['Thread']['messages'], true);
-		$messages[]	= $this->createMessage($byUserId, $msg);
+		$messages[]	= $this->createMessage($threadId, $byUserId, $msg, $attachments);
 		
 		$this->id = $threadId;
 		$this->set(array('messages'=>json_encode($messages), 'by_user_visible'=>1, 'to_user_visible'=>1, $otherUserByTo.'_user_unread_messages'=>1));
@@ -266,18 +312,52 @@ class Thread extends AppModel {
     }
 	
 	
-	public function createMessage($byUserId, $message, $timestamp=null) {
+	public function createMessage($threadId, $byUserId, $message, $attachments=array(), $timestamp=null) {
 		if(!$timestamp) {
 			$timestamp = time();
-		}
+        }
 		
 		return array(
-			'user_id'	=>$byUserId,
-			'message'	=>$message,
-			'timestamp'	=>$timestamp
+			'user_id'	    => $byUserId,
+			'message'	    => $message,
+            'attachment'    => $this->attachments($threadId, $attachments),
+			'timestamp'	    => $timestamp
 		);
 	}
-		
-	
+
+    /**
+     * Load attachment name's
+     * @param $threadId
+     * @param $attachments
+     * @return array
+     */
+    private function attachments($threadId, $attachments) {
+        App::import('Model', 'FileSystem');
+        $fsModel = new FileSystem();
+        $fsModel->recursive = -1;
+        $attachmentsData = $fsModel->find('all', array(
+            'conditions'=>array(
+                'file_system_id'=>$attachments,
+                'entity_id'     =>$threadId,
+                'entity_type'   =>'thread'
+            ),
+            'fields'=>array('file_system_id', 'name')
+        ));
+
+        if(!$attachmentsData) {
+            return array();
+        }
+
+
+        $return = array();
+        foreach($attachmentsData AS $attachment) {
+            $return[] = array(
+                'id'    =>$attachment['FileSystem']['file_system_id'],
+                'name'  =>$attachment['FileSystem']['name']
+            );
+        }
+
+        return $return;
+    }
 }
 ?>

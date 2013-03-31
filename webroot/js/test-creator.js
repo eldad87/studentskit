@@ -313,9 +313,6 @@
     var methods = {
 
         _showQuestion: function(pos, speed) {
-            if(speed==undefined) {
-                speed = 'slow';
-            }
 
             var settings = $(this).data('quizRun');
 
@@ -324,6 +321,13 @@
 
             settings.shownQuestion = pos;
             $(this).data('quizRun', settings);
+
+            //Hide prev button
+            if(pos==0) {
+                $(settings.prevSelector).hide();
+            } else {
+                $(settings.prevSelector).show();
+            }
         },
 
         _showScore: function() {
@@ -364,7 +368,18 @@
             }
 
             //Show next question
-            $(this).quizRun('_showQuestion', settings.shownQuestion+1);
+            $(this).quizRun('_showQuestion', settings.shownQuestion+1, 'slow');
+        },
+
+        _prev: function() {
+            var settings = $(this).data('quizRun');
+
+            if(settings.shownQuestion <= 0) {
+                return false;
+            }
+
+            //Show next question
+            $(this).quizRun('_showQuestion', settings.shownQuestion-1, 'slow');
         },
 
         init : function( settings ) {
@@ -386,11 +401,15 @@
                 $(this).find('.score').hide();
 
                 //Show the first question only
-                $(this).quizRun('_showQuestion', 0, null);
+                $(this).quizRun('_showQuestion', 0);
 
                 //Init next button
                 $(this).find(settings.nextSelector).click(function(e){
                     $this.quizRun('_next');
+                });
+                //Init prev button
+                $(this).find(settings.prevSelector).click(function(e){
+                    $this.quizRun('_prev');
                 });
             });
         }
