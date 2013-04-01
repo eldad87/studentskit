@@ -1,3 +1,4 @@
+
 <?php
     $timezoneSetByUser = Configure::read('Config.timezone_set_by_user');
     if(!$timezoneSetByUser) {

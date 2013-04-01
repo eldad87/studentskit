@@ -3483,8 +3483,8 @@ ul.booking-nav.nav-tabs.back-more li.active{
     padding: 0px 2px;
 }
 
-.requst-number .green {
-    background:;
+.requst-number-green {
+    background-color: green;
 }
 
 /* studentkit-homepage-serps-listview */
