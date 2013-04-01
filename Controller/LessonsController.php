@@ -136,7 +136,7 @@ class LessonsController extends AppController {
 
 
             } else if( $liveRequestStatus['about_to_start'] ) {
-                $enterLesson = flase;
+                $enterLesson = false;
 
                 if($liveRequestStatus['approved']) {
                     //Show countdown

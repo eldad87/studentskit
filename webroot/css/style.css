@@ -1087,7 +1087,7 @@ footer h2{
 	color:#222222;
 }
 
-.sk-form input[type="text"], .sk-form input[type="password"], .sk-form input[type="number"]{
+.sk-form input[type="text"], .sk-form input[type="tel"], .sk-form input[type="email"], .sk-form input[type="password"], .sk-form input[type="number"]{
 	height:33px;
 	font-size:14px;
 	background-color:#f0f0f0;
@@ -1418,6 +1418,9 @@ select.x-large{
 
 .iconSmall-small-tool{
 	background-position:-75px -18px;
+}
+.iconSmall-flag{
+    background-position:-15px -35px;
 }
 
 /* star background */
@@ -3483,8 +3486,8 @@ ul.booking-nav.nav-tabs.back-more li.active{
     padding: 0px 2px;
 }
 
-.requst-number .green {
-    background:;
+.requst-number-green {
+    background-color: green;
 }
 
 /* studentkit-homepage-serps-listview */
