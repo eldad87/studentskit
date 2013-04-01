@@ -1014,7 +1014,7 @@ $id = $scObj->id;
 		if(!$teacherData) {
 			return false;
 		}
-        
+
 		//Get teacher other subjects
         $this->Subject->setLanguages($this->Session->read('languages_of_records'));
         $teacherOtherSubjectsLimit = 6;

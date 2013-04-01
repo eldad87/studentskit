@@ -117,64 +117,66 @@
     <div class="topbar-inner">
         <div class="top-left" id="localization">
 
+            <div class="position">
             <!-- Layout -->
-            <div class="label-txt pull-left space1"><?php echo __('Language'); ?></div>
-            <div class="pull-left space1 position">
-                <div class="select show-tip pointer" id="selcountry"><?php
-                    $templateLanguages = Configure::read('template_languages');
-                    $userLang = Configure::read('Config.language');
+                <div class="label-txt pull-left space1"><?php echo __('Language'); ?></div>
+                <div class="pull-left space1 position">
+                    <div class="select show-tip pointer" id="selcountry"><?php
+                        $templateLanguages = Configure::read('template_languages');
+                        $userLang = Configure::read('Config.language');
 
-                    if(isSet($templateLanguages[$userLang])) {
-                        echo __($templateLanguages[$userLang]);
-                    } else {
-                        echo __(current($templateLanguages));
-                    }
-                    ?>
+                        if(isSet($templateLanguages[$userLang])) {
+                            echo __($templateLanguages[$userLang]);
+                        } else {
+                            echo __(current($templateLanguages));
+                        }
+                        ?>
+                    </div>
                 </div>
-            </div>
-            <!-- /Layout -->
+                <!-- /Layout -->
 
-            <!-- Layout/Prioritize -->
-            <div id="selcountry-tip" class="header-tooltip-box toolbarbox alltip">
-                <div class="header-tooltip"></div>
-                <div class="head-countrybox">
-                    <form class="sk-form">
-                        <!-- layout list -->
-                        <div class="head-countrybar">
-                            <div class="layout-message"></div>
-                            <div class="error-message"></div>
-                            <label class="countrylabel"><?php echo __('Site Layout'); ?> :</label>
-                            <?php echo $this->Form->input('layout', array('options' => $templateLanguages, 'id'=>'layout', 'label'=>false, 'div'=>false, 'default' => $userLang, 'class'=>'pull-right')); ?>
-                        </div>
-                        <!-- /layout list -->
+                <!-- Layout/Prioritize -->
+                <div id="selcountry-tip" class="header-tooltip-box toolbarbox alltip">
+                    <div class="header-tooltip"></div>
+                    <div class="head-countrybox">
+                        <form class="sk-form">
+                            <!-- layout list -->
+                            <div class="head-countrybar">
+                                <div class="layout-message"></div>
+                                <div class="error-message"></div>
+                                <label class="countrylabel"><?php echo __('Site Layout'); ?> :</label>
+                                <?php echo $this->Form->input('layout', array('options' => $templateLanguages, 'id'=>'layout', 'label'=>false, 'div'=>false, 'default' => $userLang, 'class'=>'pull-right')); ?>
+                            </div>
+                            <!-- /layout list -->
 
-                        <!-- Prioritize list -->
-                        <div class="head-countrybar">
-                            <div class="prioritize-message"></div>
-                            <p class="head-countrytext pull-left fullwidth"><?php echo __('Prioritize'); ?> : <i class="iconSmall-info"></i></p>
+                            <!-- Prioritize list -->
+                            <div class="head-countrybar">
+                                <div class="prioritize-message"></div>
+                                <p class="head-countrytext pull-left fullwidth"><?php echo __('Prioritize'); ?> : <i class="iconSmall-info"></i></p>
 
-                            <ul id="prioritize_lang_list">
-                                <?php
-                                    if(Configure::read('Config.languages_of_records')) {
-                                        foreach(Configure::read('Config.languages_of_records') AS $lan=>$language) {
-                                            echo '<li class="space37 fullwidth pull-left space29" data-lang="',$lan,'"><a href="#" class="color-text remove_lang"><i class="iconSmall-red-cross"></i></a> ',$language,'</li>';
+                                <ul id="prioritize_lang_list">
+                                    <?php
+                                        if(Configure::read('Config.languages_of_records')) {
+                                            foreach(Configure::read('Config.languages_of_records') AS $lan=>$language) {
+                                                echo '<li class="space37 fullwidth pull-left space29" data-lang="',$lan,'"><a href="#" class="color-text remove_lang"><i class="iconSmall-red-cross"></i></a> ',$language,'</li>';
+                                            }
                                         }
-                                    }
-                                ?>
-                            </ul>
+                                    ?>
+                                </ul>
 
-                            <p class="space37 fullwidth pull-left space29">
-                                <a href="#" class="add"><i class="iconMedium-add-sub pointer"></i></a>
-                                <?php
-                                echo $this->Form->input('languages', array('options' => $languages, 'label'=>false, 'div'=>false, 'class'=>'space38 lang_list'));
-                                ?>
-                            </p>
-                        </div>
-                        <!-- /Prioritize list -->
-                    </form>
+                                <p class="space37 fullwidth pull-left space29">
+                                    <a href="#" class="add"><i class="iconMedium-add-sub pointer"></i></a>
+                                    <?php
+                                    echo $this->Form->input('languages', array('options' => $languages, 'label'=>false, 'div'=>false, 'class'=>'space38 lang_list'));
+                                    ?>
+                                </p>
+                            </div>
+                            <!-- /Prioritize list -->
+                        </form>
+                    </div>
                 </div>
+                <!-- /Layout/Prioritize -->
             </div>
-            <!-- /Layout/Prioritize -->
 
         </div>
         <!-- /top-left-->
