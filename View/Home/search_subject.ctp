@@ -1,5 +1,4 @@
 <?php
-    $this->Html->scriptBlock('Home. search load");', array('inline'=>false));
 $this->Html->scriptBlock('
 $(document).ready(function() {
     mixpanel.track("Home. search load");

@@ -1,5 +1,5 @@
 <?php
-$this->Html->scriptBlock('Support. privacyAndPolicy load");', array('inline'=>false));
+$this->Html->scriptBlock('mixpanel.track("Support. privacyAndPolicy load");', array('inline'=>false));
 $this->extend('/Support/common/common');
 $this->start('main');
 ?>
