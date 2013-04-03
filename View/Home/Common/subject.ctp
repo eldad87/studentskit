@@ -6,7 +6,7 @@ echo $this->fetch('popups');
 if(isSet($teacherLessonData)) {
 $this->Html->scriptBlock('
     $(document).ready(function() {
-        mixpanel.track("Home. teacher lesson load);
+        mixpanel.track("Home. teacher lesson load");
 
         $(\'.msg-teacher\').click(function() {
             mixpanel.track("Home. Teacher Lesson pm click");
@@ -33,7 +33,7 @@ $this->Html->scriptBlock('
 
 $this->Html->scriptBlock('
     $(document).ready(function() {
-        mixpanel.track("Home. teacher subject load);
+        mixpanel.track("Home. teacher subject load");
 
         $(\'.msg-teacher\').click(function() {
             mixpanel.track("Home. Teacher Subject pm click");
