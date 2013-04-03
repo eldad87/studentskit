@@ -3,10 +3,10 @@
     $(document).ready(function() {
         mixpanel.track("Home. index load");
 
-        $(\.subject-box\').click(function() {
+        $(\'.subject-box\').click(function() {
             mixpanel.track("Home. Index subject click");
         });
-        $(\.lesson-request-popup\').click(function() {
+        $(\'.lesson-request-popup\').click(function() {
             mixpanel.track("Home. Index lesson request click");
         });
         $(\#search_form\').submit(function() {

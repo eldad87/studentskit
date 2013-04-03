@@ -3,7 +3,7 @@ $this->Html->scriptBlock('
     $(document).ready(function() {
         mixpanel.track("Home. user profile load");
 
-        $(\.msg-teacher\').click(function() {
+        $(\'.msg-teacher\').click(function() {
             mixpanel.track("Home. User pm click");
         });
     });

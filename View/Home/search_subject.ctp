@@ -3,10 +3,10 @@ $this->Html->scriptBlock('
 $(document).ready(function() {
     mixpanel.track("Home. search load");
 
-    $(\.subject-box\').click(function() {
+    $(\'.subject-box\').click(function() {
         mixpanel.track("Home. Search subject click");
     });
-    $(\.lesson-request-popup\').click(function() {
+    $(\'.lesson-request-popup\').click(function() {
             mixpanel.track("Home. Search lesson request click");
     });
     $(\#search_form\').submit(function() {
