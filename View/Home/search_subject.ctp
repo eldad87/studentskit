@@ -9,7 +9,7 @@ $(document).ready(function() {
     $(\'.lesson-request-popup\').click(function() {
             mixpanel.track("Home. Search lesson request click");
     });
-    $(\#search_form\').submit(function() {
+    $(\'#search_form\').submit(function() {
         mixpanel.track("Home. Search search submit");
     });
 });

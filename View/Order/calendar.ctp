@@ -9,10 +9,10 @@ $(document).ready(function() {
         showError(\'#calendar-msg\', \''.__('Error').'\' ,\''.__('Please select a date.').'\');
     });
 
-     $(\.upcoming-lesson-join\').click(function() {
+     $(\'.upcoming-lesson-join\').click(function() {
             mixpanel.track("Order. Calendar upcoming lesson join click");
     });
-     $(\.upcoming-lesson-open\').click(function() {
+     $(\'.upcoming-lesson-open\').click(function() {
         mixpanel.track("Order. Calendar upcoming lesson open click");
     });
 

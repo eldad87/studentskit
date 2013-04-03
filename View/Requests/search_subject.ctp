@@ -3,13 +3,13 @@ $this->Html->scriptBlock('
     $(document).ready(function() {
         mixpanel.track("Requests. search load");
 
-        $(\.lesson-box\').click(function() {
+        $(\'.lesson-box\').click(function() {
             mixpanel.track("Requests. Search subject click");
         });
-        $(\.lesson-request-popup\').click(function() {
+        $(\'.lesson-request-popup\').click(function() {
             mixpanel.track("Requests. Search lesson request click");
         });
-        $(\#search_form\').submit(function() {
+        $(\'#search_form\').submit(function() {
             mixpanel.track("Requests. Search search submit");
         });
     });

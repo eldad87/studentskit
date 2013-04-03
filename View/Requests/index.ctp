@@ -3,13 +3,13 @@ $this->Html->scriptBlock('
     $(document).ready(function() {
         mixpanel.track("Requests. index load");
 
-        $(\.lesson-box\').click(function() {
+        $(\'.lesson-box\').click(function() {
             mixpanel.track("Requests. Index subject click");
         });
-        $(\.lesson-request-popup\').click(function() {
+        $(\'.lesson-request-popup\').click(function() {
             mixpanel.track("Requests. Index lesson request click");
         });
-        $(\#search_form\').submit(function() {
+        $(\'#search_form\').submit(function() {
             mixpanel.track("Requests. Index search submit");
         });
     });

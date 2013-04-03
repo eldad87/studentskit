@@ -9,7 +9,7 @@
         $(\'.lesson-request-popup\').click(function() {
             mixpanel.track("Home. Index lesson request click");
         });
-        $(\#search_form\').submit(function() {
+        $(\'#search_form\').submit(function() {
             mixpanel.track("Home. Index search submit");
         });
     });

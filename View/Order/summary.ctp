@@ -9,10 +9,10 @@ $(document).ready(function() {
         $(\'#summaryForm\').submit();
     });
 
-     $(\.upcoming-lesson-join\').click(function() {
+     $(\'.upcoming-lesson-join\').click(function() {
             mixpanel.track("Order. Summary upcoming lesson join click");
     });
-     $(\.upcoming-lesson-open\').click(function() {
+     $(\'.upcoming-lesson-open\').click(function() {
         mixpanel.track("Order. Summary upcoming lesson open click");
     });
 });
