@@ -27,9 +27,9 @@
                 </div> <!-- /cont-span6 -->
                 <?php
                 if(isSet($upcomingAvailableLessons) && isSet($teacherData)) {
-                    echo $this->element('Order'.DS.'teacher_and_upcoming', array('upcomingAvailableLessons'  =>$upcomingAvailableLessons,
-                                                                            'teacherData'               =>$teacherData,
-                                                                            'nextOrderStep'             =>(isSet($nextOrderStep) && $nextOrderStep)));
+                    echo $this->element('Order'.DS.'teacher_and_upcoming', array(   'upcomingAvailableLessons'  => $upcomingAvailableLessons,
+                                                                                    'teacherData'               => $teacherData,
+                                                                                    'nextOrderStep'             => (isSet($nextOrderStep) && $nextOrderStep)));
                 }
                 ?>
             </div> <!-- /cont-span12 -->

@@ -1,5 +1,5 @@
 <?php
-
+$this->Html->scriptBlock('Support. contact load");', array('inline'=>false));
 //Message was validated, and sent
 if($post && isSet($sent)) {
 

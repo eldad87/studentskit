@@ -1,6 +1,60 @@
 <?php
 echo $this->element('Panel'.DS.'send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
 echo $this->fetch('popups');
+
+
+if(isSet($teacherLessonData)) {
+$this->Html->scriptBlock('
+    $(document).ready(function() {
+        mixpanel.track("Home. teacher lesson load);
+
+        $(\.msg-teacher\').click(function() {
+            mixpanel.track("Home. Teacher Lesson pm click");
+        });
+
+        $(\.other-subject\').click(function() {
+            mixpanel.track("Home. Teacher Lesson other subject click");
+        });
+
+         $(\.upcoming-lesson-join\').click(function() {
+            mixpanel.track("Home. Teacher Lesson upcoming lesson join click");
+        });
+         $(\.upcoming-lesson-open\').click(function() {
+            mixpanel.track("Home. Teacher Lesson upcoming lesson open click");
+        });
+        $(\.order-button\').click(function() {
+            mixpanel.track("Home. Teacher Lesson order click");
+        });
+
+    });
+    ', array('inline'=>false));
+
+} else {
+
+$this->Html->scriptBlock('
+    $(document).ready(function() {
+        mixpanel.track("Home. teacher subject load);
+
+        $(\.msg-teacher\').click(function() {
+            mixpanel.track("Home. Teacher Subject pm click");
+        });
+
+        $(\.other-subject\').click(function() {
+            mixpanel.track("Home. Teacher Subject other subject click");
+        });
+
+         $(\.upcoming-lesson-join\').click(function() {
+            mixpanel.track("Home. Teacher Subject upcoming lesson join click");
+        });
+         $(\.upcoming-lesson-open\').click(function() {
+            mixpanel.track("Home. Teacher Subject upcoming lesson open click");
+        });
+        $(\.order-button\').click(function() {
+            mixpanel.track("Home. Teacher Subject order click");
+        });
+    });
+    ', array('inline'=>false));
+}
 ?>
 <!-- Containeer
 ================================================== -->

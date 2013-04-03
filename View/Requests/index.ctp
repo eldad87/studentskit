@@ -1,4 +1,20 @@
 <?php
+$this->Html->scriptBlock('
+    $(document).ready(function() {
+        mixpanel.track("Requests. index load");
+
+        $(\.lesson-box\').click(function() {
+            mixpanel.track("Requests. Index subject click");
+        });
+        $(\.lesson-request-popup\').click(function() {
+            mixpanel.track("Requests. Index lesson request click");
+        });
+        $(\#search_form\').submit(function() {
+            mixpanel.track("Requests. Index search submit");
+        });
+    });
+    ', array('inline'=>false));
+
     echo $this->element('Home'.DS.'search', array('controller'=>'Requests'));
     echo $this->element('Requests'.DS.'offer_popups');
 ?>
