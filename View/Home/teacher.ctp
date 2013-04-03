@@ -3,18 +3,18 @@ $this->Html->scriptBlock('
     $(document).ready(function() {
         mixpanel.track("Home. teacher profile load");
 
-        $(\.msg-teacher\').click(function() {
+        $(\'.msg-teacher\').click(function() {
             mixpanel.track("Home. Teacher pm click");
         });
 
-        $(\.other-subject\').click(function() {
+        $(\'.other-subject\').click(function() {
             mixpanel.track("Home. Teacher other subject click");
         });
 
-         $(\.upcoming-lesson-join\').click(function() {
+         $(\'.upcoming-lesson-join\').click(function() {
             mixpanel.track("Home. Teacher upcoming lesson join click");
         });
-         $(\.upcoming-lesson-open\').click(function() {
+         $(\'.upcoming-lesson-open\').click(function() {
             mixpanel.track("Home. Teacher upcoming lesson open click");
         });
     });

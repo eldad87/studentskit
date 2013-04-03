@@ -13,7 +13,7 @@ $(document).ready(function() {
             mixpanel.track("Order. Calendar upcoming lesson join click");
     });
      $(\.upcoming-lesson-open\').click(function() {
-        mixpanel.track("Order. Calendar upcoming lesson oprn click");
+        mixpanel.track("Order. Calendar upcoming lesson open click");
     });
 
 });

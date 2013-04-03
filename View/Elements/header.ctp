@@ -1,19 +1,19 @@
 <?php
     $this->Html->scriptBlock('
     $(document).ready(function() {
-        $(\.header-home-button\').click(function() {
+        $(\'.header-home-button\').click(function() {
             mixpanel.track("Nav. home click");
         });
-         $(\.header-forum-button\').click(function() {
+         $(\'.header-forum-button\').click(function() {
             mixpanel.track("Nav. forum click");
         });
-         $(\.header-organizer-button\').click(function() {
+         $(\'.header-organizer-button\').click(function() {
             mixpanel.track("Nav. organizer click");
         });
-         $(\.header-requests-button\').click(function() {
+         $(\'.header-requests-button\').click(function() {
             mixpanel.track("Nav. requests click");
         });
-         $(\.header-support-button\').click(function() {
+         $(\'.header-support-button\').click(function() {
             mixpanel.track("Nav. support click");
         });
     });

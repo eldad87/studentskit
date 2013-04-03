@@ -8,21 +8,21 @@ $this->Html->scriptBlock('
     $(document).ready(function() {
         mixpanel.track("Home. teacher lesson load);
 
-        $(\.msg-teacher\').click(function() {
+        $(\'.msg-teacher\').click(function() {
             mixpanel.track("Home. Teacher Lesson pm click");
         });
 
-        $(\.other-subject\').click(function() {
+        $(\'.other-subject\').click(function() {
             mixpanel.track("Home. Teacher Lesson other subject click");
         });
 
-         $(\.upcoming-lesson-join\').click(function() {
+         $(\'.upcoming-lesson-join\').click(function() {
             mixpanel.track("Home. Teacher Lesson upcoming lesson join click");
         });
-         $(\.upcoming-lesson-open\').click(function() {
+         $(\'.upcoming-lesson-open\').click(function() {
             mixpanel.track("Home. Teacher Lesson upcoming lesson open click");
         });
-        $(\.order-button\').click(function() {
+        $(\'.order-button\').click(function() {
             mixpanel.track("Home. Teacher Lesson order click");
         });
 
@@ -35,21 +35,21 @@ $this->Html->scriptBlock('
     $(document).ready(function() {
         mixpanel.track("Home. teacher subject load);
 
-        $(\.msg-teacher\').click(function() {
+        $(\'.msg-teacher\').click(function() {
             mixpanel.track("Home. Teacher Subject pm click");
         });
 
-        $(\.other-subject\').click(function() {
+        $(\'.other-subject\').click(function() {
             mixpanel.track("Home. Teacher Subject other subject click");
         });
 
-         $(\.upcoming-lesson-join\').click(function() {
+         $(\'.upcoming-lesson-join\').click(function() {
             mixpanel.track("Home. Teacher Subject upcoming lesson join click");
         });
-         $(\.upcoming-lesson-open\').click(function() {
+         $(\'.upcoming-lesson-open\').click(function() {
             mixpanel.track("Home. Teacher Subject upcoming lesson open click");
         });
-        $(\.order-button\').click(function() {
+        $(\'.order-button\').click(function() {
             mixpanel.track("Home. Teacher Subject order click");
         });
     });
