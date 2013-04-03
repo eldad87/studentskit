@@ -65,11 +65,11 @@ echo $this->Html->scriptBlock('
     <div class='popupwindow radius3'>
         <div class='upr-box-tool'>
             <h6 class='pull-left'>
-                <strong>Class Time</strong><br/>
+                <strong><?php echo __('Class Time'); ?></strong><br/>
                 <span class='fontsize3'>{startDate}, {durationMin} Minutes</span>
             </h6>
             <h6 class='pull-right right-text'>
-                <strong>Students</strong><br/>
+                <strong><?php echo __('Students'); ?></strong><br/>
                 <span class='fontsize3'>{currentStudentsCount}/{maxStudentsCount}</span>
             </h6>
         </div>
@@ -116,7 +116,7 @@ echo $this->Html->scriptBlock('
                     <tr>
 
                         <td>
-                            <label>Start Hour</label>
+                            <label><?php echo __('Start Hour'); ?></label>
                             <select id="startHour" class="text ui-widget-content ui-corner-all scheduleTime" name="data[UserLesson][datetime][hour]">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -146,7 +146,7 @@ echo $this->Html->scriptBlock('
                             </select>
                         <td>
                         <td>
-                            <label>Start Minute</label>
+                            <label><?php echo __('Start Minute'); ?></label>
                             <select id="startMin" class="text ui-widget-content ui-corner-all scheduleTime" name="data[UserLesson][datetime][min]">
                                 <option value="00">00</option>
                                 <option value="10">10</option>

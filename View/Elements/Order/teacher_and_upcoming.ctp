@@ -24,25 +24,22 @@
         </div>
         <div class="log-box c-pad">
             <?php
-            echo $this->Layout->ratingNew($teacherData['teacher_avarage_rating'], false, 'pull-left pad8');
+                echo $this->Layout->ratingNew($teacherData['teacher_avarage_rating'], false, 'pull-left pad8');
             ?>
-            <p>(<?php echo $teacherData['teacher_avarage_rating'].'/'.$teacherData['teacher_raters_amount']; ?> Reviews)</p>
+            <p><?php echo sprintf(__('(%s/%s Reviews)'), $teacherData['teacher_avarage_rating'], $teacherData['teacher_raters_amount']); ?></p>
         </div>
     </div> <!-- /student-main-box -->
 
     <?php
-        if(isSet($nextOrderStep) && $nextOrderStep) {
+    if(isSet($nextOrderStep) && $nextOrderStep) {
     ?>
     <a href="#" class="greencentbutn pull-left radius3 space14" id="orderNextButton">
         <i class="iconBig-kart-icon pull-left"></i>
         <span class="pull-left"><strong><?php echo __('Next step'); ?></strong></span>
     </a>
    <?php
-        }
-   ?>
+    }
 
-
-    <?php
     if($upcomingAvailableLessons) {
         ?>
         <div class="lesson-box pad8">
@@ -60,14 +57,14 @@
                                 <div class="clear"></div>
                                 <?php
                                 echo $this->Html->link('Join', array('controller'=>'Order', 'action'=>'init', 'join', $upcomingAvailableLesson['teacher_lesson_id']),
-                                    array('class'=>'btn-color-gry move-right space35 centered-text space3'));
+                                    array('class'=>'btn-color-gry move-right space35 centered-text space3 upcoming-lesson-join'));
                                 ?>
 
                             </div>
                             <div class="space36">
-                                <p>Start : <?php echo $this->TimeTZ->niceShort($upcomingAvailableLesson['datetime']); ?></p>
-                                <p>Current student <?php echo $upcomingAvailableLesson['num_of_students']; ?> of <?php echo $upcomingAvailableLesson['max_students']; ?></p>
-                                <?php echo $this->Html->link('Lesson page', array('controller'=>'Home', 'action'=>'teacherLesson', $upcomingAvailableLesson['teacher_lesson_id']));  ?>
+                                <p><?php echo __('Start'); ?> : <?php echo $this->TimeTZ->niceShort($upcomingAvailableLesson['datetime']); ?></p>
+                                <p><?php echo __('Current student'); ?> <?php echo sprintf(__('%s of %s'), $upcomingAvailableLesson['num_of_students'], $upcomingAvailableLesson['max_students']); ?></p>
+                                <?php echo $this->Html->link('Lesson page', array('controller'=>'Home', 'action'=>'teacherLesson', $upcomingAvailableLesson['teacher_lesson_id']), array('class'=>'upcoming-lesson-open'));  ?>
                             </div>
                         </div>
                     </div>

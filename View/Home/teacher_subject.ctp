@@ -18,12 +18,18 @@ $this->start('lesson_box');
 
     //btn btn-success pull-right orderButton space5
     $params = array('escape'=>false, 'class'=>'greencentbutn pull-left radius3 space5', 'style'=>'top:-5px;');
+
+    $url = '';
     if($settings['popup']) {
         $params['data-toggle'] = 'modal';
+        $url = '#order-notice-popup';
+    } else {
+        $url = $settings['order_url'];
+        $params['class'] .= 'order-button';
     }
     //echo $this->Html->link('<div><i class="iconBig-kart-icon pull-left"></i></div><span class="pull-left"><strong>'.$settings['order_button_text'].'</strong></span>',
     echo $this->Html->link('<i class="iconBig-kart-icon pull-left"></i><span class="pull-left"><strong>'.$settings['order_button_text'].'</strong></span>',
-        $settings['popup'] ? '#order-notice-popup' : $settings['order_url'],
+        $url,
         $params
     );
 $this->end();

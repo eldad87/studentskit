@@ -165,7 +165,7 @@ class LayoutHelper extends AppHelper {
     }
 
     public function subjectRequestPopupButton($settings=array()) {
-        $defaultSettings = array('name'=>__('Lesson Request'), 'class'=>'btns btn-black pull-right text-color index-blackbtn');
+        $defaultSettings = array('name'=>__('Lesson Request'), 'class'=>'btns btn-black pull-right text-color index-blackbtn lesson-request-popup');
         $settings = am($defaultSettings, $settings);
 
         $settings['class'] .= ' lesson-request'; //JS recognize the button using this

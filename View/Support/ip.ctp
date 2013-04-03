@@ -1,4 +1,6 @@
-<?php $this->extend('/Support/common/common');
+<?php
+$this->Html->scriptBlock('mixpanel.track("Support. ip load");', array('inline'=>false));
+$this->extend('/Support/common/common');
 $this->start('main');
 ?>
 

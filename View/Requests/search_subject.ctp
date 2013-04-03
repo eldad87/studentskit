@@ -1,6 +1,22 @@
 <?php
-echo $this->element('Home'.DS.'search', array('controller'=>'Requests'));
-echo $this->element('Requests'.DS.'offer_popups');
+$this->Html->scriptBlock('
+    $(document).ready(function() {
+        mixpanel.track("Requests. search load");
+
+        $(\.lesson-box\').click(function() {
+            mixpanel.track("Requests. Search subject click");
+        });
+        $(\.lesson-request-popup\').click(function() {
+            mixpanel.track("Requests. Search lesson request click");
+        });
+        $(\#search_form\').submit(function() {
+            mixpanel.track("Requests. Search search submit");
+        });
+    });
+    ', array('inline'=>false));
+
+    echo $this->element('Home'.DS.'search', array('controller'=>'Requests'));
+    echo $this->element('Requests'.DS.'offer_popups');
 ?>
 
 <!-- Containeer

@@ -1,4 +1,25 @@
 <?php
+$this->Html->scriptBlock('
+    $(document).ready(function() {
+        mixpanel.track("Home. teacher profile load");
+
+        $(\.msg-teacher\').click(function() {
+            mixpanel.track("Home. Teacher pm click");
+        });
+
+        $(\.other-subject\').click(function() {
+            mixpanel.track("Home. Teacher other subject click");
+        });
+
+         $(\.upcoming-lesson-join\').click(function() {
+            mixpanel.track("Home. Teacher upcoming lesson join click");
+        });
+         $(\.upcoming-lesson-open\').click(function() {
+            mixpanel.track("Home. Teacher upcoming lesson open click");
+        });
+    });
+    ', array('inline'=>false));
+
     echo $this->element('Panel'.DS.'send_msg_popup', array('buttonSelector'=>'.msg-teacher'));
 ?>
 <!-- Containeer
@@ -12,13 +33,13 @@
                         <div class="student-main-inner">
                             <a title="" href="#" class="teacher-pic radius3">
                             <?php
-                            echo $this->Html->image($this->Layout->image($teacherData['User']['image_source'], 149, 182), array('alt' => 'Teacher image'))
+                                echo $this->Html->image($this->Layout->image($teacherData['User']['image_source'], 149, 182), array('alt' => 'Teacher image'))
                             ?>
                             </a>
                             <p class="onliestatus">
                                 <a href="#" class="msg-teacher requireLogin" data-to_user_id="<?php echo $teacherData['User']['user_id']; ?>"><i class="iconMedium-mail pull-left"></i></a>
                                 <i class="iconSmall-green-dot pull-left space23"></i>
-                                <span class="pull-left online">Online</span>
+                                <span class="pull-left online"><?php echo __('Online'); ?></span>
                             </p>
                             <div class="head-text3">
                                 <div class="pull-left tutorname-wrapeper">
