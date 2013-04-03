@@ -1,4 +1,22 @@
-<?php echo $this->element('Home/search'); ?>
+<?php
+$this->Html->scriptBlock('
+$(document).ready(function() {
+    mixpanel.track("Home. search load");
+
+    $(\.subject-box\').click(function() {
+        mixpanel.track("Home. Search subject click");
+    });
+    $(\.lesson-request-popup\').click(function() {
+            mixpanel.track("Home. Search lesson request click");
+    });
+    $(\#search_form\').submit(function() {
+        mixpanel.track("Home. Search search submit");
+    });
+});
+', array('inline'=>false));
+
+    echo $this->element('Home'.DS.'search');
+?>
 
 <!-- Containeer
 ================================================== -->
@@ -46,7 +64,7 @@
                                             'imageSource'           =>$newSubject['Subject']['image_source'],
                                             'lessonType'            =>$newSubject['Subject']['lesson_type'],
                                             'tooltipData'           =>$newSubject['Subject'],
-                                        )), array('controller'=>'Home', 'action'=>'teacherSubject', $newSubject['Subject']['subject_id']), array('escape'=>false));
+                                        )), array('controller'=>'Home', 'action'=>'teacherSubject', $newSubject['Subject']['subject_id']), array('escape'=>false, 'class'=>'subject-box'));
 
 
 										echo '</li>';

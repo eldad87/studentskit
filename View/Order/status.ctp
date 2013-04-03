@@ -1,4 +1,5 @@
 <?php
+$this->Html->scriptBlock('mixpanel.track("Order. status load");', array('inline'=>false));
 $this->set('nextOrderStep', false);
 $this->extend('/Order/Common/common');
 

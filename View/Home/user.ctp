@@ -1,3 +1,16 @@
+<?php
+$this->Html->scriptBlock('
+    $(document).ready(function() {
+        mixpanel.track("Home. user profile load");
+
+        $(\.msg-teacher\').click(function() {
+            mixpanel.track("Home. User pm click");
+        });
+    });
+    ', array('inline'=>false));
+
+    echo $this->element('Panel'.DS.'send_msg_popup', array('buttonSelector'=>'.msg-user'));
+?>
 <!-- Containeer
 ================================================== -->
 <Section class="container">
@@ -8,12 +21,12 @@
                     <div class="student-main-box3 radius3">
                         <div class="student-main-inner">
                             <a title="" href="#" class="teacher-pic radius3">
-                                <?php
-                                echo $this->Html->image($this->Layout->image($userData['image_source'], 149, 182), array('alt' => 'Teacher image'))
-                                ?>
+                            <?php
+                                echo $this->Html->image($this->Layout->image($userData['image_source'], 149, 182), array('alt' => 'User image'))
+                            ?>
                             </a>
                             <p class="onliestatus">
-                                <i class="iconMedium-mail pull-left"></i>
+                                <a href="#" class="msg-user requireLogin" data-to_user_id="<?php echo $userData['user_id']; ?>"><i class="iconMedium-mail pull-left"></i></a>
                                 <i class="iconSmall-green-dot pull-left space23"></i>
                                 <span class="pull-left online"><?php echo __('Online'); ?></span>
                             </p>

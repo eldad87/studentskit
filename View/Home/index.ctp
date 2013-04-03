@@ -1,5 +1,22 @@
-<?php echo $this->element('Home'.DS.'search');  ?>
+<?php
+    $this->Html->scriptBlock('
+    $(document).ready(function() {
+        mixpanel.track("Home. index load");
 
+        $(\.subject-box\').click(function() {
+            mixpanel.track("Home. Index subject click");
+        });
+        $(\.lesson-request-popup\').click(function() {
+            mixpanel.track("Home. Index lesson request click");
+        });
+        $(\#search_form\').submit(function() {
+            mixpanel.track("Home. Index search submit");
+        });
+    });
+    ', array('inline'=>false));
+
+    echo $this->element('Home'.DS.'search');
+?>
 
 <Section class="container">
     <div class="container-inner">
@@ -29,7 +46,7 @@
                                                                     'imageSource'           =>$newSubject['Subject']['image_source'],
                                                                     'lessonType'            =>$newSubject['Subject']['lesson_type'],
                                                                     'tooltipData'           =>$newSubject['Subject'],
-                            )), array('controller'=>'Home', 'action'=>'teacherSubject', $newSubject['Subject']['subject_id']), array('escape'=>false));
+                            )), array('controller'=>'Home', 'action'=>'teacherSubject', $newSubject['Subject']['subject_id']), array('escape'=>false, 'class'=>'subject-box'));
                             echo '</li>';
                         }
                     }

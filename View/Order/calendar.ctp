@@ -1,11 +1,21 @@
 <?php
 $this->Html->scriptBlock('
 $(document).ready(function() {
-    $(document).ready(function(){
-        $(\'#orderNextButton\').click(function() {
-            showError(\'#calendar-msg\', \''.__('Error').'\' ,\''.__('Please select a date.').'\');
-        });
+    mixpanel.track("Order. calendar load");
+
+    $(\'#orderNextButton\').click(function() {
+        mixpanel.track("Order. Calendar next click");
+
+        showError(\'#calendar-msg\', \''.__('Error').'\' ,\''.__('Please select a date.').'\');
     });
+
+     $(\.upcoming-lesson-join\').click(function() {
+            mixpanel.track("Order. Calendar upcoming lesson join click");
+    });
+     $(\.upcoming-lesson-open\').click(function() {
+        mixpanel.track("Order. Calendar upcoming lesson oprn click");
+    });
+
 });
 ', array('inline'=>false));
 
