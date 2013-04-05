@@ -26,6 +26,7 @@ $this->start('lesson_box');
     } else {
         $url = $settings['order_url'];
         $params['class'] .= ' order-button';
+        $params['data-statistics'] = json_encode($this->Layout->subjectStatistics($subjectData, (isSet($teacherLessonData) ? $teacherLessonData : null)));
     }
     //echo $this->Html->link('<div><i class="iconBig-kart-icon pull-left"></i></div><span class="pull-left"><strong>'.$settings['order_button_text'].'</strong></span>',
     echo $this->Html->link('<i class="iconBig-kart-icon pull-left"></i><span class="pull-left"><strong>'.$settings['order_button_text'].'</strong></span>',

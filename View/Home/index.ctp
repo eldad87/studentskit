@@ -4,7 +4,8 @@
         mixpanel.track("Home. index load");
 
         $(\'.subject-box\').click(function() {
-            mixpanel.track("Home. Index subject click");
+            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            mixpanel.track("Home. Index subject click", trackData);
         });
         $(\'.lesson-request-popup\').click(function() {
             mixpanel.track("Home. Index lesson request click");
@@ -46,7 +47,12 @@
                                                                     'imageSource'           =>$newSubject['Subject']['image_source'],
                                                                     'lessonType'            =>$newSubject['Subject']['lesson_type'],
                                                                     'tooltipData'           =>$newSubject['Subject'],
-                            )), array('controller'=>'Home', 'action'=>'teacherSubject', $newSubject['Subject']['subject_id']), array('escape'=>false, 'class'=>'subject-box'));
+                            )),
+                                array('controller'=>'Home', 'action'=>'teacherSubject', $newSubject['Subject']['subject_id']),
+                                array(  'escape'=>false,
+                                        'class'=>'subject-box',
+                                        'data-statistics'=>json_encode($this->Layout->subjectStatistics($newSubject['Subject']))
+                            ));
                             echo '</li>';
                         }
                     }

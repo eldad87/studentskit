@@ -298,4 +298,34 @@ class LayoutHelper extends AppHelper {
 
         return $disableNotifications;
     }
+
+    public function subjectStatistics($statistics, $teacherLessonData=null) {
+        $data = array(
+            'subject_id'                => $statistics['subject_id'],
+            'teacher_user_id'           => $statistics['user_id'],
+            'subject_category_id'       => $statistics['subject_category_id'],
+            'lesson_type'               => $statistics['lesson_type'],
+            'language'                  => $statistics['language'],
+            'name'                      => $statistics['name'],
+            'duration_minutes'          => $statistics['duration_minutes'],
+            'students_amount'           => $statistics['students_amount'],
+            '1_on_1_price'              => $statistics['1_on_1_price'],
+            'max_students'              => $statistics['max_students'],
+            'full_group_student_price'  => $statistics['full_group_student_price'],
+            'total_lessons'             => $statistics['total_lessons'],
+            'students_amount'           => $statistics['students_amount'],
+            'raters_amount'             => $statistics['raters_amount'],
+            'avarage_rating'            => $statistics['avarage_rating'],
+            'created'                   => $statistics['created']
+        );
+
+        if($teacherLessonData) {
+            $data['datetime']                   = $teacherLessonData['datetime'];
+            $data['1_on_1_price']               = $teacherLessonData['1_on_1_price'];
+            $data['max_students']               = $teacherLessonData['max_students'];
+            $data['full_group_student_price']   = $teacherLessonData['full_group_student_price'];
+        }
+
+        return $data;
+    }
 }

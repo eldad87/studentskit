@@ -23,7 +23,8 @@ $this->Html->scriptBlock('
             mixpanel.track("Home. Teacher Lesson upcoming lesson open click");
         });
         $(\'.order-button\').click(function() {
-            mixpanel.track("Home. Teacher Lesson order click");
+            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            mixpanel.track("Home. Teacher Lesson order click", trackData);
         });
 
     });
@@ -50,7 +51,8 @@ $this->Html->scriptBlock('
             mixpanel.track("Home. Teacher Subject upcoming lesson open click");
         });
         $(\'.order-button\').click(function() {
-            mixpanel.track("Home. Teacher Subject order click");
+            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            mixpanel.track("Home. Teacher Subject order click", trackData);
         });
     });
     ', array('inline'=>false));
