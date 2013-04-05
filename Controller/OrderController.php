@@ -166,6 +166,12 @@ class OrderController extends AppController {
         $allLiveLessons = $this->User->getLiveLessons($actionData['Subject']['user_id'], false);
         $this->setJSSetting('calendarClickUrl', Router::url(array('controller'=>'Home', 'action'=>'teacherLesson', '{teacher_lesson_id}')));
 
+        //Set statistics data
+        $statistics = $actionData['Subject'];
+        $statistics['1_on_1_price'] = $this->getOrderData('price');
+        $statistics['action'] = $this->getOrderData('action');
+        $this->setStatisticsData($statistics);
+
         $this->set('allLiveLessons',	 	$allLiveLessons);
         $this->set('aalr', 					$aalr);
         $this->set('subjectData',     		$actionData['Subject']);
@@ -281,11 +287,48 @@ class OrderController extends AppController {
             $viewParameters = am($viewParameters, $extra);
         }
 
+        //Set statistics data
+        $statistics = $actionData['Subject'] + $viewParameters;
+        $statistics['1_on_1_price'] = $viewParameters['price'];
+        $statistics['action'] = $this->getOrderData('action');
+        $this->setStatisticsData($statistics);
+
 
         $this->loadCommonData($actionData['Subject']['user_id'], $actionData['Subject']['subject_id']);
         $this->Session->write('order.viewedSummary', true);
         $this->set($viewParameters);
         $this->set('orderData', $this->getOrderData());
+    }
+    private function setStatisticsData($statistics) {
+        $data = array(
+            'action'                    => $statistics['action'],
+            'subject_id'                => $statistics['subject_id'],
+            'teacher_user_id'           => $statistics['user_id'],
+            'subject_category_id'       => $statistics['subject_category_id'],
+            'lesson_type'               => $statistics['lesson_type'],
+            'language'                  => $statistics['language'],
+            'name'                      => $statistics['name'],
+            'duration_minutes'          => $statistics['duration_minutes'],
+            'students_amount'           => $statistics['students_amount'],
+            '1_on_1_price'              => $statistics['1_on_1_price'],
+            'max_students'              => $statistics['max_students'],
+            'full_group_student_price'  => $statistics['full_group_student_price'],
+            'total_lessons'             => $statistics['total_lessons'],
+            'students_amount'           => $statistics['students_amount'],
+            'raters_amount'             => $statistics['raters_amount'],
+            'avarage_rating'            => $statistics['avarage_rating'],
+            'created'                   => $statistics['created']
+        );
+
+        if(isSet($statistics['datetime'])) {
+            $data['datetime'] = $statistics['datetime'];
+        }
+
+        if(isSet($statistics['price_actual_purchase'])) {
+            $data['price_actual_purchase'] = $statistics['price_actual_purchase'];
+        }
+
+        $this->set('statistics', $data);
     }
 
     /**
@@ -499,7 +542,8 @@ class OrderController extends AppController {
     public function status($action, $userLessonId) {
 
         $this->UserLesson->Subject; //const
-        $this->UserLesson->recursive = -1;
+        $this->UserLesson->recursive = 1;
+        $this->UserLesson->resetRelationshipFields();
         $ulData = $this->UserLesson->findByUserLessonId($userLessonId);
         if(!$ulData) {
             $this->set('name', __('Error'));
@@ -519,6 +563,20 @@ class OrderController extends AppController {
             $this->set('subjectId', $ulData['UserLesson']['subject_id']);
             $this->set('name', $ulData['UserLesson']['name']);
             $this->set('orderData', array('action'=>$action, 'price'=>$ulData['UserLesson']['1_on_1_price'], 'lesson_type'=>$ulData['UserLesson']['lesson_type']));
+
+
+            //Set statistics data
+            $statistics                     = $ulData['UserLesson'];
+            $statistics['total_lessons']    = $ulData['Subject']['total_lessons'];
+            $statistics['students_amount']  = $ulData['Subject']['students_amount'];
+            $statistics['raters_amount']    = $ulData['Subject']['raters_amount'];
+            $statistics['avarage_rating']   = $ulData['Subject']['avarage_rating'];
+            $statistics['created']          = $ulData['Subject']['created'];
+
+
+            $statistics['user_id']  = $statistics['teacher_user_id'];
+            $statistics['action']   = $action;
+            $this->setStatisticsData($statistics);
 
 
             //Set credit points

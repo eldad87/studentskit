@@ -1,5 +1,13 @@
 <?php
-$this->Html->scriptBlock('mixpanel.track("Order. status load");', array('inline'=>false));
+$statisticsJSON = json_encode($statistics);
+$this->Html->scriptBlock('
+$(document).ready(function() {
+    var trackData = jQuery.parseJSON(\''.$statisticsJSON.'\');
+
+    mixpanel.track(""Order. status load", trackData);
+});
+', array('inline'=>false));
+
 $this->set('nextOrderStep', false);
 $this->extend('/Order/Common/common');
 
