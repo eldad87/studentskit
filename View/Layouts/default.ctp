@@ -50,6 +50,17 @@
                                         /*'jquery.ba-bbq'*/));
         echo $this->fetch('script');
 
+
+        if(isSet($statisticsFirstView) && $statisticsFirstView) {
+            ?>
+            <script language="">
+                $(document).ready(function() {
+                    mixpanel.identify(<?php echo $user['user_id']; ?>);
+                });
+            </script>
+            <?php
+        }
+
         echo $this->Js->writeBuffer(); // Write cached scripts
     ?>
 
