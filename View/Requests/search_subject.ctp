@@ -4,9 +4,9 @@ $this->Html->scriptBlock('
         mixpanel.track("Requests. search load");
 
         $(\'body\').delegate(\'.lesson-box\', \'click\', function(event) {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Requests. Search subject click", trackData);
-        }):
+        });
 
         $(\'.lesson-request-popup\').click(function() {
             mixpanel.track("Requests. Search lesson request click");

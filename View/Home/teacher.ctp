@@ -10,19 +10,19 @@ $this->Html->scriptBlock('
 
 
         $(\'body\').delegate(\'.other-subject\', \'click\', function(event) {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Home. Teacher other subject click", trackData);
-        }):
+        });
 
         $(\'body\').delegate(\'.upcoming-lesson-join\\', \'click\', function(event) {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Home. Teacher upcoming lesson join click", trackData);
-        }):
+        });
 
         $(\'body\').delegate(\'.upcoming-lesson-open\', \'click\', function(event) {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Home. Teacher upcoming lesson open click", trackData);
-        }):
+        });
 
     });
     ', array('inline'=>false));

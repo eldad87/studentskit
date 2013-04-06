@@ -11,7 +11,7 @@ $this->Html->link('<strong>'.$teacherSubject['name'].'</strong>',
     array('controller'=>'Home', 'action'=>'teacherSubject', $teacherSubject['subject_id']),
     array(  'escape'=>false,
             'class'=>'fontsize1 other-subject',
-            'data-statistics'=>json_encode($this->Layout->subjectStatistics($teacherSubject, array()))
+            'data-statistics'=>$this->Layout->subjectStatistics($teacherSubject, array())
     )),'
 
 

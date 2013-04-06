@@ -9,9 +9,7 @@ $this->Html->scriptBlock('
         mixpanel.track("Home. teacher lesson load");
 
         $(\'.msg-teacher\').click(function() {
-            var trackData = jQuery.parseJSON(
-                $(\'.order-button\').data(\'statistics\')
-            );
+            var trackData = $(\'.order-button\').data(\'statistics\');
 
             mixpanel.track("Home. Teacher Lesson pm click", trackData);
         });
@@ -19,22 +17,22 @@ $this->Html->scriptBlock('
 
 
         $(\'body\').delegate(\'.other-subject\', \'click\', function(event) {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Home. Teacher Lesson other subject click", trackData);
-        }):
+        });
 
         $(\'body\').delegate(\'.upcoming-lesson-join\', \'click\', function(event) {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Home. Teacher Lesson upcoming lesson join click", trackData);
-        }):
+        });
 
         $(\'body\').delegate(\'.upcoming-lesson-open\', \'click\', function(event) {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Home. Teacher Lesson upcoming lesson open click", trackData);
-        }):
+        });
 
         $(\'.order-button\').click(function() {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Home. Teacher Lesson order click", trackData);
         });
 
@@ -56,21 +54,21 @@ $this->Html->scriptBlock('
 
 
         $(\'body\').delegate(\'.other-subject\', \'click\', function(event) {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Home. Teacher Subject other subject click", trackData);
-        }):
+        });
         $(\'body\').delegate(\'.upcoming-lesson-join\', \'click\', function(event) {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Home. Teacher Subject upcoming lesson join click", trackData);
-        }):
+        });
         $(\'body\').delegate(\'.upcoming-lesson-open\', \'click\', function(event) {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Home. Teacher Subject upcoming lesson open click", trackData);
-        }):
+        });
 
 
         $(\'.order-button\').click(function() {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Home. Teacher Subject order click", trackData);
         });
     });

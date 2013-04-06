@@ -4,7 +4,7 @@ $this->Html->scriptBlock('
         mixpanel.track("Requests. index load");
 
         $(\'.lesson-box\').click(function() {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Requests. Index subject click", trackData);
         });
         $(\'.lesson-request-popup\').click(function() {

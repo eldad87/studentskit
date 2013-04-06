@@ -9,7 +9,8 @@ echo '
                 ',$this->Html->link('Join',
                                     array(  'controller'=>'Order', 'action'=>'init', 'join', $upcomingAvailableLesson['TeacherLesson']['teacher_lesson_id']),
                                     array(  'class'=>'btn-color-gry move-right space35 centered space37 upcoming-lesson-join',
-                                            'data-statistics'=>json_encode($this->Layout->subjectStatistics(array(), $upcomingAvailableLesson['TeacherLesson']))
+                                            'escape'=>false,
+                                            'data-statistics'=>$this->Layout->subjectStatistics(array(), $upcomingAvailableLesson['TeacherLesson'])
                 )),'
             </div>
 
@@ -18,7 +19,8 @@ echo '
                 ',$this->Html->link($upcomingAvailableLesson['TeacherLesson']['name'],
                                     array(  'controller'=>'Home', 'action'=>'teacherLesson', $upcomingAvailableLesson['TeacherLesson']['teacher_lesson_id']),
                                     array(  'class'=>'upcoming-lesson-open',
-                                            'data-statistics'=>json_encode($this->Layout->subjectStatistics(array(), $upcomingAvailableLesson['TeacherLesson']))
+                                            'escape'=>false,
+                                            'data-statistics'=>$this->Layout->subjectStatistics(array(), $upcomingAvailableLesson['TeacherLesson'])
                                     )),'
                 <p class="space3">',__('Start'),' :',$upcomingAvailableLesson['TeacherLesson']['datetime'],'</p>
                 <p>',__('Current students'),' ',$upcomingAvailableLesson['TeacherLesson']['num_of_students'],' of ',$upcomingAvailableLesson['TeacherLesson']['max_students'],'</p>

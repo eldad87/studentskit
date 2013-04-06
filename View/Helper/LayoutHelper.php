@@ -327,6 +327,7 @@ class LayoutHelper extends AppHelper {
             $data['created']        = $statistics['created'];
         }
 
-        return $data;
+        //http://magp.ie/2011/11/29/html5-data-attributes-in-html-and-jquery/
+        return htmlspecialchars( json_encode($data), ENT_QUOTES );
     }
 }

@@ -4,9 +4,9 @@
         mixpanel.track("Home. search load");
 
         $(\'body\').delegate(\'.subject-box\', \'click\', function(event) {
-            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            var trackData = $(this).data(\'statistics\');
             mixpanel.track("Home. Search subject click", trackData);
-        }):
+        });
 
         $(\'.lesson-request-popup\').click(function() {
             mixpanel.track("Home. Search lesson request click");
@@ -70,7 +70,7 @@
                                             array('controller'=>'Home', 'action'=>'teacherSubject', $newSubject['Subject']['subject_id']),
                                             array(  'escape'=>false,
                                                     'class'=>'subject-box',
-                                                    'data-statistics'=>json_encode($this->Layout->subjectStatistics($newSubject['Subject']))
+                                                    'data-statistics'=>$this->Layout->subjectStatistics($newSubject['Subject'])
                                                 ));
 
 

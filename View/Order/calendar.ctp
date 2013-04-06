@@ -15,13 +15,13 @@ $(document).ready(function() {
 
 
     $(\'body\').delegate(\'.upcoming-lesson-join\', \'click\', function(event) {
-        var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+        var trackData = $(this).data(\'statistics\');
         mixpanel.track("Order. Calendar upcoming lesson join click", trackData);
-    }):
+    });
     $(\'body\').delegate(\'.upcoming-lesson-open\', \'click\', function(event) {
-        var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+        var trackData = $(this).data(\'statistics\');
         mixpanel.track("Order. Calendar upcoming lesson open click", trackData);
-    }):
+    });
 
 
 });
