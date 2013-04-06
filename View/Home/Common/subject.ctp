@@ -17,7 +17,8 @@ $this->Html->scriptBlock('
         });
 
         $(\'.other-subject\').click(function() {
-            mixpanel.track("Home. Teacher Lesson other subject click");
+            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            mixpanel.track("Home. Teacher Lesson other subject click", trackData);
         });
 
          $(\'.upcoming-lesson-join\').click(function() {
@@ -50,7 +51,8 @@ $this->Html->scriptBlock('
         });
 
         $(\'.other-subject\').click(function() {
-            mixpanel.track("Home. Teacher Subject other subject click");
+            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            mixpanel.track("Home. Teacher Subject other subject click", trackData);
         });
 
          $(\'.upcoming-lesson-join\').click(function() {

@@ -8,7 +8,8 @@ $this->Html->scriptBlock('
         });
 
         $(\'.other-subject\').click(function() {
-            mixpanel.track("Home. Teacher other subject click");
+            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            mixpanel.track("Home. Teacher other subject click", trackData);
         });
 
          $(\'.upcoming-lesson-join\').click(function() {
