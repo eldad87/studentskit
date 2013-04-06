@@ -43,7 +43,7 @@ $(document).ready(function(){
             showError('#calendar-msg', 'Error' ,'Please select a future date');
         }
 
-        mixpanel.track("Order. Calendar date click");
+        mixpanel.track("Order. Calendar date click", trackData);
     };
 
 
@@ -77,7 +77,7 @@ $(document).ready(function(){
             $.nano(jsSettings['calendarClickUrl'], agendaItem.data)
         );
 
-        mixpanel.track("Order. Calendar agenda click");
+        mixpanel.track("Order. Calendar agenda click", trackData);
     };
 
     /**
@@ -100,14 +100,14 @@ $(document).ready(function(){
     $("#BtnPreviousMonth").click(function() {
         jfcalplugin.showPreviousMonth(calendarSelector);
         showCalDate();
-        mixpanel.track("Order. Calendar next month click");
+        mixpanel.track("Order. Calendar next month click", trackData);
     });
 
     //init next button
     $("#BtnNextMonth").click(function() {
         jfcalplugin.showNextMonth(calendarSelector);
         showCalDate();
-        mixpanel.track("Order. Calendar prev month click");
+        mixpanel.track("Order. Calendar prev month click", trackData);
     });
 
 
@@ -190,7 +190,7 @@ $(document).ready(function(){
             'Submit': function() {
                 //Submit
                 $('#setLessonDatetime').submit();
-                mixpanel.track("Order. Calendar date submit");
+                mixpanel.track("Order. Calendar date submit", trackData);
             },
             Cancel: function() {
                 $(this).dialog('close');
@@ -199,7 +199,7 @@ $(document).ready(function(){
         close: function() {
             jQuery("#startHour option:eq(0)").attr("selected", "selected");
             jQuery("#startMin option:eq(0)").attr("selected", "selected");
-            mixpanel.track("Order. Calendar date cancel");
+            mixpanel.track("Order. Calendar date cancel", trackData);
             //jQuery("#startMeridiem option:eq(0)").attr("selected", "selected");
         }
     });

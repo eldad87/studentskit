@@ -1,5 +1,24 @@
 <?php
-$this->Html->scriptBlock('mixpanel.track("Order. status load");', array('inline'=>false));
+$statisticsJSON = json_encode($statistics);
+$this->Html->scriptBlock('
+$(document).ready(function() {
+    var trackData = jQuery.parseJSON(\''.$statisticsJSON.'\');
+    mixpanel.track("Order. status load", trackData);
+
+
+    $(\'body\').delegate(\'.upcoming-lesson-join\', \'click\', function(event) {
+        var trackData = $(this).data(\'statistics\');
+        mixpanel.track("Order. Status upcoming lesson join click", trackData);
+    });
+
+    $(\'body\').delegate(\'.upcoming-lesson-open\', \'click\', function(event) {
+        var trackData = $(this).data(\'statistics\');
+        mixpanel.track("Order. Status upcoming lesson open click", trackData);
+    });
+
+});
+', array('inline'=>false));
+
 $this->set('nextOrderStep', false);
 $this->extend('/Order/Common/common');
 

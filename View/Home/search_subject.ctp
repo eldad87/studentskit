@@ -1,19 +1,21 @@
 <?php
-$this->Html->scriptBlock('
-$(document).ready(function() {
-    mixpanel.track("Home. search load");
+    $this->Html->scriptBlock('
+    $(document).ready(function() {
+        mixpanel.track("Home. search load");
 
-    $(\'.subject-box\').click(function() {
-        mixpanel.track("Home. Search subject click");
-    });
-    $(\'.lesson-request-popup\').click(function() {
+        $(\'body\').delegate(\'.subject-box\', \'click\', function(event) {
+            var trackData = $(this).data(\'statistics\');
+            mixpanel.track("Home. Search subject click", trackData);
+        });
+
+        $(\'.lesson-request-popup\').click(function() {
             mixpanel.track("Home. Search lesson request click");
+        });
+        $(\'#search_form\').submit(function() {
+            mixpanel.track("Home. Search search submit");
+        });
     });
-    $(\'#search_form\').submit(function() {
-        mixpanel.track("Home. Search search submit");
-    });
-});
-', array('inline'=>false));
+    ', array('inline'=>false));
 
     echo $this->element('Home'.DS.'search');
 ?>
@@ -63,8 +65,13 @@ $(document).ready(function() {
                                             'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
                                             'imageSource'           =>$newSubject['Subject']['image_source'],
                                             'lessonType'            =>$newSubject['Subject']['lesson_type'],
-                                            'tooltipData'           =>$newSubject['Subject'],
-                                        )), array('controller'=>'Home', 'action'=>'teacherSubject', $newSubject['Subject']['subject_id']), array('escape'=>false, 'class'=>'subject-box'));
+                                            'subjectData'           =>$newSubject['Subject'],
+                                        )),
+                                            array('controller'=>'Home', 'action'=>'teacherSubject', $newSubject['Subject']['subject_id']),
+                                            array(  'escape'=>false,
+                                                    'class'=>'subject-box',
+                                                    'data-statistics'=>$this->Layout->subjectStatistics($newSubject['Subject'])
+                                                ));
 
 
 										echo '</li>';

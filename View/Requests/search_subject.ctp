@@ -3,9 +3,11 @@ $this->Html->scriptBlock('
     $(document).ready(function() {
         mixpanel.track("Requests. search load");
 
-        $(\'.lesson-box\').click(function() {
-            mixpanel.track("Requests. Search subject click");
+        $(\'body\').delegate(\'.lesson-box\', \'click\', function(event) {
+            var trackData = $(this).data(\'statistics\');
+            mixpanel.track("Requests. Search subject click", trackData);
         });
+
         $(\'.lesson-request-popup\').click(function() {
             mixpanel.track("Requests. Search lesson request click");
         });
@@ -60,7 +62,7 @@ $this->Html->scriptBlock('
                                                                                         'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
                                                                                         'imageSource'           =>$newSubject['Subject']['image_source'],
                                                                                         'lessonType'            =>$newSubject['Subject']['lesson_type'],
-                                                                                        'tooltipData'           =>$newSubject['Subject'],
+                                                                                        'subjectData'           =>$newSubject['Subject'],
                                         ));
 
 										echo '</li>';

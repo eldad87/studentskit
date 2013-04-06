@@ -94,6 +94,11 @@ class AccountsController extends AppController {
                     $this->redirect('/');
                 }
 
+
+                //Mark that this user just logged in, will be handel by AppController
+                CakeSession::write('Message.statistics.identity', true);
+
+
                 $event = new CakeEvent('Controller.Accounts.afterLogin', $this, array('user_id'=>$this->Auth->user('user_id')) );
                 $this->getEventManager()->dispatch($event);
 

@@ -298,4 +298,36 @@ class LayoutHelper extends AppHelper {
 
         return $disableNotifications;
     }
+
+    public function subjectStatistics($subjectData=array(), $lessonData=array()) {
+        $statistics = $subjectData + $lessonData;
+
+        $data = array(
+            'subject_id'                => $statistics['subject_id'],
+            'teacher_user_id'           => isSet($statistics['teacher_user_id']) ? $statistics['teacher_user_id'] : $statistics['user_id'],
+            'subject_category_id'       => $statistics['subject_category_id'],
+            'lesson_type'               => $statistics['lesson_type'],
+            'language'                  => $statistics['language'],
+            'name'                      => $statistics['name'],
+            'duration_minutes'          => $statistics['duration_minutes'],
+            '1_on_1_price'              => $statistics['1_on_1_price'],
+            'max_students'              => $statistics['max_students'],
+            'full_group_student_price'  => $statistics['full_group_student_price'],
+        );
+
+        if(isSet( $statistics['datetime'])) {
+            $data['datetime']                   = $statistics['datetime'];
+        }
+        if(isSet( $statistics['total_lessons'])) {
+            //This data is from the subject
+            $data['total_lessons']  = $statistics['total_lessons'];
+            $data['students_amount']= $statistics['students_amount'];
+            $data['raters_amount']  = $statistics['raters_amount'];
+            $data['avarage_rating'] = $statistics['avarage_rating'];
+            $data['created']        = $statistics['created'];
+        }
+
+        //http://magp.ie/2011/11/29/html5-data-attributes-in-html-and-jquery/
+        return htmlspecialchars( json_encode($data), ENT_QUOTES );
+    }
 }

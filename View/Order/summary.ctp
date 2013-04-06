@@ -1,20 +1,28 @@
 <?php
+$statisticsJSON = json_encode($statistics);
+
 $this->Html->scriptBlock('
 $(document).ready(function() {
-    mixpanel.track("Order. summary load");
+    var trackData = jQuery.parseJSON(\''.$statisticsJSON.'\');
+    mixpanel.track("Order. summary load", trackData);
 
     $(\'#orderNextButton\').click(function() {
-        mixpanel.track("Order. Summary next click");
+        var trackData = jQuery.parseJSON(\''.$statisticsJSON.'\');
+        mixpanel.track("Order. Summary next click", trackData);
 
         $(\'#summaryForm\').submit();
     });
 
-     $(\'.upcoming-lesson-join\').click(function() {
-            mixpanel.track("Order. Summary upcoming lesson join click");
+    $(\'body\').delegate(\'.upcoming-lesson-join\', \'click\', function(event) {
+        var trackData = $(this).data(\'statistics\');
+        mixpanel.track("Order. Summary upcoming lesson join click", trackData);
     });
-     $(\'.upcoming-lesson-open\').click(function() {
-        mixpanel.track("Order. Summary upcoming lesson open click");
+
+    $(\'body\').delegate(\'.upcoming-lesson-open\', \'click\', function(event) {
+        var trackData = $(this).data(\'statistics\');
+        mixpanel.track("Order. Summary upcoming lesson open click", trackData);
     });
+
 });
 ', array('inline'=>false));
 $this->set('nextOrderStep', true);

@@ -27,7 +27,6 @@
 
             //AJAX - load the form with its data
             url = $('#accept-form').attr('action');
-            console.log(jQuery.nano(url, $(this).data()));
 
             $.ajax({
                 url: jQuery.nano(url, $(this).data()),
