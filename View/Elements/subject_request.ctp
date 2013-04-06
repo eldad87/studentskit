@@ -13,11 +13,14 @@ echo $this->Html->link('<div class="lesson-box">
         '.$this->Layout->ratingNew($avarageRating, false, 'pull-left space3').'
         <div class="pull-right">
             '.$this->Layout->priceTag($oneOnOnePrice, $fullGroupStudentPrice).'
-            '.$this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($tooltipData)).'
+            '.$this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($subjectData)).'
         </div>
     </div>
 </div>', array('controller'=>'Requests', 'action'=>'offerSubject', $subjectId),
             $this->Layout->requireLogin(array(  'data-toggle'=>'modal', 'data-target'=>'#makeOffer',
                                                 'data-id'=>$subjectId, 'data-hidden-input'=>'#request_subject_id',
-                                                'class'=>'copyDataId', 'escape'=>false)));
+                                                'class'=>'copyDataId', 'escape'=>false,
+                                                'data-statistics'=>json_encode($this->Layout->subjectStatistics($newSubject['Subject']))
+
+            )));
 ?>

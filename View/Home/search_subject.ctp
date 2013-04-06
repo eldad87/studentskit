@@ -1,20 +1,20 @@
 <?php
-$this->Html->scriptBlock('
-$(document).ready(function() {
-    mixpanel.track("Home. search load");
+    $this->Html->scriptBlock('
+    $(document).ready(function() {
+        mixpanel.track("Home. search load");
 
-    $(\'.subject-box\').click(function() {
-        var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
-        mixpanel.track("Home. Search subject click", trackData);
+        $(\'.subject-box\').click(function() {
+            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            mixpanel.track("Home. Search subject click", trackData);
+        });
+        $(\'.lesson-request-popup\').click(function() {
+                mixpanel.track("Home. Search lesson request click");
+        });
+        $(\'#search_form\').submit(function() {
+            mixpanel.track("Home. Search search submit");
+        });
     });
-    $(\'.lesson-request-popup\').click(function() {
-            mixpanel.track("Home. Search lesson request click");
-    });
-    $(\'#search_form\').submit(function() {
-        mixpanel.track("Home. Search search submit");
-    });
-});
-', array('inline'=>false));
+    ', array('inline'=>false));
 
     echo $this->element('Home'.DS.'search');
 ?>
