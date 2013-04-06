@@ -3,10 +3,11 @@ $this->Html->scriptBlock('
     $(document).ready(function() {
         mixpanel.track("Requests. search load");
 
-        $(\'.lesson-box\').click(function() {
+        $(\'body\').delegate(\'.lesson-box\', \'click\', function(event) {
             var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
             mixpanel.track("Requests. Search subject click", trackData);
-        });
+        }):
+
         $(\'.lesson-request-popup\').click(function() {
             mixpanel.track("Requests. Search lesson request click");
         });

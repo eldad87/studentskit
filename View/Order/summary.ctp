@@ -13,14 +13,16 @@ $(document).ready(function() {
         $(\'#summaryForm\').submit();
     });
 
-     $(\'.upcoming-lesson-join\').click(function() {
+    $(\'body\').delegate(\'.upcoming-lesson-join\', \'click\', function(event) {
         var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
         mixpanel.track("Order. Summary upcoming lesson join click", trackData);
-    });
-     $(\'.upcoming-lesson-open\').click(function() {
+    }):
+
+    $(\'body\').delegate(\'.upcoming-lesson-open\', \'click\', function(event) {
         var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
         mixpanel.track("Order. Summary upcoming lesson open click", trackData);
-    });
+    }):
+
 });
 ', array('inline'=>false));
 $this->set('nextOrderStep', true);

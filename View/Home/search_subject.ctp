@@ -3,10 +3,11 @@
     $(document).ready(function() {
         mixpanel.track("Home. search load");
 
-        $(\'.subject-box\').click(function() {
+        $(\'body\').delegate(\'.subject-box\', \'click\', function(event) {
             var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
             mixpanel.track("Home. Search subject click", trackData);
-        });
+        }):
+
         $(\'.lesson-request-popup\').click(function() {
             mixpanel.track("Home. Search lesson request click");
         });

@@ -13,14 +13,16 @@ $(document).ready(function() {
         showError(\'#calendar-msg\', \''.__('Error').'\' ,\''.__('Please select a date.').'\');
     });
 
-     $(\'.upcoming-lesson-join\').click(function() {
+
+    $(\'body\').delegate(\'.upcoming-lesson-join\', \'click\', function(event) {
         var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
         mixpanel.track("Order. Calendar upcoming lesson join click", trackData);
-    });
-     $(\'.upcoming-lesson-open\').click(function() {
+    }):
+    $(\'body\').delegate(\'.upcoming-lesson-open\', \'click\', function(event) {
         var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
         mixpanel.track("Order. Calendar upcoming lesson open click", trackData);
-    });
+    }):
+
 
 });
 ', array('inline'=>false));

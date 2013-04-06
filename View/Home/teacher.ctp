@@ -7,17 +7,23 @@ $this->Html->scriptBlock('
             mixpanel.track("Home. Teacher pm click");
         });
 
-        $(\'.other-subject\').click(function() {
+
+
+        $(\'body\').delegate(\'.other-subject\', \'click\', function(event) {
             var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
             mixpanel.track("Home. Teacher other subject click", trackData);
-        });
+        }):
 
-         $(\'.upcoming-lesson-join\').click(function() {
-            mixpanel.track("Home. Teacher upcoming lesson join click");
-        });
-         $(\'.upcoming-lesson-open\').click(function() {
-            mixpanel.track("Home. Teacher upcoming lesson open click");
-        });
+        $(\'body\').delegate(\'.upcoming-lesson-join\\', \'click\', function(event) {
+            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            mixpanel.track("Home. Teacher upcoming lesson join click", trackData);
+        }):
+
+        $(\'body\').delegate(\'.upcoming-lesson-open\', \'click\', function(event) {
+            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            mixpanel.track("Home. Teacher upcoming lesson open click", trackData);
+        }):
+
     });
     ', array('inline'=>false));
 
