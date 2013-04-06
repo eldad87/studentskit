@@ -71,6 +71,19 @@ class AppController extends Controller {
         App::uses('CakeTime', 'Utility');
 
         $this->set('navButtonSelection', $this->detemintControllerToNavButton());
+
+
+        /** Statistics params
+         *************************************/
+        //Check if the user just logged in through AccountController
+        $this->set('statisticsFirstView', false);
+        if(CakeSession::read('Message.statistics.identity')) {
+            if (!$this->request->is('ajax')) {
+                CakeSession::delete('Message.statistics.identity');
+                $this->set('statisticsFirstView', true);
+            }
+        }
+
 	}
 
     public function beforeRender() {

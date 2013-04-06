@@ -102,7 +102,6 @@
                 var timezone = jstz.determine();
 
                 if ( typeof (timezone) !== 'undefined') {
-                    console.log(timezone.name());
                     $('#timezone').val(timezone.name());
                     $('#timezone').change();
                 }
