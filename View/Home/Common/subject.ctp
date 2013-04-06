@@ -43,7 +43,10 @@ $this->Html->scriptBlock('
         mixpanel.track("Home. teacher subject load");
 
         $(\'.msg-teacher\').click(function() {
-            mixpanel.track("Home. Teacher Subject pm click");
+            var trackData = jQuery.parseJSON(
+                $(\'.order-button\').data(\'statistics\')
+            );
+            mixpanel.track("Home. Teacher Subject pm click", trackData);
         });
 
         $(\'.other-subject\').click(function() {
