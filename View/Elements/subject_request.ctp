@@ -20,7 +20,7 @@ echo $this->Html->link('<div class="lesson-box">
             $this->Layout->requireLogin(array(  'data-toggle'=>'modal', 'data-target'=>'#makeOffer',
                                                 'data-id'=>$subjectId, 'data-hidden-input'=>'#request_subject_id',
                                                 'class'=>'copyDataId', 'escape'=>false,
-                                                'data-statistics'=>json_encode($this->Layout->subjectStatistics($newSubject['Subject']))
+                                                'data-statistics'=>json_encode($this->Layout->subjectStatistics($subjectData))
 
             )));
 ?>

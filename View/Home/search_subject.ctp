@@ -64,7 +64,7 @@
                                             'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
                                             'imageSource'           =>$newSubject['Subject']['image_source'],
                                             'lessonType'            =>$newSubject['Subject']['lesson_type'],
-                                            'tooltipData'           =>$newSubject['Subject'],
+                                            'subjectData'           =>$newSubject['Subject'],
                                         )),
                                             array('controller'=>'Home', 'action'=>'teacherSubject', $newSubject['Subject']['subject_id']),
                                             array(  'escape'=>false,

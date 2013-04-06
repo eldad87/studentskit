@@ -44,7 +44,7 @@ $this->Html->scriptBlock('
                                                                             'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
                                                                             'imageSource'           =>$newSubject['Subject']['image_source'],
                                                                             'lessonType'            =>$newSubject['Subject']['lesson_type'],
-                                                                            'tooltipData'           =>$newSubject['Subject'],
+                                                                            'subjectData'           =>$newSubject['Subject'],
                             ));
                             echo '</li>';
                         }
