@@ -3,7 +3,7 @@ $statisticsJSON = json_encode($statistics);
 $this->Html->scriptBlock('
 $(document).ready(function() {
     var trackData = jQuery.parseJSON(\''.$statisticsJSON.'\');
-    mixpanel.track(""Order. status load", trackData);
+    mixpanel.track("Order. status load", trackData);
 
 
     $(\'body\').delegate(\'.upcoming-lesson-join\', \'click\', function(event) {
