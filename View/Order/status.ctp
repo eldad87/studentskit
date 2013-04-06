@@ -3,8 +3,16 @@ $statisticsJSON = json_encode($statistics);
 $this->Html->scriptBlock('
 $(document).ready(function() {
     var trackData = jQuery.parseJSON(\''.$statisticsJSON.'\');
-
     mixpanel.track(""Order. status load", trackData);
+
+     $(\'.upcoming-lesson-join\').click(function() {
+        var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+        mixpanel.track("Order. Status upcoming lesson join click", trackData);
+    });
+     $(\'.upcoming-lesson-open\').click(function() {
+        var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+        mixpanel.track("Order. Status upcoming lesson open click", trackData);
+    });
 });
 ', array('inline'=>false));
 

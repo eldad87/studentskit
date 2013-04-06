@@ -309,7 +309,6 @@ class OrderController extends AppController {
             'language'                  => $statistics['language'],
             'name'                      => $statistics['name'],
             'duration_minutes'          => $statistics['duration_minutes'],
-            'students_amount'           => $statistics['students_amount'],
             '1_on_1_price'              => $statistics['1_on_1_price'],
             'max_students'              => $statistics['max_students'],
             'full_group_student_price'  => $statistics['full_group_student_price'],

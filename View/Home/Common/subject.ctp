@@ -17,10 +17,12 @@ $this->Html->scriptBlock('
         });
 
          $(\'.upcoming-lesson-join\').click(function() {
-            mixpanel.track("Home. Teacher Lesson upcoming lesson join click");
+            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            mixpanel.track("Home. Teacher Lesson upcoming lesson join click", trackData);
         });
          $(\'.upcoming-lesson-open\').click(function() {
-            mixpanel.track("Home. Teacher Lesson upcoming lesson open click");
+            var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+            mixpanel.track("Home. Teacher Lesson upcoming lesson open click", trackData);
         });
         $(\'.order-button\').click(function() {
             var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );

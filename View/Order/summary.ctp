@@ -4,19 +4,21 @@ $statisticsJSON = json_encode($statistics);
 $this->Html->scriptBlock('
 $(document).ready(function() {
     var trackData = jQuery.parseJSON(\''.$statisticsJSON.'\');
-
     mixpanel.track("Order. summary load", trackData);
 
     $(\'#orderNextButton\').click(function() {
+        var trackData = jQuery.parseJSON(\''.$statisticsJSON.'\');
         mixpanel.track("Order. Summary next click", trackData);
 
         $(\'#summaryForm\').submit();
     });
 
      $(\'.upcoming-lesson-join\').click(function() {
-            mixpanel.track("Order. Summary upcoming lesson join click", trackData);
+        var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
+        mixpanel.track("Order. Summary upcoming lesson join click", trackData);
     });
      $(\'.upcoming-lesson-open\').click(function() {
+        var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
         mixpanel.track("Order. Summary upcoming lesson open click", trackData);
     });
 });
