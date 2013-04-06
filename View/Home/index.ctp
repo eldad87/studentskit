@@ -7,9 +7,7 @@
             var trackData = jQuery.parseJSON( $(this).data(\'statistics\') );
             mixpanel.track("Home. Index subject click", trackData);
         });
-        $(\'.lesson-request-popup\').click(function() {
-            mixpanel.track("Home. Index lesson request click");
-        });
+        
         $(\'#search_form\').submit(function() {
             mixpanel.track("Home. Index search submit");
         });
@@ -24,10 +22,7 @@
         <div class="row">
             <div class="cont-span8">
                 <h2 class="pull-left"><i class="iconBig-about space1"></i><?php echo __('Newest'); ?></h2>
-                <?php
-                    echo $this->Layout->subjectRequestPopupButton();
-                    echo $this->element('Home'.DS.'subject_request_popup');
-                ?>
+
                 <ul class="row">
                     <?php
                     if($newSubjects) {
