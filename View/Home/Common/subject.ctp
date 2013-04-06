@@ -9,7 +9,11 @@ $this->Html->scriptBlock('
         mixpanel.track("Home. teacher lesson load");
 
         $(\'.msg-teacher\').click(function() {
-            mixpanel.track("Home. Teacher Lesson pm click");
+            var trackData = jQuery.parseJSON(
+                $(\'.order-button\').data(\'statistics\')
+            );
+
+            mixpanel.track("Home. Teacher Lesson pm click", trackData);
         });
 
         $(\'.other-subject\').click(function() {
