@@ -34,6 +34,7 @@ class Subject extends AppModel {
     public $actsAs = array(
         'Lock',
         'LanguageFilter',
+        'Lesson',
         'Uploader.Attachment' => array(
             'image_source' => array(
                 'finalPath'     => 'img/subjects/',
@@ -62,7 +63,7 @@ class Subject extends AppModel {
                     'secretKey' => 'ANPvplqFSSqBUOEkugeFzk75QQhrTGtlaoyn+lEq',
                     'bucket'    => S3_BUCKET,
                     'region'    => 'us-east-1',
-                    'folder'    => 'img/user/'
+                    'folder'    => 'img/subjects/'
                 )
             ),
             'video_source'=>array(
@@ -209,55 +210,6 @@ class Subject extends AppModel {
         return $result;
     }
 
-    public function fullGroupStudentPriceCheck( $price ) {
-        if(!isSet($this->data[$this->name]['max_students']) || empty($this->data[$this->name]['max_students'])) {
-            $this->invalidate('max_students', __('Please enter a valid max students (1 or more)'));
-            //return false;
-        } else if(	isSet($this->data[$this->name]['full_group_student_price'])) {
-
-            if(isSet($this->data[$this->name]['1_on_1_price']) && $this->data[$this->name]['1_on_1_price']) {
-
-
-                $perStudentCommission = Configure::read('per_student_commission');
-                if( ($this->data[$this->name]['full_group_student_price']>$this->data[$this->name]['1_on_1_price']) || //FGSP is greater then 1on1price
-                    ($perStudentCommission>=$this->data[$this->name]['full_group_student_price'])) { //Check FGSP is greater then commission
-
-                    $this->invalidate('full_group_student_price',
-                        sprintf(__('Must be greater then %01.2f, and less or equal to 1 on 1 price (%01.2f)'),
-                            $perStudentCommission, $this->data[$this->name]['1_on_1_price']) );
-                }
-            } else {
-                $this->data[$this->name]['full_group_student_price'] = null;
-            }
-
-        }
-        return true;
-    }
-	/*public function maxStudentsCheck( $maxStudents ) {
-		if($maxStudents['max_students']>1 && (!isSet($this->data[$this->name]['full_group_student_price']) || !$this->data[$this->name]['full_group_student_price'])) {
-			$this->invalidate('full_group_student_price', __('Please enter a valid full group student price or set Max students to 1'));
-			//return false;
-		}
-		return true;
-	}*/
-
-    public function priceRangeCheck( $price, $checkingFieldName ) {
-        if(is_array($price)) {
-            $price = $price[$checkingFieldName];
-        }
-
-        if($price==0) { //I.e free
-            return true;
-        }
-
-        $perStudentCommission = Configure::read('per_student_commission');
-        if($perStudentCommission>=$price) {
-            $this->invalidate($checkingFieldName, sprintf(__('Must be greater than %01.2f, or set 0 for a FREE lesson'), $perStudentCommission));
-        }
-
-        return true;
-    }
-
 
     public function beforeValidate($options=array()) {
         parent::beforeValidate($options);
@@ -373,7 +325,7 @@ class Subject extends AppModel {
                                     'image_crop_78x78'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_78x78'],  $this->useDbConfig).'\'',
                                     'image_crop_80x80'  =>'\''.Sanitize::escape($this->data['Subject']['image_crop_80x80'],  $this->useDbConfig).'\'',
                                     'image_crop_100x100'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_100x100'],$this->useDbConfig).'\'',
-                                    'image_crop_128x95' =>'\''.Sanitize::escape($this->data['Subject']['image_crop_128x95'],$this->useDbConfig).'\'',
+                                    'image_crop_128x95' =>'\''.Sanitize::escape($this->data['Subject']['image_crop_128x95'], $this->useDbConfig).'\'',
                                     'image_crop_149x182'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_149x182'],$this->useDbConfig).'\'',
                                     'image_crop_200x210'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_200x210'],$this->useDbConfig).'\'',
                                     'image_crop_436x214'=>'\''.Sanitize::escape($this->data['Subject']['image_crop_436x214'],$this->useDbConfig).'\''),

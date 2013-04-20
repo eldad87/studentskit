@@ -15,7 +15,7 @@ class TeacherLesson extends AppModel {
 	public $name 		= 'TeacherLesson';
 	public $useTable 	= 'teacher_lessons';
 	public $primaryKey 	= 'teacher_lesson_id';
-    public $actsAs = array('LanguageFilter', 'Time', 'Lock');
+    public $actsAs = array('LanguageFilter', 'Time', 'Lock', 'Lesson');
 		public $validate = array(
 		'name'=> array(
 			'between' => array(
@@ -132,23 +132,6 @@ class TeacherLesson extends AppModel {
         }
     }
 
-    public function isFutureDatetime($datetime) {
-        if(isSet($datetime['datetime']) && is_array($datetime)) {
-            $datetime = $datetime['datetime'];
-        }
-
-        return $this->toServerTime($datetime)>=$this->timeExpression( 'now', false);
-
-    }
-    //Make sure date time is 1 hour or more from now
-    public function isFuture1HourDatetime($datetime) {
-        if(isSet($datetime['datetime']) && is_array($datetime)) {
-            $datetime = $datetime['datetime'];
-        }
-
-        return $this->toServerTime($datetime)>=$this->timeExpression( 'now +1 hour', false);
-    }
-
     public function validateSubjectId($subjectID){
         $subjectID = $subjectID['subject_id'];
 
@@ -173,97 +156,13 @@ class TeacherLesson extends AppModel {
 
         return true;
     }
-    public function validateRequestSubjectId($requestSubjectID){
-        $requestSubjectID = $requestSubjectID['request_subject_id'];
-
-        //Load the requested subject
-        $requestSubjectData = $this->Subject->findBySubjectId($requestSubjectID);
-        if(!$requestSubjectData) {
-            $this->invalidate('request_subject_id', __('Invalid request subject'));
-        }
-        $requestSubjectData = $requestSubjectData['Subject'];
-
-        //Validate its a subject request
-        if($requestSubjectData['type']!=SUBJECT_TYPE_REQUEST) {
-            $this->invalidate('request_subject_id', __('must be a request subject'));
-        }
-
-        //Validate the the 2 subjects share the same type live/video
-        if(isSet($this->data['TeacherLesson']['lesson_type']) && !empty($this->data['TeacherLesson']['lesson_type'])) {
-            if($requestSubjectData['lesson_type']!=$this->data['TeacherLesson']['lesson_type']) {
-                if($requestSubjectData['type']==LESSON_TYPE_LIVE) {
-                    $this->invalidate('request_subject_id', __('Please chose a LIVE lesson as a suggestion') );
-                } else if($requestSubjectData['type']==LESSON_TYPE_VIDEO) {
-                    $this->invalidate('request_subject_id', __('Please chose a VIDEO lesson as a suggestion') );
-                }
-            }
-        }
-
-        //Check that the owner of $requestSubjectID is the main student
-        if(isSet($this->data['TeacherLesson']['student_user_id']) && !empty($this->data['TeacherLesson']['student_user_id'])) {
-            if($this->data['TeacherLesson']['student_user_id']!=$requestSubjectData['user_id']) {
-                $this->invalidate('request_subject_id', __('The main student must be the owner of the requested subject'));
-            }
-        }
-
-        return true;
-    }
-
-	/* Taken from Subject model - start */
-    public function fullGroupStudentPriceCheck( $price ) {
-        if(!isSet($this->data[$this->name]['max_students']) || empty($this->data[$this->name]['max_students'])) {
-            $this->invalidate('max_students', __('Please enter a valid max students (1 or more)'));
-            //return false;
-        } else if(	isSet($this->data[$this->name]['full_group_student_price'])) {
-
-            if(isSet($this->data[$this->name]['1_on_1_price']) && $this->data[$this->name]['1_on_1_price']) {
-
-
-                $perStudentCommission = Configure::read('per_student_commission');
-                if( ($this->data[$this->name]['full_group_student_price']>$this->data[$this->name]['1_on_1_price']) || //FGSP is greater then 1on1price
-                    ($perStudentCommission>=$this->data[$this->name]['full_group_student_price'])) { //Check FGSP is greater then commission
-
-                    $this->invalidate('full_group_student_price',
-                        sprintf(__('Must be greater then %01.2f, and less or equal to 1 on 1 price (%01.2f)'),
-                            $perStudentCommission, $this->data[$this->name]['1_on_1_price']) );
-                }
-            } else {
-                $this->data[$this->name]['full_group_student_price'] = null;
-            }
-
-        }
-        return true;
-    }
-    /*public function maxStudentsCheck( $maxStudents ) {
-        if($maxStudents['max_students']>1 && (!isSet($this->data[$this->name]['full_group_student_price']) || !$this->data[$this->name]['full_group_student_price'])) {
-            $this->invalidate('full_group_student_price', __('Please enter a valid full group student price or set Max students to 1'));
-            //return false;
-        }
-        return true;
-    }*/
-
-    public function priceRangeCheck( $price, $checkingFieldName ) {
-        if(is_array($price)) {
-            $price = $price[$checkingFieldName];
-        }
-
-        if($price==0) { //I.e free
-            return true;
-        }
-
-        $perStudentCommission = Configure::read('per_student_commission');
-        if($perStudentCommission>=$price) {
-            $this->invalidate($checkingFieldName, sprintf(__('Must be greater than %01.2f, or set 0 for a FREE lesson'), $perStudentCommission));
-        }
-
-        return true;
-    }
 
 	
     public function beforeValidate($options=array()) {
         parent::beforeValidate($options);
 
         App::import('Model', 'Subject');
+
         $exists = $this->exists(!empty($this->data['TeacherLesson'][$this->primaryKey]) ? $this->data['TeacherLesson'][$this->primaryKey] : null);
         Subject::calcFullGroupPriceIfNeeded($this->data['UserLesson'], $exists );
         Subject::extraValidation($this);
@@ -271,7 +170,7 @@ class TeacherLesson extends AppModel {
 
         $lessonType = false;
         /*
-         * THIS CODE IS WORKING (not QAed) - it comment out because a teacher should be able to cancel his lesson anytime (without any limitation).
+         * THIS CODE IS WORKING (not QAed)
          */
         //If teacher ask to cancel a TeacherLesson, allow him to do it 1 hour before the lesson starts only if the lessons have no students
         if($exists && isSet($this->data['TeacherLesson']['is_deleted']) && $this->data['TeacherLesson']['is_deleted']==1) { //Ask to cancel
