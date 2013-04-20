@@ -624,7 +624,8 @@ class UserLesson extends AppModel {
      * @param $teacherOfferSubjectId
      * @param $studentRequestSubjectId
      * @param $datetime
-     * @return bool|mixed
+     * @param array $extra
+     * @return bool
      */
     public function lessonOffer($teacherOfferSubjectId, $studentRequestSubjectId, $datetime, $extra=array()) {
         //Find the teacher subject
@@ -644,14 +645,15 @@ class UserLesson extends AppModel {
 
 
 	/**
-	 * 
 	 * Users makeing new lesson requests from teacher
-	 * @param unknown_type $subjectId
-	 * @param unknown_type $userId - the user/teacher id that does not own the subject 
-	 * @param unknown_type $datetime
-	 * @param unknown_type $reverseStage - Reverse the stages, in use for teacher invite students, or on SUBJECT_TYPE_REQUEST - sending requests to students
-	 */
-	public function lessonRequest( $subjectId, $userId, $datetime=null, $reverseStage=false, $extra=array() ) {
+     * @param $subjectId
+     * @param $userId - the user/teacher id that does not own the subject
+     * @param null $datetime
+     * @param bool $reverseStage - Reverse the stages, in use for teacher invite students, or on SUBJECT_TYPE_REQUEST - sending requests to students
+     * @param array $extra
+     * @return bool
+     */
+    public function lessonRequest( $subjectId, $userId, $datetime=null, $reverseStage=false, $extra=array() ) {
 		//Find the teacher subject
 		App::import('Model', 'Subject');
 		$subjectObj = new Subject();

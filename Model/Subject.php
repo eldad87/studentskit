@@ -1,3 +1,4 @@
+
 <?php
 define('LESSON_TYPE_VIDEO', 'video');
 define('LESSON_TYPE_LIVE', 'live');

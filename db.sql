@@ -43,7 +43,7 @@ CREATE TABLE `billing_history` (
   `params` text COLLATE utf8_bin NOT NULL,
   `created` datetime NOT NULL,
   PRIMARY KEY (`billing_history_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Table structure for table `comments` */
 
@@ -72,6 +72,76 @@ CREATE TABLE `comments` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+/*Table structure for table `course_schedule` */
+
+DROP TABLE IF EXISTS `course_schedule`;
+
+CREATE TABLE `course_schedule` (
+  `course_schedule_id` int(11) unsigned NOT NULL,
+  `course_id` int(11) unsigned NOT NULL,
+  `datetime` datetime DEFAULT NULL,
+  `end_datetime` datetime DEFAULT NULL,
+  PRIMARY KEY (`course_schedule_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+/*Table structure for table `course_subject` */
+
+DROP TABLE IF EXISTS `course_subject`;
+
+CREATE TABLE `course_subject` (
+  `course_subject_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `course_id` int(11) unsigned NOT NULL,
+  `subject_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`course_subject_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+/*Table structure for table `courses` */
+
+DROP TABLE IF EXISTS `courses`;
+
+CREATE TABLE `courses` (
+  `course_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `teacher_user_id` int(11) NOT NULL,
+  `category_id` int(11) DEFAULT NULL,
+  `forum_id` int(11) DEFAULT NULL,
+  `name` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
+  `video_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  `image_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_resize` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_38x38` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_58x58` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_60x60` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_63x63` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_72x72` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_78x78` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_80x80` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_100x100` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_128x95` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_149x182` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_200x210` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_436x214` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_enable` tinyint(4) NOT NULL DEFAULT '1',
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `language` char(3) COLLATE utf8_unicode_ci NOT NULL,
+  `is_public` tinyint(2) unsigned NOT NULL DEFAULT '1',
+  `schedule_amount` int(11) unsigned NOT NULL DEFAULT '0',
+  `students_amount` int(11) NOT NULL DEFAULT '0',
+  `raters_amount` int(11) NOT NULL DEFAULT '0',
+  `avarage_rating` float NOT NULL DEFAULT '0',
+  `subjects_amount` int(11) NOT NULL DEFAULT '0',
+  `1_on_1_price` float unsigned NOT NULL,
+  `max_students` int(11) unsigned DEFAULT NULL,
+  `full_group_student_price` float unsigned DEFAULT NULL,
+  `full_group_total_price` float unsigned DEFAULT NULL,
+  `is_locked` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  `lock_ends` datetime DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`course_id`),
+  KEY `NewIndex1` (`language`,`is_public`,`is_enable`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 /*Table structure for table `express_checkout` */
 
 DROP TABLE IF EXISTS `express_checkout`;
@@ -96,7 +166,7 @@ CREATE TABLE `express_checkout` (
   `created` datetime DEFAULT NULL,
   PRIMARY KEY (`express_checkout_id`),
   KEY `pending_user_lesson_id` (`pending_user_lesson_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Table structure for table `file_system` */
 
@@ -118,7 +188,7 @@ CREATE TABLE `file_system` (
   `deletable` tinyint(2) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`file_system_id`),
   KEY `NewIndex1` (`entity_type`,`entity_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=111 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=116 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `forum_access` */
 
@@ -418,7 +488,7 @@ CREATE TABLE `notifications` (
   `unread` tinyint(2) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`notification_id`),
   KEY `NewIndex1` (`user_id`,`unread`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `payment_info` */
 
@@ -455,7 +525,7 @@ CREATE TABLE `pending_user_lessons` (
   `reverse_stage` tinyint(1) DEFAULT '0',
   `version` char(36) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`pending_user_lesson_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `student_tests` */
 
@@ -566,7 +636,7 @@ CREATE TABLE `subjects` (
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`subject_id`),
   KEY `NewIndex1` (`type`,`language`,`is_public`,`is_enable`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `teacher_about_videos` */
 
@@ -609,6 +679,8 @@ CREATE TABLE `teacher_lessons` (
   `teacher_lesson_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `subject_id` int(11) NOT NULL,
   `request_subject_id` int(11) DEFAULT NULL,
+  `course_id` int(11) DEFAULT NULL,
+  `course_schdule_id` int(11) DEFAULT NULL,
   `teacher_user_id` int(11) NOT NULL,
   `student_user_id` int(11) DEFAULT NULL,
   `datetime` datetime DEFAULT NULL,
@@ -660,7 +732,7 @@ CREATE TABLE `teacher_lessons` (
   KEY `subject_id` (`subject_id`),
   KEY `NewIndex1` (`datetime`,`lesson_type`,`payment_status`,`notification_status`),
   KEY `payment` (`datetime`,`lesson_type`,`payment_status`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `tests` */
 
@@ -710,6 +782,8 @@ CREATE TABLE `user_lessons` (
   `teacher_lesson_id` int(11) DEFAULT NULL,
   `subject_id` int(11) NOT NULL,
   `request_subject_id` int(11) DEFAULT NULL,
+  `course_id` int(11) DEFAULT NULL,
+  `course_schdule_id` int(11) DEFAULT NULL,
   `teacher_user_id` int(11) DEFAULT NULL,
   `student_user_id` int(11) NOT NULL,
   `datetime` datetime DEFAULT NULL,
@@ -759,7 +833,7 @@ CREATE TABLE `user_lessons` (
   KEY `subject_id` (`subject_id`),
   KEY `teacher_lesson_id` (`teacher_lesson_id`),
   KEY `credit_point_back_to_user_cron` (`lesson_type`,`datetime`,`stage`,`payment_status`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `users` */
 
@@ -833,7 +907,7 @@ CREATE TABLE `watchitoo_lesson_meetings` (
   `created` datetime NOT NULL,
   PRIMARY KEY (`watchitoo_lesson_meeting_id`),
   KEY `NewIndex1` (`teacher_lesson_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `watchitoo_lesson_users` */
 
@@ -856,7 +930,7 @@ CREATE TABLE `watchitoo_subject_meetings` (
   `meeting_id` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`watchitoo_subject_meeting_id`),
   KEY `subject_id` (`subject_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `watchitoo_subject_teachers` */
 
