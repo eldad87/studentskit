@@ -385,7 +385,7 @@ class TeacherLesson extends AppModel {
                 'lesson_type'				=> $subjectData['lesson_type'],
                 'language'				    => $subjectData['language'],
                 'datetime'					=> $datetime, //Convert timestamp to datetime
-                'subject_category_id'		=> $subjectData['subject_category_id'],
+                'category_id'		=> $subjectData['category_id'],
                 'forum_id'		            => $subjectData['forum_id'],
                 'name'						=> $subjectData['name'],
                 'description'				=> $subjectData['description'],

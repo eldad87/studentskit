@@ -16,7 +16,7 @@ class PathableBehavior extends ModelBehavior {
     public function beforeSave(Model $model) {
         parent::beforeSave($model);
 
-        //Prepare path/deep/parent_subject_category_id
+        //Prepare path/deep/parent_category_id
         if( !isSet($model->data[$model->alias][$this->settings[$model->alias]['parent_field']]) ) {
             if(!$model->id) {
                 //Create new record, no parent id so set default

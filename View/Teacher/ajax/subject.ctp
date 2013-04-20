@@ -70,7 +70,7 @@
         }
 
         echo $this->Form->input('description', $this->Layout->styleForInput(array('type'=>'textarea')));
-        echo $this->Form->input('subject_category_id', $this->Layout->styleForInput(array('options'=>$subjectCategories)));
+        echo $this->Form->input('category_id', $this->Layout->styleForInput(array('options'=>$subjectCategories)));
 
         echo $this->Form->input('language', $this->Layout->styleForInput(array('options'=>$languages)));
         echo $this->Form->input('lesson_type', $this->Layout->styleForInput(array('options'=>array(LESSON_TYPE_LIVE=>__('Live'), LESSON_TYPE_VIDEO=>__('Video')))));

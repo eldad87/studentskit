@@ -304,7 +304,7 @@ class OrderController extends AppController {
             'action'                    => $statistics['action'],
             'subject_id'                => $statistics['subject_id'],
             'teacher_user_id'           => $statistics['user_id'],
-            'subject_category_id'       => $statistics['subject_category_id'],
+            'category_id'       => $statistics['category_id'],
             'lesson_type'               => $statistics['lesson_type'],
             'language'                  => $statistics['language'],
             'name'                      => $statistics['name'],

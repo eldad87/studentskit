@@ -29,7 +29,7 @@
                 <p class="pull-left bodytop-leftlink">
                     <?php
                     if(isSet($subjectsData['breadcrumbs'])) {
-                        echo $this->element('Home'.DS.'subject_categories_breadcrumbs', array('subject_categories_breadcrumbs'=>$subjectsData['breadcrumbs'])),'<br /><br />';
+                        echo $this->element('Home'.DS.'categories_breadcrumbs', array('categories_breadcrumbs'=>$subjectsData['breadcrumbs'])),'<br /><br />';
                     }
                     ?>
                 </p>
@@ -40,7 +40,7 @@
                 <div class="pull-left space6">
                     <!-- category filter -->
                     <?php if($subjectsData) {
-                        echo $this->element('Home'.DS.'facet_subject_categories', array('facet_categories'=>$subjectsData['categories']));
+                        echo $this->element('Home'.DS.'facet_categories', array('facet_categories'=>$subjectsData['categories']));
                     } else {
                         echo '<p>',__('No lessons found.'),'</p>';
                     } ?>

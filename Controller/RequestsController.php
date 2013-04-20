@@ -84,9 +84,9 @@ class RequestsController extends AppController {
 		}
 
         //Get subject categories
-        App::Import('Model', 'SubjectCategory');
-        $scObj = new SubjectCategory();
-        $subjectCategories = $scObj->getAllCategoriesOptions();
+        App::Import('Model', 'Category');
+        $cObj = new Category();
+        $subjectCategories = $cObj->getAllCategoriesOptions();
         $this->set('subjectCategories', $subjectCategories);
 
         App::uses('Languages', 'Utils.Lib');

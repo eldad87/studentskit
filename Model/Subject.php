@@ -381,13 +381,13 @@ class Subject extends AppModel {
                                     array($ulObj->name.'.subject_id'=>$pKey));
         }
 
-        if(isSet($this->data['Subject']['subject_category_id'])) {
+        if(isSet($this->data['Subject']['category_id'])) {
             //bind subject to a forum
-            App::import('Model', 'SubjectCategory');
-            $scObj = new SubjectCategory();
-            $scData = $scObj->findBySubjectCategoryId($this->data['Subject']['subject_category_id']);
-            if($scData && $scData['SubjectCategory']['forum_id']) {
-                $this->data['Subject']['forum_id'] = $scData['SubjectCategory']['forum_id'];
+            App::import('Model', 'Category');
+            $scObj = new Category();
+            $cData = $scObj->findByCategoryId($this->data['Subject']['category_id']);
+            if($cData && $cData['Category']['forum_id']) {
+                $this->data['Subject']['forum_id'] = $cData['Category']['forum_id'];
             }
         }
 
@@ -472,7 +472,7 @@ class Subject extends AppModel {
             isSet($this->data['Subject']['lesson_type']) ||
             isSet($this->data['Subject']['avarage_rating']) ||
             isSet($this->data['Subject']['is_public']) ||
-            isSet($this->data['Subject']['subject_category_id'])) {
+            isSet($this->data['Subject']['category_id'])) {
 
 
             //Find the subject
@@ -493,11 +493,11 @@ class Subject extends AppModel {
             $update['is_public']                = (boolean) $subjectData['is_public'];
             $update['last_modified']            = $subjectData['modified'] ? $subjectData['modified'] : $subjectData['created'];
 
-            if($subjectData['subject_category_id'] && !empty($subjectData['subject_category_id'])) {
-                App::import('Model', 'SubjectCategory');
-                $scObj = new SubjectCategory();
-                $update['categories']   = $scObj->getPathHierarchy($subjectData['subject_category_id'], true);
-                $update['category_id']  = $subjectData['subject_category_id'];
+            if($subjectData['category_id'] && !empty($subjectData['category_id'])) {
+                App::import('Model', 'Category');
+                $cObj = new Category();
+                $update['categories']   = $cObj->getPathHierarchy($subjectData['category_id'], true);
+                $update['category_id']  = $subjectData['category_id'];
             } else {
                 unset($update['categories'], $update['category_id']);
             }
@@ -598,9 +598,9 @@ class Subject extends AppModel {
 
     private function _solrDefaultQueryParams($query) {
         if(isSet($query['fq']['category_id'])) {
-            App::import('Model', 'SubjectCategory');
-            $scObj = new SubjectCategory();
-            $hierarchy = $scObj->getPathHierarchy($query['fq']['category_id'], false);
+            App::import('Model', 'Category');
+            $cObj = new Category();
+            $hierarchy = $cObj->getPathHierarchy($query['fq']['category_id'], false);
 
             $query['facet'] = array('field'=>'categories', 'mincount'=>1);
             if($hierarchy) {
@@ -666,8 +666,8 @@ class Subject extends AppModel {
         }
 
         if($categoryId) {
-            App::import('Model', 'SubjectCategory');
-            $scObj = new SubjectCategory();
+            App::import('Model', 'Category');
+            $scObj = new Category();
             $hierarchy = $scObj->getPathHierarchy($categoryId);
             $conditions['facet'] = array('field'=>'categories', 'prefix'=>$hierarchy, 'mincount'=>1);
         }
@@ -734,12 +734,12 @@ class Subject extends AppModel {
 			$conditions['subject_id !='] = $excludeSubject;
 		}
 		if(!is_null($categoryId)) {
-			App::import('Model', 'SubjectCategory');
-			$scObj = new SubjectCategory();
-			$category = $scObj->findBySubjectCategoryId($categoryId);
+			App::import('Model', 'Category');
+			$cObj = new Category();
+			$category = $cObj->findByCategoryId($categoryId);
 			
 			if($category && !empty($category['path'])) {
-                $conditions['subject_category_id'] = explode(',', $category['path']);
+                $conditions['category_id'] = explode(',', $category['path']);
 			}
 		}
         $conditions['is_enable'] = SUBJECT_IS_ENABLE_TRUE;

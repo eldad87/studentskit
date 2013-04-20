@@ -678,7 +678,7 @@ class UserLesson extends AppModel {
 			'teacher_user_id'			=> ($subjectData['type']==SUBJECT_TYPE_OFFER ? $subjectData['user_id']              : $userId),
 			'student_user_id'			=> ($subjectData['type']==SUBJECT_TYPE_OFFER ? $userId                              : $subjectData['user_id']),
 			'stage'						=> ($subjectData['type']==SUBJECT_TYPE_OFFER ? USER_LESSON_PENDING_TEACHER_APPROVAL : USER_LESSON_PENDING_STUDENT_APPROVAL),
-			'subject_category_id'		=> $subjectData['subject_category_id'],
+			'category_id'		        => $subjectData['category_id'],
 			'forum_id'		            => $subjectData['forum_id'],
 			'datetime'					=> $datetime ? $datetime : null,
 			'lesson_type'				=> $subjectData['lesson_type'],
@@ -763,8 +763,10 @@ class UserLesson extends AppModel {
 	 * @param unknown_type $teacherLessonId - the lesson
 	 * @param unknown_type $studentUserId - the student id, leave null only if subject_type==SUBJECT_TYPE_REQUEST
 	 * @param unknown_type $teacherUserId - the teacher id, supply it only if you are the teacher (Invitation)
+     * @param array $extra
+     * @return bool
 	 */
-	public function joinRequest( $teacherLessonId, $studentUserId=null, $teacherUserId=null, $userLessonId=null, $extra=array() ) {
+    public function joinRequest( $teacherLessonId, $studentUserId=null, $teacherUserId=null, $userLessonId=null, $extra=array() ) {
 		//TODO: don't allow to send invitations if subject_type=request and the user did not approved his invitation yet
 		
 		//Find the teacher lesson
@@ -827,7 +829,7 @@ class UserLesson extends AppModel {
 			'datetime'					=> $teacherLessonData['datetime'],
 			'end_datetime'				=> $teacherLessonData['end_datetime'],
 			'stage'						=> $stage,
-            'subject_category_id'		=> $teacherLessonData['subject_category_id'],
+            'category_id'		        => $teacherLessonData['category_id'],
             'forum_id'		            => $teacherLessonData['forum_id'],
 			'lesson_type'				=> $teacherLessonData['lesson_type'],
 			'language'				    => $teacherLessonData['language'],

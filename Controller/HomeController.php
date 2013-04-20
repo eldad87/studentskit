@@ -337,8 +337,8 @@ class HomeController extends AppController {
     }*/
 
     public function categories() {
-        App::import('Model', 'SubjectCategory');
-        $scObj = new SubjectCategory();
+        App::import('Model', 'Category');
+        $cObj = new Category();
 
         //http://www.liveperson.com/site-map/
         $categories = array(
@@ -449,13 +449,13 @@ class HomeController extends AppController {
             )
         );
 
-        $scObj->addBulk($categories);
+        $cObj->addBulk($categories);
     }
 
 
    /* public function testAddCategory() {
-        App::import('Model', 'SubjectCategory');
-        $scObj = new SubjectCategory();
+        App::import('Model', 'Category');
+        $scObj = new Category();
 
 
        /** Multi lang
@@ -482,20 +482,20 @@ class HomeController extends AppController {
         $id = $scObj->id;
 
             $scObj->create();
-            $scObj->set(array('name'=>'Astrology', 'description'=>'Astrology', 'parent_subject_category_id'=>$id));
+            $scObj->set(array('name'=>'Astrology', 'description'=>'Astrology', 'parent_category_id'=>$id));
             $scObj->save();
             $id2 = $scObj->id;
 
         $scObj->create();
-        $scObj->set(array('name'=>'Chinese Astrology', 'description'=>'Chinese Astrology', 'parent_subject_category_id'=>$id2));
+        $scObj->set(array('name'=>'Chinese Astrology', 'description'=>'Chinese Astrology', 'parent_category_id'=>$id2));
         $scObj->save();
 
         $scObj->create();
-        $scObj->set(array('name'=>'Vedic Astrology', 'description'=>'Vedic Astrology', 'parent_subject_category_id'=>$id2));
+        $scObj->set(array('name'=>'Vedic Astrology', 'description'=>'Vedic Astrology', 'parent_category_id'=>$id2));
         $scObj->save();
 
     $scObj->create();
-    $scObj->set(array('name'=>'Graphology', 'description'=>'Graphology', 'parent_subject_category_id'=>$id));
+    $scObj->set(array('name'=>'Graphology', 'description'=>'Graphology', 'parent_category_id'=>$id));
     $scObj->save();
 
 
@@ -506,29 +506,29 @@ $scObj->save();
 $id = $scObj->id;
 
     $scObj->create();
-    $scObj->set(array('name'=>'Applications', 'description'=>'Applications', 'parent_subject_category_id'=>$id));
+    $scObj->set(array('name'=>'Applications', 'description'=>'Applications', 'parent_category_id'=>$id));
     $scObj->save();
     $id2 = $scObj->id;
 
         $scObj->create();
-        $scObj->set(array('name'=>'CAD', 'description'=>'CAD', 'parent_subject_category_id'=>$id2));
+        $scObj->set(array('name'=>'CAD', 'description'=>'CAD', 'parent_category_id'=>$id2));
         $scObj->save();
 
         $scObj->create();
-        $scObj->set(array('name'=>'SAP', 'description'=>'SAP', 'parent_subject_category_id'=>$id2));
+        $scObj->set(array('name'=>'SAP', 'description'=>'SAP', 'parent_category_id'=>$id2));
         $scObj->save();
 
     $scObj->create();
-    $scObj->set(array('name'=>'Databases', 'description'=>'Databases', 'parent_subject_category_id'=>$id));
+    $scObj->set(array('name'=>'Databases', 'description'=>'Databases', 'parent_category_id'=>$id));
     $scObj->save();
     $id2 = $scObj->id;
 
         $scObj->create();
-        $scObj->set(array('name'=>'MySQL', 'description'=>'MySQL', 'parent_subject_category_id'=>$id2));
+        $scObj->set(array('name'=>'MySQL', 'description'=>'MySQL', 'parent_category_id'=>$id2));
         $scObj->save();
 
         $scObj->create();
-        $scObj->set(array('name'=>'NoSQL', 'description'=>'NoSQL', 'parent_subject_category_id'=>$id2));
+        $scObj->set(array('name'=>'NoSQL', 'description'=>'NoSQL', 'parent_category_id'=>$id2));
         $scObj->save();
     }*/
 
@@ -564,33 +564,33 @@ $id = $scObj->id;
         $subjectType = (isSet($this->request->query['type']) ? $this->request->query['type'] : SUBJECT_TYPE_OFFER);
         $subjectsData = $this->Subject->search($query, $subjectType);
 
-        App::Import('Model', 'SubjectCategory');
-        $scObj = new SubjectCategory();
+        App::Import('Model', 'Category');
+        $cObj = new Category();
 
         //Generate sub categories from facet
         if(isSet($subjectsData['facet']['name']) && $subjectsData['facet']['name']=='categories') {
             $categoryIds = array(); //Hold all ids
             $categories = array(); //Hold final results
 
-            //Generate array(subject_category_id, count) for each category
+            //Generate array(category_id, count) for each category
             foreach($subjectsData['facet']['results'] AS $path=>$count) {
                 $category = explode(',', $path);
                 $categoryId = end($category);
                 $categoryIds[] = $categoryId;
-                $categories[$categoryId] = array('subject_category_id'=>$categoryId, 'count'=>$count);
+                $categories[$categoryId] = array('category_id'=>$categoryId, 'count'=>$count);
             }
 
 
             //Add category name
             //$scObj->locale = 'eng';
-            $foundCategories = $scObj->find('all', array('conditions'=>array('subject_category_id'=>$categoryIds)));
-            /*foreach($foundCategories AS $subjectCategoryId=>$name) {
-                $categories[$subjectCategoryId]['name'] = $name;
+            $foundCategories = $cObj->find('all', array('conditions'=>array('category_id'=>$categoryIds)));
+            /*foreach($foundCategories AS $categoryId=>$name) {
+                $categories[$categoryId]['name'] = $name;
             }*/
 
             //Bug fix in CakePHP
             foreach($foundCategories AS $data) {
-                $categories[$data['SubjectCategory']['subject_category_id']]['name'] = $data['0']['SubjectCategory__i18n_name'];
+                $categories[$data['Category']['category_id']]['name'] = $data['0']['Category__i18n_name'];
             }
             $subjectsData['categories'] = $categories;
         }
@@ -599,18 +599,18 @@ $id = $scObj->id;
             //Add breadcrumbs
             $subjectsData['breadcrumbs'] = array();
             if(isSet($this->request->query['category_id'])) {
-                $scData = $scObj->findBySubjectCategoryId($this->request->query['category_id']);
-                $scName = $scData['0']['SubjectCategory__i18n_name']; //Bug fix in CakePHP
-                $scData = $scData['SubjectCategory'];
+                $scData = $cObj->findByCategoryId($this->request->query['category_id']);
+                $scName = $scData['0']['Category__i18n_name']; //Bug fix in CakePHP
+                $scData = $scData['Category'];
 
                 if(!is_null($scData['path']) && !empty($scData['path'])) {
-                    //$subjectsData['breadcrumbs'] = $scObj->find('list', array('fields'=>array('subject_category_id', 'name'), 'conditions'=>array('subject_category_id'=>explode(',', $scData['path']))));
+                    //$subjectsData['breadcrumbs'] = $scObj->find('list', array('fields'=>array('category_id', 'name'), 'conditions'=>array('category_id'=>explode(',', $scData['path']))));
 
                     //Bug fix in CakePHP
                     $subjectsData['breadcrumbs'] = array();
-                    $breadcrumbs = $scObj->find('all', array('conditions'=>array('subject_category_id'=>explode(',', $scData['path']))));
+                    $breadcrumbs = $cObj->find('all', array('conditions'=>array('category_id'=>explode(',', $scData['path']))));
                     foreach($breadcrumbs AS $data) {
-                        $subjectsData['breadcrumbs'][$data['SubjectCategory']['subject_category_id']] = $data['0']['SubjectCategory__i18n_name'];
+                        $subjectsData['breadcrumbs'][$data['Category']['category_id']] = $data['0']['Category__i18n_name'];
                     }
 
                 }
