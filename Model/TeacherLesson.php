@@ -268,10 +268,6 @@ class TeacherLesson extends AppModel {
             }
             $subjectData = $subjectData['Subject'];
 
-            //Teacher lesson must be for lesson type offer
-            if($subjectData['type']!=SUBJECT_TYPE_OFFER) {
-                return false;
-            }
 
             //Preparer the teacher lesson generic data
             $teacherLessonData  = array(//wish_list_id

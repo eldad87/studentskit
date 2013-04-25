@@ -542,7 +542,7 @@ class UserLesson extends AppModel {
      * @param $subjectId
      * @param $userId - the user/teacher id that does not own the subject
      * @param null $datetime
-     * @param bool $reverseStage - Reverse the stages, in use for teacher invite students, or on SUBJECT_TYPE_REQUEST - sending requests to students
+     * @param bool $reverseStage - Reverse the stages, in use for teacher invite students
      * @param array $extra
      * @return bool
      */

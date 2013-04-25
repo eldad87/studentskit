@@ -109,7 +109,6 @@ class TeacherController extends AppController {
             //Set new creation_stage if needed
             $this->request->data['Subject']['creation_stage'] = $currentCreationStage > CREATION_STAGE_SUBJECT ? $currentCreationStage : CREATION_STAGE_SUBJECT;
             $this->request->data['Subject']['user_id'] = $this->Auth->user('user_id');
-            $this->request->data['Subject']['type'] = SUBJECT_TYPE_OFFER;
             $this->Subject->create(false);
             if($subjectId) {
                 $this->Subject->id = $subjectId;
