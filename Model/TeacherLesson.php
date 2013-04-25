@@ -40,10 +40,10 @@ class TeacherLesson extends AppModel {
                 'message' 	=> 'You cannot use this subject'
             )
         ),
-        'request_subject_id'=> array(
-            'validate_request_subject_id' 	=> array(
+        'wish_list_id'=> array(
+            'validate_wish_list_id' 	=> array(
                 'allowEmpty'=> true,
-                'rule'    	=> 'validateRequestSubjectId',
+                'rule'    	=> 'validateWishListId',
                 'message' 	=> 'You cannot offer this subject'
             )
         ),
@@ -142,15 +142,11 @@ class TeacherLesson extends AppModel {
         }
         $subjectData = $subjectData['Subject'];
 
-        //Validate its a subject offer
-        if($subjectData['type']!=SUBJECT_TYPE_OFFER) {
-            $this->invalidate('request_subject_id', __('must be a offer subject'));
-        }
 
         //The teacher must be the subject owner
         if(isSet($this->data['TeacherLesson']['teacher_user_id']) && !empty($this->data['TeacherLesson']['teacher_user_id'])) {
             if($this->data['TeacherLesson']['teacher_user_id']!=$subjectData['user_id']) {
-                $this->invalidate('request_subject_id', __('The teacher must be the subject owner'));
+                $this->invalidate('wish_list_id', __('The teacher must be the subject owner'));
             }
         }
 
@@ -278,7 +274,7 @@ class TeacherLesson extends AppModel {
             }
 
             //Preparer the teacher lesson generic data
-            $teacherLessonData  = array(//request_subject_id
+            $teacherLessonData  = array(//wish_list_id
                 'subject_id'				=> $source['id'],
                 'teacher_user_id'			=> $subjectData['user_id'],
                 'lesson_type'				=> $subjectData['lesson_type'],

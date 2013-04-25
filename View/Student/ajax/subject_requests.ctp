@@ -19,14 +19,14 @@ if($page==1) {
 
     <p class="fontsize1 space8"><?php echo __('Here you can find lesson requests.'); ?></p>
     <?php
-        echo $this->Layout->subjectRequestPopupButton(array('name'=>__('ADD'), 'class'=>'black-cent-butn2 add-blckbtn fontsize1 move-right',
+        echo $this->Layout->wishPopupButton(array('name'=>__('ADD'), 'class'=>'black-cent-butn2 add-blckbtn fontsize1 move-right',
                                                             'data-prepend-to'=>'user-lessons-requests', 'data-append-template'=>'user-panel'));
-        echo $this->element('Home'.DS.'subject_request_popup');
+        echo $this->element('Home'.DS.'wish_popup');
 
         echo $this->element('Panel'.DS.'cancel_popup', array('buttonSelector'=>'.confirm-delete',
-                                                        'title'=>__('Cancel your subject request'),
+                                                        'title'=>__('Cancel your request'),
                                                         'description'=>__('Do you want to proceed?'),
-                                                        'cancelUrl'=>array('controller'=>'Teacher', 'action'=>'disableSubject', '{id}')));
+                                                        'cancelUrl'=>array('controller'=>'Student', 'action'=>'disableRequest', '{id}')));
     ?>
 
     <div class="add-sub pull-left space3" id="user-lessons-requests">
@@ -34,8 +34,8 @@ if($page==1) {
 <?php
 }
 
-    foreach($response['response']['subjectRequests'] AS $subjectRequestData) {
-        echo $this->element('Panel'.DS.'user_subject_request_div', array('subjectRequestData'=>$subjectRequestData));
+    foreach($response['response']['subjectRequests'] AS $wishData) {
+        echo $this->element('Panel'.DS.'user_subject_request_div', array('wishData'=>$wishData));
     }
 
 

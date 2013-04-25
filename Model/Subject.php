@@ -2,6 +2,7 @@
 <?php
 define('LESSON_TYPE_VIDEO', 'video');
 define('LESSON_TYPE_LIVE', 'live');
+define('LESSON_TYPE_COURSE', 'course');
 
 define('LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC', DAY*2);
 
@@ -25,9 +26,11 @@ define('CREATION_STAGE_TESTS', 4);
 define('CREATION_STAGE_PUBLISH', 5);
 
 
-App::import('Model', 'AppModel');
 App::import('Model', 'User'); //for IMAGE_SUBJECT
-class Subject extends AppModel {
+App::import('Model', 'SolrSearch');
+class Subject extends SolrSearch {
+    protected $solrCore = SUBJECT_TYPE_OFFER;
+
 	public $name = 'Subject';
 	public $useTable = 'subjects';
 	public $primaryKey = 'subject_id';
@@ -249,25 +252,7 @@ class Subject extends AppModel {
          * Default settings for is_public (in case not provided).
          * Based on creation_stage value
          */
-        //Subject request
-        if(isSet($this->data[$this->name]['type']) &&
-                $this->data[$this->name]['type']==SUBJECT_TYPE_REQUEST) {
-
-            unset($this->data['Subject']['creation_stage']); //Just in case, you cannot change this value for subject-request
-
-            //New record - set creation_stage
-            if( !$exists ) {
-                $this->data['Subject']['creation_stage'] = CREATION_STAGE_PUBLISH;
-
-                //No is_public - set default
-                if(!isSet($this->data['Subject']['is_public'])) {
-                    $this->data['Subject']['is_public'] = SUBJECT_IS_PUBLIC_TRUE;
-                }
-            }
-
-
-        //Creation stage is provided - override is_public accordingly
-        } else if(isSet($this->data['Subject']['creation_stage'])) {
+        if(isSet($this->data['Subject']['creation_stage'])) {
             //This is based on the fact that you cannot downgrade the creation stage.
             if($this->data['Subject']['creation_stage']==CREATION_STAGE_PUBLISH) {
                 if(!isSet($this->data['Subject']['is_public'])) {
@@ -424,6 +409,7 @@ class Subject extends AppModel {
             isSet($this->data['Subject']['lesson_type']) ||
             isSet($this->data['Subject']['avarage_rating']) ||
             isSet($this->data['Subject']['is_public']) ||
+            isSet($this->data['Subject']['1_on_1_price']) ||
             isSet($this->data['Subject']['category_id'])) {
 
 
@@ -455,7 +441,7 @@ class Subject extends AppModel {
             }
 
             App::import('Vendor', 'Solr');
-            $SolrObj = new Solr($subjectData['type']);
+            $SolrObj = new Solr($this->solrCore);
             if(!$SolrObj->addDocument($update)) {
                 return false;
             }
@@ -463,7 +449,7 @@ class Subject extends AppModel {
 
 
         //Set file system
-        if($created && $this->data['Subject']['type']!=SUBJECT_TYPE_REQUEST) {
+        if($created) {
             App::import('Model', 'FileSystem');
             $fsObj = new FileSystem();
 
@@ -495,166 +481,16 @@ class Subject extends AppModel {
 		return ($onOnOnePrice+(($totalGroupPrice-$onOnOnePrice)/($maxStudents-1))*($currentStudents-1))/$currentStudents;
 	}
 
-    public function searchSuggestions($query, $subjectType) {
-        App::import('Vendor', 'Solr');
-        $solrObj = new Solr($subjectType);
-        $query['search_fields'] = false;
-        $query = $this->_solrDefaultQueryParams($query);
-
-        return $solrObj->suggest( $query, (($query['page']-1)*$query['limit']), $query['limit'] );
-    }
-
-    public function search( $query, $subjectType ) {
-        App::import('Vendor', 'Solr');
-        $solrObj = new Solr($subjectType);
-
-        $query = $this->_solrDefaultQueryParams($query);
-        $results = $solrObj->query( $query, array('subject_id'), (($query['page']-1)*$query['limit']), $query['limit'] );
-        if(!$results || !isSet($results->response->numFound) || !$results->response->numFound) {
-            return array();
-        }
-
-        $return = array();
-        if(!$results->response->docs) {
-            return $return;
-        }
-
-        //Build conditions
-        $conditions = array();
-
-        foreach($results->response->docs AS $doc) {
-            if(!isSet($conditions['subject_id'])) {
-                $conditions['subject_id'] = array();
-            }
-            $conditions['subject_id'][] = $doc->subject_id;
-        }
-
-        if($subjectType==SUBJECT_TYPE_REQUEST) {
-            $this->bindStudentOnLessonRequest();
-        } else {
-            $this->bindTeacherOnLessonOffer();
-        }
-
-
-        $return['subjects'] = $this->find('all', array('conditions'=>$conditions));
-
-        if(isSet($results['facet_counts']['facet_fields'])) {
-            $facetName = key($results['facet_counts']['facet_fields']);
-            $return['facet']['name'] = $facetName;
-            $return['facet']['results'] = (array) $results['facet_counts']['facet_fields'][$facetName];
-        }
-
-        //pr($return);
-        return $return;
-    }
-
-    private function _solrDefaultQueryParams($query) {
-        if(isSet($query['fq']['category_id'])) {
-            App::import('Model', 'Category');
-            $cObj = new Category();
-            $hierarchy = $cObj->getPathHierarchy($query['fq']['category_id'], false);
-
-            $query['facet'] = array('field'=>'categories', 'mincount'=>1);
-            if($hierarchy) {
-                //$query['fq']['categories'] = $hierarchy; //Remove all subjects that not related to this category
-                $query['fq'][] = '{!raw f=categories}'.$hierarchy;
-
-
-                $hierarchy = explode(',', $hierarchy);
-                $hierarchy[0]++;
-                $query['facet']['prefix'] = implode(',', $hierarchy);
-            } else {
-                $query['facet']['prefix'] = '1,';
-            }
-
-            unset($query['fq']['category_id']);
-
-
-            //$query['fq'][] = '{!raw f=categories}1,2';
-        }
-
-        if(isSet($query['search']) && !isSet($query['search_fields'])) {
-            $query['search_fields'] = array('name'=>5, 'description'=>0.4);
-        }
-
-        if(!isSet($query['page'])) {
-            $query['page'] = 1;
-        }
-        if(!isSet($query['limit'])) {
-            $query['limit'] = 12;
-        }
-
-        return $query;
-    }
-
-
-
-
-	/*public function search( $subjectType=SUBJECT_TYPE_OFFER, $ownerSearch=true, $lang=null, $userId=null, $name=null, $lessonType=null, $categoryId=null, $limit=12, $page=1 ) {
-        App::import('Vendor', 'Solr');
-        $solrObj = new Solr($subjectType);
-
-        $query = array();
-        if(!$name) {
-            $query['search'] = '*';
-        } else {
-            $query['search'] = $name;
-            $query['search_fields'] = array('name'=>5, 'description'=>0.4);
-        }
-        if($userId) {
-
-            //array('lang'=>'(EN OR FR)', 'is_public'=>true)
-            $conditions['fq']['user_id'] = intval($userId);
-        }
-        if($lessonType) {
-            $conditions['fq']['lesson_type'] = intval($lessonType);
-        }
-        if(!$ownerSearch) {
-            $conditions['fq']['is_public'] = SUBJECT_IS_PUBLIC_TRUE;
-            //$conditions['is_enable'] = SUBJECT_IS_PUBLIC_TRUE;
-        }
-        if($lang) {
-            $conditions['fq']['language'] = $lang;
-        }
-
-        if($categoryId) {
-            App::import('Model', 'Category');
-            $scObj = new Category();
-            $hierarchy = $scObj->getPathHierarchy($categoryId);
-            $conditions['facet'] = array('field'=>'categories', 'prefix'=>$hierarchy, 'mincount'=>1);
-        }
-
-        $results = $solrObj->query( $query, array('subject_id'), (($page-1)*$limit), $limit );
-
-        if(!$results || !isSet($results->response->numFound) || !$results->response->numFound) {
-            return array();
-        }
-
-        //Build conditions
-        $conditions = array();
-
-        foreach($results->response->docs AS $doc) {
-            if(!isSet($conditions['subject_id'])) {
-                $conditions['subject_id'] = array();
-            }
-            $conditions['subject_id'][] = $doc->subject_id;
-        }
-
-          if($subjectType==SUBJECT_TYPE_REQUEST) {
-              $this->bindStudentOnLessonRequest();
-          }
-		
-		return $this->find('all', array('conditions'=>$conditions));
-	}*/
 	
 	/**
 	 * 
 	 * Get ratings that was submited by the students on this subject
-	 * @param unknown_type $subjectId
-	 * @param unknown_type $limit
-	 * @param unknown_type $page
-	 */
-	public function getRatingByStudents( $subjectId, $limit=12, $page=1 ) {
+     * @param $subjectId
+     * @param int $limit
+     * @param int $page
+     * @return array
+     */
+    public function getRatingByStudents( $subjectId, $limit=12, $page=1 ) {
 		App::import('Model', 'UserLesson');
 		$ulObj = new UserLesson();
 		$conditions = array('UserLesson.subject_id'=>$subjectId, 'stage'=>array(USER_LESSON_PENDING_TEACHER_RATING, USER_LESSON_DONE));
@@ -668,20 +504,9 @@ class Subject extends AppModel {
 														'limit'=>$limit,
 														'page'=>$page));
 	}
-	
-	/*public function getbyCatalog($catalogId, $excludeSubjectId=null, $limit=12, $page=1) {
-		$conditions = array('catalog_id'=>$catalogId, 'type'=>SUBJECT_TYPE_OFFER, 'is_enable'=>SUBJECT_IS_ENABLE_TRUE, 'is_public'=>SUBJECT_IS_PUBLIC_TRUE);
-		if(!is_null($excludeSubjectId)) {
-			$conditions['subject_id !='] = $excludeSubjectId;
-		}
-		
-		//TODO: get owner image
-		return $this->find('all', array('conditions'=>$conditions,
-										'limit'=>$limit,
-										'page'=>$page));
-	}*/
+
 	public function getOffersByTeacher($teacherUserId, $isOwner=true, $lessonType=null, $page=null, $limit=null, $categoryId=null, $excludeSubject=null ) {
-		$conditions = array('user_id'=>$teacherUserId, 'type'=>SUBJECT_TYPE_OFFER);
+		$conditions = array('user_id'=>$teacherUserId);
 		if(!is_null($excludeSubject)) {
 			$conditions['subject_id !='] = $excludeSubject;
 		}
@@ -712,29 +537,14 @@ class Subject extends AppModel {
 
 		return $this->find('all', $allConditions);
 	}
-    public function getOffersByStudent($userId, $limit=12, $page=1) {
-        $this->bindStudentOnLessonRequest();
-        return $this->find('all', array('conditions'=>array(
-                                                        'Subject.user_id'=>$userId,
-                                                        'type'=>SUBJECT_TYPE_REQUEST,
-                                                        'is_enable'=>SUBJECT_IS_PUBLIC_TRUE
-                                                        ),
-                                            'limit'=>$limit,
-                                            'page'=>$page
-                                        ));
-    }
+
 	
 	public function disable($subjectId) {
 		//TODO: check for active waiting teacher lessons, if so - stop
 		//Close all invitations, teacher lessons, files tests etc.
 
-
-        //Remove from solr
-        $subjectData = $this->findBySubjectId($subjectId);
-        $subjectData = $subjectData['Subject'];
-        App::import('Vendor', 'Solr');
-        $solrObj = new Solr($subjectData['type']);
-        $solrObj->removeDocumentById($subjectId);
+        //Disable on Solr
+        parent::disable($subjectId);
 
 
         //Set disable on DB
@@ -743,18 +553,15 @@ class Subject extends AppModel {
 		return $this->save();
 	}
 	
-	public function getNewest($isOwner=true, $type=SUBJECT_TYPE_OFFER, $limit=4, $page=1) {
-		$conditions = array('type'=>$type );
+	public function getNewest($isOwner=true, $limit=4, $page=1) {
+		$conditions = array( );
 		if(!$isOwner) {
 			$conditions['is_enable'] = SUBJECT_IS_ENABLE_TRUE;
 			$conditions['is_public'] = SUBJECT_IS_PUBLIC_TRUE;
 		}
-		
-		if($type==SUBJECT_TYPE_REQUEST) {
-			$this->bindStudentOnLessonRequest();
-		} else {
-            $this->bindTeacherOnLessonOffer();
-        }
+
+        $this->bindTeacherOnLessonOffer();
+
 		return $this->find('all', array('conditions'=>$conditions, 
 										//'order'=>'created', //It will get done by default order
 										'limit'=>$limit,
@@ -772,7 +579,10 @@ class Subject extends AppModel {
             )
         );
     }
-	
+
+    public function beforeSearchBind() {
+        $this->bindTeacherOnLessonOffer();
+    }
 	public function bindStudentOnLessonRequest() {
 		$this->bindModel(array('belongsTo'=>array(
 											'Student' => array(
@@ -869,4 +679,5 @@ WHERE value_enabled<>0;
 
 
 }
+
 ?>

@@ -43,7 +43,7 @@ class LayoutHelper extends AppHelper {
         </div>';
     }
 
-    public function priceTag($oneOnOne, $fullGroupStudentPrice, $appendClass=null, $currency='$', $format='html') {
+    public function priceTag($oneOnOne, $fullGroupStudentPrice=null, $appendClass=null, $currency='$', $format='html') {
         $priceText = $oneOnOne;
         if($fullGroupStudentPrice) {
             $priceText .= '-'.$fullGroupStudentPrice;
@@ -164,7 +164,7 @@ class LayoutHelper extends AppHelper {
         return $vars;
     }
 
-    public function subjectRequestPopupButton($settings=array()) {
+    public function wishPopupButton($settings=array()) {
         $defaultSettings = array('name'=>__('Lesson Request'), 'class'=>'btns btn-black pull-right text-color index-blackbtn lesson-request-popup');
         $settings = am($defaultSettings, $settings);
 
@@ -303,18 +303,26 @@ class LayoutHelper extends AppHelper {
         $statistics = $subjectData + $lessonData;
 
         $data = array(
-            'subject_id'                => $statistics['subject_id'],
-            'teacher_user_id'           => isSet($statistics['teacher_user_id']) ? $statistics['teacher_user_id'] : $statistics['user_id'],
-            'category_id'       => $statistics['category_id'],
+            'category_id'               => $statistics['category_id'],
             'lesson_type'               => $statistics['lesson_type'],
             'language'                  => $statistics['language'],
             'name'                      => $statistics['name'],
             'duration_minutes'          => $statistics['duration_minutes'],
             '1_on_1_price'              => $statistics['1_on_1_price'],
             'max_students'              => $statistics['max_students'],
-            'full_group_student_price'  => $statistics['full_group_student_price'],
         );
 
+        if(isSet($statistics['subject_id'])) {
+            $data['subject_id']     = $statistics['subject_id'];
+            $data['teacher_user_id']= $statistics['teacher_user_id'];
+        } else {
+            $data['wish_list_id']   = $statistics['wish_list_id'];
+            $data['student_user_id']        = $statistics['student_user_id'];
+        }
+
+        if(isSet( $statistics['full_group_student_price'])) {
+            $data['full_group_student_price'] = $statistics['full_group_student_price'];
+        }
         if(isSet( $statistics['datetime'])) {
             $data['datetime']                   = $statistics['datetime'];
         }

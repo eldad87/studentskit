@@ -12,15 +12,15 @@ echo $this->Html->link('<div class="lesson-box">
     <div class="lesson-box-footer radius2">
         '.$this->Layout->ratingNew($avarageRating, false, 'pull-left space3').'
         <div class="pull-right">
-            '.$this->Layout->priceTag($oneOnOnePrice, $fullGroupStudentPrice).'
-            '.$this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($subjectData)).'
+            '.$this->Layout->priceTag($oneOnOnePrice).'
+            '.$this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($wishData)).'
         </div>
     </div>
-</div>', array('controller'=>'Requests', 'action'=>'offerSubject', $subjectId),
+</div>', array('controller'=>'Requests', 'action'=>'makeOffer', $wishListId),
             $this->Layout->requireLogin(array(  'data-toggle'=>'modal', 'data-target'=>'#makeOffer',
-                                                'data-id'=>$subjectId, 'data-hidden-input'=>'#request_subject_id',
+                                                'data-id'=>$wishListId, 'data-hidden-input'=>'#wish_list_id',
                                                 'class'=>'copyDataId', 'escape'=>false,
-                                                'data-statistics'=>$this->Layout->subjectStatistics($subjectData)
+                                                'data-statistics'=>$this->Layout->subjectStatistics($wishData)
 
             )));
 ?>

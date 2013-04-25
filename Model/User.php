@@ -264,7 +264,7 @@ class User extends AppModel {
 											'1_on_1_price'              => $teacherLesson['TeacherLesson']['1_on_1_price'],
                                             'full_group_total_price'    => $teacherLesson['TeacherLesson']['full_group_total_price'],
 											'full_group_student_price'  => $teacherLesson['TeacherLesson']['full_group_student_price'],
-											'request_subject_id'        => $teacherLesson['TeacherLesson']['request_subject_id'],
+											'wish_list_id'              => $teacherLesson['TeacherLesson']['wish_list_id'],
 											'image_source'              => $teacherLesson['TeacherLesson']['image_source']
 											);
 				}
@@ -296,7 +296,7 @@ class User extends AppModel {
                                                 '1_on_1_price'              => $userLesson['UserLesson']['1_on_1_price'],
                                                 'full_group_total_price'    => $userLesson['UserLesson']['full_group_total_price'],
                                                 'full_group_student_price'  => $userLesson['UserLesson']['full_group_student_price'],
-                                                'request_subject_id'        => $userLesson['UserLesson']['request_subject_id'],
+                                                'wish_list_id'              => $userLesson['UserLesson']['wish_list_id'],
                                                 'image_source'              => $userLesson['UserLesson']['image_source']
 												);
 					}

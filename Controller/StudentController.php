@@ -4,7 +4,7 @@
  */
 class StudentController extends AppController {
 	public $name = 'Student';
-	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
+	public $uses = array('Subject', 'WishList', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
 	public $components = array('Utils.FormPreserver'=>array('directPost'=>true), 'Session',  'RequestHandler'/*, 'Security'*/, 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),/* 'Security'*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 
@@ -101,9 +101,25 @@ class StudentController extends AppController {
 	public function subjectRequests($limit=50, $page=1) {
         $this->Set('limit', $limit);
         $this->Set('page', $page);
-		$subjectRequests = $this->Subject->getOffersByStudent($this->Auth->user('user_id'), $limit, $page);
+        $this->Subject;
+		$subjectRequests = $this->WishList->getOffersByStudent($this->Auth->user('user_id'), $limit, $page);
 		return $this->success(1, array('subjectRequests'=>$subjectRequests));
 	}
+
+    public function disableRequest($wishListId) {
+        return $this->success(1, array('wish_list_id'=>$wishListId));
+        $this->WishList->recursive = -1;
+        $wishData = $this->WishList->findByWishListId($wishListId);
+
+        if(!$wishData['WishList']['student_user_id']!=$this->Auth->user('user_Id')) {
+            return $this->error(1, array('wish_list_id'=>$wishListId));
+        }
+
+        if(!$this->WishList->disable($wishListId)) {
+            return $this->error(1, array('wish_list_id'=>$wishListId));
+        }
+        return $this->success(1, array('wish_list_id'=>$wishListId));
+    }
 	
 	public function cancelUserLesson( $userLessonId ) {
 

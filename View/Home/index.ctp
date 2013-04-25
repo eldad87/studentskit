@@ -25,8 +25,8 @@
             <div class="cont-span8">
                 <h2 class="pull-left"><i class="iconBig-about space1"></i><?php echo __('Newest'); ?></h2>
                 <?php
-                    //echo $this->Layout->subjectRequestPopupButton();
-                    //echo $this->element('Home'.DS.'subject_request_popup');
+                    //echo $this->Layout->wishPopupButton();
+                    //echo $this->element('Home'.DS.'wish_popup');
                 ?>
                 <ul class="row">
                     <?php

@@ -4,7 +4,7 @@
  */
 class HomeController extends AppController {
 	public $name = 'Home';
-	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
+	public $uses = array('Subject', 'WishList', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
 	public $components = array('Utils.FormPreserver'=>array('directPost'=>true,'actions'=>array('submitOrder')), 'Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),
         //'Security',
                                /* 'Watchitoo'*/);
@@ -546,11 +546,16 @@ $id = $scObj->id;
 
         //Search
         $subjectType = (isSet($this->request->query['type']) ? $this->request->query['type'] : SUBJECT_TYPE_OFFER);
-        $subjectsData = $this->Subject->search($query, $subjectType);
-        if($subjectsData) {
-            return $this->success(1, array('subjects'=>$subjectsData['subjects']));
+        if($subjectType==SUBJECT_TYPE_OFFER) {
+            $subjectsData = $this->Subject->search($query);
+        } else {
+            $subjectsData = $this->WishList->search($query);
         }
-        return $this->success(1, array('subjects'=>array()));
+
+        if($subjectsData) {
+            return $this->success(1, array('records'=>$subjectsData['records']));
+        }
+        return $this->success(1, array('records'=>array()));
     }
 
 	public function searchSubject() {
@@ -562,7 +567,12 @@ $id = $scObj->id;
 
         //Search
         $subjectType = (isSet($this->request->query['type']) ? $this->request->query['type'] : SUBJECT_TYPE_OFFER);
-        $subjectsData = $this->Subject->search($query, $subjectType);
+        if($subjectType==SUBJECT_TYPE_OFFER) {
+            $subjectsData = $this->Subject->search($query, $subjectType);
+        } else {
+            $subjectsData = $this->WishList->search($query, $subjectType);
+        }
+
 
         App::Import('Model', 'Category');
         $cObj = new Category();
@@ -646,9 +656,11 @@ $id = $scObj->id;
         $query = $this->_searchDefaultQueryParams();
 
         $subjectType = (isSet($this->request->query['type']) ? $this->request->query['type'] : SUBJECT_TYPE_OFFER);
-        $results = $this->Subject->searchSuggestions($query, $subjectType);
-
-
+        if($subjectType==SUBJECT_TYPE_OFFER) {
+            $results = $this->Subject->searchSuggestions($query);
+        } else {
+            $results = $this->WishList->searchSuggestions($query);
+        }
 
 
         if($this->RequestHandler->isAjax()) {
@@ -701,6 +713,10 @@ $id = $scObj->id;
         }
         if(isSet($this->request->query['lesson_type_live']) && $this->request->query['lesson_type_live']) {
             $lessonType[]  = LESSON_TYPE_LIVE;
+        }
+
+        if(isSet($this->request->query['lesson_type_course']) && $this->request->query['lesson_type_course']) {
+            $lessonType[]  = LESSON_TYPE_COURSE;
         }
 
         $query = array(

@@ -34,8 +34,8 @@
                     ?>
                 </p>
                 <?php
-                    echo $this->Layout->subjectRequestPopupButton();
-                    echo $this->element('Home'.DS.'subject_request_popup');
+                    echo $this->Layout->wishPopupButton();
+                    echo $this->element('Home'.DS.'wish_popup');
                 ?>
                 <div class="pull-left space6">
                     <!-- category filter -->

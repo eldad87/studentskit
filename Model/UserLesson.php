@@ -67,10 +67,10 @@ class UserLesson extends AppModel {
                     'message' 	=> 'You cannot use this subject'
                 )
             ),
-            'request_subject_id'=> array(
-                'validate_request_subject_id' 	=> array(
+            'wish_list_id'=> array(
+                'validate_wish_list_id' 	=> array(
                     'allowEmpty'=> true,
-                    'rule'    	=> 'validateRequestSubjectId',
+                    'rule'    	=> 'validateWishListId',
                     'message' 	=> 'You cannot offer this subject'
                 )
             ),
@@ -389,15 +389,10 @@ class UserLesson extends AppModel {
         }
         $subjectData = $subjectData['Subject'];
 
-        //Validate its a subject offer
-        if($subjectData['type']!=SUBJECT_TYPE_OFFER) {
-            $this->invalidate('request_subject_id', __('must be a offer subject'));
-        }
-
         //The teacher must be the subject owner
         if(isSet($this->data['UserLesson']['teacher_user_id']) && !empty($this->data['UserLesson']['teacher_user_id'])) {
             if($this->data['UserLesson']['teacher_user_id']!=$subjectData['user_id']) {
-                $this->invalidate('request_subject_id', __('The teacher must be the subject owner'));
+                $this->invalidate('wish_list_id', __('The teacher must be the subject owner'));
             }
         }
 
@@ -520,25 +515,25 @@ class UserLesson extends AppModel {
     /**
      * Use to offer a teacher offer-subject against student request-subject
      * @param $teacherOfferSubjectId
-     * @param $studentRequestSubjectId
+     * @param $wishListId
      * @param $datetime
      * @param array $extra
      * @return bool
      */
-    public function lessonOffer($teacherOfferSubjectId, $studentRequestSubjectId, $datetime, $extra=array()) {
+    public function lessonOffer($teacherOfferSubjectId, $wishListId, $datetime, $extra=array()) {
         //Find the teacher subject
-        App::import('Model', 'Subject');
-        $subjectObj = new Subject();
+        App::import('Model', 'WishList');
+        $wishListObj = new WishList();
 
-        $subjectObj->recursive = -1;
-        $subjectData = $subjectObj->findBySubjectId($studentRequestSubjectId);
-        if( !$subjectData ) {
+        $wishListObj->recursive = -1;
+        $wishData = $wishListObj->findByWishListId($wishListId);
+        if( !$wishData ) {
             return false;
         }
-        $subjectData = $subjectData['Subject'];
-        $extra['request_subject_id'] = $studentRequestSubjectId;
+        $wishData = $wishData['WishList'];
+        $extra['wish_list_id'] = $wishListId;
 
-        return $this->lessonRequest($teacherOfferSubjectId, $subjectData['user_id'], $datetime, true, $extra);
+        return $this->lessonRequest($teacherOfferSubjectId, $wishData['student_user_id'], $datetime, true, $extra);
     }
 
 
@@ -563,19 +558,15 @@ class UserLesson extends AppModel {
 		}
         $subjectData = $subjectData['Subject'];
 
-        //User lesson must be for lesson type offer
-        if($subjectData['type']!=SUBJECT_TYPE_OFFER) {
-            return false;
-        }
 
 
 		//Prepare the user lesson generic data
 		$userLesson = array(
 			//'teacher_lesson_id'		=> null,
 			'subject_id'				=> $subjectId,
-			'teacher_user_id'			=> ($subjectData['type']==SUBJECT_TYPE_OFFER ? $subjectData['user_id']              : $userId),
-			'student_user_id'			=> ($subjectData['type']==SUBJECT_TYPE_OFFER ? $userId                              : $subjectData['user_id']),
-			'stage'						=> ($subjectData['type']==SUBJECT_TYPE_OFFER ? USER_LESSON_PENDING_TEACHER_APPROVAL : USER_LESSON_PENDING_STUDENT_APPROVAL),
+			'teacher_user_id'			=> $subjectData['user_id'],
+			'student_user_id'			=> $userId,
+			'stage'						=> USER_LESSON_PENDING_TEACHER_APPROVAL,
 			'category_id'		        => $subjectData['category_id'],
 			'forum_id'		            => $subjectData['forum_id'],
 			'datetime'					=> $datetime ? $datetime : null,
@@ -604,10 +595,10 @@ class UserLesson extends AppModel {
 			'image_crop_436x214'        => $subjectData['image_crop_436x214'],
 		);
 
-        //Reverse the stages, in use for teacher invite students, or on SUBJECT_TYPE_REQUEST - sending requests to teachers
+        //Reverse the stages, in use for teacher invite students
         if($reverseStage) {
-           $userLesson['stage'] = ($userLesson['stage']==USER_LESSON_PENDING_TEACHER_APPROVAL) ? USER_LESSON_PENDING_STUDENT_APPROVAL : USER_LESSON_PENDING_TEACHER_APPROVAL;
-           $userId = ($userId==$userLesson['teacher_user_id']) ? $userLesson['student_user_id'] : $userLesson['teacher_user_id'];
+           $userLesson['stage'] = USER_LESSON_PENDING_STUDENT_APPROVAL;
+           $userId              = $userLesson['teacher_user_id'];
         }
 
 
@@ -661,6 +652,7 @@ class UserLesson extends AppModel {
 	 * @param unknown_type $teacherLessonId - the lesson
 	 * @param unknown_type $studentUserId - the student id, leave null only if subject_type==SUBJECT_TYPE_REQUEST
 	 * @param unknown_type $teacherUserId - the teacher id, supply it only if you are the teacher (Invitation)
+	 * @param unknown_type $userLessonId
      * @param array $extra
      * @return bool
 	 */
@@ -684,12 +676,14 @@ class UserLesson extends AppModel {
 		if($teacherLessonData['lesson_type']==LESSON_TYPE_VIDEO) {
 			return false;
 		}
-		if(!empty($teacherLessonData['request_subject_id']) && is_null($studentUserId)) {
-			$subjectData = $this->Subject->findBySubjectId($teacherLessonData['request_subject_id']);
-			if(!$subjectData) {
+		if(!empty($teacherLessonData['wish_list_id']) && is_null($studentUserId)) {
+            App::import( 'Model', 'WishList');
+            $wishListModel = new WishList();
+			$wishData = $wishListModel->findByWishListId($teacherLessonData['wish_list_id']);
+			if(!$wishData) {
 				return false;
 			}
-			$studentUserId = $subjectData['Subject']['user_id'];
+			$studentUserId = $wishData['WishList']['student_user_id'];
 		}
 		
 		//Find the stage
@@ -723,7 +717,7 @@ class UserLesson extends AppModel {
 			'subject_id'				=> $teacherLessonData['subject_id'],
 			'teacher_user_id'			=> $teacherLessonData['teacher_user_id'],
 			'student_user_id'			=> $studentUserId,
-			'request_subject_id'        => $teacherLessonData['request_subject_id'],
+			'wish_list_id'              => $teacherLessonData['wish_list_id'],
 			'datetime'					=> $teacherLessonData['datetime'],
 			'end_datetime'				=> $teacherLessonData['end_datetime'],
 			'stage'						=> $stage,
@@ -1302,7 +1296,7 @@ class UserLesson extends AppModel {
 	//Lessons that waiting for the student to approval
 	public function getTeacherInvitations($teacherUserId, $subjectId=null, $limit=null, $page=1) {
 		$this->Subject;
-		$conditions = array('UserLesson.teacher_user_id'=>$teacherUserId, 'UserLesson.teacher_lesson_id IS NULL');
+		$conditions = array('UserLesson.teacher_user_id'=>$teacherUserId);
 		if($subjectId) {
 			$conditions['UserLesson.subject_id'] = $teacherUserId;
 		}

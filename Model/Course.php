@@ -145,6 +145,78 @@ class Course extends AppModel {
 
     public function __construct($id = false, $table = null, $ds = null) {
         parent::__construct($id, $table, $ds);
+        static $eventListenerAttached = false;
+
+        if(!$eventListenerAttached) {
+            //Connect the event manager of this model
+            App::import( 'Event', 'CourseEventListener');
+            $cel =& CourseEventListener::getInstance();
+            CakeEventManager::instance()->attach($cel);
+            $eventListenerAttached = true;
+        }
+
         $this->virtualFields['id'] = sprintf('%s.%s', $this->alias, $this->primaryKey); //Uploader
     }
+
+
+    public function beforeValidate($options=array()) {
+        parent::beforeValidate($options);
+
+        //Calc full-group-price in case that we have 1-or-more live lessons
+        /*App::import('Model', 'Subject');
+        $exists = $this->exists(!empty($this->data[$this->alias][$this->primaryKey]) ? $this->data[$this->alias][$this->primaryKey] : null);
+        Subject::calcFullGroupPriceIfNeeded($this->data[$this->alias], $exists );*/
+    }
+
+
+    public function afterSave($created) {
+        parent::afterSave($created);
+
+        if( isSet($this->data[$this->alias]['name']) ||
+            isSet($this->data[$this->alias]['description']) ||
+            isSet($this->data[$this->alias]['language']) ||
+            isSet($this->data[$this->alias]['lesson_type']) ||
+            isSet($this->data[$this->alias]['avarage_rating']) ||
+            isSet($this->data[$this->alias]['is_public']) ||
+            isSet($this->data[$this->alias]['1_on_1_price']) ||
+            isSet($this->data[$this->alias]['category_id'])) {
+
+
+            //Find the subject
+            $this->recursive = -1;
+            $courseData = $this->findByCourseId($this->id);
+            $courseData = $courseData[$this->alias];
+
+
+            $update['subject_id']               = $courseData['subject_id'];
+            $update['language']                 = $courseData['language'];
+            $update['name']                     = $courseData['name'];
+            $update[$update['language'].'_t']   = $courseData['description'];
+            $update['1_on_1_price']             = $courseData['1_on_1_price'];
+            $update['lesson_type']              = intval($courseData['lesson_type']);
+            $update['avarage_rating']           = $courseData['avarage_rating'];
+            $update['is_public']                = (boolean) $courseData['is_public'];
+            $update['last_modified']            = $courseData['modified'] ? $courseData['modified'] : $courseData['created'];
+
+            if($courseData['category_id'] && !empty($courseData['category_id'])) {
+                App::import('Model', 'Category');
+                $cObj = new Category();
+                $update['categories']   = $cObj->getPathHierarchy($courseData['category_id'], true);
+                $update['category_id']  = $courseData['category_id'];
+            } else {
+                unset($update['categories'], $update['category_id']);
+            }
+
+            App::import('Vendor', 'Solr');
+            $SolrObj = new Solr($courseData['type']);
+            if(!$SolrObj->addDocument($update)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+
+
 }

@@ -17,36 +17,36 @@ class LessonBehavior extends ModelBehavior {
         return $model->toServerTime($datetime)>=$model->timeExpression( 'now +1 hour', false );
     }
 
-    public function validateRequestSubjectId(Model $model, $requestSubjectID){
-        $requestSubjectID = $requestSubjectID['request_subject_id'];
+    public function validateWishListId(Model $model, $requestWishListID){
+
+        App::import('Model', 'WishList');
+        $wishListModel = new WishList();
 
         //Load the requested subject
-        $requestSubjectData = $model->Subject->findBySubjectId($requestSubjectID);
-        if(!$requestSubjectData) {
-            $model->invalidate('request_subject_id', __('Invalid request subject'));
+        $wishData = $wishListModel->findByWishListId($requestWishListID['wish_list_id']);
+        if(!$wishData) {
+            $model->invalidate('wish_list_id', __('Invalid wish'));
         }
-        $requestSubjectData = $requestSubjectData['Subject'];
+        $wishData = $wishData['WishList'];
 
-        //Validate its a subject request
-        if($requestSubjectData['type']!=SUBJECT_TYPE_REQUEST) {
-            $model->invalidate('request_subject_id', __('must be a request subject'));
-        }
 
         //Validate the the 2 subjects share the same type live/video
         if(isSet($model->data[$model->alias]['lesson_type']) && !empty($model->data[$model->alias]['lesson_type'])) {
-            if($requestSubjectData['lesson_type']!=$model->data[$model->alias]['lesson_type']) {
-                if($requestSubjectData['type']==LESSON_TYPE_LIVE) {
-                    $model->invalidate('request_subject_id', __('Please chose a LIVE lesson as a suggestion') );
-                } else if($requestSubjectData['type']==LESSON_TYPE_VIDEO) {
-                    $model->invalidate('request_subject_id', __('Please chose a VIDEO lesson as a suggestion') );
+            if($wishData['lesson_type']!=$model->data[$model->alias]['lesson_type']) {
+                if($wishData['type']==LESSON_TYPE_LIVE) {
+                    $model->invalidate('wish_list_id', __('Please chose a LIVE lesson as a suggestion') );
+                } else if($wishData['type']==LESSON_TYPE_VIDEO) {
+                    $model->invalidate('wish_list_id', __('Please chose a VIDEO lesson as a suggestion') );
+                } else if($wishData['type']==LESSON_TYPE_COURSE) {
+                    $model->invalidate('wish_list_id', __('Please chose a COURSE as a suggestion') );
                 }
             }
         }
 
         //Check that the owner of $requestSubjectID is the main student
         if(isSet($model->data[$model->alias]['student_user_id']) && !empty($model->data[$model->alias]['student_user_id'])) {
-            if($model->data[$model->alias]['student_user_id']!=$requestSubjectData['user_id']) {
-                $model->invalidate('request_subject_id', __('The main student must be the owner of the requested subject'));
+            if($model->data[$model->alias]['student_user_id']!=$wishData['user_id']) {
+                $model->invalidate('wish_list_id', __('The main student must be the owner of the wish'));
             }
         }
 

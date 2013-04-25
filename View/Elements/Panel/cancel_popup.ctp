@@ -45,15 +45,16 @@ $buttonId = 'cancel-approved_'.$appendId;
                 //Close popup
                 $('#' + popupId).modal('hide');
 
-                //Set new credit points - this require only if student cancet a request that have CP in it
-                if(data['response']['results']['credit_points']!==undefined) {
-                    $('#creditPointsCounter').html(data['response']['results']['credit_points']);
-                }
 
                 if($('#'+buttonId).data('cancel-prefix')) {
                     var divId = $('#'+buttonId).data('cancel-prefix') + '_' + $('#'+buttonId).data('id');
                     //Remove lesson box
                     $( '#' + divId ).hide();
+                }
+
+                //Set new credit points - this require only if student cancet a request that have CP in it
+                if(data['response']['results']!==undefined && data['response']['results']['credit_points']!==undefined) {
+                    $('#creditPointsCounter').html(data['response']['results']['credit_points']);
                 }
             }
         });
