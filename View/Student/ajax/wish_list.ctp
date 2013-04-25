@@ -11,7 +11,7 @@ if($page==1) {
 ?>
     <script type="text/javascript">
         $(document).ready(function(){
-            var url = '/Student/subjectRequests/{limit}/{page}';
+            var url = '/Student/wishList/{limit}/{page}';
             lmObj.loadMoreButton('#user-lessons-requests-load-more', 'click', '#user-lessons-requests', url, {}, 'get', <?php echo $limit; ?>);
             lmObj.setItemsCountSelector('#user-lessons-requests-load-more', '#user-lessons-requests div.lesson-box' );
         });
@@ -34,8 +34,8 @@ if($page==1) {
 <?php
 }
 
-    foreach($response['response']['subjectRequests'] AS $wishData) {
-        echo $this->element('Panel'.DS.'user_subject_request_div', array('wishData'=>$wishData));
+    foreach($response['response']['wishList'] AS $wishData) {
+        echo $this->element('Panel'.DS.'user_wish_list_div', array('wishData'=>$wishData));
     }
 
 
@@ -45,7 +45,7 @@ if($page==1) {
     </div>
 
     <?php
-    if(count($response['response']['subjectRequests'])>=$limit) {
+    if(count($response['response']['wishList'])>=$limit) {
         echo '<a href="#" class="more radius3 gradient2 space8" id="user-lessons-requests-load-more"><strong>', __('Load More') ,'</strong><i class="iconSmall-more-arrow"></i></a>';
     }
 }

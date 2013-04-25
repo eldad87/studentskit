@@ -50,27 +50,6 @@ class StudentController extends AppController {
     public function lessons() {
 
     }
-	/*public function lessons($limit=5, $page=1) {
-		//Get lessons that about to start - upcoming
-		$upcomingLessons = $this->UserLesson->getUpcoming($this->Auth->user('user_id'), $limit, $page);
-		$this->Set('upcomingLessons', $upcomingLessons);
-
-        //Get lessons that are over - archive
-        $archiveLessons = $this->UserLesson->getArchive($this->Auth->user('user_id'), $limit, $page);
-        $this->Set('archiveLessons', $archiveLessons);
-
-		//Get lessons that pending for teacher approval - booking requests
-		$bookingRequests = $this->UserLesson->getBooking($this->Auth->user('user_id'), $limit, $page);
-		$this->Set('bookingRequests', $bookingRequests);
-		
-		//Get lessons invitations - invitations
-		$lessonInvitations = $this->UserLesson->getInvitations($this->Auth->user('user_id'), $limit, $page);
-		$this->Set('lessonInvitations', $lessonInvitations);
-		
-		//Get lesson requests - lesson offers
-        $subjectRequests = $this->Subject->getOffersByStudent($this->Auth->user('user_id'), $limit, $page);
-		$this->Set('subjectRequests', $subjectRequests);
-	}*/
 
 	public function lessonsUpcoming($limit=50, $page=1, $userLessonId=null) {
         $this->Set('limit', $limit);
@@ -98,12 +77,12 @@ class StudentController extends AppController {
 		$lessonInvitations = $this->UserLesson->getInvitations($this->Auth->user('user_id'), $limit, $page);
 		return $this->success(1, array('lessonInvitations'=>$lessonInvitations));
 	}
-	public function subjectRequests($limit=50, $page=1) {
+	public function wishList($limit=50, $page=1) {
         $this->Set('limit', $limit);
         $this->Set('page', $page);
         $this->Subject;
-		$subjectRequests = $this->WishList->getOffersByStudent($this->Auth->user('user_id'), $limit, $page);
-		return $this->success(1, array('subjectRequests'=>$subjectRequests));
+		$wishList = $this->WishList->getOffersByStudent($this->Auth->user('user_id'), $limit, $page);
+		return $this->success(1, array('wishList'=>$wishList));
 	}
 
     public function disableRequest($wishListId) {

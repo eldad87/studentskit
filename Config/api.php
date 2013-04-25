@@ -294,9 +294,9 @@ $config['Student.lessonsInvitations.success.1.title'] = __('Success');
 $config['Student.lessonsInvitations.success.1.description'] = __('Lesson invitations');
 $config['Student.lessonsInvitations.success.2.title'] = __('Success');
 $config['Student.lessonsInvitations.success.2.description'] = __('Lesson invitations');
-/*-------------------- Student.SubjectRequests	--------------------*/
-$config['Student.subjectRequests.success.1.title'] = __('Success');
-$config['Student.subjectRequests.success.1.description'] = __('Subject requests');
+/*-------------------- Student.wishList	--------------------*/
+$config['Student.wishList.success.1.title'] = __('Success');
+$config['Student.wishList.success.1.description'] = __('Wish list');
 /*-------------------- Student.cancelUserLesson	--------------------*/
 $config['Student.cancelUserLesson.success.1.title'] = __('Success');
 $config['Student.cancelUserLesson.success.1.description'] = __('Lesson canceled');

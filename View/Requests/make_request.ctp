@@ -16,7 +16,7 @@
 
                 if(isSet($appendTemplate) && isSet($wishData)) {
 
-                    $appendTemplate = ($appendTemplate=='user-panel' ? 'Panel/user_subject_request_div' : '');
+                    $appendTemplate = ($appendTemplate=='user-panel' ? 'Panel/user_wish_list_div' : '');
 
                     if(isSet($prependTo)) {
                         echo '$(\'#',$prependTo,'\').prepend(\'', $this->Layout->stringToJSVar($this->element($appendTemplate, array('wishData'=>$wishData))) , '\');';

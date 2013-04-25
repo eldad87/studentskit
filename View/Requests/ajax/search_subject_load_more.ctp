@@ -7,7 +7,7 @@ if($response['response']['records']) {
 
         echo '<li class="cont-span4 spc space2">';
 
-        echo $this->element('subject_request', array(
+        echo $this->element('wish_list', array(
                                                         'wishLisId'             =>$wishData['WishList']['wish_list_id'],
                                                         'name'                  =>$wishData['WishList']['name'],
                                                         'description'           =>$wishData['WishList']['description'],

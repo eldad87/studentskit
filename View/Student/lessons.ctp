@@ -13,7 +13,7 @@
             <li><a href="#"  class="load3" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'lessonsArchive')); ?>"><?php echo __('History'); ?></a></li>
             <li><a href="#" class="load3" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'lessonsBooking')); ?>"><?php echo __('Booking'); ?></a></li>
             <li><a href="#" class="load3" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'lessonsInvitations')); ?>"><?php echo __('Invitations'); ?></a></li>
-            <li class="c-mar3"><a href="#" class="load3" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'subjectRequests')); ?>"><?php echo __('Wish List'); ?></a></li>
+            <li class="c-mar3"><a href="#" class="load3" rel="<?php echo Router::url(array('controller'=>'Student','action'=>'wishList')); ?>"><?php echo __('Wish List'); ?></a></li>
         </ul>
     </div>
     <div class="clear"></div>
