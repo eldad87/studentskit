@@ -70,7 +70,7 @@ class RequestsController extends AppController {
                     //Load subject data
                     $this->WishList->recursive = -1;
                     $this->WishList->cacheQueries = false;
-                    $wishData = $this->WishList->findByWishListId($wishListId);
+                    $wishData = $this->WishList->findByWishListId(($this->WishList->id));
                     $this->set('wishData', $wishData);
                 }
 				//$this->Session->setFlash(__('Request saved, you can browse and manage it through the control panel'));

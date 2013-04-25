@@ -5,7 +5,7 @@ $config['solr']['config'] = array(
 //Dev
 App::import('Model', 'Subject');
 $config['solr']['servers'][] = array(
-    'hostname'=>'localhost',
+    'hostname'=>'universito.local',
     'port'=>8080,
     'path'=>'solr',
     'cores'=>array(
