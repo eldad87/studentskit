@@ -140,8 +140,7 @@ class RequestsController extends AppController {
 
             //You can offer suggestions only to subject request
             $wishData = $wishData['WishList'];
-
-            if($wishData['user_id']==$this->Auth->user('user_id')) {
+            if($wishData['student_user_id']==$this->Auth->user('user_id')) {
                 //$this->Session->setFlash(__('You cannot offer lessons to yourself'));
                 return $this->error(3);
             }
@@ -155,7 +154,7 @@ class RequestsController extends AppController {
             if($this->request->data['by']=='teacher_lesson_id') {
                 //Only live lessons can have 'teacher_lesson_id'
                 $res = $this->UserLesson->joinRequest(  $this->request->data['UserLesson']['teacher_lesson_id'],
-                                                        $wishData['user_id'],
+                                                        $wishData['student_user_id'],
                                                         $this->Auth->user('user_id'),
                                                         null,
                                                         array('wish_list_id'=>$wishListId, 'offer_message'=>$this->request->data['UserLesson']['offer_message'])); //Send invitation

@@ -54,7 +54,7 @@ $this->Html->scriptBlock('
 										$newSubject['WishList']['one_on_one_price'] = $newSubject['WishList']['1_on_1_price'];
 										echo '<li class="cont-span4 spc space2">';
 
-                                        echo $this->element('wish_list', array(   'wishListId'            =>$newSubject['WishList']['wish_list_id'],
+                                        echo $this->element('wish', array(   'wishListId'            =>$newSubject['WishList']['wish_list_id'],
                                                                                         'name'                  =>$newSubject['WishList']['name'],
                                                                                         'description'           =>$newSubject['WishList']['description'],
                                                                                         'avarageRating'         =>$newSubject['Student']['student_avarage_rating'],

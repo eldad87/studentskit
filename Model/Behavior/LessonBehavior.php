@@ -45,7 +45,7 @@ class LessonBehavior extends ModelBehavior {
 
         //Check that the owner of $requestSubjectID is the main student
         if(isSet($model->data[$model->alias]['student_user_id']) && !empty($model->data[$model->alias]['student_user_id'])) {
-            if($model->data[$model->alias]['student_user_id']!=$wishData['user_id']) {
+            if($model->data[$model->alias]['student_user_id']!=$wishData['student_user_id']) {
                 $model->invalidate('wish_list_id', __('The main student must be the owner of the wish'));
             }
         }
