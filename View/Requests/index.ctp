@@ -38,7 +38,7 @@ $this->Html->scriptBlock('
                             $wishData['one_on_one_price'] = $wishRequest['WishList']['1_on_1_price'];
 
                             echo '<li class="cont-span4 spc space2">';
-                            echo $this->element('wish_list', array( 'wishListId'            =>$wishRequest['WishList']['wish_list_id'],
+                            echo $this->element('wish', array( 'wishListId'            =>$wishRequest['WishList']['wish_list_id'],
                                                                     'name'                  =>$wishRequest['WishList']['name'],
                                                                     'description'           =>$wishRequest['WishList']['description'],
                                                                     'avarageRating'         =>$wishRequest['Student']['student_avarage_rating'],

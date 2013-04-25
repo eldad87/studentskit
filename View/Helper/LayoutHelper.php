@@ -314,7 +314,7 @@ class LayoutHelper extends AppHelper {
 
         if(isSet($statistics['subject_id'])) {
             $data['subject_id']     = $statistics['subject_id'];
-            $data['teacher_user_id']= $statistics['teacher_user_id'];
+            $data['teacher_user_id']= $statistics['user_id'];
         } else {
             $data['wish_list_id']   = $statistics['wish_list_id'];
             $data['student_user_id']        = $statistics['student_user_id'];
