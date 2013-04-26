@@ -20,7 +20,7 @@ foreach($subjects AS $subject) {
 	echo 'Enable: ',$subject['is_enable'],'<br />';
 	echo 'Public: ',$subject['is_public'],'<br />';
 	echo 'Image: ',$subject['image'],'<br />';
-	echo 'avarage_rating: ',$subject['avarage_rating'],'<br />';
+	echo 'average_rating: ',$subject['average_rating'],'<br />';
 	echo '1_on_1_price: ',$subject['1_on_1_price'],'<br />';
 	echo 'max_students: ',$subject['max_students'],'<br />';
 	echo 'full_group_student_price: ',$subject['full_group_student_price'],'<br />';

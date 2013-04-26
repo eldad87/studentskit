@@ -304,7 +304,7 @@ class OrderController extends AppController {
             'action'                    => $statistics['action'],
             'subject_id'                => $statistics['subject_id'],
             'teacher_user_id'           => $statistics['user_id'],
-            'category_id'               => $statistics['category_id'],
+            'category_id'       => $statistics['category_id'],
             'lesson_type'               => $statistics['lesson_type'],
             'language'                  => $statistics['language'],
             'name'                      => $statistics['name'],
@@ -315,7 +315,7 @@ class OrderController extends AppController {
             'total_lessons'             => $statistics['total_lessons'],
             'students_amount'           => $statistics['students_amount'],
             'raters_amount'             => $statistics['raters_amount'],
-            'avarage_rating'            => $statistics['avarage_rating'],
+            'average_rating'            => $statistics['average_rating'],
             'created'                   => $statistics['created']
         );
 
@@ -569,7 +569,7 @@ class OrderController extends AppController {
             $statistics['total_lessons']    = $ulData['Subject']['total_lessons'];
             $statistics['students_amount']  = $ulData['Subject']['students_amount'];
             $statistics['raters_amount']    = $ulData['Subject']['raters_amount'];
-            $statistics['avarage_rating']   = $ulData['Subject']['avarage_rating'];
+            $statistics['average_rating']   = $ulData['Subject']['average_rating'];
             $statistics['created']          = $ulData['Subject']['created'];
 
 

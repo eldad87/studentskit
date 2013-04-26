@@ -82,8 +82,8 @@ class TeacherController extends AppController {
             isSet($this->data['Subject']['max_students']) && $this->data['Subject']['max_students']>1) {
 
             $groupPrice = $this->Subject->calcStudentPriceAfterDiscount(	$this->data['Subject']['1_on_1_price'],
-                $this->data['Subject']['max_students'], $this->data['Subject']['max_students'],
-                $this->data['Subject']['full_group_student_price']);
+                                                                            $this->data['Subject']['max_students'], $this->data['Subject']['max_students'],
+                                                                            $this->data['Subject']['full_group_student_price']);
             $this->set('groupPrice', $groupPrice);
         }
 
@@ -97,9 +97,12 @@ class TeacherController extends AppController {
         if($subjectId) {
             $this->Subject->recursive = -1;
             $subjectData = $this->Subject->findBySubjectId($subjectId);
+            $this->set('lessonType',  $subjectData['Subject']['lesson_type']);
+
             $currentCreationStage = $subjectData['Subject']['creation_stage'];
         }
         $this->set('creationStage', $currentCreationStage);
+
 
 
         //Post
@@ -242,7 +245,7 @@ class TeacherController extends AppController {
         return $this->success(1, array('current_creation_stage'=>$newCurrentCreationStage));
     }
 
-    public function subjectPublish($subjectId) {
+    public function subjectFinish($subjectId) {
 
         $this->Subject->recursive = -1;
         $subjectData = $this->Subject->findBySubjectId($subjectId);
@@ -511,7 +514,7 @@ class TeacherController extends AppController {
 		$this->set('reviews', $awaitingReviews);
 		
 		$userData = $this->User->findByUserId($this->Auth->user('user_id'));
-		$this->set('avarageRating', $userData['User']['teacher_avarage_rating']);
+		$this->set('averageRating', $userData['User']['teacher_average_rating']);
 	}
 	
 	public function myReviews() {
@@ -523,7 +526,7 @@ class TeacherController extends AppController {
 		$this->Set('reviews', $reviews);
 
         $userData = $this->User->findByUserId($this->Auth->user('user_id'));
-        $this->set('avarageRating', $userData['User']['teacher_avarage_rating']);
+        $this->set('averageRating', $userData['User']['teacher_average_rating']);
 	}
 
     public function getLiveLessonMeeting($teacherLessonId) {

@@ -118,7 +118,7 @@ $otherUserType = ($userType=='student' ? 'teacher' : 'student');
             </p>
             <a href="#" class="pull-left load2" rel="<?php echo Router::url(array('controller'=>ucfirst($userType),
                                                                                     'action'=>($allowRate ? 'myReviews' : 'awaitingReview'))); ?>"><?php
-                echo $this->Layout->ratingNew($avarageRating, false, '');
+                echo $this->Layout->ratingNew($averageRating, false, '');
                 ?></a>
 
 

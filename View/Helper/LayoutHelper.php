@@ -237,7 +237,13 @@ class LayoutHelper extends AppHelper {
         );
 
         if(isSet($extra['tooltip'])) {
-            $style['after'] = $this->toolTip($extra['tooltip'], 'space11').$style['after'];
+            if(!isSet($extra['tooltip_class'])) {
+                $extra['tooltip_class']  = 'space11';
+            }
+            $style['after'] = $this->toolTip($extra['tooltip'], $extra['tooltip_class']).$style['after'];
+
+
+            unset($extra['tooltip'], $extra['tooltip_class']);
         }
         if($extra) {
             $style = am($style, $extra);
@@ -331,7 +337,7 @@ class LayoutHelper extends AppHelper {
             $data['total_lessons']  = $statistics['total_lessons'];
             $data['students_amount']= $statistics['students_amount'];
             $data['raters_amount']  = $statistics['raters_amount'];
-            $data['avarage_rating'] = $statistics['avarage_rating'];
+            $data['average_rating'] = $statistics['average_rating'];
             $data['created']        = $statistics['created'];
         }
 

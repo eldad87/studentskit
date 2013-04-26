@@ -176,7 +176,7 @@ class Course extends AppModel {
             isSet($this->data[$this->alias]['description']) ||
             isSet($this->data[$this->alias]['language']) ||
             isSet($this->data[$this->alias]['lesson_type']) ||
-            isSet($this->data[$this->alias]['avarage_rating']) ||
+            isSet($this->data[$this->alias]['average_rating']) ||
             isSet($this->data[$this->alias]['is_public']) ||
             isSet($this->data[$this->alias]['1_on_1_price']) ||
             isSet($this->data[$this->alias]['category_id'])) {
@@ -194,7 +194,7 @@ class Course extends AppModel {
             $update[$update['language'].'_t']   = $courseData['description'];
             $update['1_on_1_price']             = $courseData['1_on_1_price'];
             $update['lesson_type']              = intval($courseData['lesson_type']);
-            $update['avarage_rating']           = $courseData['avarage_rating'];
+            $update['average_rating']           = $courseData['average_rating'];
             $update['is_public']                = (boolean) $courseData['is_public'];
             $update['last_modified']            = $courseData['modified'] ? $courseData['modified'] : $courseData['created'];
 

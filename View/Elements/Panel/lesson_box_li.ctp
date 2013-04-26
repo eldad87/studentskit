@@ -26,7 +26,7 @@ if(isSet($lessonData['UserLesson'])) {
 
 
     <div class="lesson-box-footer radius2">
-        <div class="pull-left star"><?php echo $this->Layout->ratingNew($lessonData['Subject']['avarage_rating'], false, 'pull-left pad8'); ?></div>
+        <div class="pull-left star"><?php echo $this->Layout->ratingNew($lessonData['Subject']['average_rating'], false, 'pull-left pad8'); ?></div>
 
         <div class="pull-right">
             <?php

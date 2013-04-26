@@ -98,7 +98,7 @@ if($page==1) {
                     </div>
 
                     <div class="lesson-box-footer radius2">
-                        <div class="pull-left star"><?php echo $this->Layout->ratingNew($bookingRequest['Student']['student_avarage_rating'], false, 'pull-left pad8'); ?></div>
+                        <div class="pull-left star"><?php echo $this->Layout->ratingNew($bookingRequest['Student']['student_average_rating'], false, 'pull-left pad8'); ?></div>
                     </div><!-- /lesson-box-footer -->
 
                 </div><!-- /lesson-box  -->

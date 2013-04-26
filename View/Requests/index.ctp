@@ -41,7 +41,7 @@ $this->Html->scriptBlock('
                             echo $this->element('wish', array( 'wishListId'            =>$wishRequest['WishList']['wish_list_id'],
                                                                     'name'                  =>$wishRequest['WishList']['name'],
                                                                     'description'           =>$wishRequest['WishList']['description'],
-                                                                    'avarageRating'         =>$wishRequest['Student']['student_avarage_rating'],
+                                                                    'averageRating'         =>$wishRequest['Student']['student_average_rating'],
                                                                     'oneOnOnePrice'         =>$wishRequest['WishList']['1_on_1_price'],
                                                                     'imageSource'           =>$wishRequest['WishList']['image_source'],
                                                                     'lessonType'            =>$wishRequest['WishList']['lesson_type'],

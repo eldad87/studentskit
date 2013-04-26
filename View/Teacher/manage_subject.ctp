@@ -44,7 +44,7 @@
 
             <?php
                 if($creationStage!=CREATION_STAGE_PUBLISH) {
-                    echo '<li class="'.$classes['publish'].'" id="publishTab"><a href="#"  class="load3" rel="'.Router::url(array('controller'=>'Teacher','action'=>'subjectPublish', $subjectId)).'">'.__('Publish').'</a></li>';
+                    echo '<li class="'.$classes['publish'].'" id="publishTab"><a href="#"  class="load3" rel="'.Router::url(array('controller'=>'Teacher','action'=>'subjectFinish', $subjectId)).'">'.__('Finish').'</a></li>';
                 }
             ?>
         </ul>

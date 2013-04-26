@@ -24,9 +24,9 @@
         </div>
         <div class="log-box c-pad">
             <?php
-                echo $this->Layout->ratingNew($teacherData['teacher_avarage_rating'], false, 'pull-left pad8');
+                echo $this->Layout->ratingNew($teacherData['teacher_average_rating'], false, 'pull-left pad8');
             ?>
-            <p><?php echo sprintf(__('(%s/%s Reviews)'), $teacherData['teacher_avarage_rating'], $teacherData['teacher_raters_amount']); ?></p>
+            <p><?php echo sprintf(__('(%s/%s Reviews)'), $teacherData['teacher_average_rating'], $teacherData['teacher_raters_amount']); ?></p>
         </div>
     </div> <!-- /student-main-box -->
 

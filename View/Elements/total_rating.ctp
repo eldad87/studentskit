@@ -1,6 +1,6 @@
 <div>
 <?php
-echo 'avrage rating: '.$avarage_rating;
+echo 'avrage rating: '.$average_rating;
 echo '<br />';
 echo '#of students: '.$students_amount;
 echo '<br />';

@@ -133,7 +133,7 @@ class Subject extends SolrSearch {
 				'required'	=> 'create',
 				'allowEmpty'=> false,
 				'rule'    	=> array('range', 4, 241),
-				'message' 	=> 'Duration must be more then %d minutes and less then %d minutes'
+				'message' 	=> 'Must be more then %d minutes and less then %d minutes'
 			)
 		),
 		'1_on_1_price'=> array(
@@ -162,24 +162,18 @@ class Subject extends SolrSearch {
                 'allowEmpty'=> false,
                 'rule'    	=> 'numeric',
                 'message' 	=> 'Enter a valid number'
-            )/*,
-			'max_students' 	=> array(
-				'required'	=> 'create',
-				'allowEmpty'=> true,
-				'rule'    	=> 'maxStudentsCheck',
-				'message' 	=> 'You must set a full Group Student Price'
-			)*/
+            )
 		),
         'full_group_student_price'=> array(
             'price' => array(
                 'allowEmpty'=> true,
                 'rule'    	=> 'numeric',
-                'message' 	=> 'Enter a valid group price'
+                'message' 	=> 'Enter a valid price'
             ),
             'full_group_student_price' 	=> array(
                 'allowEmpty'=> true,
                 'rule'    	=> 'fullGroupStudentPriceCheck',
-                'message' 	=> 'You must set a student full group price'
+                'message' 	=> 'You must set a price'
             )
         ),
 	);
@@ -228,17 +222,15 @@ class Subject extends SolrSearch {
         ));
 
 
-        $exists = $this->exists(!empty($this->data['Subject'][$this->primaryKey]) ? $this->data['Subject'][$this->primaryKey] : $this->id);
-        $this->calcFullGroupPriceIfNeeded($this->data['Subject'], $exists );
-        $this->extraValidation($this);
-
-        //No need to validate duration for video lessons
-        if(isSet($this->data['Subject']['lesson_type']) &&  $this->data['Subject']['lesson_type']==LESSON_TYPE_VIDEO) {
-            $this->validator()->remove('duration_minutes');
-        }
+        $this->validateRules($this);
     }
 
-	public function beforeSave($options=array()) {
+
+
+
+
+
+    public function beforeSave($options=array()) {
 		parent::beforeSave($options);
 
         $pKey = !empty($this->data[$this->name][$this->primaryKey]) ? $this->data[$this->name][$this->primaryKey] : $this->id;
@@ -252,7 +244,7 @@ class Subject extends SolrSearch {
          * Default settings for is_public (in case not provided).
          * Based on creation_stage value
          */
-        if(isSet($this->data['Subject']['creation_stage'])) {
+        /*if(isSet($this->data['Subject']['creation_stage'])) {
             //This is based on the fact that you cannot downgrade the creation stage.
             if($this->data['Subject']['creation_stage']==CREATION_STAGE_PUBLISH) {
                 if(!isSet($this->data['Subject']['is_public'])) {
@@ -265,7 +257,7 @@ class Subject extends SolrSearch {
         } else if(!$exists) {
             //New subject-offer record, and no creation-stage, set is_public to default
             $this->data['Subject']['is_public'] = SUBJECT_IS_PUBLIC_FALSE;
-        }
+        }*/
 
         //Existing subject - having a subject image
         if( $exists && isSet($this->data['Subject']['image']) && $this->data['Subject']['image']==IMAGE_SUBJECT ) {
@@ -331,24 +323,10 @@ class Subject extends SolrSearch {
         return true;
 	}
 
-    /*public static function calcFullGroupStudentPriceIfNeeded(&$data, $existingRecord) {
-        //Calculate full_group_student_price
-        if(	isSet($data['max_students']) && $data['max_students']>1  &&
-            $data['full_group_total_price'] && !empty($data['full_group_total_price'])) {
 
-            App::import('Model', 'Subject');
-            $data['full_group_student_price'] = Subject::calcStudentFullGroupPrice( $data['1_on_1_price'], $data['full_group_total_price'], $data['max_students'], $data['max_students'] );
-        } else {
-            unset(	$data['max_students'],
-            $data['full_group_total_price'],
-            $data['full_group_student_price']);
 
-            if(!$existingRecord) {
-                $data['max_students'] = 1;
-            }
-        }
-    }*/
-    public static function calcFullGroupPriceIfNeeded(&$data, $existingRecord) {
+
+    /*public static function calcFullGroupPriceIfNeeded(&$data, $existingRecord) {
         if(isSet($data['max_students']) && $data['max_students']) {
             if($data['max_students']==1) {
                 $data['full_group_total_price'] = null;
@@ -365,6 +343,8 @@ class Subject extends SolrSearch {
                     $data['full_group_student_price']);
         }
     }
+
+
 
     public static function extraValidation(&$obj) {
         $objData =& $obj->data[$obj->name];
@@ -397,26 +377,54 @@ class Subject extends SolrSearch {
             $objData['max_students'] = 1;
             unset($objData['full_group_student_price'], $objData['full_group_total_price']);
         }
-    }
+    }*/
 
 
     public function afterSave($created) {
         parent::afterSave($created);
 
+        //Set file system
+        if($created) {
+            App::import('Model', 'FileSystem');
+            $fsObj = new FileSystem();
+
+            //Create root filesystem
+            $fsObj->createFS('subject', $this->id, 0, 0, $this->data['Subject']['name']);
+            $rootFS = $fsObj->id;
+
+            //Create users upload root dir
+            $fsObj->addFolder($rootFS, __('Users uploads'), false); //TODO: use Teacher language/subject language
+            $usersUploadRoot = $fsObj->id;
+
+            //$this->set(array('root_file_system_id'=>$rootFS, 'user_upload_root_file_system_id'=>$usersUploadRoot));
+            if(!$this->updateAll(array('root_file_system_id'=>$rootFS, 'user_upload_root_file_system_id'=>$usersUploadRoot), array($this->primaryKey=>$this->id))) {
+                return false;
+            }
+        }
+
         if( isSet($this->data['Subject']['name']) ||
             isSet($this->data['Subject']['description']) ||
             isSet($this->data['Subject']['language']) ||
             isSet($this->data['Subject']['lesson_type']) ||
-            isSet($this->data['Subject']['avarage_rating']) ||
+            isSet($this->data['Subject']['average_rating']) ||
             isSet($this->data['Subject']['is_public']) ||
             isSet($this->data['Subject']['1_on_1_price']) ||
-            isSet($this->data['Subject']['category_id'])) {
+            isSet($this->data['Subject']['category_id']) ||
+            (isSet($this->data['Subject']['creation_stage']) &&
+                $this->data['Subject']['creation_stage'] == CREATION_STAGE_PUBLISH
+            )) {
 
 
             //Find the subject
             $this->recursive = -1;
             $subjectData = $this->findBySubjectId($this->id);
             $subjectData = $subjectData['Subject'];
+
+            //Only if creation stage is final - add to solr
+            if($subjectData['creation_stage']!=CREATION_STAGE_PUBLISH) {
+                return true;
+            }
+
 
             //TODO: add user location, max_students and total_group_price
 
@@ -427,7 +435,7 @@ class Subject extends SolrSearch {
             $update[$update['language'].'_t']   = $subjectData['description'];
             $update['1_on_1_price']             = $subjectData['1_on_1_price'];
             $update['lesson_type']              = intval($subjectData['lesson_type']);
-            $update['avarage_rating']           = $subjectData['avarage_rating'];
+            $update['average_rating']           = $subjectData['average_rating'];
             $update['is_public']                = (boolean) $subjectData['is_public'];
             $update['last_modified']            = $subjectData['modified'] ? $subjectData['modified'] : $subjectData['created'];
 
@@ -448,22 +456,7 @@ class Subject extends SolrSearch {
         }
 
 
-        //Set file system
-        if($created) {
-            App::import('Model', 'FileSystem');
-            $fsObj = new FileSystem();
 
-            //Create root filesystem
-            $fsObj->createFS('subject', $this->id, 0, 0, $this->data['Subject']['name']);
-            $rootFS = $fsObj->id;
-
-            //Create users upload root dir
-            $fsObj->addFolder($rootFS, __('Users uploads'), false); //TODO: use Teacher language/subject language
-            $usersUploadRoot = $fsObj->id;
-
-            //$this->set(array('root_file_system_id'=>$rootFS, 'user_upload_root_file_system_id'=>$usersUploadRoot));
-            return $this->updateAll(array('root_file_system_id'=>$rootFS, 'user_upload_root_file_system_id'=>$usersUploadRoot), array($this->primaryKey=>$this->id));
-        }
 
         return true;
     }
@@ -574,7 +567,7 @@ class Subject extends SolrSearch {
                 'Teacher' => array(
                     'className' => 'User',
                     'foreignKey'=>'user_id',
-                    'fields'=>array('username', 'image_source'/*, 'last_name', 'image', 'student_avarage_rating', 'student_total_lessons'*/))
+                    'fields'=>array('username', 'image_source'/*, 'last_name', 'image', 'student_average_rating', 'student_total_lessons'*/))
             )
             )
         );
@@ -588,7 +581,7 @@ class Subject extends SolrSearch {
 											'Student' => array(
 												'className' => 'User',
 												'foreignKey'=>'user_id',
-												'fields'=>array('first_name', 'last_name', 'username', 'image', 'image_source', 'student_avarage_rating', 'student_total_lessons'))
+												'fields'=>array('first_name', 'last_name', 'username', 'image', 'image_source', 'student_average_rating', 'student_total_lessons'))
 											)
 								)
 						);
@@ -602,9 +595,9 @@ ELSE value+1 END
 WHERE value_enabled<>0;
   */
 		$update = array(
-            'avarage_rating'=>$this->getDataSource()->expression('CASE WHEN raters_amount=0 THEN '.$rating.'
-                                                                    ELSE ((raters_amount*avarage_rating)+'.$rating.')/(raters_amount+1) END'),
-			//'avarage_rating'=>$this->getDataSource()->expression('((raters_amount*avarage_rating)+'.$rating.')/(raters_amount+1)'),
+            'average_rating'=>$this->getDataSource()->expression('CASE WHEN raters_amount=0 THEN '.$rating.'
+                                                                    ELSE ((raters_amount*average_rating)+'.$rating.')/(raters_amount+1) END'),
+			//'average_rating'=>$this->getDataSource()->expression('((raters_amount*average_rating)+'.$rating.')/(raters_amount+1)'),
 			'raters_amount'	=>$this->getDataSource()->expression('raters_amount +1')
 		);
 

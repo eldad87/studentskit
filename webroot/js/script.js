@@ -299,6 +299,62 @@ function parseResponse(data) {
 
 /////////////////////////////////////////////////////////////// panel + site
 
+function initSubjectAddForm(isPublicInputSelector, lessonTypeInputSelector, oneOnOneInputSelector, maxStudentsSelector) {
+
+
+
+    //Unbind all events - in case of a refresh
+    $(isPublicInputSelector).unbind();
+    $(lessonTypeInputSelector).unbind();
+    $(oneOnOneInputSelector).unbind();
+    $(maxStudentsSelector).unbind();
+
+    //Disable HTML 5 validation
+    $(isPublicInputSelector).closest('form').attr('novalidate', 'novalidate');
+
+    //Change of is public
+    $(isPublicInputSelector).change(function(){
+        if($(this).val()==1) {
+            $('#publicSettingsDiv').show();
+        } else {
+            $('#publicSettingsDiv').hide();
+        }
+
+        $(lessonTypeInputSelector).change();
+    });
+
+    //On live lessons - disable max_students and volume discount
+    $(lessonTypeInputSelector).change(function(){
+        if($(this).val()=='live') {
+            $('#maxStudentsAndDiscountDiv').show();
+            $('#durationDiv').show();
+        } else {
+            $('#maxStudentsAndDiscountDiv').hide();
+            $('#durationDiv').hide();
+        }
+
+        $(maxStudentsSelector).change();
+    });
+
+    //If free lesson - no need for volume discount
+    $(oneOnOneInputSelector).change(function(){
+        $(maxStudentsSelector).change();
+    });
+
+    //On paid lessons with more then 1 student - a volume discount is enabled
+    $(maxStudentsSelector).change(function(){
+        if($(this).val()>1 && $(oneOnOneInputSelector).val()>0) {
+            $('#discountPriceDiv').show();
+        } else {
+            $('#discountPriceDiv').hide();
+        }
+    });
+
+
+    //Init the form view
+    $(isPublicInputSelector).change();
+}
+
 function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
                          maxStudentsInputSelector, maxStudentsDivSelector,
                          fullGroupStudentPriceDivSelector, fullGroupStudentPriceInputSelector,

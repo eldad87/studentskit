@@ -200,8 +200,8 @@ class User extends AppModel {
 
 	public function setRating($userId, $userType, $rating) {
 		$update = array(
-            $userType.'_avarage_rating' =>$this->getDataSource()->expression('CASE WHEN '.$userType.'_raters_amount=0 THEN '.$rating.'
-                                                                    ELSE (('.$userType.'_raters_amount*'.$userType.'_avarage_rating)+'.$rating.')/('.$userType.'_raters_amount+1) END'),
+            $userType.'_average_rating' =>$this->getDataSource()->expression('CASE WHEN '.$userType.'_raters_amount=0 THEN '.$rating.'
+                                                                    ELSE (('.$userType.'_raters_amount*'.$userType.'_average_rating)+'.$rating.')/('.$userType.'_raters_amount+1) END'),
 			$userType.'_raters_amount'	=>$this->getDataSource()->expression($userType.'_raters_amount+1')
 		);
 		$this->id = $userId;

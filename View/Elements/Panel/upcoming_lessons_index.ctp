@@ -37,7 +37,7 @@
             </div>
             <div class="lesson-box-footer radius2">
 
-                <div class="pull-left star"><?php echo $this->Layout->ratingNew($upcomingLesson['Subject']['avarage_rating'], false, 'pull-left pad8'); ?></div>
+                <div class="pull-left star"><?php echo $this->Layout->ratingNew($upcomingLesson['Subject']['average_rating'], false, 'pull-left pad8'); ?></div>
                 <div class="pull-right">
                     <?php echo $this->Layout->priceTag($lessonData['full_group_total_price'], $lessonData['full_group_student_price']); ?>
                     <!--<a href="#"><i class="iconSmall-info space3"></i></a>-->

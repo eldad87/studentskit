@@ -111,7 +111,7 @@ class WishList extends SolrSearch {
         'Student' => array(
             'className' => 'User',
             'foreignKey'=>'student_user_id',
-            'fields'    =>array('first_name', 'last_name', 'username', 'image', 'image_source', 'student_avarage_rating', 'student_total_lessons')
+            'fields'    =>array('first_name', 'last_name', 'username', 'image', 'image_source', 'student_average_rating', 'student_total_lessons')
         ),
     );
 
@@ -180,7 +180,7 @@ class WishList extends SolrSearch {
             $update['name']                     = $wishData['name'];
             $update[$update['language'].'_t']   = $wishData['description'];
             $update['1_on_1_price']             = $wishData['1_on_1_price'];
-            $update['avarage_rating']           = $wishAllData['Student']['student_avarage_rating'];
+            $update['average_rating']           = $wishAllData['Student']['student_average_rating'];
             $update['lesson_type']              = intval($wishData['lesson_type']);
             $update['last_modified']            = $wishData['modified'] ? $wishData['modified'] : $wishData['created'];
 

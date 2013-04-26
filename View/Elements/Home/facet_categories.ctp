@@ -49,9 +49,9 @@
     <p class="category-subheadbar pricesubheader"><?php echo __('Rate'); ?></p>
     <ul class="categorystripbox categorystripbox1">
         <li class="nobackground">
-            <?php echo $this->Form->input('avarage_rating_from', array('label'=>false, 'div'=>false)); ?>
+            <?php echo $this->Form->input('average_rating_from', array('label'=>false, 'div'=>false)); ?>
             <label id="middletexr"> <?php echo __('to'); ?></label>
-            <?php echo $this->Form->input('avarage_rating_to', array('label'=>false, 'div'=>false)); ?>
+            <?php echo $this->Form->input('average_rating_to', array('label'=>false, 'div'=>false)); ?>
         </li>
     </ul>
     <?php

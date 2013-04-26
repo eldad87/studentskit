@@ -57,7 +57,7 @@ echo $this->element('Panel'.DS.'accept_lesson_popup', array('buttonSelector'=>'.
                 <div class="lesson-box-footer radius2">
                     <div class="pull-left star">
                     <?php
-                        echo $this->Layout->ratingNew($subjectData['avarage_rating'], false, 'pull-left pad8'); ?>
+                        echo $this->Layout->ratingNew($subjectData['average_rating'], false, 'pull-left pad8'); ?>
                     </div>
                 </div><!-- /lesson-box-footer -->
             </div><!-- /lesson-box -->

@@ -54,7 +54,7 @@ class TeacherLesson extends AppModel {
 				'required'	=> 'create',
 				'allowEmpty'=> false,
 				'rule'    	=> array('range', 4, 241),
-				'message' 	=> 'Lesson must be more then %d minutes and less then %d minutes'
+				'message' 	=> 'Must be more then %d minutes and less then %d minutes'
 			)
 		),
 		'1_on_1_price'=> array(
@@ -83,13 +83,7 @@ class TeacherLesson extends AppModel {
 				'allowEmpty'=> false,
 				'rule'    	=> 'numeric',
 				'message' 	=> 'Enter a valid number'
-			)/*,
-            'max_students' 	=> array(
-                'required'	=> 'create',
-                'allowEmpty'=> true,
-                'rule'    	=> 'maxStudentsCheck',
-                'message' 	=> 'You must set group price'
-            )*/
+			)
         ),
         'full_group_student_price'=> array(
             'price' => array(
@@ -114,7 +108,7 @@ class TeacherLesson extends AppModel {
 					'Subject' => array(
 						'className'	=> 'Subject',
 						'foreignKey'=>'subject_id',
-						'fields'	=>array('avarage_rating', 'image', 'type', 'is_enable' )
+						'fields'	=>array('average_rating', 'image', 'type', 'is_enable' )
 					)
 				);
 
@@ -160,37 +154,14 @@ class TeacherLesson extends AppModel {
         App::import('Model', 'Subject');
 
         $exists = $this->exists(!empty($this->data['TeacherLesson'][$this->primaryKey]) ? $this->data['TeacherLesson'][$this->primaryKey] : null);
-        Subject::calcFullGroupPriceIfNeeded($this->data['UserLesson'], $exists );
-        Subject::extraValidation($this);
+        /*Subject::calcFullGroupPriceIfNeeded($this->data['UserLesson'], $exists );
+        Subject::extraValidation($this);*/
+        $this->validateRules($this);
 
 
         $lessonType = false;
-        /*
-         * THIS CODE IS WORKING (not QAed)
-         */
-        //If teacher ask to cancel a TeacherLesson, allow him to do it 1 hour before the lesson starts only if the lessons have no students
-        if($exists && isSet($this->data['TeacherLesson']['is_deleted']) && $this->data['TeacherLesson']['is_deleted']==1) { //Ask to cancel
-            //Find record
-            $this->recursive = -1;
-            $teacherLessonData = $this->findByTeacherLessonId(isSet($this->data['TeacherLesson'][$this->primaryKey]) ? $this->data['TeacherLesson'][$this->primaryKey] : $this->id);
-            $lessonType = $teacherLessonData['TeacherLesson']['lesson_type'];
 
-            if($lessonType==LESSON_TYPE_LIVE && $teacherLessonData['TeacherLesson']['num_of_students']>0) { //Live lesson with students
-                //Set datetime so it will get checked
-                $this->data['TeacherLesson']['datetime'] = $teacherLessonData['TeacherLesson']['datetime'];
-            }
-        }
-
-        if(!$lessonType && isSet($this->data['TeacherLesson']['subject_id']) || !empty($this->data['TeacherLesson']['subject_id'])) {
-            $subjectData = $this->Subject->findBySubjectId($this->data['TeacherLesson']['subject_id']);
-            if(!$subjectData) {
-                return false;
-            }
-            $lessonType = $subjectData['Subject']['lesson_type'];
-        }
-
-        //Teacher ask to cancel his lesson
-        //There is no need to limit this check to LIVE lessons only. the reason is that VIDEO lessons get datetime only on the first watch
+        //If teacher ask to cancel a TeacherLesson
         if($exists &&
             isSet($this->data['TeacherLesson']['is_deleted']) && $this->data['TeacherLesson']['is_deleted']==1 &&
             (!isSet($this->data['TeacherLesson']['datetime']) || empty($this->data['TeacherLesson']['datetime']))) { //There is no datetime set
@@ -198,7 +169,26 @@ class TeacherLesson extends AppModel {
             $this->recursive = -1;
             $teacherLessonsData = $this->findByTeacherLessonId($this->id ? $this->id : $this->data['TeacherLesson'][$this->primaryKey]);
             $lessonType = $teacherLessonsData['TeacherLesson']['lesson_type'];
-            $this->data['TeacherLesson']['datetime'] = $teacherLessonsData['TeacherLesson']['datetime'];
+
+
+                //There is no need to limit this check to LIVE lessons only. the reason is that VIDEO lessons get datetime only on the first watch
+            if($lessonType==LESSON_TYPE_VIDEO || //Live lesson
+                // allow teacher to cancel 1 hour before the lesson starts only if the lessons have no students
+                $teacherLessonsData['TeacherLesson']['num_of_students']>0) { //Live lesson with students
+
+                //Set datetime so it will get checked
+                $this->data['TeacherLesson']['datetime'] = $teacherLessonsData['TeacherLesson']['datetime'];
+            }
+
+        }
+
+        //Find TeacherLesson if not set yet
+        if(!$lessonType && isSet($this->data['TeacherLesson']['subject_id']) || !empty($this->data['TeacherLesson']['subject_id'])) {
+            $subjectData = $this->Subject->findBySubjectId($this->data['TeacherLesson']['subject_id']);
+            if(!$subjectData) {
+                return false;
+            }
+            $lessonType = $subjectData['Subject']['lesson_type'];
         }
 
 
@@ -276,7 +266,7 @@ class TeacherLesson extends AppModel {
                 'lesson_type'				=> $subjectData['lesson_type'],
                 'language'				    => $subjectData['language'],
                 'datetime'					=> $datetime, //Convert timestamp to datetime
-                'category_id'		=> $subjectData['category_id'],
+                'category_id'		        => $subjectData['category_id'],
                 'forum_id'		            => $subjectData['forum_id'],
                 'name'						=> $subjectData['name'],
                 'description'				=> $subjectData['description'],
@@ -304,9 +294,9 @@ class TeacherLesson extends AppModel {
 
             //Set the end of the lesson, video lesson end date is first-watching-time+2 days
             if($subjectData['lesson_type']==LESSON_TYPE_LIVE && $datetime) {
-                if(is_object($datetime)) {
+                /*if(is_object($datetime)) {
                     $datetime = $datetime->value;
-                }
+                }*/
                 $teacherLessonData['end_datetime'] = $this->getDataSource()->expression('DATE_ADD(`datetime`, INTERVAL `duration_minutes` MINUTE)');
             }
 

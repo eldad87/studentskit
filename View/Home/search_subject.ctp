@@ -50,8 +50,8 @@
 							<ul class="lesson-container">
 								<?php
 								if($subjectsData) {
-									foreach($subjectsData['subjects'] AS $newSubject) {
-										$newSubject['Subject']['one_on_one_price'] = $newSubject['Subject']['1_on_1_price'];
+									foreach($subjectsData['records'] AS $newSubject) {
+										$newSubject['records']['one_on_one_price'] = $newSubject['Subject']['1_on_1_price'];
 										echo '<li class="cont-span4 spc space2">';
 
                                         echo $this->Html->link( $this->element( 'subject', array(
@@ -60,7 +60,7 @@
                                             'teacherUsername'       =>$newSubject['Teacher']['username'],
                                             'name'                  =>$newSubject['Subject']['name'],
                                             'description'           =>$newSubject['Subject']['description'],
-                                            'avarageRating'         =>$newSubject['Subject']['avarage_rating'],
+                                            'averageRating'         =>$newSubject['Subject']['average_rating'],
                                             'oneOnOnePrice'         =>$newSubject['Subject']['1_on_1_price'],
                                             'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
                                             'imageSource'           =>$newSubject['Subject']['image_source'],

@@ -20,7 +20,7 @@
     </div>
     <div class="lesson-box-footer radius2">
         <?php
-         echo $this->Layout->ratingNew($avarageRating, false, 'pull-left space3');
+         echo $this->Layout->ratingNew($averageRating, false, 'pull-left space3');
         ?>
 
         <div class="pull-right">

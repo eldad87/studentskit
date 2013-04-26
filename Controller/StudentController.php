@@ -390,7 +390,7 @@ class StudentController extends AppController {
 		$this->set('reviews', $reviews);
 		
 		$userData = $this->User->findByUserId($this->Auth->user('user_id'));
-		$this->set('avarageRating', $userData['User']['student_avarage_rating']);
+		$this->set('averageRating', $userData['User']['student_average_rating']);
 	}
 	public function setReview($userLessonId) {
 		if (empty($this->request->data)) {
@@ -412,6 +412,6 @@ class StudentController extends AppController {
 		$this->Set('reviews', $reviews);
 
         $userData = $this->User->findByUserId($this->Auth->user('user_id'));
-        $this->set('avarageRating', $userData['User']['student_avarage_rating']);
+        $this->set('averageRating', $userData['User']['student_average_rating']);
 	}
 }

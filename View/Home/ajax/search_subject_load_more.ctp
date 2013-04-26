@@ -9,7 +9,7 @@ if($response['response']['records']) {
                                                         'teacherUsername'       =>$subjectData['Teacher']['username'],
                                                         'name'                  =>$subjectData['Subject']['name'],
                                                         'description'           =>$subjectData['Subject']['description'],
-                                                        'avarageRating'         =>$subjectData['Subject']['avarage_rating'],
+                                                        'averageRating'         =>$subjectData['Subject']['average_rating'],
                                                         'oneOnOnePrice'         =>$subjectData['Subject']['1_on_1_price'],
                                                         'fullGroupStudentPrice' =>$subjectData['Subject']['full_group_student_price'],
                                                         'imageSource'           =>$subjectData['Subject']['image_source'],

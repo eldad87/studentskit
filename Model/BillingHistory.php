@@ -14,7 +14,7 @@ class BillingHistory extends   AppModel {
         'Subject' => array(
             'className'	=> 'Subject',
             'foreignKey'=>'subject_id',
-            'fields'	=>array('avarage_rating', 'image_source', 'type', 'is_enable' )
+            'fields'	=>array('average_rating', 'image_source', 'type', 'is_enable' )
         )
     );
 

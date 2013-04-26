@@ -10,7 +10,7 @@ echo $this->Html->link('<div class="lesson-box">
         </div>
     </div>
     <div class="lesson-box-footer radius2">
-        '.$this->Layout->ratingNew($avarageRating, false, 'pull-left space3').'
+        '.$this->Layout->ratingNew($averageRating, false, 'pull-left space3').'
         <div class="pull-right">
             '.$this->Layout->priceTag($oneOnOnePrice).'
             '.$this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($wishData)).'

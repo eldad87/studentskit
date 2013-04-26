@@ -37,7 +37,7 @@ $toTheLessonLink = $this->Html->link(__('User page'), array('controller'=>'Home'
                 <div class="lesson-box-footer radius2">
                     <div class="pull-left star">
                         <?php
-                        echo $this->Layout->ratingNew($student['Student']['student_avarage_rating'], false, 'pull-left pad8'); ?>
+                        echo $this->Layout->ratingNew($student['Student']['student_average_rating'], false, 'pull-left pad8'); ?>
                     </div>
                 </div><!-- /lesson-box-footer -->
             </div> <!-- /lesson-box -->

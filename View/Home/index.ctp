@@ -41,7 +41,7 @@
                                                                     'teacherUsername'       =>$newSubject['Teacher']['username'],
                                                                     'name'                  =>$newSubject['Subject']['name'],
                                                                     'description'           =>$newSubject['Subject']['description'],
-                                                                    'avarageRating'         =>$newSubject['Subject']['avarage_rating'],
+                                                                    'averageRating'         =>$newSubject['Subject']['average_rating'],
                                                                     'oneOnOnePrice'         =>$newSubject['Subject']['1_on_1_price'],
                                                                     'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
                                                                     'imageSource'           =>$newSubject['Subject']['image_source'],

@@ -24,17 +24,17 @@ class UserLesson extends AppModel {
 					'Teacher' => array(
 						'className' => 'User',
 						'foreignKey'=>'teacher_user_id',
-						'fields'=>array('first_name', 'last_name', 'username', 'image', 'image_source', 'teacher_avarage_rating', 'teacher_total_lessons')
+						'fields'=>array('first_name', 'last_name', 'username', 'image', 'image_source', 'teacher_average_rating', 'teacher_total_lessons')
 					),
 					'Student' => array(
 						'className' => 'User',
 						'foreignKey'=>'student_user_id',
-						'fields'=>array('first_name', 'last_name', 'username', 'image', 'image_source', 'student_avarage_rating', 'student_total_lessons')
+						'fields'=>array('first_name', 'last_name', 'username', 'image', 'image_source', 'student_average_rating', 'student_total_lessons')
 					),
 					'Subject' => array(
 						'className' => 'Subject',
 						'foreignKey'=>'subject_id',
-						'fields'=>array('avarage_rating', 'image', 'image_source', 'is_enable')
+						'fields'=>array('average_rating', 'image', 'image_source', 'is_enable')
 					),
 					'TeacherLesson' => array(
 						'className' => 'TeacherLesson',
@@ -109,14 +109,7 @@ class UserLesson extends AppModel {
 					'allowEmpty'=> false,
 					'rule'    	=> 'numeric',
 					'message' 	=> 'Enter a valid number'
-				)/*,
-				'max_students' 	=> array(
-                    'allowEmpty'=> true,
-                    'required'	=> 'create',
-                    'rule'    	=> 'maxStudentsCheck',
-                    'message' 	=> 'Error on max group price'
-                ),*/
-
+				)
             ),
             'full_group_student_price'=> array(
                 'price' => array(
@@ -406,8 +399,9 @@ class UserLesson extends AppModel {
         App::import('Model', 'Subject');
 
         $exists = $this->exists(!empty($this->data['UserLesson'][$this->primaryKey]) ? $this->data['UserLesson'][$this->primaryKey] : null);
-        Subject::calcFullGroupPriceIfNeeded($this->data['UserLesson'], $exists);
-        Subject::extraValidation($this);
+        /*Subject::calcFullGroupPriceIfNeeded($this->data['UserLesson'], $exists);
+        Subject::extraValidation($this);*/
+        $this->validateRules($this);
 
         $lessonType = (isSet($this->data['UserLesson']['lesson_type']) && !empty($this->data['UserLesson']['lesson_type']) ?
                         $this->data['UserLesson']['lesson_type'] :
@@ -604,10 +598,6 @@ class UserLesson extends AppModel {
 
         if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
             //Set the end of the lesson, video lesson end date is first-watching-time+2 days
-            /*if(is_object($datetime)) {
-                $datetime = $datetime->value;
-            }*/
-            //$userLesson['end_datetime'] = $this->timeExpression($datetime.' + '.$subjectData['duration_minutes'].' minutes' ,false);
             $userLesson['end_datetime'] = $this->getDataSource()->expression('DATE_ADD(`datetime`, INTERVAL `duration_minutes` MINUTE)');
 
         } else if($subjectData['lesson_type']==LESSON_TYPE_VIDEO) {
@@ -1046,7 +1036,7 @@ class UserLesson extends AppModel {
     }
 	
 	public function rate( $userLessonId, $byUserId, $rating, $comment ) {
-		//on rate, if teacher - update student amount of raters + avarage rate. if student - update subject && teacher amount of raters + avarage rate
+		//on rate, if teacher - update student amount of raters + average rate. if student - update subject && teacher amount of raters + average rate
 		$userLessonData = $this->findByUserLessonId($userLessonId);
 		if(!$userLessonData) {
 			return false;

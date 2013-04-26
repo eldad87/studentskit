@@ -63,7 +63,7 @@ $this->Html->scriptBlock('
                             <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $userData['student_total_lessons']; ?></span><br /><?php echo __('Lessons'); ?></p>
                             <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $userData['student_raters_amount']; ?></span><br><?php echo __('Reviews'); ?></p>
                             <a href="#" class="log2 btn-black radius3"><?php
-                                echo $this->Layout->ratingNew($userData['student_avarage_rating'], false, 'space20 centered');
+                                echo $this->Layout->ratingNew($userData['student_average_rating'], false, 'space20 centered');
                                 ?><br /><?php echo __('Rating'); ?></a>
 
                         </div>

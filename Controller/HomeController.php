@@ -700,11 +700,11 @@ $id = $scObj->id;
 
 
 
-        $avarageRatingFrom      = (isSet($this->request->query['avarage_rating_from'])  &&
-            $this->request->query['avarage_rating_from']          ?   max(min( (int) $this->request->query['avarage_rating_from'], 5), 0): 0);
+        $averageRatingFrom      = (isSet($this->request->query['average_rating_from'])  &&
+            $this->request->query['average_rating_from']          ?   max(min( (int) $this->request->query['average_rating_from'], 5), 0): 0);
 
-        $avarageRatingTo        = (isSet($this->request->query['avarage_rating_to'])    &&
-            $this->request->query['avarage_rating_to']            ? max(min( (int) $this->request->query['avarage_rating_to'], 5), 0)	 : 5);
+        $averageRatingTo        = (isSet($this->request->query['average_rating_to'])    &&
+            $this->request->query['average_rating_to']            ? max(min( (int) $this->request->query['average_rating_to'], 5), 0)	 : 5);
 
 
         $lessonType = array();
@@ -741,9 +741,9 @@ $id = $scObj->id;
             $query['fq']['1_on_1_price'] = '['.$priceFrom.' TO '.$priceTo.',USD]';
         }
 
-        //From-To-avarage_rating
-        if( $avarageRatingFrom<=$avarageRatingTo && ($avarageRatingFrom!=0 || $avarageRatingTo!=0)) {
-            $query['fq']['avarage_rating'] = '['.$avarageRatingFrom.' TO '.$avarageRatingTo.']';
+        //From-To-average_rating
+        if( $averageRatingFrom<=$averageRatingTo && ($averageRatingFrom!=0 || $averageRatingTo!=0)) {
+            $query['fq']['average_rating'] = '['.$averageRatingFrom.' TO '.$averageRatingTo.']';
         }
 
 
@@ -1135,7 +1135,7 @@ $id = $scObj->id;
 	/*public function	order($subjectId, $year=null, $month=null) {
         //TODO: video - there is no need to show calendar
 
-		//Get subject data, students_amount, raters_amount, avarage_rating
+		//Get subject data, students_amount, raters_amount, average_rating
 		$subjectData = $this->Subject->findBySubjectId( $subjectId );
 		if(!$subjectData || $subjectData['Subject']['is_enable']==SUBJECT_IS_ENABLE_FALSE) {
 			$this->Session->setFlash(__('This subject is no longer available'));

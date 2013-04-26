@@ -19,7 +19,7 @@ class PendingUserLesson extends AppModel {
 					'Subject' => array(
 						'className' => 'Subject',
 						'foreignKey'=>'subject_id',
-						'fields'=>array('avarage_rating', 'image')
+						'fields'=>array('average_rating', 'image')
 					),
 					'UserLesson' => array(
 						'className' => 'UserLesson',
