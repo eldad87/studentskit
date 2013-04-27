@@ -50,7 +50,7 @@
 
         /*initSubjectForm('#SubjectPrice', '#SubjectLessonType',
             '#SubjectMaxStudents', '#msDiv',
-            '#fgspDiv', '#SubjectFullGroupStudentPrice', '#durationDiv');*/
+            '#fgspDiv', '#SubjectBulkPrice', '#durationDiv');*/
 
 
 
@@ -119,10 +119,10 @@
             echo '<div id="maxStudentsAndDiscountDiv">';
                 echo $this->Form->input('max_students', $this->Layout->styleForInput(array('type'=>'number', 'min'=>1, 'div'=>array('class'=>'control-group'))));
 
-                echo $this->Form->input('full_group_student_price', $this->Layout->styleForInput(array( 'type'=>'number', 'min'=>0, 'step'=>'any',
-                                                                                                        'label'=>array('class'=>'control-label', 'text'=>__('Volume Discount')),
+                echo $this->Form->input('bulk_price', $this->Layout->styleForInput(array( 'type'=>'number', 'min'=>0, 'step'=>'any',
+                                                                                                        'label'=>array('class'=>'control-label', 'text'=>__('Bulk price')),
                                                                                                         'div'=>array('style'=>'display:none', 'id'=>'discountPriceDiv', 'class'=>'control-group') ,
-                                                                                                        'tooltip'=>__('The max discount for when the lesson is full. The discount is relative to the amount of students and will take affect starting from the 2nd student. Leave BLANK for no discount.'),
+                                                                                                        'tooltip'=>__('The lowest price for when the lesson is full. The price is RELATIVE to the amount of students and will take affect starting from the 2nd student. Leave BLANK for no bulk price. With bulk price, students may advertise your subject in order to gain a better price. the lower the price, the better the chances you\'ll get free advertising.'),
                                                                                                         'tooltip_class'=>'pull-right space3'
                 )));
             echo '</div>';

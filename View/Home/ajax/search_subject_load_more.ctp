@@ -11,7 +11,7 @@ if($response['response']['records']) {
                                                         'description'           =>$subjectData['Subject']['description'],
                                                         'averageRating'         =>$subjectData['Subject']['average_rating'],
                                                         'price'                 =>$subjectData['Subject']['price'],
-                                                        'fullGroupStudentPrice' =>$subjectData['Subject']['full_group_student_price'],
+                                                        'bulkPrice'             =>$subjectData['Subject']['bulk_price'],
                                                         'imageSource'           =>$subjectData['Subject']['image_source'],
         ));
         echo '</li>';

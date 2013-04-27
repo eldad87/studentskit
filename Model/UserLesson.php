@@ -111,15 +111,15 @@ class UserLesson extends AppModel {
 					'message' 	=> 'Enter a valid number'
 				)
             ),
-            'full_group_student_price'=> array(
+            'bulk_price'=> array(
                 'price' => array(
                     'allowEmpty'=> true,
                     'rule'    	=> 'numeric',
                     'message' 	=> 'Enter a valid group price'
                 ),
-                'full_group_student_price' 	=> array(
+                'bulk_price' 	=> array(
                     'allowEmpty'=> true,
-                    'rule'    	=> 'fullGroupStudentPriceCheck',
+                    'rule'    	=> 'bulkPriceCheck',
                     'message' 	=> 'You must set a student full group price'
                 )
             ),
@@ -399,8 +399,6 @@ class UserLesson extends AppModel {
         App::import('Model', 'Subject');
 
         $exists = $this->exists(!empty($this->data['UserLesson'][$this->primaryKey]) ? $this->data['UserLesson'][$this->primaryKey] : null);
-        /*Subject::calcFullGroupPriceIfNeeded($this->data['UserLesson'], $exists);
-        Subject::extraValidation($this);*/
         $this->validateRules($this);
 
         $lessonType = (isSet($this->data['UserLesson']['lesson_type']) && !empty($this->data['UserLesson']['lesson_type']) ?
@@ -494,7 +492,7 @@ class UserLesson extends AppModel {
         parent::beforeSave($options);
         $this->TeacherLesson; //Init const
         if( (isSet($this->data['UserLesson']['price']) && $this->data['UserLesson']['price']>0) ||
-            (isSet($this->data['UserLesson']['full_group_student_price']) && $this->data['UserLesson']['full_group_student_price']>0)) {
+            (isSet($this->data['UserLesson']['bulk_price']) && $this->data['UserLesson']['bulk_price']>0)) {
             $this->data['UserLesson']['payment_status'] = PAYMENT_STATUS_PENDING;
         }
 
@@ -571,7 +569,7 @@ class UserLesson extends AppModel {
 			'duration_minutes'			=> $subjectData['duration_minutes'],
 			'max_students'				=> intval($subjectData['max_students']),
 			'price'				=> $subjectData['price'],
-			'full_group_student_price'	=> $subjectData['full_group_student_price'],
+			'bulk_price'	=> $subjectData['bulk_price'],
 
 			'image'	                    => $subjectData['image'],
 			'image_source'	            => $subjectData['image_source'],
@@ -719,7 +717,7 @@ class UserLesson extends AppModel {
 			'duration_minutes'			=> $teacherLessonData['duration_minutes'],
 			'max_students'				=> $teacherLessonData['max_students'],
 			'price'				=> $teacherLessonData['price'],
-			'full_group_student_price'	=> $teacherLessonData['full_group_student_price'],
+			'bulk_price'	=> $teacherLessonData['bulk_price'],
 
             'image'	                    => $teacherLessonData['image'],
             'image_source'	            => $teacherLessonData['image_source'],
@@ -983,7 +981,7 @@ class UserLesson extends AppModel {
         }
 
         //Remove unauthorized fields
-        $allowedFields = array('datetime', 'price', 'max_students', 'full_group_student_price');
+        $allowedFields = array('datetime', 'price', 'max_students', 'bulk_price');
         if($userLessonData['lesson_type']==LESSON_TYPE_LIVE) {
             //Only live lesson can change the duration of the lesson, video lesson get duration form the main video
             $allowedFields[] = 'duration_minutes';

@@ -57,7 +57,7 @@ if(isSet($paymentPage)) {
                         <?php if($userLessonData['price'] && $userLessonData['max_students']>1 ) { ?>
                             <li>
                                 <label><?php echo __('Full group student price'); ?>:</label>
-                                <div class="negote-inputbox space3"><?php echo $userLessonData['full_group_student_price']; ?></div>
+                                <div class="negote-inputbox space3"><?php echo $userLessonData['bulk_price']; ?></div>
                             </li>
                         <?php } ?>
                     <?php } ?>

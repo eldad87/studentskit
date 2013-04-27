@@ -25,7 +25,7 @@
 
         <div class="pull-right">
             <?php
-                echo $this->Layout->priceTag($price, $fullGroupStudentPrice);
+                echo $this->Layout->priceTag($price, $bulkPrice);
                 echo $this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($subjectData));
             ?>
 

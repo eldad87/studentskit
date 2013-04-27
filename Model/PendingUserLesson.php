@@ -47,7 +47,7 @@ class PendingUserLesson extends AppModel {
         return $this->save( array(  'user_lesson_id'=>$this->getUnusedUserLessonId(), 'status'=>'ACTIVE', 'action'=>'join',
                                     'teacher_lesson_id'=>$teacherLessonId, 'student_user_id'=>$studentUserId, 'teacher_user_id'=>$teacherUserId,
                                     'price'=>$tlData['TeacherLesson']['price'],
-                                    'full_group_student_price'=>$tlData['TeacherLesson']['full_group_student_price'],
+                                    'bulk_price'=>$tlData['TeacherLesson']['bulk_price'],
                                     'subject_id'=>$tlData['TeacherLesson']['subject_id']) );
     }
 
@@ -64,7 +64,7 @@ class PendingUserLesson extends AppModel {
         $this->set(array(   'user_lesson_id'=>$this->getUnusedUserLessonId(), 'status'=>'ACTIVE', 'action'=>'order',
                             'subject_id'=>$subjectId, 'student_user_id'=>$userId, 'datetime'=>$datetime, 'reverse_stage'=>$reverseStage,
                             'price'=>$sData['Subject']['price'],
-                            'full_group_student_price'=>$sData['Subject']['full_group_student_price'],
+                            'bulk_price'=>$sData['Subject']['bulk_price'],
             'extra'=>json_encode($extra)));
         $this->set($extra);
         return $this->save();
@@ -80,7 +80,7 @@ class PendingUserLesson extends AppModel {
 
         $this->set(array('user_lesson_id'=>$userLessonId, 'status'=>'ACTIVE', 'action'=>'negotiate', 'student_user_id'=>$byUserId,
                             'price'=>$userLessonData['UserLesson']['price'],
-                            'full_group_student_price'=>$userLessonData['UserLesson']['full_group_student_price'],
+                            'bulk_price'=>$userLessonData['UserLesson']['bulk_price'],
                             //'teacher_lesson_id'=>$userLessonData['UserLesson']['teacher_lesson_id'], There is no TeahcerLessonId in re-propose (can't affect join requests)
                             'subject_id'=>$userLessonData['UserLesson']['subject_id'], 'version'=>$userLessonData['UserLesson']['version'], 'extra'=>json_encode($data)));
         $this->set($data);
@@ -93,7 +93,7 @@ class PendingUserLesson extends AppModel {
         }
         $this->set(array('user_lesson_id'=>$userLessonId, 'status'=>'ACTIVE', 'action'=>'accept', 'student_user_id'=>$byUserId,
                             'price'=>$userLessonData['UserLesson']['price'],
-                            'full_group_student_price'=>$userLessonData['UserLesson']['full_group_student_price'],
+                            'bulk_price'=>$userLessonData['UserLesson']['bulk_price'],
                             'subject_id'=>$userLessonData['UserLesson']['subject_id'],
                             'teacher_lesson_id'=>$userLessonData['UserLesson']['teacher_lesson_id'], 'version'=>$userLessonData['UserLesson']['version']));
         return $this->save();
@@ -184,7 +184,7 @@ class PendingUserLesson extends AppModel {
 
     private function fixNumeric($extra) {
         $intFields = array('subject_id', 'teacher_lesson_id', 'user_lesson_id', 'student_user_id', 'teacher_user_id', 'max_students', 'duration_minutes');
-        $floatFields = array('price', 'full_group_student_price');
+        $floatFields = array('price', 'bulk_price');
 
         foreach($extra AS $key=>$val) {
             if(is_array($val)) {

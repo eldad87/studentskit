@@ -52,7 +52,7 @@
     echo $this->Form->input('price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0, 'step'=>'any')));
     echo $this->Form->input('max_students', $this->Layout->styleForInput(array('type'=>'number', 'min'=>1, 'div'=>array('id'=>'msDiv', 'class'=>'control-group'))));
 
-    /*echo $this->Form->input('full_group_student_price', $this->Layout->styleForInput(array( 'type'=>'number', 'min'=>0, 'step'=>'any',
+    /*echo $this->Form->input('bulk_price', $this->Layout->styleForInput(array( 'type'=>'number', 'min'=>0, 'step'=>'any',
                                                                                             'div'=>array('style'=>'display:none', 'id'=>'fgspDiv', 'class'=>'control-group') ,
                                                                                             'tooltip'=>__('a max discount price for a full lesson, the discount will take place starting from 2 students and above'))));*/
     echo $this->Form->end();

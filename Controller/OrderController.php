@@ -248,7 +248,7 @@ class OrderController extends AppController {
         switch($this->getOrderData('action')) {
             case 'order':
                 if($actionData['Subject']['max_students']>1) {
-                    $viewParameters['full_group_student_price'] = $actionData['Subject']['full_group_student_price'];
+                    $viewParameters['bulk_price'] = $actionData['Subject']['bulk_price'];
                 }
 
                 //Calc how much CP the user need to buy
@@ -259,7 +259,7 @@ class OrderController extends AppController {
 
             case 'join':
                 if($actionData['TeacherLesson']['max_students']>1) {
-                    $viewParameters['full_group_student_price'] = $actionData['TeacherLesson']['full_group_student_price'];
+                    $viewParameters['bulk_price'] = $actionData['TeacherLesson']['bulk_price'];
                 }
                 $viewParameters['num_of_students']              = $actionData['TeacherLesson']['num_of_students'];
 
@@ -271,7 +271,7 @@ class OrderController extends AppController {
             case 'negotiate':
             case 'accept':
                 if($actionData['UserLesson']['max_students']>1) {
-                    $viewParameters['full_group_student_price'] = $actionData['UserLesson']['full_group_student_price'];
+                    $viewParameters['bulk_price'] = $actionData['UserLesson']['bulk_price'];
                 }
                 $viewParameters['num_of_students']              = $actionData['TeacherLesson']['num_of_students'];
 
@@ -308,7 +308,7 @@ class OrderController extends AppController {
             'duration_minutes'          => $statistics['duration_minutes'],
             'price'                     => $statistics['price'],
             'max_students'              => $statistics['max_students'],
-            'full_group_student_price'  => $statistics['full_group_student_price'],
+            'bulk_price'                => $statistics['bulk_price'],
             'total_lessons'             => $statistics['total_lessons'],
             'students_amount'           => $statistics['students_amount'],
             'raters_amount'             => $statistics['raters_amount'],

@@ -75,8 +75,8 @@ echo $this->Form->create(false, array('url'=>array('controller'=>'Order', 'actio
                             echo __('Free');
                         }
                         ?></span>
-                <?php if(isSet($max_students) && $max_students>1 && $full_group_student_price) {?>
-                <p class="full-lesson"><label class="fulllesson">(<?php echo __('Full lesson discount price'); ?>:</label><span><?php echo $full_group_student_price; ?>$ <?php echo __('PER STUDENT'); ?>)</span></p>
+                <?php if(isSet($max_students) && $max_students>1 && $bulk_price) {?>
+                <p class="full-lesson"><label class="fulllesson">(<?php echo __('Bulk price'); ?>:</label><span><?php echo $bulk_price; ?>$ <?php echo __('PER STUDENT'); ?>)</span></p>
                 <?php } ?>
                 </p>
             </div>

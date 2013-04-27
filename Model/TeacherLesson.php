@@ -85,15 +85,15 @@ class TeacherLesson extends AppModel {
 				'message' 	=> 'Enter a valid number'
 			)
         ),
-        'full_group_student_price'=> array(
+        'bulk_price'=> array(
             'price' => array(
                 'allowEmpty'=> true,
                 'rule'    	=> 'numeric',
                 'message' 	=> 'Enter a valid group price'
             ),
-            'full_group_student_price' 	=> array(
+            'bulk_price' 	=> array(
                 'allowEmpty'=> true,
-                'rule'    	=> 'fullGroupStudentPriceCheck',
+                'rule'    	=> 'bulkPriceCheck',
                 'message' 	=> 'You must set a student full group price'
             )
         ),
@@ -154,8 +154,6 @@ class TeacherLesson extends AppModel {
         App::import('Model', 'Subject');
 
         $exists = $this->exists(!empty($this->data['TeacherLesson'][$this->primaryKey]) ? $this->data['TeacherLesson'][$this->primaryKey] : null);
-        /*Subject::calcFullGroupPriceIfNeeded($this->data['UserLesson'], $exists );
-        Subject::extraValidation($this);*/
         $this->validateRules($this);
 
 
@@ -229,7 +227,7 @@ class TeacherLesson extends AppModel {
         parent::beforeSave($options);
 
         if( (isSet($this->data['TeacherLesson']['price']) && $this->data['TeacherLesson']['price']>0) ||
-            (isSet($this->data['TeacherLesson']['full_group_student_price']) && $this->data['TeacherLesson']['full_group_student_price']>0)) {
+            (isSet($this->data['TeacherLesson']['bulk_price']) && $this->data['TeacherLesson']['bulk_price']>0)) {
             $this->data['TeacherLesson']['payment_status'] = PAYMENT_STATUS_PENDING;
         }
 
@@ -274,7 +272,7 @@ class TeacherLesson extends AppModel {
                 'duration_minutes'			=> $subjectData['duration_minutes'],
                 'max_students'				=> $subjectData['max_students'],
                 'price'				=> $subjectData['price'],
-                'full_group_student_price'	=> $subjectData['full_group_student_price'],
+                'bulk_price'	=> $subjectData['bulk_price'],
 
                 'image'	                    => $subjectData['image'],
                 'image_source'	            => $subjectData['image_source'],
@@ -738,7 +736,7 @@ class TeacherLesson extends AppModel {
         if($tlData['lesson_type']=='video' || $tlData['max_students']==1 || $tlData['num_of_students']==1) {
             $return['per_student_price'] = $tlData['price'];
         } else {
-            $return['per_student_price'] = $this->Subject->calcStudentPriceAfterDiscount( $tlData['price'], $tlData['max_students'], $tlData['num_of_students'], $tlData['full_group_student_price'] );
+            $return['per_student_price'] = $this->Subject->calcStudentPriceAfterDiscount( $tlData['price'], $tlData['max_students'], $tlData['num_of_students'], $tlData['bulk_price'] );
         }
 
         //Calc our commission

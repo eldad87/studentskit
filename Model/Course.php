@@ -118,15 +118,15 @@ class Course extends AppModel {
                 'message' 	=> 'Enter a valid number'
             )
         ),
-        'full_group_student_price'=> array(
+        'bulk_price'=> array(
             'price' => array(
                 'allowEmpty'=> true,
                 'rule'    	=> 'numeric',
                 'message' 	=> 'Enter a valid group price'
             ),
-            'full_group_student_price' 	=> array(
+            'bulk_price' 	=> array(
                 'allowEmpty'=> true,
-                'rule'    	=> 'fullGroupStudentPriceCheck',
+                'rule'    	=> 'bulkPriceCheck',
                 'message' 	=> 'You must set a student full group price'
             )
         ),

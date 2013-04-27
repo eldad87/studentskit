@@ -164,15 +164,15 @@ class Subject extends SolrSearch {
                 'message' 	=> 'Enter a valid number'
             )
 		),
-        'full_group_student_price'=> array(
+        'bulk_price'=> array(
             'price' => array(
                 'allowEmpty'=> true,
                 'rule'    	=> 'numeric',
                 'message' 	=> 'Enter a valid price'
             ),
-            'full_group_student_price' 	=> array(
+            'bulk_price' 	=> array(
                 'allowEmpty'=> true,
-                'rule'    	=> 'fullGroupStudentPriceCheck',
+                'rule'    	=> 'bulkPriceCheck',
                 'message' 	=> 'You must set a price'
             )
         ),
@@ -323,61 +323,6 @@ class Subject extends SolrSearch {
         return true;
 	}
 
-
-
-
-    /*public static function calcFullGroupPriceIfNeeded(&$data, $existingRecord) {
-        if(isSet($data['max_students']) && $data['max_students']) {
-            if($data['max_students']==1) {
-                $data['full_group_student_price'] = null;
-
-            } else if($data['max_students']>1 &&
-                        isSet($data['full_group_student_price']) && !empty($data['full_group_student_price'])) {
-
-                //Calculate full_group_student_price
-
-            }
-        } else {
-            unset(	$data['full_group_student_price']);
-        }
-    }
-
-
-
-    public static function extraValidation(&$obj) {
-        $objData =& $obj->data[$obj->name];
-
-        $lessonType = null;
-        if(isSet($objData['lesson_type'])) {
-            $lessonType = $objData['lesson_type'];
-        } else {
-            //Find object PK
-            $objId = false;
-            if($obj->id) {
-                $objId = $obj->id;
-            } else if(isSet($objData[$obj->primaryKey]) && !empty($objData[$obj->primaryKey])) {
-                $objId = $objData[$obj->primaryKey];
-            }
-            if(!$objId) {
-                return true;
-            }
-
-            //Load object data
-            $foundData = $obj->find('first', array('conditions'=>array($obj->primaryKey=>$objId)));
-            if(!$foundData) {
-                return false;
-            }
-
-            $lessonType = $foundData[$obj->name]['lesson_type'];
-        }
-
-        if($lessonType==LESSON_TYPE_VIDEO) {
-            $objData['max_students'] = 1;
-            unset($objData['full_group_student_price']);
-        }
-    }*/
-
-
     public function afterSave($created) {
         parent::afterSave($created);
 
@@ -459,12 +404,12 @@ class Subject extends SolrSearch {
         return true;
     }
 
-    public static function calcStudentPriceAfterDiscount( $price, $maxStudents, $currentStudents, $fullGroupStudentPrice ) {
+    public static function calcStudentPriceAfterDiscount( $price, $maxStudents, $currentStudents, $bulkPricePrice ) {
         if($currentStudents<=1 || $maxStudents<=0) {
             return $price;
         }
 
-        $maxDiscount = $price-$fullGroupStudentPrice;
+        $maxDiscount = $price-$bulkPricePrice;
         return ($price - $maxDiscount*$currentStudents/$maxStudents);
     }
 	

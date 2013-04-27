@@ -54,33 +54,33 @@ class LessonBehavior extends ModelBehavior {
     }
 
     /* Taken from Subject model - start */
-    public function fullGroupStudentPriceCheck( Model $model, $price ) {
+    public function bulkPriceCheck( Model $model, $price ) {
         if(!isSet($model->data[$model->alias]['max_students']) || empty($model->data[$model->alias]['max_students'])) {
             $model->invalidate('max_students', __('Please enter a valid max students (1 or more)'));
             //return false;
-        } else if(	isSet($model->data[$model->alias]['full_group_student_price'])) {
+        } else if(	isSet($model->data[$model->alias]['bulk_price'])) {
 
             if(isSet($model->data[$model->alias]['price']) && $model->data[$model->alias]['price']) {
 
 
                 $perStudentCommission = Configure::read('per_student_commission');
-                if( ($model->data[$model->alias]['full_group_student_price']>$model->data[$model->alias]['price']) || //FGSP is greater then price
-                    ($perStudentCommission>=$model->data[$model->alias]['full_group_student_price'])) { //Check FGSP is greater then commission
+                if( ($model->data[$model->alias]['bulk_price']>$model->data[$model->alias]['price']) || //FGSP is greater then price
+                    ($perStudentCommission>=$model->data[$model->alias]['bulk_price'])) { //Check FGSP is greater then commission
 
-                    $model->invalidate('full_group_student_price',
+                    $model->invalidate('bulk_price',
                         sprintf(__('Must be greater then %01.2f, and less or equal to 1 on 1 price (%01.2f)'),
                             $perStudentCommission, $model->data[$model->alias]['price']) );
                 }
             } else {
-                $model->data[$model->alias]['full_group_student_price'] = null;
+                $model->data[$model->alias]['bulk_price'] = null;
             }
 
         }
         return true;
     }
     /*public function maxStudentsCheck( $maxStudents ) {
-        if($maxStudents['max_students']>1 && (!isSet($model->data[$model->alias]['full_group_student_price']) || !$model->data[$model->alias]['full_group_student_price'])) {
-            $model->invalidate('full_group_student_price', __('Please enter a valid full group student price or set Max students to 1'));
+        if($maxStudents['max_students']>1 && (!isSet($model->data[$model->alias]['bulk_price']) || !$model->data[$model->alias]['bulk_price'])) {
+            $model->invalidate('bulk_price', __('Please enter a valid full group student price or set Max students to 1'));
             //return false;
         }
         return true;
@@ -112,11 +112,11 @@ class LessonBehavior extends ModelBehavior {
             if(isSet($data['is_public']) &&  $data['is_public']==SUBJECT_IS_PUBLIC_FALSE) {
                 $data['price'] = null;
                 $data['max_students'] = null;
-                $data['full_group_student_price'] = null;
+                $data['bulk_price'] = null;
 
                 $model->validator()->remove('price');
                 $model->validator()->remove('max_students');
-                $model->validator()->remove('full_group_student_price');
+                $model->validator()->remove('bulk_price');
             }
 
             //TL/UL
@@ -151,23 +151,23 @@ class LessonBehavior extends ModelBehavior {
         if($lessonType==LESSON_TYPE_VIDEO) {
             $data['duration_minutes'] = null;
             $data['max_students'] = null;
-            $data['full_group_student_price'] = null;
+            $data['bulk_price'] = null;
 
             $model->validator()->remove('duration_minutes');
             $model->validator()->remove('max_students');
-            $model->validator()->remove('full_group_student_price');
+            $model->validator()->remove('bulk_price');
         }
 
         //1 student
         if(isSet($data['max_students']) && $data['max_students']==1) {
-            $data['full_group_student_price'] = null;
-            $model->validator()->remove('full_group_student_price');
+            $data['bulk_price'] = null;
+            $model->validator()->remove('bulk_price');
         }
 
         //Free lesson
         if(isSet($data['price']) && !$data['price']) {
-            $data['full_group_student_price'] = null;
-            $model->validator()->remove('full_group_student_price');
+            $data['bulk_price'] = null;
+            $model->validator()->remove('bulk_price');
         }
     }
 

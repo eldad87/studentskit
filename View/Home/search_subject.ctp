@@ -62,7 +62,7 @@
                                             'description'           =>$newSubject['Subject']['description'],
                                             'averageRating'         =>$newSubject['Subject']['average_rating'],
                                             'price'                 =>$newSubject['Subject']['price'],
-                                            'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
+                                            'bulkPrice'             =>$newSubject['Subject']['bulk_price'],
                                             'imageSource'           =>$newSubject['Subject']['image_source'],
                                             'lessonType'            =>$newSubject['Subject']['lesson_type'],
                                             'subjectData'           =>$newSubject['Subject'],

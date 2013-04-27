@@ -43,10 +43,10 @@ class LayoutHelper extends AppHelper {
         </div>';
     }
 
-    public function priceTag($price, $fullGroupStudentPrice=null, $appendClass=null, $currency='$', $format='html') {
+    public function priceTag($price, $bulkPrice=null, $appendClass=null, $currency='$', $format='html') {
         $priceText = $price;
-        if($fullGroupStudentPrice) {
-            $priceText .= '-'.$fullGroupStudentPrice;
+        if($bulkPrice) {
+            $priceText .= '-'.$bulkPrice;
         }
         $priceText .= $currency;
 
@@ -198,7 +198,7 @@ class LayoutHelper extends AppHelper {
         $fields = array('duration_minutes'=>__('Duration minutes'), 'price'=>__('1 on 1 price'));
 
         if($lessonType==LESSON_TYPE_LIVE) {
-            $fields2 = array( 'datetime'=>__('Datetime'), 'is_public'=>__('Is public'), 'max_students'=>__('Max students'), 'num_of_students'=>__('Num of students'), 'full_group_student_price'=>__('Full group price'));
+            $fields2 = array( 'datetime'=>__('Datetime'), 'is_public'=>__('Is public'), 'max_students'=>__('Max students'), 'num_of_students'=>__('Num of students'), 'bulk_price'=>__('Full group price'));
             $fields = am($fields, $fields2);
         }
 
@@ -206,9 +206,9 @@ class LayoutHelper extends AppHelper {
             $data['price'] = __('Free');
 
             if(isSet($data['max_students']) && $data['max_students']>1) {
-                $data['full_group_student_price'] = $data['price'];
+                $data['bulk_price'] = $data['price'];
             } else {
-                unset($data['full_group_student_price']);
+                unset($data['bulk_price']);
             }
         }
 
@@ -326,8 +326,8 @@ class LayoutHelper extends AppHelper {
             $data['student_user_id']        = $statistics['student_user_id'];
         }
 
-        if(isSet( $statistics['full_group_student_price'])) {
-            $data['full_group_student_price'] = $statistics['full_group_student_price'];
+        if(isSet( $statistics['bulk_price'])) {
+            $data['bulk_price'] = $statistics['bulk_price'];
         }
         if(isSet( $statistics['datetime'])) {
             $data['datetime']                   = $statistics['datetime'];

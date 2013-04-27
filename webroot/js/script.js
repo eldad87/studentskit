@@ -357,7 +357,7 @@ function initSubjectAddForm(isPublicInputSelector, lessonTypeInputSelector, pric
 
 function initSubjectForm(priceInputSelector, lessonTypeInputSelector,
                          maxStudentsInputSelector, maxStudentsDivSelector,
-                         fullGroupStudentPriceDivSelector, fullGroupStudentPriceInputSelector,
+                         bulkPriceDivSelector, bulkPriceInputSelector,
                          durationDivSelector) {
 
 
@@ -365,12 +365,12 @@ function initSubjectForm(priceInputSelector, lessonTypeInputSelector,
     lessonTypeInputSelector             = 'div:visible ' + lessonTypeInputSelector;
     maxStudentsInputSelector            = 'div:visible ' + maxStudentsInputSelector;
     maxStudentsDivSelector              = 'div:visible ' + maxStudentsDivSelector;
-    fullGroupStudentPriceDivSelector    = 'div:visible ' + fullGroupStudentPriceDivSelector;
-    fullGroupStudentPriceInputSelector  = 'div:visible ' + fullGroupStudentPriceInputSelector;
+    bulkPriceDivSelector                = 'div:visible ' + bulkPriceDivSelector;
+    bulkPriceInputSelector              = 'div:visible ' + bulkPriceInputSelector;
     durationDivSelector                 = 'div:visible ' + durationDivSelector;
 
     $(priceInputSelector).unbind();
-    $(fullGroupStudentPriceInputSelector).unbind();
+    $(bulkPriceInputSelector).unbind();
     $(maxStudentsInputSelector).unbind();
     $(lessonTypeInputSelector).unbind();
 
@@ -379,27 +379,27 @@ function initSubjectForm(priceInputSelector, lessonTypeInputSelector,
     $(priceInputSelector).closest('form').attr('novalidate', 'novalidate');
 
     //Make Full-group-student-price invisible until the user set max-students>1
-    $(fullGroupStudentPriceDivSelector).hide();
+    $(bulkPriceDivSelector).hide();
 
     //1. User change the value of 1on1 price
     $(priceInputSelector).change(function(){
         if($(this).val()>0 && $(maxStudentsInputSelector).val()>1) {
-            $(fullGroupStudentPriceDivSelector).show();
+            $(bulkPriceDivSelector).show();
         } else {
-            $(fullGroupStudentPriceDivSelector).hide();
+            $(bulkPriceDivSelector).hide();
         }
 
         //If there is no group price or group price is higher then 1 on 1 price
-        if($(fullGroupStudentPriceInputSelector).val()=='' || $(fullGroupStudentPriceInputSelector).val()>$(this).val()) {
+        if($(bulkPriceInputSelector).val()=='' || $(bulkPriceInputSelector).val()>$(this).val()) {
 
             //Set 1on1 price on group price
-            $(fullGroupStudentPriceInputSelector).val($(this).val());
+            $(bulkPriceInputSelector).val($(this).val());
         }
 
     });
 
     //Make sure that the group price is equal or lower then 1on1 price
-    $(fullGroupStudentPriceInputSelector).change(function(){
+    $(bulkPriceInputSelector).change(function(){
         if($(this).val()>$(priceInputSelector).val()) {
             $(this).val($(priceInputSelector).val());
         }
@@ -409,11 +409,11 @@ function initSubjectForm(priceInputSelector, lessonTypeInputSelector,
     $(maxStudentsInputSelector).change(function(){
         //Show group student price
         if($(this).val()>1 && $(priceInputSelector).val()>0) { //show it only if price>0
-            $(fullGroupStudentPriceDivSelector).show();
+            $(bulkPriceDivSelector).show();
 
             //Hide it
         } else {
-            $(fullGroupStudentPriceDivSelector).hide();
+            $(bulkPriceDivSelector).hide();
         }
     });
 
@@ -429,12 +429,12 @@ function initSubjectForm(priceInputSelector, lessonTypeInputSelector,
         } else {
             $(maxStudentsDivSelector).hide();
             $(durationDivSelector).hide();
-            $(fullGroupStudentPriceDivSelector).hide();
+            $(bulkPriceDivSelector).hide();
         }
     });
 
     $(priceInputSelector).change();
-    $(fullGroupStudentPriceInputSelector).change();
+    $(bulkPriceInputSelector).change();
     $(maxStudentsInputSelector).change();
     $(lessonTypeInputSelector).change();
 }
