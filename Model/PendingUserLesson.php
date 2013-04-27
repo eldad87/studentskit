@@ -46,7 +46,9 @@ class PendingUserLesson extends AppModel {
         //$this->id = $this->getUnusedUserLessonId();
         return $this->save( array(  'user_lesson_id'=>$this->getUnusedUserLessonId(), 'status'=>'ACTIVE', 'action'=>'join',
                                     'teacher_lesson_id'=>$teacherLessonId, 'student_user_id'=>$studentUserId, 'teacher_user_id'=>$teacherUserId,
-                                    '1_on_1_price'=>$tlData['TeacherLesson']['1_on_1_price'], 'subject_id'=>$tlData['TeacherLesson']['subject_id']) );
+                                    '1_on_1_price'=>$tlData['TeacherLesson']['1_on_1_price'],
+                                    'full_group_student_price'=>$tlData['TeacherLesson']['full_group_student_price'],
+                                    'subject_id'=>$tlData['TeacherLesson']['subject_id']) );
     }
 
     //$userId must be the student - he is the one that need to pay
@@ -61,7 +63,9 @@ class PendingUserLesson extends AppModel {
         //$this->id = $this->getUnusedUserLessonId();
         $this->set(array(   'user_lesson_id'=>$this->getUnusedUserLessonId(), 'status'=>'ACTIVE', 'action'=>'order',
                             'subject_id'=>$subjectId, 'student_user_id'=>$userId, 'datetime'=>$datetime, 'reverse_stage'=>$reverseStage,
-                            '1_on_1_price'=>$sData['Subject']['1_on_1_price'], 'extra'=>json_encode($extra)));
+                            '1_on_1_price'=>$sData['Subject']['1_on_1_price'],
+                            'full_group_student_price'=>$sData['Subject']['full_group_student_price'],
+            'extra'=>json_encode($extra)));
         $this->set($extra);
         return $this->save();
     }
@@ -75,7 +79,9 @@ class PendingUserLesson extends AppModel {
 
 
         $this->set(array('user_lesson_id'=>$userLessonId, 'status'=>'ACTIVE', 'action'=>'negotiate', 'student_user_id'=>$byUserId,
-                            '1_on_1_price'=>$userLessonData['UserLesson']['1_on_1_price'], //'teacher_lesson_id'=>$userLessonData['UserLesson']['teacher_lesson_id'], There is no TeahcerLessonId in re-propose (can't affect join requests)
+                            '1_on_1_price'=>$userLessonData['UserLesson']['1_on_1_price'],
+                            'full_group_student_price'=>$userLessonData['UserLesson']['full_group_student_price'],
+                            //'teacher_lesson_id'=>$userLessonData['UserLesson']['teacher_lesson_id'], There is no TeahcerLessonId in re-propose (can't affect join requests)
                             'subject_id'=>$userLessonData['UserLesson']['subject_id'], 'version'=>$userLessonData['UserLesson']['version'], 'extra'=>json_encode($data)));
         $this->set($data);
         return $this->save();
@@ -86,7 +92,9 @@ class PendingUserLesson extends AppModel {
             return false;
         }
         $this->set(array('user_lesson_id'=>$userLessonId, 'status'=>'ACTIVE', 'action'=>'accept', 'student_user_id'=>$byUserId,
-                            '1_on_1_price'=>$userLessonData['UserLesson']['1_on_1_price'], 'subject_id'=>$userLessonData['UserLesson']['subject_id'],
+                            '1_on_1_price'=>$userLessonData['UserLesson']['1_on_1_price'],
+                            'full_group_student_price'=>$userLessonData['UserLesson']['full_group_student_price'],
+                            'subject_id'=>$userLessonData['UserLesson']['subject_id'],
                             'teacher_lesson_id'=>$userLessonData['UserLesson']['teacher_lesson_id'], 'version'=>$userLessonData['UserLesson']['version']));
         return $this->save();
     }
@@ -176,7 +184,7 @@ class PendingUserLesson extends AppModel {
 
     private function fixNumeric($extra) {
         $intFields = array('subject_id', 'teacher_lesson_id', 'user_lesson_id', 'student_user_id', 'teacher_user_id', 'max_students', 'duration_minutes');
-        $floatFields = array('1_on_1_price', 'full_group_total_price', 'full_group_student_price');
+        $floatFields = array('1_on_1_price', 'full_group_student_price');
 
         foreach($extra AS $key=>$val) {
             if(is_array($val)) {

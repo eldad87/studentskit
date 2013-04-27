@@ -117,7 +117,7 @@ class UserLesson extends AppModel {
                     'rule'    	=> 'numeric',
                     'message' 	=> 'Enter a valid group price'
                 ),
-                'full_group_total_price' 	=> array(
+                'full_group_student_price' 	=> array(
                     'allowEmpty'=> true,
                     'rule'    	=> 'fullGroupStudentPriceCheck',
                     'message' 	=> 'You must set a student full group price'
@@ -572,7 +572,6 @@ class UserLesson extends AppModel {
 			'max_students'				=> intval($subjectData['max_students']),
 			'1_on_1_price'				=> $subjectData['1_on_1_price'],
 			'full_group_student_price'	=> $subjectData['full_group_student_price'],
-			'full_group_total_price'	=> $subjectData['full_group_total_price'],
 
 			'image'	                    => $subjectData['image'],
 			'image_source'	            => $subjectData['image_source'],
@@ -721,7 +720,6 @@ class UserLesson extends AppModel {
 			'max_students'				=> $teacherLessonData['max_students'],
 			'1_on_1_price'				=> $teacherLessonData['1_on_1_price'],
 			'full_group_student_price'	=> $teacherLessonData['full_group_student_price'],
-			'full_group_total_price'	=> $teacherLessonData['full_group_total_price'],
 
             'image'	                    => $teacherLessonData['image'],
             'image_source'	            => $teacherLessonData['image_source'],

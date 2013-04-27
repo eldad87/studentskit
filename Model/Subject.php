@@ -329,18 +329,16 @@ class Subject extends SolrSearch {
     /*public static function calcFullGroupPriceIfNeeded(&$data, $existingRecord) {
         if(isSet($data['max_students']) && $data['max_students']) {
             if($data['max_students']==1) {
-                $data['full_group_total_price'] = null;
                 $data['full_group_student_price'] = null;
 
             } else if($data['max_students']>1 &&
                         isSet($data['full_group_student_price']) && !empty($data['full_group_student_price'])) {
 
                 //Calculate full_group_student_price
-                $data['full_group_total_price'] = $data['full_group_student_price']*$data['max_students'];
+
             }
         } else {
-            unset(	$data['full_group_total_price'],
-                    $data['full_group_student_price']);
+            unset(	$data['full_group_student_price']);
         }
     }
 
@@ -375,7 +373,7 @@ class Subject extends SolrSearch {
 
         if($lessonType==LESSON_TYPE_VIDEO) {
             $objData['max_students'] = 1;
-            unset($objData['full_group_student_price'], $objData['full_group_total_price']);
+            unset($objData['full_group_student_price']);
         }
     }*/
 

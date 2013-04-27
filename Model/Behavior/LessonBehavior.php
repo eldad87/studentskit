@@ -113,7 +113,6 @@ class LessonBehavior extends ModelBehavior {
                 $data['1_on_1_price'] = null;
                 $data['max_students'] = null;
                 $data['full_group_student_price'] = null;
-                $data['full_group_total_price'] = null;
 
                 $model->validator()->remove('1_on_1_price');
                 $model->validator()->remove('max_students');
@@ -153,7 +152,6 @@ class LessonBehavior extends ModelBehavior {
             $data['duration_minutes'] = null;
             $data['max_students'] = null;
             $data['full_group_student_price'] = null;
-            $data['full_group_total_price'] = null;
 
             $model->validator()->remove('duration_minutes');
             $model->validator()->remove('max_students');
@@ -162,14 +160,12 @@ class LessonBehavior extends ModelBehavior {
 
         //1 student
         if(isSet($data['max_students']) && $data['max_students']==1) {
-            $data['full_group_total_price'] = null;
             $data['full_group_student_price'] = null;
             $model->validator()->remove('full_group_student_price');
         }
 
         //Free lesson
         if(isSet($data['1_on_1_price']) && !$data['1_on_1_price']) {
-            $data['full_group_total_price'] = null;
             $data['full_group_student_price'] = null;
             $model->validator()->remove('full_group_student_price');
         }

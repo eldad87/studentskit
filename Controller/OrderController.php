@@ -249,7 +249,6 @@ class OrderController extends AppController {
             case 'order':
                 if($actionData['Subject']['max_students']>1) {
                     $viewParameters['full_group_student_price'] = $actionData['Subject']['full_group_student_price'];
-                    $viewParameters['full_group_total_price']   = $actionData['Subject']['full_group_total_price'];
                 }
 
                 //Calc how much CP the user need to buy
@@ -261,7 +260,6 @@ class OrderController extends AppController {
             case 'join':
                 if($actionData['TeacherLesson']['max_students']>1) {
                     $viewParameters['full_group_student_price'] = $actionData['TeacherLesson']['full_group_student_price'];
-                    $viewParameters['full_group_total_price']   = $actionData['TeacherLesson']['full_group_total_price'];
                 }
                 $viewParameters['num_of_students']              = $actionData['TeacherLesson']['num_of_students'];
 
@@ -274,7 +272,6 @@ class OrderController extends AppController {
             case 'accept':
                 if($actionData['UserLesson']['max_students']>1) {
                     $viewParameters['full_group_student_price'] = $actionData['UserLesson']['full_group_student_price'];
-                    $viewParameters['full_group_total_price']   = $actionData['UserLesson']['full_group_total_price'];
                 }
                 $viewParameters['num_of_students']              = $actionData['TeacherLesson']['num_of_students'];
 
