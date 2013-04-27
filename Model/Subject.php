@@ -136,7 +136,7 @@ class Subject extends SolrSearch {
 				'message' 	=> 'Must be more then %d minutes and less then %d minutes'
 			)
 		),
-		'1_on_1_price'=> array(
+		'price'=> array(
 			'price' => array(
             	'required'	=> 'create',
 				'allowEmpty'=> false,
@@ -146,7 +146,7 @@ class Subject extends SolrSearch {
 			'price_range' => array(
 				'required'	=> 'create',
 				'allowEmpty'=> false,
-                'rule'    	=> array('priceRangeCheck', '1_on_1_price'),
+                'rule'    	=> array('priceRangeCheck', 'price'),
                 'message' 	=> 'Price range error'
 			)
 		),
@@ -406,7 +406,7 @@ class Subject extends SolrSearch {
             isSet($this->data['Subject']['lesson_type']) ||
             isSet($this->data['Subject']['average_rating']) ||
             isSet($this->data['Subject']['is_public']) ||
-            isSet($this->data['Subject']['1_on_1_price']) ||
+            isSet($this->data['Subject']['price']) ||
             isSet($this->data['Subject']['category_id']) ||
             (isSet($this->data['Subject']['creation_stage']) &&
                 $this->data['Subject']['creation_stage'] == CREATION_STAGE_PUBLISH
@@ -431,7 +431,7 @@ class Subject extends SolrSearch {
             $update['language']                 = $subjectData['language'];
             $update['name']                     = $subjectData['name'];
             $update[$update['language'].'_t']   = $subjectData['description'];
-            $update['1_on_1_price']             = $subjectData['1_on_1_price'];
+            $update['price']             = $subjectData['price'];
             $update['lesson_type']              = intval($subjectData['lesson_type']);
             $update['average_rating']           = $subjectData['average_rating'];
             $update['is_public']                = (boolean) $subjectData['is_public'];
@@ -459,19 +459,14 @@ class Subject extends SolrSearch {
         return true;
     }
 
-    public static function calcStudentPriceAfterDiscount( $onOnOnePrice, $maxStudents, $currentStudents, $fullGroupStudentPrice ) {
+    public static function calcStudentPriceAfterDiscount( $price, $maxStudents, $currentStudents, $fullGroupStudentPrice ) {
         if($currentStudents<=1 || $maxStudents<=0) {
-            return $onOnOnePrice;
+            return $price;
         }
 
-        $maxDiscount = $onOnOnePrice-$fullGroupStudentPrice;
-        return ($onOnOnePrice - $maxDiscount*$currentStudents/$maxStudents);
+        $maxDiscount = $price-$fullGroupStudentPrice;
+        return ($price - $maxDiscount*$currentStudents/$maxStudents);
     }
-	
-	public static function calcStudentFullGroupPrice( $onOnOnePrice, $totalGroupPrice, $maxStudents, $currentStudents ) {
-		return ($onOnOnePrice+(($totalGroupPrice-$onOnOnePrice)/($maxStudents-1))*($currentStudents-1))/$currentStudents;
-	}
-
 	
 	/**
 	 * 

@@ -48,7 +48,7 @@
         });
 
 
-        /*initSubjectForm('#Subject1On1Price', '#SubjectLessonType',
+        /*initSubjectForm('#SubjectPrice', '#SubjectLessonType',
             '#SubjectMaxStudents', '#msDiv',
             '#fgspDiv', '#SubjectFullGroupStudentPrice', '#durationDiv');*/
 
@@ -58,7 +58,7 @@
         initSubjectAddForm(
             '#SubjectIsPublic',
             '#SubjectLessonType',
-            '#Subject1On1Price',
+            '#SubjectPrice',
             '#SubjectMaxStudents'
         );
 
@@ -113,7 +113,7 @@
 
         echo '<div id="publicSettingsDiv">';
 
-            echo $this->Form->input('1_on_1_price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0, 'step'=>'any')));
+            echo $this->Form->input('price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0, 'step'=>'any')));
 
 
             echo '<div id="maxStudentsAndDiscountDiv">';

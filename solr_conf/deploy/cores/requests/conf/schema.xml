@@ -73,7 +73,7 @@
 		
 		
 		<field name="lesson_type" type="int" indexed="true" stored="true" required="true" />
-		<field name="1_on_1_price"  type="currency" indexed="true" stored="true"/>
+		<field name="price"  type="currency" indexed="true" stored="true"/>
         <field name="average_rating"  type="float" indexed="true" stored="true"/>
 		<field name="language"  type="string" indexed="true" stored="true" />
 

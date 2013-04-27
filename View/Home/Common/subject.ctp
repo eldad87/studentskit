@@ -130,7 +130,7 @@ $this->Html->scriptBlock('
                                     echo sprintf(__('Duration %s min'), $subjectData['duration_minutes']);
                                     ?></span></p>
                                 <div class="pull-right price-margn">
-                                    <?php echo $this->Layout->priceTag($subjectData['1_on_1_price'], $subjectData['full_group_student_price']); ?>
+                                    <?php echo $this->Layout->priceTag($subjectData['price'], $subjectData['full_group_student_price']); ?>
                                 </div>
                             </div>
                         </div>

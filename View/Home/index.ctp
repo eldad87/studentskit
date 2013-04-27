@@ -32,7 +32,7 @@
                     <?php
                     if($newSubjects) {
                         foreach($newSubjects AS $newSubject) {
-                            $newSubject['Subject']['one_on_one_price'] = $newSubject['Subject']['1_on_1_price'];
+                            $newSubject['Subject']['one_on_one_price'] = $newSubject['Subject']['price'];
                             echo '<li class="cont-span4 spc space2">';
 
                             echo $this->Html->link( $this->element( 'subject', array(
@@ -42,7 +42,7 @@
                                                                     'name'                  =>$newSubject['Subject']['name'],
                                                                     'description'           =>$newSubject['Subject']['description'],
                                                                     'averageRating'         =>$newSubject['Subject']['average_rating'],
-                                                                    'oneOnOnePrice'         =>$newSubject['Subject']['1_on_1_price'],
+                                                                    'price'                 =>$newSubject['Subject']['price'],
                                                                     'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
                                                                     'imageSource'           =>$newSubject['Subject']['image_source'],
                                                                     'lessonType'            =>$newSubject['Subject']['lesson_type'],

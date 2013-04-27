@@ -51,14 +51,14 @@ $this->Html->scriptBlock('
 								<?php
 								if($subjectsData) {
 									foreach($subjectsData['records'] AS $newSubject) {
-										$newSubject['WishList']['one_on_one_price'] = $newSubject['WishList']['1_on_1_price'];
+										$newSubject['WishList']['one_on_one_price'] = $newSubject['WishList']['price'];
 										echo '<li class="cont-span4 spc space2">';
 
-                                        echo $this->element('wish', array(   'wishListId'            =>$newSubject['WishList']['wish_list_id'],
+                                        echo $this->element('wish', array(              'wishListId'            =>$newSubject['WishList']['wish_list_id'],
                                                                                         'name'                  =>$newSubject['WishList']['name'],
                                                                                         'description'           =>$newSubject['WishList']['description'],
                                                                                         'averageRating'         =>$newSubject['Student']['student_average_rating'],
-                                                                                        'oneOnOnePrice'         =>$newSubject['WishList']['1_on_1_price'],
+                                                                                        'price'                 =>$newSubject['WishList']['price'],
                                                                                         'imageSource'           =>$newSubject['WishList']['image_source'],
                                                                                         'lessonType'            =>$newSubject['WishList']['lesson_type'],
                                                                                         'wishData'              =>$newSubject['WishList'],

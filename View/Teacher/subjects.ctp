@@ -21,7 +21,7 @@ foreach($subjects AS $subject) {
 	echo 'Public: ',$subject['is_public'],'<br />';
 	echo 'Image: ',$subject['image'],'<br />';
 	echo 'average_rating: ',$subject['average_rating'],'<br />';
-	echo '1_on_1_price: ',$subject['1_on_1_price'],'<br />';
+	echo 'price: ',$subject['price'],'<br />';
 	echo 'max_students: ',$subject['max_students'],'<br />';
 	echo 'full_group_student_price: ',$subject['full_group_student_price'],'<br />';
 	echo 'full_group_total_price: ',$subject['full_group_total_price'],'<br />';

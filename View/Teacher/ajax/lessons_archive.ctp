@@ -88,7 +88,7 @@ if($page==1) {
                     </div>
                     <div class="pull-right space21 right-i-mar">
                         '.$this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($archiveLessons['TeacherLesson']), null, 'pull-right space23', 'tooltip_'.$archiveLessons['TeacherLesson']['teacher_lesson_id']).'
-                        '.$this->Layout->priceTag($archiveLessons['TeacherLesson']['1_on_1_price'], $archiveLessons['TeacherLesson']['full_group_student_price'], 'price-tag-panel').'
+                        '.$this->Layout->priceTag($archiveLessons['TeacherLesson']['price'], $archiveLessons['TeacherLesson']['full_group_student_price'], 'price-tag-panel').'
                     </div>
                 </div> <!-- /lesson-box-footer -->
             </div> <!-- /lesson-box -->';

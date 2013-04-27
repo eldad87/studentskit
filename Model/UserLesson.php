@@ -83,7 +83,7 @@ class UserLesson extends AppModel {
                     'message' 	=> 'Lesson must be more then %d minutes and less then %d minutes'
                 )
             ),
-            '1_on_1_price'=> array(
+            'price'=> array(
                 'price' => array(
                     'required'	=> 'create',
                     'allowEmpty'=> false,
@@ -93,7 +93,7 @@ class UserLesson extends AppModel {
                 'price_range' => array(
                     'required'	=> 'create',
                     'allowEmpty'=> false,
-                    'rule'    	=> array('priceRangeCheck', '1_on_1_price'),
+                    'rule'    	=> array('priceRangeCheck', 'price'),
 					'message' 	=> 'Price range error'
                 )
             ),
@@ -101,7 +101,7 @@ class UserLesson extends AppModel {
                 'range' 		=> array(
                     'required'	=> 'create',
                     'allowEmpty'=> true,
-                    'rule'    	=> array('range', 0, 1025), //Change Home,1_on_1_price_to accordingly
+                    'rule'    	=> array('range', 0, 1025), //Change Home, price_to accordingly
                     'message' 	=> 'Lesson must have more then %d or less then %d students'
                 ),
 				'numeric' => array(
@@ -197,7 +197,7 @@ class UserLesson extends AppModel {
 
     /**
      * @param $userId
-     * @param $totalAmount - total amount of the lesson price (1_on_1_price)
+     * @param $totalAmount - total amount of the lesson price (price)
      * @param $userLessonId - userLessonId may be non-exisiting one (due to PendingUserLesson), therefore UserId is must!
      * @return true | int - how much the user is short (abs number)
      */
@@ -493,7 +493,7 @@ class UserLesson extends AppModel {
     public function beforeSave($options = array()) {
         parent::beforeSave($options);
         $this->TeacherLesson; //Init const
-        if( (isSet($this->data['UserLesson']['1_on_1_price']) && $this->data['UserLesson']['1_on_1_price']>0) ||
+        if( (isSet($this->data['UserLesson']['price']) && $this->data['UserLesson']['price']>0) ||
             (isSet($this->data['UserLesson']['full_group_student_price']) && $this->data['UserLesson']['full_group_student_price']>0)) {
             $this->data['UserLesson']['payment_status'] = PAYMENT_STATUS_PENDING;
         }
@@ -570,7 +570,7 @@ class UserLesson extends AppModel {
 			'description'				=> $subjectData['description'],
 			'duration_minutes'			=> $subjectData['duration_minutes'],
 			'max_students'				=> intval($subjectData['max_students']),
-			'1_on_1_price'				=> $subjectData['1_on_1_price'],
+			'price'				=> $subjectData['price'],
 			'full_group_student_price'	=> $subjectData['full_group_student_price'],
 
 			'image'	                    => $subjectData['image'],
@@ -605,7 +605,7 @@ class UserLesson extends AppModel {
             if($canWatchData['approved']) {
 
                 if(empty($canWatchData['datetime']) || $this->isFutureDatetime($canWatchData['end_datetime']) || //User shouldn't pay for a lesson that he did not watched yet/watch time didn't over
-                    $subjectData['1_on_1_price']==0) { //user doesn't need to order free lesson again.
+                    $subjectData['price']==0) { //user doesn't need to order free lesson again.
                     return false;
                 }
             }
@@ -718,7 +718,7 @@ class UserLesson extends AppModel {
 			'description'				=> $teacherLessonData['description'],
 			'duration_minutes'			=> $teacherLessonData['duration_minutes'],
 			'max_students'				=> $teacherLessonData['max_students'],
-			'1_on_1_price'				=> $teacherLessonData['1_on_1_price'],
+			'price'				=> $teacherLessonData['price'],
 			'full_group_student_price'	=> $teacherLessonData['full_group_student_price'],
 
             'image'	                    => $teacherLessonData['image'],
@@ -983,7 +983,7 @@ class UserLesson extends AppModel {
         }
 
         //Remove unauthorized fields
-        $allowedFields = array('datetime', '1_on_1_price', 'max_students', 'full_group_student_price');
+        $allowedFields = array('datetime', 'price', 'max_students', 'full_group_student_price');
         if($userLessonData['lesson_type']==LESSON_TYPE_LIVE) {
             //Only live lesson can change the duration of the lesson, video lesson get duration form the main video
             $allowedFields[] = 'duration_minutes';
@@ -1429,7 +1429,7 @@ class UserLesson extends AppModel {
             'pending_teacher_approval'  =>false,
             'pending_user_approval'     =>false,
             'approved'                  =>false,
-            'payment_needed'            =>($subjectData['1_on_1_price']>0),
+            'payment_needed'            =>($subjectData['price']>0),
 
             'is_teacher'                =>($userId==$subjectData['user_id']),
             'teacher_lesson_id'         =>false,
@@ -1492,7 +1492,7 @@ class UserLesson extends AppModel {
             $tmpRes[$key]['user_lesson_id']   = $userLessonData['user_lesson_id'];
             $tmpRes[$key]['datetime']         = $userLessonData['datetime'];
             $tmpRes[$key]['end_datetime']     = $userLessonData['end_datetime'];
-            $tmpRes[$key]['payment_needed']   = ($userLessonData['1_on_1_price']>0);
+            $tmpRes[$key]['payment_needed']   = ($userLessonData['price']>0);
             $tmpRes[$key]['is_teacher']       = ($userId==$userLessonData['teacher_user_id']);
         }
 
@@ -1543,7 +1543,7 @@ class UserLesson extends AppModel {
                     }
 
                     //We need to check UserLesson because the subject price may changed until now
-                    if(!$userLessonData['1_on_1_price']) {
+                    if(!$userLessonData['price']) {
                         $isFreeVideo = true;
                     }
 
@@ -1575,7 +1575,7 @@ class UserLesson extends AppModel {
             } else {
                 //There is no UserLesson
 
-                if(!$subjectData['1_on_1_price']) { //Free video
+                if(!$subjectData['price']) { //Free video
                     $isFreeVideo = true;
 
                     //Make UserLesson request
@@ -1649,7 +1649,7 @@ class UserLesson extends AppModel {
             'pending_teacher_approval'  =>false,
             'pending_user_approval'     =>false,
             'approved'                  =>false,
-            'payment_needed'            =>($tlData['1_on_1_price']>0),
+            'payment_needed'            =>($tlData['price']>0),
 
             'is_teacher'                =>($userId==$tlData['teacher_user_id']),
             'teacher_lesson_id'         =>$teacherLessonId,

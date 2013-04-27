@@ -25,7 +25,7 @@
         <div class="pull-right space21 right-i-mar">
             <?php
                 echo $this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($wishData['WishList']), null, 'pull-right space23', 'tooltip_'.$wishData['WishList']['wish_list_id']);
-                echo $this->Layout->priceTag($wishData['WishList']['1_on_1_price'], null, 'price-tag-panel');
+                echo $this->Layout->priceTag($wishData['WishList']['price'], null, 'price-tag-panel');
             ?>
         </div>
     </div> <!-- /lesson-box-footer -->

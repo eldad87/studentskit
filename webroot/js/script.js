@@ -299,14 +299,14 @@ function parseResponse(data) {
 
 /////////////////////////////////////////////////////////////// panel + site
 
-function initSubjectAddForm(isPublicInputSelector, lessonTypeInputSelector, oneOnOneInputSelector, maxStudentsSelector) {
+function initSubjectAddForm(isPublicInputSelector, lessonTypeInputSelector, priceInputSelector, maxStudentsSelector) {
 
 
 
     //Unbind all events - in case of a refresh
     $(isPublicInputSelector).unbind();
     $(lessonTypeInputSelector).unbind();
-    $(oneOnOneInputSelector).unbind();
+    $(priceInputSelector).unbind();
     $(maxStudentsSelector).unbind();
 
     //Disable HTML 5 validation
@@ -337,13 +337,13 @@ function initSubjectAddForm(isPublicInputSelector, lessonTypeInputSelector, oneO
     });
 
     //If free lesson - no need for volume discount
-    $(oneOnOneInputSelector).change(function(){
+    $(priceInputSelector).change(function(){
         $(maxStudentsSelector).change();
     });
 
     //On paid lessons with more then 1 student - a volume discount is enabled
     $(maxStudentsSelector).change(function(){
-        if($(this).val()>1 && $(oneOnOneInputSelector).val()>0) {
+        if($(this).val()>1 && $(priceInputSelector).val()>0) {
             $('#discountPriceDiv').show();
         } else {
             $('#discountPriceDiv').hide();
@@ -355,13 +355,13 @@ function initSubjectAddForm(isPublicInputSelector, lessonTypeInputSelector, oneO
     $(isPublicInputSelector).change();
 }
 
-function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
+function initSubjectForm(priceInputSelector, lessonTypeInputSelector,
                          maxStudentsInputSelector, maxStudentsDivSelector,
                          fullGroupStudentPriceDivSelector, fullGroupStudentPriceInputSelector,
                          durationDivSelector) {
 
 
-    oneOnOnePriceInputSelector          = 'div:visible ' + oneOnOnePriceInputSelector; //#sub-area
+    priceInputSelector                  = 'div:visible ' + priceInputSelector; //#sub-area
     lessonTypeInputSelector             = 'div:visible ' + lessonTypeInputSelector;
     maxStudentsInputSelector            = 'div:visible ' + maxStudentsInputSelector;
     maxStudentsDivSelector              = 'div:visible ' + maxStudentsDivSelector;
@@ -369,20 +369,20 @@ function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
     fullGroupStudentPriceInputSelector  = 'div:visible ' + fullGroupStudentPriceInputSelector;
     durationDivSelector                 = 'div:visible ' + durationDivSelector;
 
-    $(oneOnOnePriceInputSelector).unbind();
+    $(priceInputSelector).unbind();
     $(fullGroupStudentPriceInputSelector).unbind();
     $(maxStudentsInputSelector).unbind();
     $(lessonTypeInputSelector).unbind();
 
 
     //Chrome fix, hidden inputs that are required
-    $(oneOnOnePriceInputSelector).closest('form').attr('novalidate', 'novalidate');
+    $(priceInputSelector).closest('form').attr('novalidate', 'novalidate');
 
     //Make Full-group-student-price invisible until the user set max-students>1
     $(fullGroupStudentPriceDivSelector).hide();
 
     //1. User change the value of 1on1 price
-    $(oneOnOnePriceInputSelector).change(function(){
+    $(priceInputSelector).change(function(){
         if($(this).val()>0 && $(maxStudentsInputSelector).val()>1) {
             $(fullGroupStudentPriceDivSelector).show();
         } else {
@@ -400,15 +400,15 @@ function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
 
     //Make sure that the group price is equal or lower then 1on1 price
     $(fullGroupStudentPriceInputSelector).change(function(){
-        if($(this).val()>$(oneOnOnePriceInputSelector).val()) {
-            $(this).val($(oneOnOnePriceInputSelector).val());
+        if($(this).val()>$(priceInputSelector).val()) {
+            $(this).val($(priceInputSelector).val());
         }
     });
 
     //Show/Hide student full group price - by max-students
     $(maxStudentsInputSelector).change(function(){
         //Show group student price
-        if($(this).val()>1 && $(oneOnOnePriceInputSelector).val()>0) { //show it only if 1on1price>0
+        if($(this).val()>1 && $(priceInputSelector).val()>0) { //show it only if price>0
             $(fullGroupStudentPriceDivSelector).show();
 
             //Hide it
@@ -433,7 +433,7 @@ function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
         }
     });
 
-    $(oneOnOnePriceInputSelector).change();
+    $(priceInputSelector).change();
     $(fullGroupStudentPriceInputSelector).change();
     $(maxStudentsInputSelector).change();
     $(lessonTypeInputSelector).change();

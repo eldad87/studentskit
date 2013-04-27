@@ -35,14 +35,14 @@ $this->Html->scriptBlock('
                         foreach($newWishList AS $wishRequest) {
                             //Home
                             $wishData = $wishRequest['WishList'];
-                            $wishData['one_on_one_price'] = $wishRequest['WishList']['1_on_1_price'];
+                            $wishData['one_on_one_price'] = $wishRequest['WishList']['price'];
 
                             echo '<li class="cont-span4 spc space2">';
-                            echo $this->element('wish', array( 'wishListId'            =>$wishRequest['WishList']['wish_list_id'],
+                            echo $this->element('wish', array( 'wishListId'                 =>$wishRequest['WishList']['wish_list_id'],
                                                                     'name'                  =>$wishRequest['WishList']['name'],
                                                                     'description'           =>$wishRequest['WishList']['description'],
                                                                     'averageRating'         =>$wishRequest['Student']['student_average_rating'],
-                                                                    'oneOnOnePrice'         =>$wishRequest['WishList']['1_on_1_price'],
+                                                                    'price'                 =>$wishRequest['WishList']['price'],
                                                                     'imageSource'           =>$wishRequest['WishList']['image_source'],
                                                                     'lessonType'            =>$wishRequest['WishList']['lesson_type'],
                                                                     'wishData'              =>$wishData

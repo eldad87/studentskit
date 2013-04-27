@@ -45,7 +45,7 @@ echo $this->element('Panel'.DS.'accept_lesson_popup', array('buttonSelector'=>'.
                             </li>
                             <li>
                                 <label><?php echo __('1 on 1 price'); ?> :</label>
-                                <p><?php echo $this->Layout->priceTag($teacherLesson['1_on_1_price'], $teacherLesson['full_group_student_price'], 'space25'); ?></p>
+                                <p><?php echo $this->Layout->priceTag($teacherLesson['price'], $teacherLesson['full_group_student_price'], 'space25'); ?></p>
                             </li>
                             <li>
                                 <label><?php echo __('Full group student price'); ?> :</label>

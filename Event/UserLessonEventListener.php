@@ -151,10 +151,10 @@ class UserLessonEventListener implements CakeEventListener {
     public function beforeLessonRequest(CakeEvent $event) {
 
         //Make sure it was done by the student
-        if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id'] && $event->data['user_lesson']['1_on_1_price']>0) {
+        if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id'] && $event->data['user_lesson']['price']>0) {
 
             if($event->subject()->haveEnoughTotalCreditPoints(  $event->data['by_user_id'],
-                                                                $event->data['user_lesson']['1_on_1_price'],
+                                                                $event->data['user_lesson']['price'],
                                                                 $event->data['user_lesson']['user_lesson_id'])!==true) {
 
                 return false;
@@ -167,11 +167,11 @@ class UserLessonEventListener implements CakeEventListener {
         //$event->data = array('teacher_lesson'=>$teacherLessonData, 'user_lesson'=>$userLesson, 'by_user_id'=>( $teacherUserId ? $teacherUserId : $studentUserId))
 
         //Make sure it was done by the student
-        if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id'] && $event->data['user_lesson']['1_on_1_price']>0) {
+        if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id'] && $event->data['user_lesson']['price']>0) {
 
             //Check if enough CP
             if($event->subject()->haveEnoughTotalCreditPoints(  $event->data['by_user_id'],
-                                                                $event->data['user_lesson']['1_on_1_price'],
+                                                                $event->data['user_lesson']['price'],
                                                                 $event->data['user_lesson']['user_lesson_id'])!==true) {
 
                 return false;
@@ -189,7 +189,7 @@ class UserLessonEventListener implements CakeEventListener {
 
             //Check if enough CP
             if($event->subject()->haveEnoughTotalCreditPoints(  $event->data['by_user_id'],
-                                                                $event->data['user_lesson']['1_on_1_price'],
+                                                                $event->data['user_lesson']['price'],
                                                                 $event->data['user_lesson']['user_lesson_id'])!==true) {
 
                 return false;
@@ -364,7 +364,7 @@ class UserLessonEventListener implements CakeEventListener {
         if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id']) {
 
             if($event->subject()->haveEnoughTotalCreditPoints(  $event->data['by_user_id'],
-                                                                $event->data['user_lesson']['1_on_1_price'],
+                                                                $event->data['user_lesson']['price'],
                                                                 $event->data['user_lesson']['user_lesson_id'])!==true) {
 
                 return false;
@@ -405,7 +405,7 @@ class UserLessonEventListener implements CakeEventListener {
         if($event->data['user_lesson']['student_user_id']==$event->data['by_user_id']) {
             $event->subject()->setTotalCreditPoints(
                 $event->data['user_lesson']['user_lesson_id'],
-                $event->data['user_lesson']['1_on_1_price']
+                $event->data['user_lesson']['price']
             );
 
             //Add billing history
@@ -568,11 +568,11 @@ class UserLessonEventListener implements CakeEventListener {
 
         //If made by user - allocate CP
         if($byUserId==$event->data['user_lesson']['student_user_id'] &&
-            isSet($event->data['update']['1_on_1_price'])) {
+            isSet($event->data['update']['price'])) {
 
             $event->subject()->setTotalCreditPoints(
                 $event->data['user_lesson']['user_lesson_id'],
-                $event->data['update']['1_on_1_price']
+                $event->data['update']['price']
             );
         }
 
@@ -697,7 +697,7 @@ class UserLessonEventListener implements CakeEventListener {
         if($byUserId==$event->data['user_lesson']['student_user_id']) {
             $event->subject()->setTotalCreditPoints(
                 $event->data['user_lesson']['user_lesson_id'],
-                $event->data['user_lesson']['1_on_1_price']
+                $event->data['user_lesson']['price']
             );
         }
 

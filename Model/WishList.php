@@ -77,7 +77,7 @@ class WishList extends SolrSearch {
                 'message' 	=> 'Duration must be more then %d minutes and less then %d minutes'
             )
         ),
-        '1_on_1_price'=> array(
+        'price'=> array(
             'price' => array(
                 'required'	=> 'create',
                 'allowEmpty'=> false,
@@ -87,7 +87,7 @@ class WishList extends SolrSearch {
             'price_range' => array(
                 'required'	=> 'create',
                 'allowEmpty'=> false,
-                'rule'    	=> array('priceRangeCheck', '1_on_1_price'),
+                'rule'    	=> array('priceRangeCheck', 'price'),
                 'message' 	=> 'Price range error'
             )
         ),
@@ -166,7 +166,7 @@ class WishList extends SolrSearch {
         if( isSet($this->data[$this->alias]['name']) ||
             isSet($this->data[$this->alias]['description']) ||
             isSet($this->data[$this->alias]['language']) ||
-            isSet($this->data[$this->alias]['1_on_1_price']) ||
+            isSet($this->data[$this->alias]['price']) ||
             isSet($this->data[$this->alias]['category_id'])) {
 
 
@@ -179,7 +179,7 @@ class WishList extends SolrSearch {
             $update['language']                 = $wishData['language'];
             $update['name']                     = $wishData['name'];
             $update[$update['language'].'_t']   = $wishData['description'];
-            $update['1_on_1_price']             = $wishData['1_on_1_price'];
+            $update['price']             = $wishData['price'];
             $update['average_rating']           = $wishAllData['Student']['student_average_rating'];
             $update['lesson_type']              = intval($wishData['lesson_type']);
             $update['last_modified']            = $wishData['modified'] ? $wishData['modified'] : $wishData['created'];

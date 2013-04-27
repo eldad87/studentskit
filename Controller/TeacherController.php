@@ -76,17 +76,6 @@ class TeacherController extends AppController {
         $subjectCategories = $cObj->getAllCategoriesOptions();
         $this->set('subjectCategories', $subjectCategories);
 
-        //Group pricing
-        if(	isSet($this->data['Subject']['1_on_1_price']) &&
-            isSet($this->data['Subject']['full_group_student_price']) && !empty($this->data['Subject']['full_group_student_price']) &&
-            isSet($this->data['Subject']['max_students']) && $this->data['Subject']['max_students']>1) {
-
-            $groupPrice = $this->Subject->calcStudentPriceAfterDiscount(	$this->data['Subject']['1_on_1_price'],
-                                                                            $this->data['Subject']['max_students'], $this->data['Subject']['max_students'],
-                                                                            $this->data['Subject']['full_group_student_price']);
-            $this->set('groupPrice', $groupPrice);
-        }
-
         //Set language
         App::uses('Languages', 'Utils.Lib');
         $lang = new Languages();

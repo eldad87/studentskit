@@ -261,7 +261,7 @@ class User extends AppModel {
                                             'duration_minutes'          => $teacherLesson['TeacherLesson']['duration_minutes'],
 											'num_of_students'           => $teacherLesson['TeacherLesson']['num_of_students'],
                                             'max_students'              => $teacherLesson['TeacherLesson']['max_students'],
-											'1_on_1_price'              => $teacherLesson['TeacherLesson']['1_on_1_price'],
+											'price'              => $teacherLesson['TeacherLesson']['price'],
 											'full_group_student_price'  => $teacherLesson['TeacherLesson']['full_group_student_price'],
 											'wish_list_id'              => $teacherLesson['TeacherLesson']['wish_list_id'],
 											'image_source'              => $teacherLesson['TeacherLesson']['image_source']
@@ -292,7 +292,7 @@ class User extends AppModel {
                                                 'duration_minutes'          => $userLesson['UserLesson']['duration_minutes'],
                                                 'num_of_students'           => $userLesson['TeacherLesson']['num_of_students'],
                                                 'max_students'              => $userLesson['TeacherLesson']['max_students'],
-                                                '1_on_1_price'              => $userLesson['UserLesson']['1_on_1_price'],
+                                                'price'              => $userLesson['UserLesson']['price'],
                                                 'full_group_student_price'  => $userLesson['UserLesson']['full_group_student_price'],
                                                 'wish_list_id'              => $userLesson['UserLesson']['wish_list_id'],
                                                 'image_source'              => $userLesson['UserLesson']['image_source']

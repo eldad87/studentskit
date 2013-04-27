@@ -33,7 +33,7 @@ if(isSet($lessonData['UserLesson'])) {
             echo $this->Layout->toolTip($this->Layout->buildLessonTooltipHtml(am($lessonData['TeacherLesson'], $lessonMainData)), null, 'pull-right space23', 'tooltip_'.(
                 isSet($lessonMainData['user_lesson_id']) ? $lessonMainData['user_lesson_id'] : $lessonMainData['teacher_lesson_id'])
             );
-            echo $this->Layout->priceTag($lessonMainData['1_on_1_price'], $lessonMainData['full_group_student_price'], 'price-tag-panel');
+            echo $this->Layout->priceTag($lessonMainData['price'], $lessonMainData['full_group_student_price'], 'price-tag-panel');
             ?>
         </div>
         <?php

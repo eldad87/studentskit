@@ -38,9 +38,9 @@
     <p class="category-subheadbar pricesubheader"><?php echo __('Price'); ?></p>
     <ul class="categorystripbox categorystripbox1">
         <li class="nobackground">
-            <?php echo $this->Form->input('1_on_1_price_from', array('label'=>false, 'div'=>false)); ?>
+            <?php echo $this->Form->input('price_from', array('label'=>false, 'div'=>false)); ?>
             <label id="middletexr"> <?php echo __('to'); ?></label>
-            <?php echo $this->Form->input('1_on_1_price_to', array('label'=>false, 'div'=>false)); ?>
+            <?php echo $this->Form->input('price_to', array('label'=>false, 'div'=>false)); ?>
             <label id="middletexr1"> $</label>
             <!--<input type="text" value="$" >-->
         </li>

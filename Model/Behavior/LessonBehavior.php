@@ -60,16 +60,16 @@ class LessonBehavior extends ModelBehavior {
             //return false;
         } else if(	isSet($model->data[$model->alias]['full_group_student_price'])) {
 
-            if(isSet($model->data[$model->alias]['1_on_1_price']) && $model->data[$model->alias]['1_on_1_price']) {
+            if(isSet($model->data[$model->alias]['price']) && $model->data[$model->alias]['price']) {
 
 
                 $perStudentCommission = Configure::read('per_student_commission');
-                if( ($model->data[$model->alias]['full_group_student_price']>$model->data[$model->alias]['1_on_1_price']) || //FGSP is greater then 1on1price
+                if( ($model->data[$model->alias]['full_group_student_price']>$model->data[$model->alias]['price']) || //FGSP is greater then price
                     ($perStudentCommission>=$model->data[$model->alias]['full_group_student_price'])) { //Check FGSP is greater then commission
 
                     $model->invalidate('full_group_student_price',
                         sprintf(__('Must be greater then %01.2f, and less or equal to 1 on 1 price (%01.2f)'),
-                            $perStudentCommission, $model->data[$model->alias]['1_on_1_price']) );
+                            $perStudentCommission, $model->data[$model->alias]['price']) );
                 }
             } else {
                 $model->data[$model->alias]['full_group_student_price'] = null;
@@ -110,11 +110,11 @@ class LessonBehavior extends ModelBehavior {
         //Subject only - None public cannot have price/max students
         if( $model instanceof Subject) {
             if(isSet($data['is_public']) &&  $data['is_public']==SUBJECT_IS_PUBLIC_FALSE) {
-                $data['1_on_1_price'] = null;
+                $data['price'] = null;
                 $data['max_students'] = null;
                 $data['full_group_student_price'] = null;
 
-                $model->validator()->remove('1_on_1_price');
+                $model->validator()->remove('price');
                 $model->validator()->remove('max_students');
                 $model->validator()->remove('full_group_student_price');
             }
@@ -165,7 +165,7 @@ class LessonBehavior extends ModelBehavior {
         }
 
         //Free lesson
-        if(isSet($data['1_on_1_price']) && !$data['1_on_1_price']) {
+        if(isSet($data['price']) && !$data['price']) {
             $data['full_group_student_price'] = null;
             $model->validator()->remove('full_group_student_price');
         }

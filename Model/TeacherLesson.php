@@ -57,7 +57,7 @@ class TeacherLesson extends AppModel {
 				'message' 	=> 'Must be more then %d minutes and less then %d minutes'
 			)
 		),
-		'1_on_1_price'=> array(
+		'price'=> array(
 			'price' => array(
             	'required'	=> 'create',
 				'allowEmpty'=> false,
@@ -67,7 +67,7 @@ class TeacherLesson extends AppModel {
 			'price_range' => array(
 				'required'	=> 'create',
 				'allowEmpty'=> false,
-				'rule'    	=> array('priceRangeCheck', '1_on_1_price'),
+				'rule'    	=> array('priceRangeCheck', 'price'),
                 'message' 	=> 'Price range error'
 			)
 		),
@@ -228,7 +228,7 @@ class TeacherLesson extends AppModel {
     public function beforeSave($options = array()) {
         parent::beforeSave($options);
 
-        if( (isSet($this->data['TeacherLesson']['1_on_1_price']) && $this->data['TeacherLesson']['1_on_1_price']>0) ||
+        if( (isSet($this->data['TeacherLesson']['price']) && $this->data['TeacherLesson']['price']>0) ||
             (isSet($this->data['TeacherLesson']['full_group_student_price']) && $this->data['TeacherLesson']['full_group_student_price']>0)) {
             $this->data['TeacherLesson']['payment_status'] = PAYMENT_STATUS_PENDING;
         }
@@ -273,7 +273,7 @@ class TeacherLesson extends AppModel {
                 'is_public'					=> is_null($isPublic) ? $subjectData['is_public'] : $isPublic,
                 'duration_minutes'			=> $subjectData['duration_minutes'],
                 'max_students'				=> $subjectData['max_students'],
-                '1_on_1_price'				=> $subjectData['1_on_1_price'],
+                'price'				=> $subjectData['price'],
                 'full_group_student_price'	=> $subjectData['full_group_student_price'],
 
                 'image'	                    => $subjectData['image'],
@@ -613,7 +613,7 @@ class TeacherLesson extends AppModel {
     public function _pay( $teacherLessonId ) {
         $this->recursive = -1;
         $tlData = $this->findByTeacherLessonId($teacherLessonId);
-        if(!$tlData || $tlData['TeacherLesson']['is_deleted'] || !$tlData['TeacherLesson']['1_on_1_price']) {
+        if(!$tlData || $tlData['TeacherLesson']['is_deleted'] || !$tlData['TeacherLesson']['price']) {
             return PAYMENT_STATUS_ERROR;
         }
         //Check if already used for payment
@@ -736,9 +736,9 @@ class TeacherLesson extends AppModel {
 
         //1. Calc student price
         if($tlData['lesson_type']=='video' || $tlData['max_students']==1 || $tlData['num_of_students']==1) {
-            $return['per_student_price'] = $tlData['1_on_1_price'];
+            $return['per_student_price'] = $tlData['price'];
         } else {
-            $return['per_student_price'] = $this->Subject->calcStudentPriceAfterDiscount( $tlData['1_on_1_price'], $tlData['max_students'], $tlData['num_of_students'], $tlData['full_group_student_price'] );
+            $return['per_student_price'] = $this->Subject->calcStudentPriceAfterDiscount( $tlData['price'], $tlData['max_students'], $tlData['num_of_students'], $tlData['full_group_student_price'] );
         }
 
         //Calc our commission

@@ -18,14 +18,14 @@ if(isSet($paymentPage)) {
                 } else if(isSet($error)) {
                     echo 'showError(\'#accept-popup .modal-body\',\''.__('Internal Error').'\', \'\')';
                 } else if($lessonType==LESSON_TYPE_LIVE) {
-                    /*echo 'initSubjectForm(\'#UserLesson1On1Price\', \'#UserLessonLessonType\',
+                    /*echo 'initSubjectForm(\'#UserLessonPrice\', \'#UserLessonLessonType\',
                                             \'#UserLessonMaxStudents\', \'#msDiv\',
                                             \'#fgspDiv\', \'#UserLessonFullGroupStudentPrice\', \'#durationDiv\');';*/
 
                     echo 'initSubjectAddForm(
                             \'#UserLessonIsPublic\',
                             \'#UserLessonLessonType\',
-                            \'#UserLesson1On1Price\',
+                            \'#UserLessonPrice\',
                             \'#UserLessonMaxStudents\'
                     );';
                 }
@@ -79,7 +79,7 @@ if(isSet($paymentPage)) {
 
 
 
-            echo $this->Form->input('1_on_1_price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0, 'step'=>'any')));
+            echo $this->Form->input('price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0, 'step'=>'any')));
 
 
             //Only for live lessons

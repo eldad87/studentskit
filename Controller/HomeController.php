@@ -319,15 +319,6 @@ class HomeController extends AppController {
         return $this->success(1, array('results'=>$latestTopics));
     }
 
-    /*public function testCalcStudentFullGroupPrice() {
-        $currentStudents = 7;
-        pr($this->Subject->calcStudentFullGroupPrice(2, 20, 10, $currentStudents));
-        pr($this->Subject->calcStudentFullGroupPrice(2, 20, 10, $currentStudents)*$currentStudents);
-        die;
-    }
-
-
-
     /*public function testForumMessages() {
         app::import('Model', 'Forum.Topic');
         $topicObj = new Topic();
@@ -691,12 +682,12 @@ $id = $scObj->id;
         $language       = (isSet($this->request->query['languages_of_records']) ? $this->request->query['languages_of_records'] 	:
                             ($this->Session->read('languagesOfRecords')         ? $this->Session->read('languagesOfRecords')        : null));
 
-        //1_on_1_price handle
-        $priceFrom      = (isSet($this->request->query['1_on_1_price_from'])  &&
-            $this->request->query['1_on_1_price_from']          ? max(min( (int) $this->request->query['1_on_1_price_from'], 1024), 0)	 : 0);
+        //price handle
+        $priceFrom      = (isSet($this->request->query['price_from'])  &&
+            $this->request->query['price_from']          ? max(min( (int) $this->request->query['price_from'], 1024), 0)	 : 0);
 
-        $priceTo        = (isSet($this->request->query['1_on_1_price_to'])    &&
-            $this->request->query['1_on_1_price_to']            ? max(min( (int) $this->request->query['1_on_1_price_to'], 1024), 0)	 : 1024); //Bug: we can't use wildecard *, therefore, put the max price that int can hold - UL validation for 1_on_1_price
+        $priceTo        = (isSet($this->request->query['price_to'])    &&
+            $this->request->query['price_to']            ? max(min( (int) $this->request->query['price_to'], 1024), 0)	 : 1024); //Bug: we can't use wildecard *, therefore, put the max price that int can hold - UL validation for 1_on_1_price
 
 
 
@@ -738,7 +729,7 @@ $id = $scObj->id;
 
         //From-To-Price
         if( $priceFrom<=$priceTo && ($priceFrom!=0 || $priceTo!=1024)) {
-            $query['fq']['1_on_1_price'] = '['.$priceFrom.' TO '.$priceTo.',USD]';
+            $query['fq']['price'] = '['.$priceFrom.' TO '.$priceTo.',USD]';
         }
 
         //From-To-average_rating
@@ -979,13 +970,13 @@ $id = $scObj->id;
         $this->set('teacherOtherSubjects', 		$teacherOtherSubjects);
         $this->set('teacherOtherSubjectsLimit', $teacherOtherSubjectsLimit);
         $this->set('teacherData', 			    $teacherData['User']);
-        $this->set('paymentNeeded',             $subjectData['1_on_1_price']>0);
+        $this->set('paymentNeeded',             $subjectData['price']>0);
 
         $return = array('subjectData'               =>$subjectData,
                         'subjectRatingByStudents'   =>$subjectRatingByStudents,
                         'teacherOtherSubjects'      =>$teacherOtherSubjects,
                         'teacherData'               =>$teacherData['User'],
-                        'paymentNeeded'             =>$subjectData['1_on_1_price']>0);
+                        'paymentNeeded'             =>$subjectData['price']>0);
 
         if(!empty($otherTeacherForThisSubject)) {
             $return['otherTeacherForThisSubject'] = $otherTeacherForThisSubject;

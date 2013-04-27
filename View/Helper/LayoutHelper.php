@@ -43,8 +43,8 @@ class LayoutHelper extends AppHelper {
         </div>';
     }
 
-    public function priceTag($oneOnOne, $fullGroupStudentPrice=null, $appendClass=null, $currency='$', $format='html') {
-        $priceText = $oneOnOne;
+    public function priceTag($price, $fullGroupStudentPrice=null, $appendClass=null, $currency='$', $format='html') {
+        $priceText = $price;
         if($fullGroupStudentPrice) {
             $priceText .= '-'.$fullGroupStudentPrice;
         }
@@ -52,7 +52,7 @@ class LayoutHelper extends AppHelper {
 
 
         $class = 'price-tag';
-        if(!$oneOnOne) {
+        if(!$price) {
             $priceText = __('Free');
             $class .= ' price-tag-free';
         }
@@ -195,18 +195,18 @@ class LayoutHelper extends AppHelper {
         if(!$lessonType) {
             $lessonType = $data['lesson_type'];
         }
-        $fields = array('duration_minutes'=>__('Duration minutes'), '1_on_1_price'=>__('1 on 1 price'));
+        $fields = array('duration_minutes'=>__('Duration minutes'), 'price'=>__('1 on 1 price'));
 
         if($lessonType==LESSON_TYPE_LIVE) {
             $fields2 = array( 'datetime'=>__('Datetime'), 'is_public'=>__('Is public'), 'max_students'=>__('Max students'), 'num_of_students'=>__('Num of students'), 'full_group_student_price'=>__('Full group price'));
             $fields = am($fields, $fields2);
         }
 
-        if(isSet($data['1_on_1_price']) && $data['1_on_1_price']==0) {
-            $data['1_on_1_price'] = __('Free');
+        if(isSet($data['price']) && $data['price']==0) {
+            $data['price'] = __('Free');
 
             if(isSet($data['max_students']) && $data['max_students']>1) {
-                $data['full_group_student_price'] = $data['1_on_1_price'];
+                $data['full_group_student_price'] = $data['price'];
             } else {
                 unset($data['full_group_student_price']);
             }
@@ -314,7 +314,7 @@ class LayoutHelper extends AppHelper {
             'language'                  => $statistics['language'],
             'name'                      => $statistics['name'],
             'duration_minutes'          => $statistics['duration_minutes'],
-            '1_on_1_price'              => $statistics['1_on_1_price'],
+            'price'              => $statistics['price'],
             'max_students'              => $statistics['max_students'],
         );
 

@@ -75,7 +75,7 @@ if($page==1) {
                     </div>
                     <div class="pull-right space21 right-i-mar">
                         '.$this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($upcomingLesson['TeacherLesson']), null, 'pull-right space23', 'tooltip_'.$upcomingLesson['TeacherLesson']['teacher_lesson_id']).'
-                        '.$this->Layout->priceTag($upcomingLesson['TeacherLesson']['1_on_1_price'], $upcomingLesson['TeacherLesson']['full_group_student_price'], 'price-tag-panel').'
+                        '.$this->Layout->priceTag($upcomingLesson['TeacherLesson']['price'], $upcomingLesson['TeacherLesson']['full_group_student_price'], 'price-tag-panel').'
                         <!-- <a href="#" class=" pull-right space23"><i class="iconSmall-info r-mor-none"></i></a> -->
                     </div>
                 </div> <!-- /lesson-box-footer -->

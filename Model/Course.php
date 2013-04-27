@@ -90,7 +90,7 @@ class Course extends AppModel {
             )
         ),
 
-        '1_on_1_price'=> array(
+        'price'=> array(
             'price' => array(
                 'required'	=> 'create',
                 'allowEmpty'=> false,
@@ -100,7 +100,7 @@ class Course extends AppModel {
             'price_range' => array(
                 'required'	=> 'create',
                 'allowEmpty'=> false,
-                'rule'    	=> array('priceRangeCheck', '1_on_1_price'),
+                'rule'    	=> array('priceRangeCheck', 'price'),
                 'message' 	=> 'Price range error'
             )
         ),
@@ -178,7 +178,7 @@ class Course extends AppModel {
             isSet($this->data[$this->alias]['lesson_type']) ||
             isSet($this->data[$this->alias]['average_rating']) ||
             isSet($this->data[$this->alias]['is_public']) ||
-            isSet($this->data[$this->alias]['1_on_1_price']) ||
+            isSet($this->data[$this->alias]['price']) ||
             isSet($this->data[$this->alias]['category_id'])) {
 
 
@@ -192,7 +192,7 @@ class Course extends AppModel {
             $update['language']                 = $courseData['language'];
             $update['name']                     = $courseData['name'];
             $update[$update['language'].'_t']   = $courseData['description'];
-            $update['1_on_1_price']             = $courseData['1_on_1_price'];
+            $update['price']             = $courseData['price'];
             $update['lesson_type']              = intval($courseData['lesson_type']);
             $update['average_rating']           = $courseData['average_rating'];
             $update['is_public']                = (boolean) $courseData['is_public'];

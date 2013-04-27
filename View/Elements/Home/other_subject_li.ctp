@@ -3,7 +3,7 @@ echo '<li>',
 $this->Html->image($this->Layout->image($teacherSubject['image_source'], 128, 95), array('alt' => 'Topic image')),
 
     '<div class="pull-right fullwidth">
-                        ',$this->Layout->priceTag($teacherSubject['1_on_1_price'], $teacherSubject['full_group_student_price'], 'price-tag-float-right space25'),'
+                        ',$this->Layout->priceTag($teacherSubject['price'], $teacherSubject['full_group_student_price'], 'price-tag-float-right space25'),'
                         ',$this->Layout->lessonTypeIcon($lessonType, 'pull-left'),'
                     </div>',
 

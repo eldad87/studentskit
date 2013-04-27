@@ -2,7 +2,7 @@
 if($response['response']['records']) {
 
     foreach($response['response']['records'] AS $wishData) {
-        $wishData['one_on_one_price'] = $wishData['WishList']['1_on_1_price'];
+        $wishData['one_on_one_price'] = $wishData['WishList']['price'];
         $wishData['average_rating'] = $wishData['Student']['student_average_rating'];
 
         echo '<li class="cont-span4 spc space2">';
@@ -12,7 +12,7 @@ if($response['response']['records']) {
                                                         'name'                  =>$wishData['WishList']['name'],
                                                         'description'           =>$wishData['WishList']['description'],
                                                         'averageRating'         =>$wishData['Student']['student_average_rating'],
-                                                        'oneOnOnePrice'         =>$wishData['WishList']['1_on_1_price'],
+                                                        'price'                 =>$wishData['WishList']['price'],
                                                         'imageSource'           =>$wishData['WishList']['image_source'],
                                                         'lessonType'            =>$wishData['WishList']['lesson_type']
         ) );

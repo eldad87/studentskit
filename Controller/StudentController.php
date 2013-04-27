@@ -128,7 +128,7 @@ class StudentController extends AppController {
 
             //if done by the student - Check if preapproval is OK
             if($userLessonData['UserLesson']['student_user_id']==$this->Auth->user('user_id')) {
-                $maxAmount = (isSet($userLessonData['UserLesson']['1_on_1_price']) ? $userLessonData['UserLesson']['1_on_1_price'] : null );
+                $maxAmount = (isSet($userLessonData['UserLesson']['price']) ? $userLessonData['UserLesson']['price'] : null );
 
                 $haveEnough = $this->UserLesson->haveEnoughTotalCreditPoints(   $this->Auth->user('user_id'),
                                                                                 $maxAmount,
@@ -200,7 +200,7 @@ class StudentController extends AppController {
             $this->request->data = $userLessonData;
         } else {
 
-            $maxAmount = (isSet($this->request->data['UserLesson']['1_on_1_price']) ? $this->request->data['UserLesson']['1_on_1_price'] : null );
+            $maxAmount = (isSet($this->request->data['UserLesson']['price']) ? $this->request->data['UserLesson']['price'] : null );
             $datetime = (isSet($this->request->data['UserLesson']['datetime']) ? $this->request->data['UserLesson']['datetime'] : null );
 
 
@@ -293,16 +293,6 @@ class StudentController extends AppController {
             }
         }
 
-
-        //Group pricing
-        if(	isSet($this->data['UserLesson']['1_on_1_price']) &&
-            isSet($this->data['UserLesson']['full_group_student_price']) && !empty($this->data['UserLesson']['full_group_student_price']) &&
-            isSet($this->data['UserLesson']['max_students']) && $this->data['UserLesson']['max_students']>1) {
-                $groupPrice = $this->Subject->calcStudentPriceAfterDiscount(	$this->data['UserLesson']['1_on_1_price'],
-                                                                                $this->data['UserLesson']['max_students'], $this->data['UserLesson']['max_students'],
-                                                                                $this->data['UserLesson']['full_group_student_price']);
-                $this->set('groupPrice', $groupPrice);
-        }
     }
 
     public function turnNotificationsOff() {
