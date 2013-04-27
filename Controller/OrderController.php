@@ -588,7 +588,7 @@ class OrderController extends AppController {
             $parameter = '.'.$parameter;
         }
 
-        if($parameter=='redirect') {
+        if($parameter=='.redirect') {
             $redirect = $this->Session->read('order'.$parameter);
             if(!$redirect) {
                 return '/';
