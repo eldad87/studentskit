@@ -323,6 +323,8 @@ class Subject extends SolrSearch {
         return true;
 	}
 
+
+
     public function afterSave($created) {
         parent::afterSave($created);
 
@@ -404,12 +406,12 @@ class Subject extends SolrSearch {
         return true;
     }
 
-    public static function calcStudentPriceAfterDiscount( $price, $maxStudents, $currentStudents, $bulkPricePrice ) {
+    public static function calcStudentPriceAfterDiscount( $price, $maxStudents, $currentStudents, $fullGroupStudentPrice ) {
         if($currentStudents<=1 || $maxStudents<=0) {
             return $price;
         }
 
-        $maxDiscount = $price-$bulkPricePrice;
+        $maxDiscount = $price-$fullGroupStudentPrice;
         return ($price - $maxDiscount*$currentStudents/$maxStudents);
     }
 	
