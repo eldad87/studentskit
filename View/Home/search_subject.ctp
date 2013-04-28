@@ -29,18 +29,18 @@
                 <p class="pull-left bodytop-leftlink">
                     <?php
                     if(isSet($subjectsData['breadcrumbs'])) {
-                        echo $this->element('Home'.DS.'subject_categories_breadcrumbs', array('subject_categories_breadcrumbs'=>$subjectsData['breadcrumbs'])),'<br /><br />';
+                        echo $this->element('Home'.DS.'categories_breadcrumbs', array('categories_breadcrumbs'=>$subjectsData['breadcrumbs'])),'<br /><br />';
                     }
                     ?>
                 </p>
                 <?php
-                    echo $this->Layout->subjectRequestPopupButton();
-                    echo $this->element('Home'.DS.'subject_request_popup');
+                    echo $this->Layout->wishPopupButton();
+                    echo $this->element('Home'.DS.'wish_popup');
                 ?>
                 <div class="pull-left space6">
                     <!-- category filter -->
                     <?php if($subjectsData) {
-                        echo $this->element('Home'.DS.'facet_subject_categories', array('facet_categories'=>$subjectsData['categories']));
+                        echo $this->element('Home'.DS.'facet_categories', array('facet_categories'=>$subjectsData['categories']));
                     } else {
                         echo '<p>',__('No lessons found.'),'</p>';
                     } ?>
@@ -50,8 +50,8 @@
 							<ul class="lesson-container">
 								<?php
 								if($subjectsData) {
-									foreach($subjectsData['subjects'] AS $newSubject) {
-										$newSubject['Subject']['one_on_one_price'] = $newSubject['Subject']['1_on_1_price'];
+									foreach($subjectsData['records'] AS $newSubject) {
+										$newSubject['records']['one_on_one_price'] = $newSubject['Subject']['price'];
 										echo '<li class="cont-span4 spc space2">';
 
                                         echo $this->Html->link( $this->element( 'subject', array(
@@ -60,9 +60,9 @@
                                             'teacherUsername'       =>$newSubject['Teacher']['username'],
                                             'name'                  =>$newSubject['Subject']['name'],
                                             'description'           =>$newSubject['Subject']['description'],
-                                            'avarageRating'         =>$newSubject['Subject']['avarage_rating'],
-                                            'oneOnOnePrice'         =>$newSubject['Subject']['1_on_1_price'],
-                                            'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
+                                            'averageRating'         =>$newSubject['Subject']['average_rating'],
+                                            'price'                 =>$newSubject['Subject']['price'],
+                                            'bulkPrice'             =>$newSubject['Subject']['bulk_price'],
                                             'imageSource'           =>$newSubject['Subject']['image_source'],
                                             'lessonType'            =>$newSubject['Subject']['lesson_type'],
                                             'subjectData'           =>$newSubject['Subject'],

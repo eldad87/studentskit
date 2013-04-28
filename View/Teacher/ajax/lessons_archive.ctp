@@ -84,11 +84,11 @@ if($page==1) {
                 </div>
                 <div class="lesson-box-footer radius2">
                     <div class="pull-left star">
-                        '.$this->Layout->ratingNew($archiveLessons['Subject']['avarage_rating'], false, 'pull-left pad8').'
+                        '.$this->Layout->ratingNew($archiveLessons['Subject']['average_rating'], false, 'pull-left pad8').'
                     </div>
                     <div class="pull-right space21 right-i-mar">
                         '.$this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($archiveLessons['TeacherLesson']), null, 'pull-right space23', 'tooltip_'.$archiveLessons['TeacherLesson']['teacher_lesson_id']).'
-                        '.$this->Layout->priceTag($archiveLessons['TeacherLesson']['1_on_1_price'], $archiveLessons['TeacherLesson']['full_group_student_price'], 'price-tag-panel').'
+                        '.$this->Layout->priceTag($archiveLessons['TeacherLesson']['price'], $archiveLessons['TeacherLesson']['bulk_price'], 'price-tag-panel').'
                     </div>
                 </div> <!-- /lesson-box-footer -->
             </div> <!-- /lesson-box -->';

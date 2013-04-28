@@ -4,7 +4,7 @@
  */
 class StudentController extends AppController {
 	public $name = 'Student';
-	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
+	public $uses = array('Subject', 'WishList', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
 	public $components = array('Utils.FormPreserver'=>array('directPost'=>true), 'Session',  'RequestHandler'/*, 'Security'*/, 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),/* 'Security'*/);
 	//public $helpers = array('Form', 'Html', 'Js', 'Time');
 
@@ -50,27 +50,6 @@ class StudentController extends AppController {
     public function lessons() {
 
     }
-	/*public function lessons($limit=5, $page=1) {
-		//Get lessons that about to start - upcoming
-		$upcomingLessons = $this->UserLesson->getUpcoming($this->Auth->user('user_id'), $limit, $page);
-		$this->Set('upcomingLessons', $upcomingLessons);
-
-        //Get lessons that are over - archive
-        $archiveLessons = $this->UserLesson->getArchive($this->Auth->user('user_id'), $limit, $page);
-        $this->Set('archiveLessons', $archiveLessons);
-
-		//Get lessons that pending for teacher approval - booking requests
-		$bookingRequests = $this->UserLesson->getBooking($this->Auth->user('user_id'), $limit, $page);
-		$this->Set('bookingRequests', $bookingRequests);
-		
-		//Get lessons invitations - invitations
-		$lessonInvitations = $this->UserLesson->getInvitations($this->Auth->user('user_id'), $limit, $page);
-		$this->Set('lessonInvitations', $lessonInvitations);
-		
-		//Get lesson requests - lesson offers
-        $subjectRequests = $this->Subject->getOffersByStudent($this->Auth->user('user_id'), $limit, $page);
-		$this->Set('subjectRequests', $subjectRequests);
-	}*/
 
 	public function lessonsUpcoming($limit=50, $page=1, $userLessonId=null) {
         $this->Set('limit', $limit);
@@ -98,12 +77,28 @@ class StudentController extends AppController {
 		$lessonInvitations = $this->UserLesson->getInvitations($this->Auth->user('user_id'), $limit, $page);
 		return $this->success(1, array('lessonInvitations'=>$lessonInvitations));
 	}
-	public function subjectRequests($limit=50, $page=1) {
+	public function wishList($limit=50, $page=1) {
         $this->Set('limit', $limit);
         $this->Set('page', $page);
-		$subjectRequests = $this->Subject->getOffersByStudent($this->Auth->user('user_id'), $limit, $page);
-		return $this->success(1, array('subjectRequests'=>$subjectRequests));
+        $this->Subject;
+		$wishList = $this->WishList->getOffersByStudent($this->Auth->user('user_id'), $limit, $page);
+		return $this->success(1, array('wishList'=>$wishList));
 	}
+
+    public function disableRequest($wishListId) {
+        return $this->success(1, array('wish_list_id'=>$wishListId));
+        $this->WishList->recursive = -1;
+        $wishData = $this->WishList->findByWishListId($wishListId);
+
+        if(!$wishData['WishList']['student_user_id']!=$this->Auth->user('user_Id')) {
+            return $this->error(1, array('wish_list_id'=>$wishListId));
+        }
+
+        if(!$this->WishList->disable($wishListId)) {
+            return $this->error(1, array('wish_list_id'=>$wishListId));
+        }
+        return $this->success(1, array('wish_list_id'=>$wishListId));
+    }
 	
 	public function cancelUserLesson( $userLessonId ) {
 
@@ -133,7 +128,7 @@ class StudentController extends AppController {
 
             //if done by the student - Check if preapproval is OK
             if($userLessonData['UserLesson']['student_user_id']==$this->Auth->user('user_id')) {
-                $maxAmount = (isSet($userLessonData['UserLesson']['1_on_1_price']) ? $userLessonData['UserLesson']['1_on_1_price'] : null );
+                $maxAmount = (isSet($userLessonData['UserLesson']['price']) ? $userLessonData['UserLesson']['price'] : null );
 
                 $haveEnough = $this->UserLesson->haveEnoughTotalCreditPoints(   $this->Auth->user('user_id'),
                                                                                 $maxAmount,
@@ -205,7 +200,7 @@ class StudentController extends AppController {
             $this->request->data = $userLessonData;
         } else {
 
-            $maxAmount = (isSet($this->request->data['UserLesson']['1_on_1_price']) ? $this->request->data['UserLesson']['1_on_1_price'] : null );
+            $maxAmount = (isSet($this->request->data['UserLesson']['price']) ? $this->request->data['UserLesson']['price'] : null );
             $datetime = (isSet($this->request->data['UserLesson']['datetime']) ? $this->request->data['UserLesson']['datetime'] : null );
 
 
@@ -298,18 +293,6 @@ class StudentController extends AppController {
             }
         }
 
-
-        //Group pricing
-        if(	isSet($this->data['UserLesson']['1_on_1_price']) &&
-            isSet($this->data['UserLesson']['full_group_student_price']) && !empty($this->data['UserLesson']['full_group_student_price']) &&
-            isSet($this->data['UserLesson']['max_students']) && $this->data['UserLesson']['max_students']>1) {
-                /*$groupPrice = $this->Subject->calcStudentFullGroupPrice(	$this->data['UserLesson']['1_on_1_price'], $this->data['UserLesson']['full_group_total_price'],
-                                                                            $this->data['UserLesson']['max_students'], $this->data['UserLesson']['max_students']);*/
-                $groupPrice = $this->Subject->calcStudentPriceAfterDiscount(	$this->data['UserLesson']['1_on_1_price'],
-                                                                                $this->data['UserLesson']['max_students'], $this->data['UserLesson']['max_students'],
-                                                                                $this->data['UserLesson']['full_group_student_price']);
-                $this->set('groupPrice', $groupPrice);
-        }
     }
 
     public function turnNotificationsOff() {
@@ -395,7 +378,7 @@ class StudentController extends AppController {
 		$this->set('reviews', $reviews);
 		
 		$userData = $this->User->findByUserId($this->Auth->user('user_id'));
-		$this->set('avarageRating', $userData['User']['student_avarage_rating']);
+		$this->set('averageRating', $userData['User']['student_average_rating']);
 	}
 	public function setReview($userLessonId) {
 		if (empty($this->request->data)) {
@@ -417,6 +400,6 @@ class StudentController extends AppController {
 		$this->Set('reviews', $reviews);
 
         $userData = $this->User->findByUserId($this->Auth->user('user_id'));
-        $this->set('avarageRating', $userData['User']['student_avarage_rating']);
+        $this->set('averageRating', $userData['User']['student_average_rating']);
 	}
 }

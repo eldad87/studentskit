@@ -20,12 +20,12 @@
     </div>
     <div class="lesson-box-footer radius2">
         <?php
-         echo $this->Layout->ratingNew($avarageRating, false, 'pull-left space3');
+         echo $this->Layout->ratingNew($averageRating, false, 'pull-left space3');
         ?>
 
         <div class="pull-right">
             <?php
-                echo $this->Layout->priceTag($oneOnOnePrice, $fullGroupStudentPrice);
+                echo $this->Layout->priceTag($price, $bulkPrice);
                 echo $this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($subjectData));
             ?>
 

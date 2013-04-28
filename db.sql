@@ -43,7 +43,40 @@ CREATE TABLE `billing_history` (
   `params` text COLLATE utf8_bin NOT NULL,
   `created` datetime NOT NULL,
   PRIMARY KEY (`billing_history_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+/*Table structure for table `categories` */
+
+DROP TABLE IF EXISTS `categories`;
+
+CREATE TABLE `categories` (
+  `category_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `parent_category_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `path` text COLLATE utf8_unicode_ci,
+  `name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `forum_id` int(11) DEFAULT NULL,
+  `deep` int(10) unsigned DEFAULT '1',
+  PRIMARY KEY (`category_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+/*Table structure for table `categories_i18n` */
+
+DROP TABLE IF EXISTS `categories_i18n`;
+
+CREATE TABLE `categories_i18n` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `locale` varchar(6) COLLATE utf8_unicode_ci NOT NULL,
+  `model` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `foreign_key` int(10) NOT NULL,
+  `field` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `content` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `locale` (`locale`),
+  KEY `model` (`model`),
+  KEY `row_id` (`foreign_key`),
+  KEY `field` (`field`)
+) ENGINE=InnoDB AUTO_INCREMENT=129 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `comments` */
 
@@ -72,6 +105,75 @@ CREATE TABLE `comments` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+/*Table structure for table `course_schedule` */
+
+DROP TABLE IF EXISTS `course_schedule`;
+
+CREATE TABLE `course_schedule` (
+  `course_schedule_id` int(11) unsigned NOT NULL,
+  `course_id` int(11) unsigned NOT NULL,
+  `datetime` datetime DEFAULT NULL,
+  `end_datetime` datetime DEFAULT NULL,
+  PRIMARY KEY (`course_schedule_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+/*Table structure for table `course_subject` */
+
+DROP TABLE IF EXISTS `course_subject`;
+
+CREATE TABLE `course_subject` (
+  `course_subject_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `course_id` int(11) unsigned NOT NULL,
+  `subject_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`course_subject_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+/*Table structure for table `courses` */
+
+DROP TABLE IF EXISTS `courses`;
+
+CREATE TABLE `courses` (
+  `course_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `teacher_user_id` int(11) NOT NULL,
+  `category_id` int(11) DEFAULT NULL,
+  `forum_id` int(11) DEFAULT NULL,
+  `name` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
+  `video_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  `image_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_resize` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_38x38` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_58x58` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_60x60` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_63x63` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_72x72` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_78x78` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_80x80` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_100x100` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_128x95` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_149x182` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_200x210` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_436x214` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_enable` tinyint(4) NOT NULL DEFAULT '1',
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `language` char(3) COLLATE utf8_unicode_ci NOT NULL,
+  `is_public` tinyint(2) unsigned NOT NULL DEFAULT '1',
+  `schedule_amount` int(11) unsigned NOT NULL DEFAULT '0',
+  `students_amount` int(11) NOT NULL DEFAULT '0',
+  `raters_amount` int(11) NOT NULL DEFAULT '0',
+  `average_rating` float NOT NULL DEFAULT '0',
+  `subjects_amount` int(11) NOT NULL DEFAULT '0',
+  `price` float unsigned NOT NULL,
+  `max_students` int(11) unsigned DEFAULT NULL,
+  `bulk_price` float unsigned DEFAULT NULL,
+  `is_locked` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  `lock_ends` datetime DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`course_id`),
+  KEY `NewIndex1` (`language`,`is_public`,`is_enable`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 /*Table structure for table `express_checkout` */
 
 DROP TABLE IF EXISTS `express_checkout`;
@@ -96,7 +198,7 @@ CREATE TABLE `express_checkout` (
   `created` datetime DEFAULT NULL,
   PRIMARY KEY (`express_checkout_id`),
   KEY `pending_user_lesson_id` (`pending_user_lesson_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Table structure for table `file_system` */
 
@@ -118,7 +220,7 @@ CREATE TABLE `file_system` (
   `deletable` tinyint(2) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`file_system_id`),
   KEY `NewIndex1` (`entity_type`,`entity_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=111 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `forum_access` */
 
@@ -418,20 +520,7 @@ CREATE TABLE `notifications` (
   `unread` tinyint(2) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`notification_id`),
   KEY `NewIndex1` (`user_id`,`unread`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `payment_info` */
-
-DROP TABLE IF EXISTS `payment_info`;
-
-CREATE TABLE `payment_info` (
-  `payment_info_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_ID` int(10) unsigned NOT NULL,
-  `last_4_digits` int(11) unsigned NOT NULL,
-  `cc_ref` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `is_default` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`payment_info_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `pending_user_lessons` */
 
@@ -448,14 +537,14 @@ CREATE TABLE `pending_user_lessons` (
   `student_user_id` int(11) unsigned NOT NULL,
   `datetime` datetime DEFAULT NULL,
   `duration_minutes` int(11) unsigned DEFAULT NULL,
-  `1_on_1_price` float unsigned DEFAULT NULL,
+  `price` float unsigned DEFAULT NULL,
   `max_students` int(11) unsigned DEFAULT NULL,
-  `full_group_total_price` float unsigned DEFAULT NULL,
+  `bulk_price` float unsigned DEFAULT NULL,
   `extra` text COLLATE utf8_unicode_ci,
   `reverse_stage` tinyint(1) DEFAULT '0',
   `version` char(36) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`pending_user_lesson_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `student_tests` */
 
@@ -482,39 +571,6 @@ CREATE TABLE `subject_catalog` (
   PRIMARY KEY (`subject_catalog_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-/*Table structure for table `subject_categories` */
-
-DROP TABLE IF EXISTS `subject_categories`;
-
-CREATE TABLE `subject_categories` (
-  `subject_category_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `parent_subject_category_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `path` text COLLATE utf8_unicode_ci,
-  `name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `description` text COLLATE utf8_unicode_ci,
-  `forum_id` int(11) DEFAULT NULL,
-  `deep` int(10) unsigned DEFAULT '1',
-  PRIMARY KEY (`subject_category_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-/*Table structure for table `subject_categories_i18n` */
-
-DROP TABLE IF EXISTS `subject_categories_i18n`;
-
-CREATE TABLE `subject_categories_i18n` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `locale` varchar(6) COLLATE utf8_unicode_ci NOT NULL,
-  `model` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `foreign_key` int(10) NOT NULL,
-  `field` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `content` text COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`id`),
-  KEY `locale` (`locale`),
-  KEY `model` (`model`),
-  KEY `row_id` (`foreign_key`),
-  KEY `field` (`field`)
-) ENGINE=InnoDB AUTO_INCREMENT=129 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 /*Table structure for table `subjects` */
 
 DROP TABLE IF EXISTS `subjects`;
@@ -524,7 +580,7 @@ CREATE TABLE `subjects` (
   `user_id` int(11) NOT NULL,
   `type` tinyint(4) NOT NULL DEFAULT '1',
   `lesson_type` enum('live','video') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'live',
-  `subject_category_id` int(11) DEFAULT NULL,
+  `category_id` int(11) DEFAULT NULL,
   `catalog_id` int(11) DEFAULT NULL,
   `forum_id` int(11) DEFAULT NULL,
   `root_file_system_id` int(11) unsigned DEFAULT NULL,
@@ -550,15 +606,14 @@ CREATE TABLE `subjects` (
   `description` text COLLATE utf8_unicode_ci NOT NULL,
   `language` char(3) COLLATE utf8_unicode_ci NOT NULL,
   `is_public` tinyint(2) unsigned NOT NULL DEFAULT '1',
-  `duration_minutes` int(11) DEFAULT '60',
+  `duration_minutes` int(11) DEFAULT NULL,
   `total_lessons` int(11) unsigned NOT NULL DEFAULT '0',
   `students_amount` int(11) NOT NULL DEFAULT '0',
   `raters_amount` int(11) NOT NULL DEFAULT '0',
-  `avarage_rating` float NOT NULL DEFAULT '0',
-  `1_on_1_price` float unsigned NOT NULL,
-  `max_students` int(11) unsigned DEFAULT NULL,
-  `full_group_student_price` float unsigned DEFAULT NULL,
-  `full_group_total_price` float unsigned DEFAULT NULL,
+  `average_rating` float NOT NULL DEFAULT '0',
+  `price` float DEFAULT NULL,
+  `max_students` int(11) DEFAULT NULL,
+  `bulk_price` float DEFAULT NULL,
   `creation_stage` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `is_locked` tinyint(2) unsigned NOT NULL DEFAULT '0',
   `lock_ends` datetime DEFAULT NULL,
@@ -566,7 +621,7 @@ CREATE TABLE `subjects` (
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`subject_id`),
   KEY `NewIndex1` (`type`,`language`,`is_public`,`is_enable`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `teacher_about_videos` */
 
@@ -608,12 +663,14 @@ DROP TABLE IF EXISTS `teacher_lessons`;
 CREATE TABLE `teacher_lessons` (
   `teacher_lesson_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `subject_id` int(11) NOT NULL,
-  `request_subject_id` int(11) DEFAULT NULL,
+  `wish_list_id` int(11) DEFAULT NULL,
+  `course_id` int(11) DEFAULT NULL,
+  `course_schedule_id` int(11) DEFAULT NULL,
   `teacher_user_id` int(11) NOT NULL,
   `student_user_id` int(11) DEFAULT NULL,
   `datetime` datetime DEFAULT NULL,
   `end_datetime` datetime DEFAULT NULL,
-  `subject_category_id` int(11) DEFAULT NULL,
+  `category_id` int(11) DEFAULT NULL,
   `forum_id` int(11) DEFAULT NULL,
   `lesson_type` enum('live','video') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'live',
   `is_public` tinyint(2) unsigned NOT NULL DEFAULT '1',
@@ -637,10 +694,9 @@ CREATE TABLE `teacher_lessons` (
   `image_crop_436x214` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
   `language` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
   `duration_minutes` int(11) unsigned DEFAULT NULL,
-  `1_on_1_price` float unsigned NOT NULL,
+  `price` float unsigned NOT NULL,
   `max_students` int(11) unsigned DEFAULT '1',
-  `full_group_student_price` float unsigned DEFAULT NULL,
-  `full_group_total_price` float unsigned DEFAULT NULL,
+  `bulk_price` float unsigned DEFAULT NULL,
   `num_of_pending_join_requests` float unsigned NOT NULL DEFAULT '0',
   `num_of_students` int(11) unsigned NOT NULL DEFAULT '0',
   `num_of_pending_invitations` int(11) unsigned NOT NULL DEFAULT '0',
@@ -660,7 +716,7 @@ CREATE TABLE `teacher_lessons` (
   KEY `subject_id` (`subject_id`),
   KEY `NewIndex1` (`datetime`,`lesson_type`,`payment_status`,`notification_status`),
   KEY `payment` (`datetime`,`lesson_type`,`payment_status`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `tests` */
 
@@ -699,7 +755,7 @@ CREATE TABLE `threads` (
   PRIMARY KEY (`thread_id`),
   KEY `by_user_id` (`by_user_id`,`by_user_unread_messages`),
   KEY `to_user_id` (`to_user_id`,`to_user_unread_messages`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `user_lessons` */
 
@@ -709,13 +765,15 @@ CREATE TABLE `user_lessons` (
   `user_lesson_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '	',
   `teacher_lesson_id` int(11) DEFAULT NULL,
   `subject_id` int(11) NOT NULL,
-  `request_subject_id` int(11) DEFAULT NULL,
+  `wish_list_id` int(11) DEFAULT NULL,
+  `course_id` int(11) DEFAULT NULL,
+  `course_schedule_id` int(11) DEFAULT NULL,
   `teacher_user_id` int(11) DEFAULT NULL,
   `student_user_id` int(11) NOT NULL,
   `datetime` datetime DEFAULT NULL,
   `end_datetime` datetime DEFAULT NULL,
   `stage` tinyint(4) NOT NULL,
-  `subject_category_id` int(11) DEFAULT NULL,
+  `category_id` int(11) DEFAULT NULL,
   `forum_id` int(11) DEFAULT NULL,
   `root_file_system_id` int(11) unsigned DEFAULT NULL,
   `is_public` tinyint(2) unsigned NOT NULL DEFAULT '1',
@@ -741,10 +799,9 @@ CREATE TABLE `user_lessons` (
   `duration_minutes` int(11) DEFAULT NULL,
   `offer_message` text COLLATE utf8_unicode_ci,
   `credit_points` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `1_on_1_price` float unsigned NOT NULL,
+  `price` float unsigned NOT NULL,
   `max_students` int(10) unsigned DEFAULT NULL,
-  `full_group_student_price` float unsigned DEFAULT NULL,
-  `full_group_total_price` float DEFAULT NULL,
+  `bulk_price` float unsigned DEFAULT NULL,
   `rating_by_student` float DEFAULT NULL,
   `comment_by_student` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `student_image` tinyint(2) NOT NULL DEFAULT '0',
@@ -759,7 +816,7 @@ CREATE TABLE `user_lessons` (
   KEY `subject_id` (`subject_id`),
   KEY `teacher_lesson_id` (`teacher_lesson_id`),
   KEY `credit_point_back_to_user_cron` (`lesson_type`,`datetime`,`stage`,`payment_status`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `users` */
 
@@ -791,7 +848,7 @@ CREATE TABLE `users` (
   `phone` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
   `address` text COLLATE utf8_unicode_ci,
   `zipcode` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `student_avarage_rating` float unsigned NOT NULL DEFAULT '0',
+  `student_average_rating` float unsigned NOT NULL DEFAULT '0',
   `student_about` text COLLATE utf8_unicode_ci,
   `student_raters_amount` int(10) unsigned NOT NULL DEFAULT '0',
   `student_total_lessons` int(10) unsigned NOT NULL DEFAULT '0',
@@ -803,7 +860,7 @@ CREATE TABLE `users` (
   `teacher_total_teaching_minutes` int(11) unsigned NOT NULL DEFAULT '0',
   `teacher_students_amount` int(11) unsigned NOT NULL DEFAULT '0',
   `teacher_total_lessons` int(11) unsigned NOT NULL DEFAULT '0',
-  `teacher_avarage_rating` float unsigned NOT NULL DEFAULT '0',
+  `teacher_average_rating` float unsigned NOT NULL DEFAULT '0',
   `teacher_raters_amount` int(11) unsigned NOT NULL DEFAULT '0',
   `teacher_paypal_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `teacher_receive_notification` tinyint(2) unsigned NOT NULL DEFAULT '1',
@@ -833,7 +890,7 @@ CREATE TABLE `watchitoo_lesson_meetings` (
   `created` datetime NOT NULL,
   PRIMARY KEY (`watchitoo_lesson_meeting_id`),
   KEY `NewIndex1` (`teacher_lesson_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `watchitoo_lesson_users` */
 
@@ -856,7 +913,7 @@ CREATE TABLE `watchitoo_subject_meetings` (
   `meeting_id` varchar(15) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`watchitoo_subject_meeting_id`),
   KEY `subject_id` (`subject_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `watchitoo_subject_teachers` */
 
@@ -869,7 +926,7 @@ CREATE TABLE `watchitoo_subject_teachers` (
   `subject_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`user_id`),
   KEY `NewIndex1` (`subject_id`,`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Table structure for table `weak_passwords` */
 
@@ -880,6 +937,31 @@ CREATE TABLE `weak_passwords` (
   `password_md5` char(32) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`password_md5`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+/*Table structure for table `wish_list` */
+
+DROP TABLE IF EXISTS `wish_list`;
+
+CREATE TABLE `wish_list` (
+  `wish_list_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `student_user_id` int(11) NOT NULL,
+  `lesson_type` enum('live','video','course') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'live',
+  `category_id` int(11) DEFAULT NULL,
+  `name` varchar(25) COLLATE utf8_unicode_ci NOT NULL,
+  `image` tinyint(2) unsigned NOT NULL DEFAULT '0',
+  `image_source` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_resize` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `image_crop_72x72` varchar(500) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_enable` tinyint(4) NOT NULL DEFAULT '1',
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `language` char(3) COLLATE utf8_unicode_ci NOT NULL,
+  `duration_minutes` int(11) DEFAULT NULL,
+  `price` float unsigned NOT NULL,
+  `max_students` int(11) unsigned DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`wish_list_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

@@ -65,7 +65,7 @@ class PaypalComponent extends Component {
         $itemDetails->Description = $pulData['Subject']['description'];
         $itemDetails->Amount = new BasicAmountType($this->currency, $amount);
         $itemDetails->Quantity = 1;
-        $itemDetails->ItemCategory = 'Physical'; //'Digital';
+        $itemDetails->ItemCategory = 'Digital'; //'Physical';
         $paymentDetails->PaymentDetailsItem[] = $itemDetails;
         if($ipn) {
             $paymentDetails->NotifyURL = $ipn;

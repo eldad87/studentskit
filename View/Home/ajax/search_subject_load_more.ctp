@@ -1,18 +1,18 @@
 <?php
-if($response['response']['subjects']) {
+if($response['response']['records']) {
 
-    foreach($response['response']['subjects'] AS $newSubject) {
-        $newSubject['Subject']['one_on_one_price'] = $newSubject['Subject']['1_on_1_price'];
+    foreach($response['response']['records'] AS $subjectData) {
+        $subjectData['Subject']['one_on_one_price'] = $subjectData['Subject']['price'];
         echo '<li class="cont-span4 spc space2">';
-        echo $this->element('subject',          array( 'subjectId'=>$newSubject['Subject']['subject_id'],
-            'teacherUserId'         =>$newSubject['Subject']['user_id'],
-            'teacherUsername'       =>$newSubject['Teacher']['username'],
-            'name'                  =>$newSubject['Subject']['name'],
-            'description'           =>$newSubject['Subject']['description'],
-            'avarageRating'         =>$newSubject['Subject']['avarage_rating'],
-            'oneOnOnePrice'         =>$newSubject['Subject']['1_on_1_price'],
-            'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
-            'imageSource'           =>$newSubject['Subject']['image_source'],
+        echo $this->element('subject',          array(  'subjectId'             =>$subjectData['Subject']['subject_id'],
+                                                        'teacherUserId'         =>$subjectData['Subject']['user_id'],
+                                                        'teacherUsername'       =>$subjectData['Teacher']['username'],
+                                                        'name'                  =>$subjectData['Subject']['name'],
+                                                        'description'           =>$subjectData['Subject']['description'],
+                                                        'averageRating'         =>$subjectData['Subject']['average_rating'],
+                                                        'price'                 =>$subjectData['Subject']['price'],
+                                                        'bulkPrice'             =>$subjectData['Subject']['bulk_price'],
+                                                        'imageSource'           =>$subjectData['Subject']['image_source'],
         ));
         echo '</li>';
     }

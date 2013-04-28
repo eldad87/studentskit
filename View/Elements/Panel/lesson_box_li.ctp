@@ -26,14 +26,14 @@ if(isSet($lessonData['UserLesson'])) {
 
 
     <div class="lesson-box-footer radius2">
-        <div class="pull-left star"><?php echo $this->Layout->ratingNew($lessonData['Subject']['avarage_rating'], false, 'pull-left pad8'); ?></div>
+        <div class="pull-left star"><?php echo $this->Layout->ratingNew($lessonData['Subject']['average_rating'], false, 'pull-left pad8'); ?></div>
 
         <div class="pull-right">
             <?php
             echo $this->Layout->toolTip($this->Layout->buildLessonTooltipHtml(am($lessonData['TeacherLesson'], $lessonMainData)), null, 'pull-right space23', 'tooltip_'.(
                 isSet($lessonMainData['user_lesson_id']) ? $lessonMainData['user_lesson_id'] : $lessonMainData['teacher_lesson_id'])
             );
-            echo $this->Layout->priceTag($lessonMainData['1_on_1_price'], $lessonMainData['full_group_student_price'], 'price-tag-panel');
+            echo $this->Layout->priceTag($lessonMainData['price'], $lessonMainData['bulk_price'], 'price-tag-panel');
             ?>
         </div>
         <?php

@@ -4,7 +4,7 @@
         <h3><?php echo __('Offer a lesson'); ?></h3>
     </div>
 
-    <?php echo $this->Form->create('UserLesson', array('class'=>'sk-form', 'url'=>array('controller'=>'Requests', 'action'=>'offerSubject'), 'method'=>'post', 'id'=>'offer-form')); ?>
+    <?php echo $this->Form->create('UserLesson', array('class'=>'sk-form', 'url'=>array('controller'=>'Requests', 'action'=>'makeAnOffer'), 'method'=>'post', 'id'=>'offer-form')); ?>
     <input type="hidden" name="by" id="offer-by" /> <!-- Tell if to use datetime ot teacher_lesson_id -->
     <div class="modal-body">
     </div>

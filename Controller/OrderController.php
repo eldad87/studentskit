@@ -55,7 +55,7 @@ class OrderController extends AppController {
         switch($action) {
             //TeacherLesson
             case 'join':
-                $price = $actionData['TeacherLesson']['1_on_1_price'];
+                $price = $actionData['TeacherLesson']['price'];
                if($actionData['TeacherLesson']['lesson_type']=='video') {
                    break;
                }
@@ -68,7 +68,7 @@ class OrderController extends AppController {
             case 'accept':
                 //$redirectAction = 'summary';
                 $datetime = $actionData['UserLesson']['datetime'];
-                $price = $actionData['UserLesson']['1_on_1_price'];
+                $price = $actionData['UserLesson']['price'];
                 break;
 
             case 'negotiate':
@@ -79,8 +79,8 @@ class OrderController extends AppController {
 
                 $extraParams = Security::rijndael(base64_decode($this->params->query['negotiate']), Configure::read('Security.key'), 'decrypt');
                 $extraParams = json_decode($extraParams, true);
-                if(isSet($extraParams['1_on_1_price'])) {
-                    $price = $extraParams['1_on_1_price'];
+                if(isSet($extraParams['price'])) {
+                    $price = $extraParams['price'];
                 }
                 if(isSet($extraParams['datetime'])) {
                     $datetime = $extraParams['datetime'];
@@ -92,7 +92,7 @@ class OrderController extends AppController {
                     //teachers can't order their own lessons
                     $this->redirect($this->getOrderData('redirect'));
                 }
-                $price = $actionData['Subject']['1_on_1_price'];
+                $price = $actionData['Subject']['price'];
                 break;
 
             default:
@@ -168,7 +168,7 @@ class OrderController extends AppController {
 
         //Set statistics data
         $statistics = $actionData['Subject'];
-        $statistics['1_on_1_price'] = $this->getOrderData('price');
+        $statistics['price'] = $this->getOrderData('price');
         $statistics['action'] = $this->getOrderData('action');
         $this->setStatisticsData($statistics);
 
@@ -248,8 +248,7 @@ class OrderController extends AppController {
         switch($this->getOrderData('action')) {
             case 'order':
                 if($actionData['Subject']['max_students']>1) {
-                    $viewParameters['full_group_student_price'] = $actionData['Subject']['full_group_student_price'];
-                    $viewParameters['full_group_total_price']   = $actionData['Subject']['full_group_total_price'];
+                    $viewParameters['bulk_price'] = $actionData['Subject']['bulk_price'];
                 }
 
                 //Calc how much CP the user need to buy
@@ -260,8 +259,7 @@ class OrderController extends AppController {
 
             case 'join':
                 if($actionData['TeacherLesson']['max_students']>1) {
-                    $viewParameters['full_group_student_price'] = $actionData['TeacherLesson']['full_group_student_price'];
-                    $viewParameters['full_group_total_price']   = $actionData['TeacherLesson']['full_group_total_price'];
+                    $viewParameters['bulk_price'] = $actionData['TeacherLesson']['bulk_price'];
                 }
                 $viewParameters['num_of_students']              = $actionData['TeacherLesson']['num_of_students'];
 
@@ -273,8 +271,7 @@ class OrderController extends AppController {
             case 'negotiate':
             case 'accept':
                 if($actionData['UserLesson']['max_students']>1) {
-                    $viewParameters['full_group_student_price'] = $actionData['UserLesson']['full_group_student_price'];
-                    $viewParameters['full_group_total_price']   = $actionData['UserLesson']['full_group_total_price'];
+                    $viewParameters['bulk_price'] = $actionData['UserLesson']['bulk_price'];
                 }
                 $viewParameters['num_of_students']              = $actionData['TeacherLesson']['num_of_students'];
 
@@ -289,7 +286,7 @@ class OrderController extends AppController {
 
         //Set statistics data
         $statistics = $actionData['Subject'] + $viewParameters;
-        $statistics['1_on_1_price'] = $viewParameters['price'];
+        $statistics['price'] = $viewParameters['price'];
         $statistics['action'] = $this->getOrderData('action');
         $this->setStatisticsData($statistics);
 
@@ -304,18 +301,18 @@ class OrderController extends AppController {
             'action'                    => $statistics['action'],
             'subject_id'                => $statistics['subject_id'],
             'teacher_user_id'           => $statistics['user_id'],
-            'subject_category_id'       => $statistics['subject_category_id'],
+            'category_id'               => $statistics['category_id'],
             'lesson_type'               => $statistics['lesson_type'],
             'language'                  => $statistics['language'],
             'name'                      => $statistics['name'],
             'duration_minutes'          => $statistics['duration_minutes'],
-            '1_on_1_price'              => $statistics['1_on_1_price'],
+            'price'                     => $statistics['price'],
             'max_students'              => $statistics['max_students'],
-            'full_group_student_price'  => $statistics['full_group_student_price'],
+            'bulk_price'                => $statistics['bulk_price'],
             'total_lessons'             => $statistics['total_lessons'],
             'students_amount'           => $statistics['students_amount'],
             'raters_amount'             => $statistics['raters_amount'],
-            'avarage_rating'            => $statistics['avarage_rating'],
+            'average_rating'            => $statistics['average_rating'],
             'created'                   => $statistics['created']
         );
 
@@ -448,7 +445,7 @@ class OrderController extends AppController {
     private function _gateway($pendingUserLessonId, $action, $gateway='paypalExpressCheckout') {
 
         //Check if user have enough funds + check if UL have any funds (in case of negotiation)
-        //1. Get pendingUserLesson.1_on_1_price
+        //1. Get pendingUserLesson.price
         $this->PendingUserLesson->recursive = -1;
         $pulData = $this->PendingUserLesson->find('first', array('conditions'=>array('pending_user_lesson_id'=>$pendingUserLessonId)));
         if(!$pulData) {
@@ -459,8 +456,8 @@ class OrderController extends AppController {
 
         //Check if user have enought CP - if so, no need to ask him to pay more
         $haseEnought = $this->UserLesson->haveEnoughTotalCreditPoints(  $pulData['student_user_id'],
-                                                                $pulData['1_on_1_price'],
-                                                                $pulData['user_lesson_id']);
+                                                                        $pulData['price'],
+                                                                        $pulData['user_lesson_id']);
         if($haseEnought===true) {
 
             //execute, credit-points will be taken after PendingUserLesson will be execute
@@ -561,7 +558,7 @@ class OrderController extends AppController {
             $this->set('userLessonId', $userLessonId);
             $this->set('subjectId', $ulData['UserLesson']['subject_id']);
             $this->set('name', $ulData['UserLesson']['name']);
-            $this->set('orderData', array('action'=>$action, 'price'=>$ulData['UserLesson']['1_on_1_price'], 'lesson_type'=>$ulData['UserLesson']['lesson_type']));
+            $this->set('orderData', array('action'=>$action, 'price'=>$ulData['UserLesson']['price'], 'lesson_type'=>$ulData['UserLesson']['lesson_type']));
 
 
             //Set statistics data
@@ -569,7 +566,7 @@ class OrderController extends AppController {
             $statistics['total_lessons']    = $ulData['Subject']['total_lessons'];
             $statistics['students_amount']  = $ulData['Subject']['students_amount'];
             $statistics['raters_amount']    = $ulData['Subject']['raters_amount'];
-            $statistics['avarage_rating']   = $ulData['Subject']['avarage_rating'];
+            $statistics['average_rating']   = $ulData['Subject']['average_rating'];
             $statistics['created']          = $ulData['Subject']['created'];
 
 
@@ -591,7 +588,7 @@ class OrderController extends AppController {
             $parameter = '.'.$parameter;
         }
 
-        if($parameter=='redirect') {
+        if($parameter=='.redirect') {
             $redirect = $this->Session->read('order'.$parameter);
             if(!$redirect) {
                 return '/';
@@ -650,7 +647,7 @@ class OrderController extends AppController {
                     $this->Session->setFlash(__('You already ordered that video lesson'));
                     $this->redirect($this->getOrderData('redirect'));
 
-                } else if(/*$actionData['Subject']['1_on_1_price']*/$this->getOrderData('price')>0) {
+                } else if(/*$actionData['Subject']['price']*/$this->getOrderData('price')>0) {
                     //show indication to user that this will remove ads for 2 days
                     $this->Session->setFlash( sprintf(__('You already ordered that video lesson, by continue ordering - it will remove the advertisements for %d days'), (LESSON_TYPE_VIDEO_NO_ADS_TIME_SEC/DAY)) );
                 } else {

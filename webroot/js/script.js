@@ -299,65 +299,121 @@ function parseResponse(data) {
 
 /////////////////////////////////////////////////////////////// panel + site
 
-function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
+function initSubjectAddForm(isPublicInputSelector, lessonTypeInputSelector, priceInputSelector, maxStudentsSelector) {
+
+
+
+    //Unbind all events - in case of a refresh
+    $(isPublicInputSelector).unbind();
+    $(lessonTypeInputSelector).unbind();
+    $(priceInputSelector).unbind();
+    $(maxStudentsSelector).unbind();
+
+    //Disable HTML 5 validation
+    $(isPublicInputSelector).closest('form').attr('novalidate', 'novalidate');
+
+    //Change of is public
+    $(isPublicInputSelector).change(function(){
+        if($(this).val()==1) {
+            $('#publicSettingsDiv').show();
+        } else {
+            $('#publicSettingsDiv').hide();
+        }
+
+        $(lessonTypeInputSelector).change();
+    });
+
+    //On live lessons - disable max_students and volume discount
+    $(lessonTypeInputSelector).change(function(){
+        if($(this).val()=='live') {
+            $('#maxStudentsAndDiscountDiv').show();
+            $('#durationDiv').show();
+        } else {
+            $('#maxStudentsAndDiscountDiv').hide();
+            $('#durationDiv').hide();
+        }
+
+        $(maxStudentsSelector).change();
+    });
+
+    //If free lesson - no need for volume discount
+    $(priceInputSelector).change(function(){
+        $(maxStudentsSelector).change();
+    });
+
+    //On paid lessons with more then 1 student - a volume discount is enabled
+    $(maxStudentsSelector).change(function(){
+        if($(this).val()>1 && $(priceInputSelector).val()>0) {
+            $('#discountPriceDiv').show();
+        } else {
+            $('#discountPriceDiv').hide();
+        }
+    });
+
+
+    //Init the form view
+    $(isPublicInputSelector).change();
+}
+
+function initSubjectForm(priceInputSelector, lessonTypeInputSelector,
                          maxStudentsInputSelector, maxStudentsDivSelector,
-                         fullGroupStudentPriceDivSelector, fullGroupStudentPriceInputSelector,
+                         bulkPriceDivSelector, bulkPriceInputSelector,
                          durationDivSelector) {
 
 
-    oneOnOnePriceInputSelector          = 'div:visible ' + oneOnOnePriceInputSelector; //#sub-area
+    priceInputSelector                  = 'div:visible ' + priceInputSelector; //#sub-area
     lessonTypeInputSelector             = 'div:visible ' + lessonTypeInputSelector;
     maxStudentsInputSelector            = 'div:visible ' + maxStudentsInputSelector;
     maxStudentsDivSelector              = 'div:visible ' + maxStudentsDivSelector;
-    fullGroupStudentPriceDivSelector    = 'div:visible ' + fullGroupStudentPriceDivSelector;
-    fullGroupStudentPriceInputSelector  = 'div:visible ' + fullGroupStudentPriceInputSelector;
+    bulkPriceDivSelector                = 'div:visible ' + bulkPriceDivSelector;
+    bulkPriceInputSelector              = 'div:visible ' + bulkPriceInputSelector;
     durationDivSelector                 = 'div:visible ' + durationDivSelector;
 
-    $(oneOnOnePriceInputSelector).unbind();
-    $(fullGroupStudentPriceInputSelector).unbind();
+    $(priceInputSelector).unbind();
+    $(bulkPriceInputSelector).unbind();
     $(maxStudentsInputSelector).unbind();
     $(lessonTypeInputSelector).unbind();
 
 
     //Chrome fix, hidden inputs that are required
-    $(oneOnOnePriceInputSelector).closest('form').attr('novalidate', 'novalidate');
+    $(priceInputSelector).closest('form').attr('novalidate', 'novalidate');
 
     //Make Full-group-student-price invisible until the user set max-students>1
-    $(fullGroupStudentPriceDivSelector).hide();
+    $(bulkPriceDivSelector).hide();
 
     //1. User change the value of 1on1 price
-    $(oneOnOnePriceInputSelector).change(function(){
+    $(priceInputSelector).change(function(){
         if($(this).val()>0 && $(maxStudentsInputSelector).val()>1) {
-            $(fullGroupStudentPriceDivSelector).show();
+            $(bulkPriceDivSelector).show();
         } else {
-            $(fullGroupStudentPriceDivSelector).hide();
+            $(bulkPriceDivSelector).hide();
         }
 
         //If there is no group price or group price is higher then 1 on 1 price
-        if($(fullGroupStudentPriceInputSelector).val()=='' || $(fullGroupStudentPriceInputSelector).val()>$(this).val()) {
+        if($(bulkPriceInputSelector).val()=='' || $(bulkPriceInputSelector).val()>$(this).val()) {
 
             //Set 1on1 price on group price
-            $(fullGroupStudentPriceInputSelector).val($(this).val());
+            $(bulkPriceInputSelector).val($(this).val());
         }
 
     });
 
     //Make sure that the group price is equal or lower then 1on1 price
-    $(fullGroupStudentPriceInputSelector).change(function(){
-        if($(this).val()>$(oneOnOnePriceInputSelector).val()) {
-            $(this).val($(oneOnOnePriceInputSelector).val());
+    $(bulkPriceInputSelector).change(function(){
+        if($(this).val()>$(priceInputSelector).val()) {
+            $(this).val($(priceInputSelector).val());
         }
     });
 
     //Show/Hide student full group price - by max-students
     $(maxStudentsInputSelector).change(function(){
         //Show group student price
-        if($(this).val()>1 && $(oneOnOnePriceInputSelector).val()>0) { //show it only if 1on1price>0
-            $(fullGroupStudentPriceDivSelector).show();
+        if($(this).val()>1 && $(priceInputSelector).val()>0) { //show it only if price>0
+            $(bulkPriceDivSelector).show();
 
             //Hide it
         } else {
-            $(fullGroupStudentPriceDivSelector).hide();
+            $(bulkPriceDivSelector).hide();
         }
     });
 
@@ -373,12 +429,12 @@ function initSubjectForm(oneOnOnePriceInputSelector, lessonTypeInputSelector,
         } else {
             $(maxStudentsDivSelector).hide();
             $(durationDivSelector).hide();
-            $(fullGroupStudentPriceDivSelector).hide();
+            $(bulkPriceDivSelector).hide();
         }
     });
 
-    $(oneOnOnePriceInputSelector).change();
-    $(fullGroupStudentPriceInputSelector).change();
+    $(priceInputSelector).change();
+    $(bulkPriceInputSelector).change();
     $(maxStudentsInputSelector).change();
     $(lessonTypeInputSelector).change();
 }

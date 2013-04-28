@@ -24,7 +24,7 @@
     <div class="searchbar-inner">
         <!--<h2>Search Here</h2>-->
         <div class="searchbox-bg">
-            <?php echo $this->Form->create(false, array('url'=>array('controller'=>(isSet($controller) ? $controller : 'Home'), 'action'=>'searchSubject'), 'id'=>'search_form', 'type'=>'get')); ?>
+            <?php echo $this->Form->create(false, array('url'=>array('controller'=>(isSet($controller) ? $controller : 'Home'), 'action'=>(isSet($action) ? $action : 'searchSubject')), 'id'=>'search_form', 'type'=>'get')); ?>
             <div class="search-fullwidth">
                 <div class="search-right-btn-left">
                     <div class="search-box-main">

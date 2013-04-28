@@ -200,8 +200,8 @@ class User extends AppModel {
 
 	public function setRating($userId, $userType, $rating) {
 		$update = array(
-            $userType.'_avarage_rating' =>$this->getDataSource()->expression('CASE WHEN '.$userType.'_raters_amount=0 THEN '.$rating.'
-                                                                    ELSE (('.$userType.'_raters_amount*'.$userType.'_avarage_rating)+'.$rating.')/('.$userType.'_raters_amount+1) END'),
+            $userType.'_average_rating' =>$this->getDataSource()->expression('CASE WHEN '.$userType.'_raters_amount=0 THEN '.$rating.'
+                                                                    ELSE (('.$userType.'_raters_amount*'.$userType.'_average_rating)+'.$rating.')/('.$userType.'_raters_amount+1) END'),
 			$userType.'_raters_amount'	=>$this->getDataSource()->expression($userType.'_raters_amount+1')
 		);
 		$this->id = $userId;
@@ -261,10 +261,9 @@ class User extends AppModel {
                                             'duration_minutes'          => $teacherLesson['TeacherLesson']['duration_minutes'],
 											'num_of_students'           => $teacherLesson['TeacherLesson']['num_of_students'],
                                             'max_students'              => $teacherLesson['TeacherLesson']['max_students'],
-											'1_on_1_price'              => $teacherLesson['TeacherLesson']['1_on_1_price'],
-                                            'full_group_total_price'    => $teacherLesson['TeacherLesson']['full_group_total_price'],
-											'full_group_student_price'  => $teacherLesson['TeacherLesson']['full_group_student_price'],
-											'request_subject_id'        => $teacherLesson['TeacherLesson']['request_subject_id'],
+											'price'              => $teacherLesson['TeacherLesson']['price'],
+											'bulk_price'  => $teacherLesson['TeacherLesson']['bulk_price'],
+											'wish_list_id'              => $teacherLesson['TeacherLesson']['wish_list_id'],
 											'image_source'              => $teacherLesson['TeacherLesson']['image_source']
 											);
 				}
@@ -293,10 +292,9 @@ class User extends AppModel {
                                                 'duration_minutes'          => $userLesson['UserLesson']['duration_minutes'],
                                                 'num_of_students'           => $userLesson['TeacherLesson']['num_of_students'],
                                                 'max_students'              => $userLesson['TeacherLesson']['max_students'],
-                                                '1_on_1_price'              => $userLesson['UserLesson']['1_on_1_price'],
-                                                'full_group_total_price'    => $userLesson['UserLesson']['full_group_total_price'],
-                                                'full_group_student_price'  => $userLesson['UserLesson']['full_group_student_price'],
-                                                'request_subject_id'        => $userLesson['UserLesson']['request_subject_id'],
+                                                'price'              => $userLesson['UserLesson']['price'],
+                                                'bulk_price'  => $userLesson['UserLesson']['bulk_price'],
+                                                'wish_list_id'              => $userLesson['UserLesson']['wish_list_id'],
                                                 'image_source'              => $userLesson['UserLesson']['image_source']
 												);
 					}

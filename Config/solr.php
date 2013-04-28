@@ -5,12 +5,12 @@ $config['solr']['config'] = array(
 //Dev
 App::import('Model', 'Subject');
 $config['solr']['servers'][] = array(
-    'hostname'=>'localhost',
+    'hostname'=>'universito.local',
     'port'=>8080,
     'path'=>'solr',
     'cores'=>array(
-        SUBJECT_TYPE_OFFER  => 'subject_offers',
-        SUBJECT_TYPE_REQUEST=> 'lesson_requests',
+        SUBJECT_TYPE_OFFER  => 'offers',
+        SUBJECT_TYPE_REQUEST=> 'requests',
         'forum'=> 'forum',
     ),
 

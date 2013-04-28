@@ -16,7 +16,7 @@ $this->Html->scriptBlock('
     });
     ', array('inline'=>false));
 
-    echo $this->element('Home'.DS.'search', array('controller'=>'Requests'));
+    echo $this->element('Home'.DS.'search', array('controller'=>'Requests', 'action'=>'searchRequest'));
     echo $this->element('Requests'.DS.'offer_popups');
 ?>
 <Section class="container">
@@ -25,26 +25,27 @@ $this->Html->scriptBlock('
 
                 <h2 class="pull-left"><i class="iconBig-about space1"></i><?php echo __('Newest requests'); ?></h2>
                 <?php
-                    echo $this->Layout->subjectRequestPopupButton();
-                    echo $this->element('Home'.DS.'subject_request_popup');
+                    echo $this->Layout->wishPopupButton();
+                    echo $this->element('Home'.DS.'wish_popup');
                 ?>
 
                 <ul class="row">
                     <?php
-                    if($newSubjects) {
-                        foreach($newSubjects AS $newSubject) {
+                    if($newWishList) {
+                        foreach($newWishList AS $wishRequest) {
                             //Home
-                            $newSubject['Subject']['one_on_one_price'] = $newSubject['Subject']['1_on_1_price'];
+                            $wishData = $wishRequest['WishList'];
+                            $wishData['one_on_one_price'] = $wishRequest['WishList']['price'];
+
                             echo '<li class="cont-span4 spc space2">';
-                            echo $this->element('subject_request', array(   'subjectId'             =>$newSubject['Subject']['subject_id'],
-                                                                            'name'                  =>$newSubject['Subject']['name'],
-                                                                            'description'           =>$newSubject['Subject']['description'],
-                                                                            'avarageRating'         =>$newSubject['Subject']['avarage_rating'],
-                                                                            'oneOnOnePrice'         =>$newSubject['Subject']['1_on_1_price'],
-                                                                            'fullGroupStudentPrice' =>$newSubject['Subject']['full_group_student_price'],
-                                                                            'imageSource'           =>$newSubject['Subject']['image_source'],
-                                                                            'lessonType'            =>$newSubject['Subject']['lesson_type'],
-                                                                            'subjectData'           =>$newSubject['Subject'],
+                            echo $this->element('wish', array( 'wishListId'                 =>$wishRequest['WishList']['wish_list_id'],
+                                                                    'name'                  =>$wishRequest['WishList']['name'],
+                                                                    'description'           =>$wishRequest['WishList']['description'],
+                                                                    'averageRating'         =>$wishRequest['Student']['student_average_rating'],
+                                                                    'price'                 =>$wishRequest['WishList']['price'],
+                                                                    'imageSource'           =>$wishRequest['WishList']['image_source'],
+                                                                    'lessonType'            =>$wishRequest['WishList']['lesson_type'],
+                                                                    'wishData'              =>$wishData
                             ));
                             echo '</li>';
                         }

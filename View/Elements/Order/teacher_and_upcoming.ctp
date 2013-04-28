@@ -24,9 +24,9 @@
         </div>
         <div class="log-box c-pad">
             <?php
-                echo $this->Layout->ratingNew($teacherData['teacher_avarage_rating'], false, 'pull-left pad8');
+                echo $this->Layout->ratingNew($teacherData['teacher_average_rating'], false, 'pull-left pad8');
             ?>
-            <p><?php echo sprintf(__('(%s/%s Reviews)'), $teacherData['teacher_avarage_rating'], $teacherData['teacher_raters_amount']); ?></p>
+            <p><?php echo sprintf(__('(%s/%s Reviews)'), $teacherData['teacher_average_rating'], $teacherData['teacher_raters_amount']); ?></p>
         </div>
     </div> <!-- /student-main-box -->
 
@@ -53,7 +53,7 @@
                     <div class="main-student fullwidth<?php echo (--$upcomingAvailableLessonsCount ? ' bod2' : null )?>">
                         <div class="inner-spots-box">
                             <div class="pull-right">
-                                <?php echo $this->Layout->priceTag($upcomingAvailableLesson['1_on_1_price'], $upcomingAvailableLesson['full_group_student_price'], 'space25 order-price'); ?>
+                                <?php echo $this->Layout->priceTag($upcomingAvailableLesson['price'], $upcomingAvailableLesson['bulk_price'], 'space25 order-price'); ?>
                                 <div class="clear"></div>
                                 <?php
                                 echo $this->Html->link('Join', array('controller'=>'Order', 'action'=>'init', 'join', $upcomingAvailableLesson['teacher_lesson_id']),

@@ -19,22 +19,22 @@ class UserLesson extends AppModel {
 	public $name = 'UserLesson';
 	public $useTable = 'user_lessons';
 	public $primaryKey = 'user_lesson_id';
-    public $actsAs = array('LanguageFilter', 'Time');
+    public $actsAs = array('LanguageFilter', 'Time', 'Lesson');
 	public $belongsTo = array(
 					'Teacher' => array(
 						'className' => 'User',
 						'foreignKey'=>'teacher_user_id',
-						'fields'=>array('first_name', 'last_name', 'username', 'image', 'image_source', 'teacher_avarage_rating', 'teacher_total_lessons')
+						'fields'=>array('first_name', 'last_name', 'username', 'image', 'image_source', 'teacher_average_rating', 'teacher_total_lessons')
 					),
 					'Student' => array(
 						'className' => 'User',
 						'foreignKey'=>'student_user_id',
-						'fields'=>array('first_name', 'last_name', 'username', 'image', 'image_source', 'student_avarage_rating', 'student_total_lessons')
+						'fields'=>array('first_name', 'last_name', 'username', 'image', 'image_source', 'student_average_rating', 'student_total_lessons')
 					),
 					'Subject' => array(
 						'className' => 'Subject',
 						'foreignKey'=>'subject_id',
-						'fields'=>array('avarage_rating', 'image', 'image_source', 'is_enable')
+						'fields'=>array('average_rating', 'image', 'image_source', 'is_enable')
 					),
 					'TeacherLesson' => array(
 						'className' => 'TeacherLesson',
@@ -67,10 +67,10 @@ class UserLesson extends AppModel {
                     'message' 	=> 'You cannot use this subject'
                 )
             ),
-            'request_subject_id'=> array(
-                'validate_request_subject_id' 	=> array(
+            'wish_list_id'=> array(
+                'validate_wish_list_id' 	=> array(
                     'allowEmpty'=> true,
-                    'rule'    	=> 'validateRequestSubjectId',
+                    'rule'    	=> 'validateWishListId',
                     'message' 	=> 'You cannot offer this subject'
                 )
             ),
@@ -83,7 +83,7 @@ class UserLesson extends AppModel {
                     'message' 	=> 'Lesson must be more then %d minutes and less then %d minutes'
                 )
             ),
-            '1_on_1_price'=> array(
+            'price'=> array(
                 'price' => array(
                     'required'	=> 'create',
                     'allowEmpty'=> false,
@@ -93,7 +93,7 @@ class UserLesson extends AppModel {
                 'price_range' => array(
                     'required'	=> 'create',
                     'allowEmpty'=> false,
-                    'rule'    	=> array('priceRangeCheck', '1_on_1_price'),
+                    'rule'    	=> array('priceRangeCheck', 'price'),
 					'message' 	=> 'Price range error'
                 )
             ),
@@ -101,7 +101,7 @@ class UserLesson extends AppModel {
                 'range' 		=> array(
                     'required'	=> 'create',
                     'allowEmpty'=> true,
-                    'rule'    	=> array('range', 0, 1025), //Change Home,1_on_1_price_to accordingly
+                    'rule'    	=> array('range', 0, 1025), //Change Home, price_to accordingly
                     'message' 	=> 'Lesson must have more then %d or less then %d students'
                 ),
 				'numeric' => array(
@@ -109,24 +109,17 @@ class UserLesson extends AppModel {
 					'allowEmpty'=> false,
 					'rule'    	=> 'numeric',
 					'message' 	=> 'Enter a valid number'
-				)/*,
-				'max_students' 	=> array(
-                    'allowEmpty'=> true,
-                    'required'	=> 'create',
-                    'rule'    	=> 'maxStudentsCheck',
-                    'message' 	=> 'Error on max group price'
-                ),*/
-
+				)
             ),
-            'full_group_student_price'=> array(
+            'bulk_price'=> array(
                 'price' => array(
                     'allowEmpty'=> true,
                     'rule'    	=> 'numeric',
                     'message' 	=> 'Enter a valid group price'
                 ),
-                'full_group_total_price' 	=> array(
+                'bulk_price' 	=> array(
                     'allowEmpty'=> true,
-                    'rule'    	=> 'fullGroupStudentPriceCheck',
+                    'rule'    	=> 'bulkPriceCheck',
                     'message' 	=> 'You must set a student full group price'
                 )
             ),
@@ -204,7 +197,7 @@ class UserLesson extends AppModel {
 
     /**
      * @param $userId
-     * @param $totalAmount - total amount of the lesson price (1_on_1_price)
+     * @param $totalAmount - total amount of the lesson price (price)
      * @param $userLessonId - userLessonId may be non-exisiting one (due to PendingUserLesson), therefore UserId is must!
      * @return true | int - how much the user is short (abs number)
      */
@@ -379,23 +372,6 @@ class UserLesson extends AppModel {
         );
     }
 
-
-
-    public function isFutureDatetime($datetime) {
-        if(isSet($datetime['datetime']) && is_array($datetime)) {
-            $datetime = $datetime['datetime'];
-        }
-
-        return $this->toServerTime($datetime)>=$this->timeExpression( 'now', false );
-    }
-    //Make sure date time is 1 hour or more from now
-    public function isFuture1HourDatetime($datetime) {
-        if(isSet($datetime['datetime']) && is_array($datetime)) {
-            $datetime = $datetime['datetime'];
-        }
-
-        return $this->toServerTime($datetime)>=$this->timeExpression( 'now +1 hour', false );
-    }
     public function validateSubjectId($subjectID){
         $subjectID = $subjectID['subject_id'];
 
@@ -406,101 +382,11 @@ class UserLesson extends AppModel {
         }
         $subjectData = $subjectData['Subject'];
 
-        //Validate its a subject offer
-        if($subjectData['type']!=SUBJECT_TYPE_OFFER) {
-            $this->invalidate('request_subject_id', __('must be a offer subject'));
-        }
-
         //The teacher must be the subject owner
         if(isSet($this->data['UserLesson']['teacher_user_id']) && !empty($this->data['UserLesson']['teacher_user_id'])) {
             if($this->data['UserLesson']['teacher_user_id']!=$subjectData['user_id']) {
-                $this->invalidate('request_subject_id', __('The teacher must be the subject owner'));
+                $this->invalidate('wish_list_id', __('The teacher must be the subject owner'));
             }
-        }
-
-        return true;
-    }
-
-
-    public function validateRequestSubjectId($requestSubjectID){
-        $requestSubjectID = $requestSubjectID['request_subject_id'];
-
-        //Load the requested subject
-        $requestSubjectData = $this->Subject->findBySubjectId($requestSubjectID);
-        if(!$requestSubjectData) {
-            $this->invalidate('request_subject_id', __('Invalid request subject'));
-        }
-        $requestSubjectData = $requestSubjectData['Subject'];
-
-        //Validate its a subject request
-        if($requestSubjectData['type']!=SUBJECT_TYPE_REQUEST) {
-            $this->invalidate('request_subject_id', __('must be a request subject'));
-        }
-
-        //Validate the the 2 subjects share the same type live/video
-        if(isSet($this->data['UserLesson']['lesson_type']) && !empty($this->data['UserLesson']['lesson_type'])) {
-            if($requestSubjectData['lesson_type']!=$this->data['UserLesson']['lesson_type']) {
-                if($requestSubjectData['type']==LESSON_TYPE_LIVE) {
-                    $this->invalidate('request_subject_id', __('Please chose a LIVE lesson as a suggestion') );
-                }  else if($requestSubjectData['type']==LESSON_TYPE_VIDEO) {
-                    $this->invalidate('request_subject_id', __('Please chose a VIDEO lesson as a suggestion') );
-                }
-            }
-        }
-
-        //Check that the owner of $requestSubjectID is the main student
-        /*if(isSet($this->data['UserLesson']['student_user_id']) && !empty($this->data['UserLesson']['student_user_id'])) {
-            if($this->data['UserLesson']['student_user_id']!=$requestSubjectData['user_id']) {
-                $this->invalidate('request_subject_id', __('The main student must be the owner of the requested subject'));
-            }
-        }*/
-
-        return true;
-    }
-    public function fullGroupStudentPriceCheck( $price ) {
-        if(!isSet($this->data[$this->name]['max_students']) || empty($this->data[$this->name]['max_students'])) {
-            $this->invalidate('max_students', __('Please enter a valid max students (1 or more)'));
-            //return false;
-        } else if(	isSet($this->data[$this->name]['full_group_student_price'])) {
-
-            if(isSet($this->data[$this->name]['1_on_1_price']) && $this->data[$this->name]['1_on_1_price']) {
-
-
-                $perStudentCommission = Configure::read('per_student_commission');
-                if( ($this->data[$this->name]['full_group_student_price']>$this->data[$this->name]['1_on_1_price']) || //FGSP is greater then 1on1price
-                    ($perStudentCommission>=$this->data[$this->name]['full_group_student_price'])) { //Check FGSP is greater then commission
-
-                    $this->invalidate('full_group_student_price',
-                        sprintf(__('Must be greater then %01.2f, and less or equal to 1 on 1 price (%01.2f)'),
-                            $perStudentCommission, $this->data[$this->name]['1_on_1_price']) );
-                }
-            } else {
-                $this->data[$this->name]['full_group_student_price'] = null;
-            }
-
-        }
-        return true;
-    }
-    /*public function maxStudentsCheck( $maxStudents ) {
-        if($maxStudents['max_students']>1 && (!isSet($this->data[$this->name]['full_group_student_price']) || !$this->data[$this->name]['full_group_student_price'])) {
-            $this->invalidate('full_group_student_price', __('Please enter a valid full group student price or set Max students to 1'));
-            //return false;
-        }
-        return true;
-    }*/
-	
-    public function priceRangeCheck( $price, $checkingFieldName ) {
-        if(is_array($price)) {
-            $price = $price[$checkingFieldName];
-        }
-
-        if($price==0) { //I.e free
-            return true;
-        }
-
-        $perStudentCommission = Configure::read('per_student_commission');
-        if($perStudentCommission>=$price) {
-            $this->invalidate($checkingFieldName, sprintf(__('Must be greater than %01.2f, or set 0 for a FREE lesson'), $perStudentCommission));
         }
 
         return true;
@@ -513,8 +399,7 @@ class UserLesson extends AppModel {
         App::import('Model', 'Subject');
 
         $exists = $this->exists(!empty($this->data['UserLesson'][$this->primaryKey]) ? $this->data['UserLesson'][$this->primaryKey] : null);
-        Subject::calcFullGroupPriceIfNeeded($this->data['UserLesson'], $exists);
-        Subject::extraValidation($this);
+        $this->validateRules($this);
 
         $lessonType = (isSet($this->data['UserLesson']['lesson_type']) && !empty($this->data['UserLesson']['lesson_type']) ?
                         $this->data['UserLesson']['lesson_type'] :
@@ -606,8 +491,8 @@ class UserLesson extends AppModel {
     public function beforeSave($options = array()) {
         parent::beforeSave($options);
         $this->TeacherLesson; //Init const
-        if( (isSet($this->data['UserLesson']['1_on_1_price']) && $this->data['UserLesson']['1_on_1_price']>0) ||
-            (isSet($this->data['UserLesson']['full_group_student_price']) && $this->data['UserLesson']['full_group_student_price']>0)) {
+        if( (isSet($this->data['UserLesson']['price']) && $this->data['UserLesson']['price']>0) ||
+            (isSet($this->data['UserLesson']['bulk_price']) && $this->data['UserLesson']['bulk_price']>0)) {
             $this->data['UserLesson']['payment_status'] = PAYMENT_STATUS_PENDING;
         }
 
@@ -622,36 +507,38 @@ class UserLesson extends AppModel {
     /**
      * Use to offer a teacher offer-subject against student request-subject
      * @param $teacherOfferSubjectId
-     * @param $studentRequestSubjectId
+     * @param $wishListId
      * @param $datetime
-     * @return bool|mixed
+     * @param array $extra
+     * @return bool
      */
-    public function lessonOffer($teacherOfferSubjectId, $studentRequestSubjectId, $datetime, $extra=array()) {
+    public function lessonOffer($teacherOfferSubjectId, $wishListId, $datetime, $extra=array()) {
         //Find the teacher subject
-        App::import('Model', 'Subject');
-        $subjectObj = new Subject();
+        App::import('Model', 'WishList');
+        $wishListObj = new WishList();
 
-        $subjectObj->recursive = -1;
-        $subjectData = $subjectObj->findBySubjectId($studentRequestSubjectId);
-        if( !$subjectData ) {
+        $wishListObj->recursive = -1;
+        $wishData = $wishListObj->findByWishListId($wishListId);
+        if( !$wishData ) {
             return false;
         }
-        $subjectData = $subjectData['Subject'];
-        $extra['request_subject_id'] = $studentRequestSubjectId;
+        $wishData = $wishData['WishList'];
+        $extra['wish_list_id'] = $wishListId;
 
-        return $this->lessonRequest($teacherOfferSubjectId, $subjectData['user_id'], $datetime, true, $extra);
+        return $this->lessonRequest($teacherOfferSubjectId, $wishData['student_user_id'], $datetime, true, $extra);
     }
 
 
 	/**
-	 * 
 	 * Users makeing new lesson requests from teacher
-	 * @param unknown_type $subjectId
-	 * @param unknown_type $userId - the user/teacher id that does not own the subject 
-	 * @param unknown_type $datetime
-	 * @param unknown_type $reverseStage - Reverse the stages, in use for teacher invite students, or on SUBJECT_TYPE_REQUEST - sending requests to students
-	 */
-	public function lessonRequest( $subjectId, $userId, $datetime=null, $reverseStage=false, $extra=array() ) {
+     * @param $subjectId
+     * @param $userId - the user/teacher id that does not own the subject
+     * @param null $datetime
+     * @param bool $reverseStage - Reverse the stages, in use for teacher invite students
+     * @param array $extra
+     * @return bool
+     */
+    public function lessonRequest( $subjectId, $userId, $datetime=null, $reverseStage=false, $extra=array() ) {
 		//Find the teacher subject
 		App::import('Model', 'Subject');
 		$subjectObj = new Subject();
@@ -663,20 +550,16 @@ class UserLesson extends AppModel {
 		}
         $subjectData = $subjectData['Subject'];
 
-        //User lesson must be for lesson type offer
-        if($subjectData['type']!=SUBJECT_TYPE_OFFER) {
-            return false;
-        }
 
 
 		//Prepare the user lesson generic data
 		$userLesson = array(
 			//'teacher_lesson_id'		=> null,
 			'subject_id'				=> $subjectId,
-			'teacher_user_id'			=> ($subjectData['type']==SUBJECT_TYPE_OFFER ? $subjectData['user_id']              : $userId),
-			'student_user_id'			=> ($subjectData['type']==SUBJECT_TYPE_OFFER ? $userId                              : $subjectData['user_id']),
-			'stage'						=> ($subjectData['type']==SUBJECT_TYPE_OFFER ? USER_LESSON_PENDING_TEACHER_APPROVAL : USER_LESSON_PENDING_STUDENT_APPROVAL),
-			'subject_category_id'		=> $subjectData['subject_category_id'],
+			'teacher_user_id'			=> $subjectData['user_id'],
+			'student_user_id'			=> $userId,
+			'stage'						=> USER_LESSON_PENDING_TEACHER_APPROVAL,
+			'category_id'		        => $subjectData['category_id'],
 			'forum_id'		            => $subjectData['forum_id'],
 			'datetime'					=> $datetime ? $datetime : null,
 			'lesson_type'				=> $subjectData['lesson_type'],
@@ -685,9 +568,8 @@ class UserLesson extends AppModel {
 			'description'				=> $subjectData['description'],
 			'duration_minutes'			=> $subjectData['duration_minutes'],
 			'max_students'				=> intval($subjectData['max_students']),
-			'1_on_1_price'				=> $subjectData['1_on_1_price'],
-			'full_group_student_price'	=> $subjectData['full_group_student_price'],
-			'full_group_total_price'	=> $subjectData['full_group_total_price'],
+			'price'				=> $subjectData['price'],
+			'bulk_price'	=> $subjectData['bulk_price'],
 
 			'image'	                    => $subjectData['image'],
 			'image_source'	            => $subjectData['image_source'],
@@ -704,19 +586,15 @@ class UserLesson extends AppModel {
 			'image_crop_436x214'        => $subjectData['image_crop_436x214'],
 		);
 
-        //Reverse the stages, in use for teacher invite students, or on SUBJECT_TYPE_REQUEST - sending requests to teachers
+        //Reverse the stages, in use for teacher invite students
         if($reverseStage) {
-           $userLesson['stage'] = ($userLesson['stage']==USER_LESSON_PENDING_TEACHER_APPROVAL) ? USER_LESSON_PENDING_STUDENT_APPROVAL : USER_LESSON_PENDING_TEACHER_APPROVAL;
-           $userId = ($userId==$userLesson['teacher_user_id']) ? $userLesson['student_user_id'] : $userLesson['teacher_user_id'];
+           $userLesson['stage'] = USER_LESSON_PENDING_STUDENT_APPROVAL;
+           $userId              = $userLesson['teacher_user_id'];
         }
 
 
         if($subjectData['lesson_type']==LESSON_TYPE_LIVE) {
             //Set the end of the lesson, video lesson end date is first-watching-time+2 days
-            /*if(is_object($datetime)) {
-                $datetime = $datetime->value;
-            }*/
-            //$userLesson['end_datetime'] = $this->timeExpression($datetime.' + '.$subjectData['duration_minutes'].' minutes' ,false);
             $userLesson['end_datetime'] = $this->getDataSource()->expression('DATE_ADD(`datetime`, INTERVAL `duration_minutes` MINUTE)');
 
         } else if($subjectData['lesson_type']==LESSON_TYPE_VIDEO) {
@@ -725,7 +603,7 @@ class UserLesson extends AppModel {
             if($canWatchData['approved']) {
 
                 if(empty($canWatchData['datetime']) || $this->isFutureDatetime($canWatchData['end_datetime']) || //User shouldn't pay for a lesson that he did not watched yet/watch time didn't over
-                    $subjectData['1_on_1_price']==0) { //user doesn't need to order free lesson again.
+                    $subjectData['price']==0) { //user doesn't need to order free lesson again.
                     return false;
                 }
             }
@@ -761,8 +639,11 @@ class UserLesson extends AppModel {
 	 * @param unknown_type $teacherLessonId - the lesson
 	 * @param unknown_type $studentUserId - the student id, leave null only if subject_type==SUBJECT_TYPE_REQUEST
 	 * @param unknown_type $teacherUserId - the teacher id, supply it only if you are the teacher (Invitation)
+	 * @param unknown_type $userLessonId
+     * @param array $extra
+     * @return bool
 	 */
-	public function joinRequest( $teacherLessonId, $studentUserId=null, $teacherUserId=null, $userLessonId=null, $extra=array() ) {
+    public function joinRequest( $teacherLessonId, $studentUserId=null, $teacherUserId=null, $userLessonId=null, $extra=array() ) {
 		//TODO: don't allow to send invitations if subject_type=request and the user did not approved his invitation yet
 		
 		//Find the teacher lesson
@@ -782,12 +663,14 @@ class UserLesson extends AppModel {
 		if($teacherLessonData['lesson_type']==LESSON_TYPE_VIDEO) {
 			return false;
 		}
-		if(!empty($teacherLessonData['request_subject_id']) && is_null($studentUserId)) {
-			$subjectData = $this->Subject->findBySubjectId($teacherLessonData['request_subject_id']);
-			if(!$subjectData) {
+		if(!empty($teacherLessonData['wish_list_id']) && is_null($studentUserId)) {
+            App::import( 'Model', 'WishList');
+            $wishListModel = new WishList();
+			$wishData = $wishListModel->findByWishListId($teacherLessonData['wish_list_id']);
+			if(!$wishData) {
 				return false;
 			}
-			$studentUserId = $subjectData['Subject']['user_id'];
+			$studentUserId = $wishData['WishList']['student_user_id'];
 		}
 		
 		//Find the stage
@@ -821,11 +704,11 @@ class UserLesson extends AppModel {
 			'subject_id'				=> $teacherLessonData['subject_id'],
 			'teacher_user_id'			=> $teacherLessonData['teacher_user_id'],
 			'student_user_id'			=> $studentUserId,
-			'request_subject_id'        => $teacherLessonData['request_subject_id'],
+			'wish_list_id'              => $teacherLessonData['wish_list_id'],
 			'datetime'					=> $teacherLessonData['datetime'],
 			'end_datetime'				=> $teacherLessonData['end_datetime'],
 			'stage'						=> $stage,
-            'subject_category_id'		=> $teacherLessonData['subject_category_id'],
+            'category_id'		        => $teacherLessonData['category_id'],
             'forum_id'		            => $teacherLessonData['forum_id'],
 			'lesson_type'				=> $teacherLessonData['lesson_type'],
 			'language'				    => $teacherLessonData['language'],
@@ -833,9 +716,8 @@ class UserLesson extends AppModel {
 			'description'				=> $teacherLessonData['description'],
 			'duration_minutes'			=> $teacherLessonData['duration_minutes'],
 			'max_students'				=> $teacherLessonData['max_students'],
-			'1_on_1_price'				=> $teacherLessonData['1_on_1_price'],
-			'full_group_student_price'	=> $teacherLessonData['full_group_student_price'],
-			'full_group_total_price'	=> $teacherLessonData['full_group_total_price'],
+			'price'				=> $teacherLessonData['price'],
+			'bulk_price'	=> $teacherLessonData['bulk_price'],
 
             'image'	                    => $teacherLessonData['image'],
             'image_source'	            => $teacherLessonData['image_source'],
@@ -1099,7 +981,7 @@ class UserLesson extends AppModel {
         }
 
         //Remove unauthorized fields
-        $allowedFields = array('datetime', '1_on_1_price', 'max_students', 'full_group_student_price');
+        $allowedFields = array('datetime', 'price', 'max_students', 'bulk_price');
         if($userLessonData['lesson_type']==LESSON_TYPE_LIVE) {
             //Only live lesson can change the duration of the lesson, video lesson get duration form the main video
             $allowedFields[] = 'duration_minutes';
@@ -1150,7 +1032,7 @@ class UserLesson extends AppModel {
     }
 	
 	public function rate( $userLessonId, $byUserId, $rating, $comment ) {
-		//on rate, if teacher - update student amount of raters + avarage rate. if student - update subject && teacher amount of raters + avarage rate
+		//on rate, if teacher - update student amount of raters + average rate. if student - update subject && teacher amount of raters + average rate
 		$userLessonData = $this->findByUserLessonId($userLessonId);
 		if(!$userLessonData) {
 			return false;
@@ -1400,7 +1282,7 @@ class UserLesson extends AppModel {
 	//Lessons that waiting for the student to approval
 	public function getTeacherInvitations($teacherUserId, $subjectId=null, $limit=null, $page=1) {
 		$this->Subject;
-		$conditions = array('UserLesson.teacher_user_id'=>$teacherUserId, 'UserLesson.teacher_lesson_id IS NULL');
+		$conditions = array('UserLesson.teacher_user_id'=>$teacherUserId);
 		if($subjectId) {
 			$conditions['UserLesson.subject_id'] = $teacherUserId;
 		}
@@ -1545,7 +1427,7 @@ class UserLesson extends AppModel {
             'pending_teacher_approval'  =>false,
             'pending_user_approval'     =>false,
             'approved'                  =>false,
-            'payment_needed'            =>($subjectData['1_on_1_price']>0),
+            'payment_needed'            =>($subjectData['price']>0),
 
             'is_teacher'                =>($userId==$subjectData['user_id']),
             'teacher_lesson_id'         =>false,
@@ -1608,7 +1490,7 @@ class UserLesson extends AppModel {
             $tmpRes[$key]['user_lesson_id']   = $userLessonData['user_lesson_id'];
             $tmpRes[$key]['datetime']         = $userLessonData['datetime'];
             $tmpRes[$key]['end_datetime']     = $userLessonData['end_datetime'];
-            $tmpRes[$key]['payment_needed']   = ($userLessonData['1_on_1_price']>0);
+            $tmpRes[$key]['payment_needed']   = ($userLessonData['price']>0);
             $tmpRes[$key]['is_teacher']       = ($userId==$userLessonData['teacher_user_id']);
         }
 
@@ -1659,7 +1541,7 @@ class UserLesson extends AppModel {
                     }
 
                     //We need to check UserLesson because the subject price may changed until now
-                    if(!$userLessonData['1_on_1_price']) {
+                    if(!$userLessonData['price']) {
                         $isFreeVideo = true;
                     }
 
@@ -1691,7 +1573,7 @@ class UserLesson extends AppModel {
             } else {
                 //There is no UserLesson
 
-                if(!$subjectData['1_on_1_price']) { //Free video
+                if(!$subjectData['price']) { //Free video
                     $isFreeVideo = true;
 
                     //Make UserLesson request
@@ -1765,7 +1647,7 @@ class UserLesson extends AppModel {
             'pending_teacher_approval'  =>false,
             'pending_user_approval'     =>false,
             'approved'                  =>false,
-            'payment_needed'            =>($tlData['1_on_1_price']>0),
+            'payment_needed'            =>($tlData['price']>0),
 
             'is_teacher'                =>($userId==$tlData['teacher_user_id']),
             'teacher_lesson_id'         =>$teacherLessonId,

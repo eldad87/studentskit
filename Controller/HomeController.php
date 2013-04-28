@@ -4,7 +4,7 @@
  */
 class HomeController extends AppController {
 	public $name = 'Home';
-	public $uses = array('Subject', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
+	public $uses = array('Subject', 'WishList', 'User', 'Profile', 'TeacherLesson', 'UserLesson');
 	public $components = array('Utils.FormPreserver'=>array('directPost'=>true,'actions'=>array('submitOrder')), 'Session', 'RequestHandler', 'Auth'=>array('loginAction'=>array('controller'=>'Accounts','action'=>'login')),
         //'Security',
                                /* 'Watchitoo'*/);
@@ -319,15 +319,6 @@ class HomeController extends AppController {
         return $this->success(1, array('results'=>$latestTopics));
     }
 
-    /*public function testCalcStudentFullGroupPrice() {
-        $currentStudents = 7;
-        pr($this->Subject->calcStudentFullGroupPrice(2, 20, 10, $currentStudents));
-        pr($this->Subject->calcStudentFullGroupPrice(2, 20, 10, $currentStudents)*$currentStudents);
-        die;
-    }
-
-
-
     /*public function testForumMessages() {
         app::import('Model', 'Forum.Topic');
         $topicObj = new Topic();
@@ -337,8 +328,8 @@ class HomeController extends AppController {
     }*/
 
     public function categories() {
-        App::import('Model', 'SubjectCategory');
-        $scObj = new SubjectCategory();
+        App::import('Model', 'Category');
+        $cObj = new Category();
 
         //http://www.liveperson.com/site-map/
         $categories = array(
@@ -449,13 +440,13 @@ class HomeController extends AppController {
             )
         );
 
-        $scObj->addBulk($categories);
+        $cObj->addBulk($categories);
     }
 
 
    /* public function testAddCategory() {
-        App::import('Model', 'SubjectCategory');
-        $scObj = new SubjectCategory();
+        App::import('Model', 'Category');
+        $scObj = new Category();
 
 
        /** Multi lang
@@ -482,20 +473,20 @@ class HomeController extends AppController {
         $id = $scObj->id;
 
             $scObj->create();
-            $scObj->set(array('name'=>'Astrology', 'description'=>'Astrology', 'parent_subject_category_id'=>$id));
+            $scObj->set(array('name'=>'Astrology', 'description'=>'Astrology', 'parent_category_id'=>$id));
             $scObj->save();
             $id2 = $scObj->id;
 
         $scObj->create();
-        $scObj->set(array('name'=>'Chinese Astrology', 'description'=>'Chinese Astrology', 'parent_subject_category_id'=>$id2));
+        $scObj->set(array('name'=>'Chinese Astrology', 'description'=>'Chinese Astrology', 'parent_category_id'=>$id2));
         $scObj->save();
 
         $scObj->create();
-        $scObj->set(array('name'=>'Vedic Astrology', 'description'=>'Vedic Astrology', 'parent_subject_category_id'=>$id2));
+        $scObj->set(array('name'=>'Vedic Astrology', 'description'=>'Vedic Astrology', 'parent_category_id'=>$id2));
         $scObj->save();
 
     $scObj->create();
-    $scObj->set(array('name'=>'Graphology', 'description'=>'Graphology', 'parent_subject_category_id'=>$id));
+    $scObj->set(array('name'=>'Graphology', 'description'=>'Graphology', 'parent_category_id'=>$id));
     $scObj->save();
 
 
@@ -506,29 +497,29 @@ $scObj->save();
 $id = $scObj->id;
 
     $scObj->create();
-    $scObj->set(array('name'=>'Applications', 'description'=>'Applications', 'parent_subject_category_id'=>$id));
+    $scObj->set(array('name'=>'Applications', 'description'=>'Applications', 'parent_category_id'=>$id));
     $scObj->save();
     $id2 = $scObj->id;
 
         $scObj->create();
-        $scObj->set(array('name'=>'CAD', 'description'=>'CAD', 'parent_subject_category_id'=>$id2));
+        $scObj->set(array('name'=>'CAD', 'description'=>'CAD', 'parent_category_id'=>$id2));
         $scObj->save();
 
         $scObj->create();
-        $scObj->set(array('name'=>'SAP', 'description'=>'SAP', 'parent_subject_category_id'=>$id2));
+        $scObj->set(array('name'=>'SAP', 'description'=>'SAP', 'parent_category_id'=>$id2));
         $scObj->save();
 
     $scObj->create();
-    $scObj->set(array('name'=>'Databases', 'description'=>'Databases', 'parent_subject_category_id'=>$id));
+    $scObj->set(array('name'=>'Databases', 'description'=>'Databases', 'parent_category_id'=>$id));
     $scObj->save();
     $id2 = $scObj->id;
 
         $scObj->create();
-        $scObj->set(array('name'=>'MySQL', 'description'=>'MySQL', 'parent_subject_category_id'=>$id2));
+        $scObj->set(array('name'=>'MySQL', 'description'=>'MySQL', 'parent_category_id'=>$id2));
         $scObj->save();
 
         $scObj->create();
-        $scObj->set(array('name'=>'NoSQL', 'description'=>'NoSQL', 'parent_subject_category_id'=>$id2));
+        $scObj->set(array('name'=>'NoSQL', 'description'=>'NoSQL', 'parent_category_id'=>$id2));
         $scObj->save();
     }*/
 
@@ -546,11 +537,16 @@ $id = $scObj->id;
 
         //Search
         $subjectType = (isSet($this->request->query['type']) ? $this->request->query['type'] : SUBJECT_TYPE_OFFER);
-        $subjectsData = $this->Subject->search($query, $subjectType);
-        if($subjectsData) {
-            return $this->success(1, array('subjects'=>$subjectsData['subjects']));
+        if($subjectType==SUBJECT_TYPE_OFFER) {
+            $subjectsData = $this->Subject->search($query);
+        } else {
+            $subjectsData = $this->WishList->search($query);
         }
-        return $this->success(1, array('subjects'=>array()));
+
+        if($subjectsData) {
+            return $this->success(1, array('records'=>$subjectsData['records']));
+        }
+        return $this->success(1, array('records'=>array()));
     }
 
 	public function searchSubject() {
@@ -562,35 +558,40 @@ $id = $scObj->id;
 
         //Search
         $subjectType = (isSet($this->request->query['type']) ? $this->request->query['type'] : SUBJECT_TYPE_OFFER);
-        $subjectsData = $this->Subject->search($query, $subjectType);
+        if($subjectType==SUBJECT_TYPE_OFFER) {
+            $subjectsData = $this->Subject->search($query, $subjectType);
+        } else {
+            $subjectsData = $this->WishList->search($query, $subjectType);
+        }
 
-        App::Import('Model', 'SubjectCategory');
-        $scObj = new SubjectCategory();
+
+        App::Import('Model', 'Category');
+        $cObj = new Category();
 
         //Generate sub categories from facet
         if(isSet($subjectsData['facet']['name']) && $subjectsData['facet']['name']=='categories') {
             $categoryIds = array(); //Hold all ids
             $categories = array(); //Hold final results
 
-            //Generate array(subject_category_id, count) for each category
+            //Generate array(category_id, count) for each category
             foreach($subjectsData['facet']['results'] AS $path=>$count) {
                 $category = explode(',', $path);
                 $categoryId = end($category);
                 $categoryIds[] = $categoryId;
-                $categories[$categoryId] = array('subject_category_id'=>$categoryId, 'count'=>$count);
+                $categories[$categoryId] = array('category_id'=>$categoryId, 'count'=>$count);
             }
 
 
             //Add category name
             //$scObj->locale = 'eng';
-            $foundCategories = $scObj->find('all', array('conditions'=>array('subject_category_id'=>$categoryIds)));
-            /*foreach($foundCategories AS $subjectCategoryId=>$name) {
-                $categories[$subjectCategoryId]['name'] = $name;
+            $foundCategories = $cObj->find('all', array('conditions'=>array('category_id'=>$categoryIds)));
+            /*foreach($foundCategories AS $categoryId=>$name) {
+                $categories[$categoryId]['name'] = $name;
             }*/
 
             //Bug fix in CakePHP
             foreach($foundCategories AS $data) {
-                $categories[$data['SubjectCategory']['subject_category_id']]['name'] = $data['0']['SubjectCategory__i18n_name'];
+                $categories[$data['Category']['category_id']]['name'] = $data['0']['Category__i18n_name'];
             }
             $subjectsData['categories'] = $categories;
         }
@@ -599,18 +600,18 @@ $id = $scObj->id;
             //Add breadcrumbs
             $subjectsData['breadcrumbs'] = array();
             if(isSet($this->request->query['category_id'])) {
-                $scData = $scObj->findBySubjectCategoryId($this->request->query['category_id']);
-                $scName = $scData['0']['SubjectCategory__i18n_name']; //Bug fix in CakePHP
-                $scData = $scData['SubjectCategory'];
+                $scData = $cObj->findByCategoryId($this->request->query['category_id']);
+                $scName = $scData['0']['Category__i18n_name']; //Bug fix in CakePHP
+                $scData = $scData['Category'];
 
                 if(!is_null($scData['path']) && !empty($scData['path'])) {
-                    //$subjectsData['breadcrumbs'] = $scObj->find('list', array('fields'=>array('subject_category_id', 'name'), 'conditions'=>array('subject_category_id'=>explode(',', $scData['path']))));
+                    //$subjectsData['breadcrumbs'] = $scObj->find('list', array('fields'=>array('category_id', 'name'), 'conditions'=>array('category_id'=>explode(',', $scData['path']))));
 
                     //Bug fix in CakePHP
                     $subjectsData['breadcrumbs'] = array();
-                    $breadcrumbs = $scObj->find('all', array('conditions'=>array('subject_category_id'=>explode(',', $scData['path']))));
+                    $breadcrumbs = $cObj->find('all', array('conditions'=>array('category_id'=>explode(',', $scData['path']))));
                     foreach($breadcrumbs AS $data) {
-                        $subjectsData['breadcrumbs'][$data['SubjectCategory']['subject_category_id']] = $data['0']['SubjectCategory__i18n_name'];
+                        $subjectsData['breadcrumbs'][$data['Category']['category_id']] = $data['0']['Category__i18n_name'];
                     }
 
                 }
@@ -646,9 +647,11 @@ $id = $scObj->id;
         $query = $this->_searchDefaultQueryParams();
 
         $subjectType = (isSet($this->request->query['type']) ? $this->request->query['type'] : SUBJECT_TYPE_OFFER);
-        $results = $this->Subject->searchSuggestions($query, $subjectType);
-
-
+        if($subjectType==SUBJECT_TYPE_OFFER) {
+            $results = $this->Subject->searchSuggestions($query);
+        } else {
+            $results = $this->WishList->searchSuggestions($query);
+        }
 
 
         if($this->RequestHandler->isAjax()) {
@@ -679,20 +682,20 @@ $id = $scObj->id;
         $language       = (isSet($this->request->query['languages_of_records']) ? $this->request->query['languages_of_records'] 	:
                             ($this->Session->read('languagesOfRecords')         ? $this->Session->read('languagesOfRecords')        : null));
 
-        //1_on_1_price handle
-        $priceFrom      = (isSet($this->request->query['1_on_1_price_from'])  &&
-            $this->request->query['1_on_1_price_from']          ? max(min( (int) $this->request->query['1_on_1_price_from'], 1024), 0)	 : 0);
+        //price handle
+        $priceFrom      = (isSet($this->request->query['price_from'])  &&
+            $this->request->query['price_from']          ? max(min( (int) $this->request->query['price_from'], 1024), 0)	 : 0);
 
-        $priceTo        = (isSet($this->request->query['1_on_1_price_to'])    &&
-            $this->request->query['1_on_1_price_to']            ? max(min( (int) $this->request->query['1_on_1_price_to'], 1024), 0)	 : 1024); //Bug: we can't use wildecard *, therefore, put the max price that int can hold - UL validation for 1_on_1_price
+        $priceTo        = (isSet($this->request->query['price_to'])    &&
+            $this->request->query['price_to']            ? max(min( (int) $this->request->query['price_to'], 1024), 0)	 : 1024); //Bug: we can't use wildecard *, therefore, put the max price that int can hold - UL validation for 1_on_1_price
 
 
 
-        $avarageRatingFrom      = (isSet($this->request->query['avarage_rating_from'])  &&
-            $this->request->query['avarage_rating_from']          ?   max(min( (int) $this->request->query['avarage_rating_from'], 5), 0): 0);
+        $averageRatingFrom      = (isSet($this->request->query['average_rating_from'])  &&
+            $this->request->query['average_rating_from']          ?   max(min( (int) $this->request->query['average_rating_from'], 5), 0): 0);
 
-        $avarageRatingTo        = (isSet($this->request->query['avarage_rating_to'])    &&
-            $this->request->query['avarage_rating_to']            ? max(min( (int) $this->request->query['avarage_rating_to'], 5), 0)	 : 5);
+        $averageRatingTo        = (isSet($this->request->query['average_rating_to'])    &&
+            $this->request->query['average_rating_to']            ? max(min( (int) $this->request->query['average_rating_to'], 5), 0)	 : 5);
 
 
         $lessonType = array();
@@ -701,6 +704,10 @@ $id = $scObj->id;
         }
         if(isSet($this->request->query['lesson_type_live']) && $this->request->query['lesson_type_live']) {
             $lessonType[]  = LESSON_TYPE_LIVE;
+        }
+
+        if(isSet($this->request->query['lesson_type_course']) && $this->request->query['lesson_type_course']) {
+            $lessonType[]  = LESSON_TYPE_COURSE;
         }
 
         $query = array(
@@ -722,12 +729,12 @@ $id = $scObj->id;
 
         //From-To-Price
         if( $priceFrom<=$priceTo && ($priceFrom!=0 || $priceTo!=1024)) {
-            $query['fq']['1_on_1_price'] = '['.$priceFrom.' TO '.$priceTo.',USD]';
+            $query['fq']['price'] = '['.$priceFrom.' TO '.$priceTo.',USD]';
         }
 
-        //From-To-avarage_rating
-        if( $avarageRatingFrom<=$avarageRatingTo && ($avarageRatingFrom!=0 || $avarageRatingTo!=0)) {
-            $query['fq']['avarage_rating'] = '['.$avarageRatingFrom.' TO '.$avarageRatingTo.']';
+        //From-To-average_rating
+        if( $averageRatingFrom<=$averageRatingTo && ($averageRatingFrom!=0 || $averageRatingTo!=0)) {
+            $query['fq']['average_rating'] = '['.$averageRatingFrom.' TO '.$averageRatingTo.']';
         }
 
 
@@ -963,13 +970,13 @@ $id = $scObj->id;
         $this->set('teacherOtherSubjects', 		$teacherOtherSubjects);
         $this->set('teacherOtherSubjectsLimit', $teacherOtherSubjectsLimit);
         $this->set('teacherData', 			    $teacherData['User']);
-        $this->set('paymentNeeded',             $subjectData['1_on_1_price']>0);
+        $this->set('paymentNeeded',             $subjectData['price']>0);
 
         $return = array('subjectData'               =>$subjectData,
                         'subjectRatingByStudents'   =>$subjectRatingByStudents,
                         'teacherOtherSubjects'      =>$teacherOtherSubjects,
                         'teacherData'               =>$teacherData['User'],
-                        'paymentNeeded'             =>$subjectData['1_on_1_price']>0);
+                        'paymentNeeded'             =>$subjectData['price']>0);
 
         if(!empty($otherTeacherForThisSubject)) {
             $return['otherTeacherForThisSubject'] = $otherTeacherForThisSubject;
@@ -1119,7 +1126,7 @@ $id = $scObj->id;
 	/*public function	order($subjectId, $year=null, $month=null) {
         //TODO: video - there is no need to show calendar
 
-		//Get subject data, students_amount, raters_amount, avarage_rating
+		//Get subject data, students_amount, raters_amount, average_rating
 		$subjectData = $this->Subject->findBySubjectId( $subjectId );
 		if(!$subjectData || $subjectData['Subject']['is_enable']==SUBJECT_IS_ENABLE_FALSE) {
 			$this->Session->setFlash(__('This subject is no longer available'));

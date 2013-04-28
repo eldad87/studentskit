@@ -43,16 +43,16 @@ class LayoutHelper extends AppHelper {
         </div>';
     }
 
-    public function priceTag($oneOnOne, $fullGroupStudentPrice, $appendClass=null, $currency='$', $format='html') {
-        $priceText = $oneOnOne;
-        if($fullGroupStudentPrice) {
-            $priceText .= '-'.$fullGroupStudentPrice;
+    public function priceTag($price, $bulkPrice=null, $appendClass=null, $currency='$', $format='html') {
+        $priceText = $price;
+        if($bulkPrice) {
+            $priceText .= '-'.$bulkPrice;
         }
         $priceText .= $currency;
 
 
         $class = 'price-tag';
-        if(!$oneOnOne) {
+        if(!$price) {
             $priceText = __('Free');
             $class .= ' price-tag-free';
         }
@@ -164,7 +164,7 @@ class LayoutHelper extends AppHelper {
         return $vars;
     }
 
-    public function subjectRequestPopupButton($settings=array()) {
+    public function wishPopupButton($settings=array()) {
         $defaultSettings = array('name'=>__('Lesson Request'), 'class'=>'btns btn-black pull-right text-color index-blackbtn lesson-request-popup');
         $settings = am($defaultSettings, $settings);
 
@@ -195,20 +195,20 @@ class LayoutHelper extends AppHelper {
         if(!$lessonType) {
             $lessonType = $data['lesson_type'];
         }
-        $fields = array('duration_minutes'=>__('Duration minutes'), '1_on_1_price'=>__('1 on 1 price'));
+        $fields = array('duration_minutes'=>__('Duration minutes'), 'price'=>__('1 on 1 price'));
 
         if($lessonType==LESSON_TYPE_LIVE) {
-            $fields2 = array( 'datetime'=>__('Datetime'), 'is_public'=>__('Is public'), 'max_students'=>__('Max students'), 'num_of_students'=>__('Num of students'), 'full_group_student_price'=>__('Full group price'));
+            $fields2 = array( 'datetime'=>__('Datetime'), 'is_public'=>__('Is public'), 'max_students'=>__('Max students'), 'num_of_students'=>__('Num of students'), 'bulk_price'=>__('Full group price'));
             $fields = am($fields, $fields2);
         }
 
-        if(isSet($data['1_on_1_price']) && $data['1_on_1_price']==0) {
-            $data['1_on_1_price'] = __('Free');
+        if(isSet($data['price']) && $data['price']==0) {
+            $data['price'] = __('Free');
 
             if(isSet($data['max_students']) && $data['max_students']>1) {
-                $data['full_group_student_price'] = $data['1_on_1_price'];
+                $data['bulk_price'] = $data['price'];
             } else {
-                unset($data['full_group_student_price']);
+                unset($data['bulk_price']);
             }
         }
 
@@ -237,7 +237,13 @@ class LayoutHelper extends AppHelper {
         );
 
         if(isSet($extra['tooltip'])) {
-            $style['after'] = $this->toolTip($extra['tooltip'], 'space11').$style['after'];
+            if(!isSet($extra['tooltip_class'])) {
+                $extra['tooltip_class']  = 'space11';
+            }
+            $style['after'] = $this->toolTip($extra['tooltip'], $extra['tooltip_class']).$style['after'];
+
+
+            unset($extra['tooltip'], $extra['tooltip_class']);
         }
         if($extra) {
             $style = am($style, $extra);
@@ -303,18 +309,26 @@ class LayoutHelper extends AppHelper {
         $statistics = $subjectData + $lessonData;
 
         $data = array(
-            'subject_id'                => $statistics['subject_id'],
-            'teacher_user_id'           => isSet($statistics['teacher_user_id']) ? $statistics['teacher_user_id'] : $statistics['user_id'],
-            'subject_category_id'       => $statistics['subject_category_id'],
+            'category_id'               => $statistics['category_id'],
             'lesson_type'               => $statistics['lesson_type'],
             'language'                  => $statistics['language'],
             'name'                      => $statistics['name'],
             'duration_minutes'          => $statistics['duration_minutes'],
-            '1_on_1_price'              => $statistics['1_on_1_price'],
+            'price'              => $statistics['price'],
             'max_students'              => $statistics['max_students'],
-            'full_group_student_price'  => $statistics['full_group_student_price'],
         );
 
+        if(isSet($statistics['subject_id'])) {
+            $data['subject_id']     = $statistics['subject_id'];
+            $data['teacher_user_id']= $statistics['user_id'];
+        } else {
+            $data['wish_list_id']   = $statistics['wish_list_id'];
+            $data['student_user_id']        = $statistics['student_user_id'];
+        }
+
+        if(isSet( $statistics['bulk_price'])) {
+            $data['bulk_price'] = $statistics['bulk_price'];
+        }
         if(isSet( $statistics['datetime'])) {
             $data['datetime']                   = $statistics['datetime'];
         }
@@ -323,7 +337,7 @@ class LayoutHelper extends AppHelper {
             $data['total_lessons']  = $statistics['total_lessons'];
             $data['students_amount']= $statistics['students_amount'];
             $data['raters_amount']  = $statistics['raters_amount'];
-            $data['avarage_rating'] = $statistics['avarage_rating'];
+            $data['average_rating'] = $statistics['average_rating'];
             $data['created']        = $statistics['created'];
         }
 

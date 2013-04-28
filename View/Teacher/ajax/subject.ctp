@@ -48,9 +48,20 @@
         });
 
 
-        initSubjectForm('#Subject1On1Price', '#SubjectLessonType',
+        /*initSubjectForm('#SubjectPrice', '#SubjectLessonType',
             '#SubjectMaxStudents', '#msDiv',
-            '#fgspDiv', '#SubjectFullGroupStudentPrice', '#durationDiv');
+            '#fgspDiv', '#SubjectBulkPrice', '#durationDiv');*/
+
+
+
+
+        initSubjectAddForm(
+            '#SubjectIsPublic',
+            '#SubjectLessonType',
+            '#SubjectPrice',
+            '#SubjectMaxStudents'
+        );
+
 
         initToolTips();
     });
@@ -70,24 +81,53 @@
         }
 
         echo $this->Form->input('description', $this->Layout->styleForInput(array('type'=>'textarea')));
-        echo $this->Form->input('subject_category_id', $this->Layout->styleForInput(array('options'=>$subjectCategories)));
+        echo $this->Form->input('category_id', $this->Layout->styleForInput(array('options'=>$subjectCategories)));
 
         echo $this->Form->input('language', $this->Layout->styleForInput(array('options'=>$languages)));
-        echo $this->Form->input('lesson_type', $this->Layout->styleForInput(array('options'=>array(LESSON_TYPE_LIVE=>__('Live'), LESSON_TYPE_VIDEO=>__('Video')))));
-        //echo $this->Form->input('is_public', $this->Layout->styleForInput(array('options'=>array(SUBJECT_IS_PUBLIC_TRUE=>__('Yes'), SUBJECT_IS_PUBLIC_FALSE=>__('No')))));
-        echo $this->Form->input('duration_minutes', $this->Layout->styleForInput(array('type'=>'number', 'min'=>4, 'div'=>array('id'=>'durationDiv', 'class'=>'control-group'))));
 
         echo $this->Form->input('image_source', $this->Layout->styleForInput(array('type'=>'file', 'label'=>array('class'=>'control-label', 'text'=>__('Image')))));
 
         echo $this->Form->input('video_source', $this->Layout->styleForInput(array('type'=>'file', 'label'=>array('class'=>'control-label', 'text'=>__('Preview video')))));
 
-        echo $this->Form->input('1_on_1_price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0, 'step'=>'any')));
-        echo $this->Form->input('max_students', $this->Layout->styleForInput(array('type'=>'number', 'min'=>1, 'div'=>array('id'=>'msDiv', 'class'=>'control-group'))));
 
-        echo $this->Form->input('full_group_student_price', $this->Layout->styleForInput(array( 'type'=>'number', 'min'=>0, 'step'=>'any',
-                                                                                                'div'=>array('style'=>'display:none', 'id'=>'fgspDiv', 'class'=>'control-group') ,
-                                                                                                'tooltip'=>__('a max discount price for a full lesson, the discount will take place starting from 2 students and above'))));
+        if(!isSet($lessonType) || empty($lessonType)) {
+            echo $this->Form->input('lesson_type', $this->Layout->styleForInput(array('options'=>array(LESSON_TYPE_LIVE=>__('Live'), LESSON_TYPE_VIDEO=>__('Video')))));
+        } else {
+            echo '<div class="control-group">
+                    <label for="SubjectImageSource" class="control-label">',__('Lesson Type'),'</label>
+                    <div class="control control1"><p class="space3">',strtoupper(__($lessonType)),'</p></div>
+            </div>';
+            echo $this->Form->hidden('lesson_type');
+        }
 
+        echo $this->Form->input('duration_minutes', $this->Layout->styleForInput(array('type'=>'number', 'min'=>4, 'div'=>array('id'=>'durationDiv', 'class'=>'control-group'))));
+
+        echo $this->Form->input('is_public',  $this->Layout->styleForInput(
+            array('options'=>array(
+                    SUBJECT_IS_PUBLIC_TRUE  => __('Yes, Users may order this subject as standalone'),
+                    SUBJECT_IS_PUBLIC_FALSE => __('No, I will use this subject in my courses only')
+                ),
+                'type'=>'select')
+        ));
+
+
+        echo '<div id="publicSettingsDiv">';
+
+            echo $this->Form->input('price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0, 'step'=>'any')));
+
+
+            echo '<div id="maxStudentsAndDiscountDiv">';
+                echo $this->Form->input('max_students', $this->Layout->styleForInput(array('type'=>'number', 'min'=>1, 'div'=>array('class'=>'control-group'))));
+
+                echo $this->Form->input('bulk_price', $this->Layout->styleForInput(array( 'type'=>'number', 'min'=>0, 'step'=>'any',
+                                                                                                        'label'=>array('class'=>'control-label', 'text'=>__('Bulk price')),
+                                                                                                        'div'=>array('style'=>'display:none', 'id'=>'discountPriceDiv', 'class'=>'control-group') ,
+                                                                                                        'tooltip'=>__('The lowest price for when the lesson is full. The price is RELATIVE to the amount of students and will take affect starting from the 2nd student. Leave BLANK for no bulk price. With bulk price, students may advertise your subject in order to gain a better price. the lower the price, the better the chances you\'ll get free advertising.'),
+                                                                                                        'tooltip_class'=>'pull-right space3'
+                )));
+            echo '</div>';
+
+        echo '</div>';
         ?>
         <div class="control-group control2">
             <label class="control-label"></label>

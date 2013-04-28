@@ -71,21 +71,10 @@ class TeacherController extends AppController {
         $this->set('subjectId', $subjectId);
 
         //Get subject categories
-        App::Import('Model', 'SubjectCategory');
-        $scObj = new SubjectCategory();
-        $subjectCategories = $scObj->getAllCategoriesOptions();
+        App::Import('Model', 'Category');
+        $cObj = new Category();
+        $subjectCategories = $cObj->getAllCategoriesOptions();
         $this->set('subjectCategories', $subjectCategories);
-
-        //Group pricing
-        if(	isSet($this->data['Subject']['1_on_1_price']) &&
-            isSet($this->data['Subject']['full_group_student_price']) && !empty($this->data['Subject']['full_group_student_price']) &&
-            isSet($this->data['Subject']['max_students']) && $this->data['Subject']['max_students']>1) {
-
-            $groupPrice = $this->Subject->calcStudentPriceAfterDiscount(	$this->data['Subject']['1_on_1_price'],
-                $this->data['Subject']['max_students'], $this->data['Subject']['max_students'],
-                $this->data['Subject']['full_group_student_price']);
-            $this->set('groupPrice', $groupPrice);
-        }
 
         //Set language
         App::uses('Languages', 'Utils.Lib');
@@ -97,9 +86,12 @@ class TeacherController extends AppController {
         if($subjectId) {
             $this->Subject->recursive = -1;
             $subjectData = $this->Subject->findBySubjectId($subjectId);
+            $this->set('lessonType',  $subjectData['Subject']['lesson_type']);
+
             $currentCreationStage = $subjectData['Subject']['creation_stage'];
         }
         $this->set('creationStage', $currentCreationStage);
+
 
 
         //Post
@@ -109,7 +101,6 @@ class TeacherController extends AppController {
             //Set new creation_stage if needed
             $this->request->data['Subject']['creation_stage'] = $currentCreationStage > CREATION_STAGE_SUBJECT ? $currentCreationStage : CREATION_STAGE_SUBJECT;
             $this->request->data['Subject']['user_id'] = $this->Auth->user('user_id');
-            $this->request->data['Subject']['type'] = SUBJECT_TYPE_OFFER;
             $this->Subject->create(false);
             if($subjectId) {
                 $this->Subject->id = $subjectId;
@@ -243,7 +234,7 @@ class TeacherController extends AppController {
         return $this->success(1, array('current_creation_stage'=>$newCurrentCreationStage));
     }
 
-    public function subjectPublish($subjectId) {
+    public function subjectFinish($subjectId) {
 
         $this->Subject->recursive = -1;
         $subjectData = $this->Subject->findBySubjectId($subjectId);
@@ -512,7 +503,7 @@ class TeacherController extends AppController {
 		$this->set('reviews', $awaitingReviews);
 		
 		$userData = $this->User->findByUserId($this->Auth->user('user_id'));
-		$this->set('avarageRating', $userData['User']['teacher_avarage_rating']);
+		$this->set('averageRating', $userData['User']['teacher_average_rating']);
 	}
 	
 	public function myReviews() {
@@ -524,7 +515,7 @@ class TeacherController extends AppController {
 		$this->Set('reviews', $reviews);
 
         $userData = $this->User->findByUserId($this->Auth->user('user_id'));
-        $this->set('avarageRating', $userData['User']['teacher_avarage_rating']);
+        $this->set('averageRating', $userData['User']['teacher_average_rating']);
 	}
 
     public function getLiveLessonMeeting($teacherLessonId) {

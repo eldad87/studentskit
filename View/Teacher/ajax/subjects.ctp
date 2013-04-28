@@ -53,7 +53,8 @@ if($page==1) {
                             </a>
                             <ul class="dropdown-menu popupcontent-box" role="menu" aria-labelledby="dLabel">';
 
-            if($subject['Subject']['lesson_type']==LESSON_TYPE_LIVE) {
+            if($subject['Subject']['lesson_type']==LESSON_TYPE_LIVE &&
+                $subject['Subject']['is_public']==SUBJECT_IS_PUBLIC_TRUE) {
                 echo '<li><a href="#" class="schedule" data-subject_id="'.$subject['Subject']['subject_id'].'">'.__('Schedule').'</a></li>';
             }
             echo '
@@ -73,11 +74,11 @@ if($page==1) {
                     </div>
                     <div class="lesson-box-footer radius2">
                         <div class="pull-left star">
-                            '.$this->Layout->ratingNew($subject['Subject']['avarage_rating'], false, 'pull-left pad8').'
+                            '.$this->Layout->ratingNew($subject['Subject']['average_rating'], false, 'pull-left pad8').'
                         </div>
                         <div class="pull-right space21 right-i-mar">
                             '.$this->Layout->toolTip($this->Layout->buildLessonTooltipHtml($subject['Subject']), null, 'pull-right space23', 'tooltip_'.$subject['Subject']['subject_id']).'
-                            '.$this->Layout->priceTag($subject['Subject']['1_on_1_price'], $subject['Subject']['full_group_student_price'], 'price-tag-panel').'
+                            '.$this->Layout->priceTag($subject['Subject']['price'], $subject['Subject']['bulk_price'], 'price-tag-panel').'
                             <!-- <a href="#" class=" pull-right space23"><i class="iconSmall-info r-mor-none"></i></a> -->
                         </div>
                     </div> <!-- /lesson-box-footer -->

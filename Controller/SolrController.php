@@ -4,34 +4,34 @@
  */
 class SolrController extends AppController {
     public $name = 'Solr';
-    public $uses = array('SubjectCategory');
+    public $uses = array('Category');
 
     public function beforeFilter() {
         parent::beforeFilter();
     }
 
     public function testCategories() {
-        $this->SubjectCategory->create();
-        $this->SubjectCategory->set(array('name'=>'main'));
-        $this->SubjectCategory->save();
+        $this->Category->create();
+        $this->Category->set(array('name'=>'main'));
+        $this->Category->save();
 
-        $this->SubjectCategory->create();
-        $this->SubjectCategory->set(array('name'=>'main 2'));
-        $this->SubjectCategory->save();
+        $this->Category->create();
+        $this->Category->set(array('name'=>'main 2'));
+        $this->Category->save();
 
-        $id = $this->SubjectCategory->id;
-        $this->SubjectCategory->create();
-        $this->SubjectCategory->set(array('name'=>'sub main 2', 'parent_subject_category_id'=>$id));
-        $this->SubjectCategory->save();
+        $id = $this->Category->id;
+        $this->Category->create();
+        $this->Category->set(array('name'=>'sub main 2', 'parent_category_id'=>$id));
+        $this->Category->save();
 
-        $id = $this->SubjectCategory->id;
-        $this->SubjectCategory->create();
-        $this->SubjectCategory->set(array('name'=>'sub main 2 sub', 'parent_subject_category_id'=>$id));
-        $this->SubjectCategory->save();
+        $id = $this->Category->id;
+        $this->Category->create();
+        $this->Category->set(array('name'=>'sub main 2 sub', 'parent_category_id'=>$id));
+        $this->Category->save();
 
-        $this->SubjectCategory->create();
-        $this->SubjectCategory->set(array('name'=>'sub main 3 sub', 'parent_subject_category_id'=>$id));
-        $this->SubjectCategory->save();
+        $this->Category->create();
+        $this->Category->set(array('name'=>'sub main 3 sub', 'parent_category_id'=>$id));
+        $this->Category->save();
     }
 
     private function initSolr($core) {

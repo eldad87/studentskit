@@ -81,8 +81,8 @@ $this->Html->scriptBlock('
                             <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_total_lessons']; ?></span><br /><?php echo __('Lessons'); ?></p>
                             <p class="log1 radius3 gradient2"><span class="fontsize4"><?php echo $teacherData['User']['teacher_students_amount']; ?></span><br /><?php echo __('Students'); ?></p>
                             <a class="log2 btn-black radius3" href="#"><?php
-                                echo $this->Layout->ratingNew($teacherData['User']['teacher_avarage_rating'], false, 'space20 centered');
-                                ?><br />(<?php echo $teacherData['User']['teacher_avarage_rating']; ?>/<?php echo $teacherData['User']['teacher_raters_amount']; ?> <?php echo __('Reviews'); ?>)</a>
+                                echo $this->Layout->ratingNew($teacherData['User']['teacher_average_rating'], false, 'space20 centered');
+                                ?><br />(<?php echo $teacherData['User']['teacher_average_rating']; ?>/<?php echo $teacherData['User']['teacher_raters_amount']; ?> <?php echo __('Reviews'); ?>)</a>
                         </div>
                     </div> <!-- /student-main-box -->
 

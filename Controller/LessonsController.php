@@ -297,7 +297,7 @@ class LessonsController extends AppController {
                 $this->emailUsers($this->request->data['emails'], $subjectData['name'], $this->request->data['message'], 'Subject', $this->request->data['subject_id']);
 
                 //OIts a video offer, and it's the teacher
-                if($this->Auth->user('user_id')==$subjectData['user_id'] && $subjectData['type']==SUBJECT_TYPE_OFFER && $subjectData['lesson_type']==LESSON_TYPE_VIDEO) {
+                if($this->Auth->user('user_id')==$subjectData['user_id'] && $subjectData['lesson_type']==LESSON_TYPE_VIDEO) {
                     $this->sendVideoLessonsInvitationsByTeacher($this->request->data['emails'], $this->request->data['subject_id'], $this->request->data['message']);
                 }
 

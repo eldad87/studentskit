@@ -16,7 +16,7 @@ if(isSet($teacher_raters_amount)) {
 	echo 'Total students: '.$teacher_raters_amount;
 	echo '<br />';
 }
-echo 'Avarage total rating: '.$teacher_avarage_rating;
+echo 'average total rating: '.$teacher_average_rating;
 echo '<br />';
 echo 'Image: '.$image;
 ?>

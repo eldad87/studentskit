@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema name="subjects" version="1.5">
+	<types>
+		<!-- User id -->
+		<fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0"/>
+		<fieldType name="string" class="solr.StrField" sortMissingLast="true" />
+	    	<!-- A general text field that has reasonable, generic
+		 cross-language defaults: it tokenizes with StandardTokenizer,
+		 removes stop words from case-insensitive "stopwords.txt"
+		 (empty by default), and down cases.  At query time only, it
+		 also applies synonyms. -->
+    
+		<fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
+			<analyzer type="index">
+				<tokenizer class="solr.StandardTokenizerFactory"/>
+				<filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" enablePositionIncrements="true" />
+				<!-- in this example, we will only use synonyms at query time
+				<filter class="solr.SynonymFilterFactory" synonyms="index_synonyms.txt" ignoreCase="true" expand="false"/>
+				-->
+				<filter class="solr.LowerCaseFilterFactory"/>
+			</analyzer>
+			<analyzer type="query">
+				<tokenizer class="solr.StandardTokenizerFactory"/>
+				<filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" enablePositionIncrements="true" />
+				<filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
+				<filter class="solr.LowerCaseFilterFactory"/>
+			</analyzer>
+			</fieldType>
+		<!-- Money/currency field type. See http://wiki.apache.org/solr/MoneyFieldType
+		Parameters:
+		  defaultCurrency: Specifies the default currency if none specified. Defaults to "USD"
+		  precisionStep:   Specifies the precisionStep for the TrieLong field used for the amount
+		  providerClass:   Lets you plug in other exchange provider backend:
+		                   solr.FileExchangeRateProvider is the default and takes one parameter:
+		                     currencyConfig: name of an xml file holding exhange rates
+	   	-->
+		<fieldType name="currency" class="solr.CurrencyField" precisionStep="8" defaultCurrency="USD" currencyConfig="currency.xml" />
+		<!-- rate -->
+		<fieldType name="float" class="solr.TrieFloatField" precisionStep="0" positionIncrementGap="0"/>
+
+
+		<!-- is public -->
+		<fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
+
+		<!-- Category id -->
+		<fieldType name="tint" class="solr.TrieField" type="integer" omitNorms="true" positionIncrementGap="0" indexed="true" stored="false" />
+		<!-- modifieds -->
+		<fieldType name="tdate" class="solr.TrieDateField" precisionStep="6" positionIncrementGap="0"/>
+		
+	<!-- basic text field for auto suggestions -->
+    <fieldtype name="phrase_suggest" class="solr.TextField">
+	  <analyzer>
+	    <tokenizer class="solr.KeywordTokenizerFactory"/>
+	    <filter class="solr.PatternReplaceFilterFactory"
+	            pattern="([^\p{L}\p{M}\p{N}\p{Cs}]*[\p{L}\p{M}\p{N}\p{Cs}\_]+:)|([^\p{L}\p{M}\p{N}\p{Cs}])+"
+	            replacement=" " replace="all"/>
+	    <filter class="solr.LowerCaseFilterFactory"/>
+	    <filter class="solr.TrimFilterFactory"/>
+	  </analyzer>
+	</fieldtype>
+    
+
+  </types>
+	<fields>
+		<field name="subject_id" type="int" indexed="true" stored="true" required="true" />
+		<field name="name" type="text_general" indexed="true" stored="true"/>
+		 
+		<field name="description" type="text_general" indexed="true" stored="true" multiValued="true"/>
+		<dynamicField name="*_t"  type="text_general" indexed="true"  stored="false"/>
+		<!-- <field name="keywords" type="text_general" indexed="true" stored="true" multiValued="true" /> -->
+		<field name="categories" type="string" indexed="true" stored="true" multiValued="true" />
+		<field name="category_id" type="int" indexed="true" stored="true" />
+		
+		
+		<field name="lesson_type" type="int" indexed="true" stored="true" required="true" />
+		<field name="price"  type="currency" indexed="true" stored="true"/>
+		<field name="average_rating"  type="float" indexed="true" stored="true"/>
+		<field name="language"  type="string" indexed="true" stored="true" />
+
+		<field name="is_public" type="boolean" indexed="true" stored="true"/>
+		<field name="last_modified" type="tdate" indexed="true" stored="true"/>
+	</fields>
+	
+	<uniqueKey>subject_id</uniqueKey>
+	<!-- <defaultSearchField>description</defaultSearchField> -->
+	<copyField source="name" dest="description" />
+	<copyField source="*_t" dest="description" />
+</schema>

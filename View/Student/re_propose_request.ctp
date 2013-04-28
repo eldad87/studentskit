@@ -18,9 +18,16 @@ if(isSet($paymentPage)) {
                 } else if(isSet($error)) {
                     echo 'showError(\'#accept-popup .modal-body\',\''.__('Internal Error').'\', \'\')';
                 } else if($lessonType==LESSON_TYPE_LIVE) {
-                    echo 'initSubjectForm(\'#UserLesson1On1Price\', \'#UserLessonLessonType\',
+                    /*echo 'initSubjectForm(\'#UserLessonPrice\', \'#UserLessonLessonType\',
                                             \'#UserLessonMaxStudents\', \'#msDiv\',
-                                            \'#fgspDiv\', \'#UserLessonFullGroupStudentPrice\', \'#durationDiv\');';
+                                            \'#fgspDiv\', \'#UserLessonBulkPrice\', \'#durationDiv\');';*/
+
+                    echo 'initSubjectAddForm(
+                            \'#UserLessonIsPublic\',
+                            \'#UserLessonLessonType\',
+                            \'#UserLessonPrice\',
+                            \'#UserLessonMaxStudents\'
+                    );';
                 }
 
 
@@ -70,15 +77,27 @@ if(isSet($paymentPage)) {
             echo $this->Form->input('lesson_type', $this->Layout->styleForInput(array('type'=>'hidden')));
 
 
-            echo $this->Form->input('1_on_1_price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0, 'step'=>'any')));
+
+
+            echo $this->Form->input('price', $this->Layout->styleForInput(array('type'=>'number', 'min'=>0, 'step'=>'any')));
 
 
             //Only for live lessons
             if($lessonType==LESSON_TYPE_LIVE) {
-                echo $this->Form->input('max_students', $this->Layout->styleForInput(array('type'=>'number', 'min'=>1, 'div'=>array('id'=>'msDiv', 'class'=>'control-group'))));
-                echo $this->Form->input('full_group_student_price', $this->Layout->styleForInput(array( 'type'=>'number', 'min'=>0, 'step'=>'any',
+                echo '<div id="maxStudentsAndDiscountDiv">';
+
+                echo $this->Form->input('max_students', $this->Layout->styleForInput(array('type'=>'number', 'min'=>1, 'div'=>array(/*'id'=>'msDiv', */'class'=>'control-group'))));
+                /*echo $this->Form->input('bulk_price', $this->Layout->styleForInput(array( 'type'=>'number', 'min'=>0, 'step'=>'any',
                                                                                                         'div'=>array('style'=>'display:none', 'id'=>'fgspDiv', 'class'=>'control-group') ,
-                                                                                                        'tooltip'=>__('a max discount price for a full lesson, the discount will take place starting from 2 students and above'))));
+                                                                                                        'tooltip'=>__('a max discount price for a full lesson, the discount will take place starting from 2 students and above'))));*/
+                echo $this->Form->input('bulk_price', $this->Layout->styleForInput(array( 'type'=>'number', 'min'=>0, 'step'=>'any',
+                                                                                                        'label'=>array('class'=>'control-label', 'text'=>__('Volume Discount')),
+                                                                                                        'div'=>array('style'=>'display:none', 'id'=>'discountPriceDiv', 'class'=>'control-group') ,
+                                                                                                        'tooltip'=>__('The max discount for when the lesson is full. The discount is relative to the amount of students and will take affect starting from the 2nd student. Leave BLANK for no discount.'),
+                                                                                                        'tooltip_class'=>'pull-right space3'
+                                                                                                    )));
+
+                echo '</div>';
             }
 
         echo '</fieldset>';

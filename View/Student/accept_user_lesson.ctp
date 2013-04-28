@@ -46,7 +46,7 @@ if(isSet($paymentPage)) {
                     </li>
                     <li>
                         <label><?php echo __('1 on 1 price'); ?>:</label>
-                        <div class="negote-inputbox space3"><?php echo $userLessonData['1_on_1_price'] ? $userLessonData['1_on_1_price'] : __('Free'); ?></div>
+                        <div class="negote-inputbox space3"><?php echo $userLessonData['price'] ? $userLessonData['price'] : __('Free'); ?></div>
                     </li>
 
                     <?php if($userLessonData['lesson_type']==LESSON_TYPE_LIVE ) { ?>
@@ -54,10 +54,10 @@ if(isSet($paymentPage)) {
                             <label><?php echo __('Max students'); ?>:</label>
                             <div class="negote-inputbox space3"><?php echo $userLessonData['max_students']; ?></div>
                         </li>
-                        <?php if($userLessonData['1_on_1_price'] && $userLessonData['max_students']>1 ) { ?>
+                        <?php if($userLessonData['price'] && $userLessonData['max_students']>1 ) { ?>
                             <li>
                                 <label><?php echo __('Full group student price'); ?>:</label>
-                                <div class="negote-inputbox space3"><?php echo $userLessonData['full_group_student_price']; ?></div>
+                                <div class="negote-inputbox space3"><?php echo $userLessonData['bulk_price']; ?></div>
                             </li>
                         <?php } ?>
                     <?php } ?>

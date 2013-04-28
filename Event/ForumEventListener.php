@@ -10,7 +10,7 @@ class ForumEventListener implements CakeEventListener {
         return array(
             'Controller.Accounts.afterLogout'       => 'afterLogout',
             'Controller.Accounts.afterLogin'        => 'afterLogin',
-            'Model.SubjectCategory.afterSave'       => 'afterSaveSubjectCategory',
+            'Model.Category.afterSave'              => 'afterSaveCategory',
             'Model.Forum.Topic.afterSave'           => 'afterSaveTopic',
             'Model.Forum.Post.afterSave'            => 'afterSavePost',
             'Model.Forum.Topic.afterDelete'         => 'afterDeleteTopic',
@@ -82,37 +82,37 @@ class ForumEventListener implements CakeEventListener {
         }
     }
 
-    public function afterSaveSubjectCategory(CakeEvent $event) {
+    public function afterSaveCategory(CakeEvent $event) {
         if(!$event->data['created']) {
             return true; //Only new records gets a forum
         }
         $scObj = $event->subject();
-        $scData = $scObj->findBySubjectCategoryId($event->data['subject_category_id']);
-        if(!$scData) {
+        $cData = $scObj->findByCategoryId($event->data['category_id']);
+        if(!$cData) {
             return false;
         }
-        $scData = $scData['SubjectCategory'];
+        $cData = $cData['Category'];
 
 
-        if(!$scData['forum_id']) {
+        if(!$cData['forum_id']) {
 
             $update = array();
 
             //Create category if needed - only to deep 3
-            if($scData['deep']<=3) {
+            if($cData['deep']<=3) {
                 App::import('Model', 'Forum.Forum');
                 $forumObj = new Forum();
 
                 $forumData = array(
-                    'title'         => $scData['name'],
-                    'description'   => $scData['description'],
+                    'title'         => $cData['name'],
+                    'description'   => $cData['description'],
                 );
 
                 //If parent category - chain this new forum to it.
                 $forumData['forum_id'] = 0;
-                if($scData['parent_subject_category_id']) {
-                    $parentData = $scObj->findBySubjectCategoryId($scData['parent_subject_category_id']);
-                    $forumData['forum_id'] = $parentData['SubjectCategory']['forum_id'];
+                if($cData['parent_category_id']) {
+                    $parentData = $scObj->findByCategoryId($cData['parent_category_id']);
+                    $forumData['forum_id'] = $parentData['Category']['forum_id'];
                 }
 
                 //Set order
@@ -127,13 +127,13 @@ class ForumEventListener implements CakeEventListener {
                 $update['forum_id'] = $forumObj->id;
             } else {
                 //Get forum_id from parent at deep 3
-                $parentIds = explode(',', $scData['path']);
-                $parentData = $this->findBySubjectCategoryId($parentIds[2]);
+                $parentIds = explode(',', $cData['path']);
+                $parentData = $this->findByCategoryId($parentIds[2]);
                 $update['forum_id'] = $parentData['forum_id'];
             }
 
             if($update) {
-                $scObj->id = $scData['subject_category_id'];
+                $scObj->id = $cData['category_id'];
                 $scObj->set($update);
                 return $scObj->save();
             }

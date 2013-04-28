@@ -45,11 +45,11 @@ echo $this->element('Panel'.DS.'accept_lesson_popup', array('buttonSelector'=>'.
                             </li>
                             <li>
                                 <label><?php echo __('1 on 1 price'); ?> :</label>
-                                <p><?php echo $this->Layout->priceTag($teacherLesson['1_on_1_price'], $teacherLesson['full_group_student_price'], 'space25'); ?></p>
+                                <p><?php echo $this->Layout->priceTag($teacherLesson['price'], $teacherLesson['bulk_price'], 'space25'); ?></p>
                             </li>
                             <li>
                                 <label><?php echo __('Full group student price'); ?> :</label>
-                                <p><?php echo $this->Layout->priceTag($teacherLesson['full_group_student_price'], $teacherLesson['full_group_student_price'], 'space25'); ?></p>
+                                <p><?php echo $this->Layout->priceTag($teacherLesson['bulk_price'], $teacherLesson['bulk_price'], 'space25'); ?></p>
                             </li>
                         </ul>
                     </div>
@@ -57,7 +57,7 @@ echo $this->element('Panel'.DS.'accept_lesson_popup', array('buttonSelector'=>'.
                 <div class="lesson-box-footer radius2">
                     <div class="pull-left star">
                     <?php
-                        echo $this->Layout->ratingNew($subjectData['avarage_rating'], false, 'pull-left pad8'); ?>
+                        echo $this->Layout->ratingNew($subjectData['average_rating'], false, 'pull-left pad8'); ?>
                     </div>
                 </div><!-- /lesson-box-footer -->
             </div><!-- /lesson-box -->

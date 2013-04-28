@@ -95,7 +95,7 @@ echo $this->element('Panel'.DS.'negotiate_popup', array('buttonSelector'=>'.nego
                         </div>
 
                         <div class="lesson-box-footer radius2">
-                            <div class="pull-left star"><?php echo $this->Layout->ratingNew($lessonBooking['Teacher']['teacher_avarage_rating'], false, 'pull-left pad8'); ?></div>
+                            <div class="pull-left star"><?php echo $this->Layout->ratingNew($lessonBooking['Teacher']['teacher_average_rating'], false, 'pull-left pad8'); ?></div>
                         </div><!-- /lesson-box-footer -->
 
                     </div><!-- /lesson-box  -->
