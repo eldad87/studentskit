@@ -13,8 +13,8 @@ class FileSystem extends AppModel {
                 'allowEmpty'    => false,
                 'transport' => array(
                     'class'     => 's3',
-                    'accessKey' => 'AKIAIV2BMVHTLRF64V7Q',
-                    'secretKey' => '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',
+                    'accessKey' => 'xyz',
+                    'secretKey' => 'xyz',
                     'bucket'    => S3_BUCKET,
                     'region'    => 'us-east-1',
                     'folder'    => 'file_system/'
